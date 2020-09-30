@@ -1,0 +1,19 @@
+name: dstore_example
+version: 0.0.1
+description: >-
+  dstore.
+homepage: https://github.com/chandu0101/dstore
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+dependencies:
+  dstore:
+    path: ../dstore
+
+dev_dependencies:
+  build_runner:
+  dstore_generator:
+    path: ../dstore_generator
+
+dependency_overrides:
+  analyzer: '0.39.14'    
+
