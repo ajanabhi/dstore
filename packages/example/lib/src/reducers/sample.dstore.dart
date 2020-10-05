@@ -7,4 +7,20 @@ part of 'sample.dart';
 // ReducerGenerator
 // **************************************************************************
 
-//Todo
+// class Name : _SampleReducer
+
+@immutable
+class Sample {
+  final int count;
+  final int s;
+
+  Sample({@required this.count, @required this.s});
+
+  Sample copyWith({int count, int s}) =>
+      Sample(count: count ?? this.count, s: s ?? this.s);
+
+  Sample copyWithMap(Map<String, dynamic> map) =>
+      Sample(count: map["count"] ?? this.count, s: map["s"] ?? this.s);
+}
+
+// Methods : increment : increment() {var count2 = 4; count++; count = 3; count2 = 5; this.count = 6; print(count2);};

@@ -14,6 +14,5 @@ dev_dependencies:
   dstore_generator:
     path: ../dstore_generator
 
-dependency_overrides:
-  analyzer: '0.39.14'    
+      
 

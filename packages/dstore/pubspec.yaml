@@ -6,6 +6,7 @@ homepage: https://github.com/chandu0101/dstore
 environment:
   sdk: '>=2.7.0 <3.0.0'
 dependencies:
+  meta:
   
 
 dev_dependencies:
