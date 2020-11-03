@@ -2,22 +2,15 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/src/builder/build_step.dart';
+import 'package:dstore_generator/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
+
 import 'package:dstore/dstore.dart';
 
 class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
-  AstNode getAstNodeFromElement(Element element) {
-    AnalysisSession session = element.session;
-    ParsedLibraryResult parsedLibResult =
-        session.getParsedLibraryByElement(element.library);
-    ElementDeclarationResult elDeclarationResult =
-        parsedLibResult.getElementDeclaration(element);
-    return elDeclarationResult.node;
-  }
-
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
@@ -25,6 +18,8 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
       throw Exception("Reducer should be applied on class only");
     }
     element = element as ClassElement;
+    print(
+        "(((((((((((((((((************)))))))))${element.location} ${element.source.uri} fn ${element.source.fullName}");
     final className = element.name;
     if (!className.startsWith("_") || !className.endsWith("Reducer")) {
       throw Exception(
@@ -34,29 +29,40 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
     final visitor = ReducerAstVisitor();
     final astNode = getAstNodeFromElement(element);
     astNode.visitChildren(visitor);
-    var methods = "";
-    visitor.methods.forEach((key, value) {
-      methods += "$key : ${value.toString()}";
-    });
+    final fields = visitor.fields;
+    final reducerFunctionStr =
+        _createReducerFunction(visitor.methods, modelName);
     print(visitor.fields);
+    final defaultState =
+        "${modelName}(${fields.map((f) => "${f.name}:${f.value}").join(", ")})";
+    final reducerGroupName = element.source
+        .fullName; //TODO get fullnamefrom path fn /dstore_example/lib/src/reducers/sample.dart
+    final reducerGroup = """
+       final ${modelName}ReducerGroup = ReducerGroup(group:"${modelName}",
+        reducer: ${reducerFunctionStr},
+        ds:${defaultState});
+    """;
 
     return """
        // class Name : ${element.name}
 
-       ${_createReducerModel(visitor.fields, modelName)}
-
-       // Methods : $methods;
+       ${_createReducerModel(fields, modelName)}
+        ${reducerGroup}
     """;
   }
 }
 
 const STATE_VARIABLE = "_DStoreState";
 
-const DSTORE_PREFIX = "_DStore";
+const ACTION_VARIABLE = "_DstoreAction";
+
+const PAYLOAD_VARIBALE = "_DstoreActionPayload";
+
+const DSTORE_PREFIX = "_DStore_";
 
 class ReducerAstVisitor extends SimpleAstVisitor {
   List<Field> fields = [];
-  List<Method> methods = [];
+  List<ReducerMethod> methods = [];
 
   @override
   visitMethodDeclaration(MethodDeclaration node) {
@@ -65,12 +71,10 @@ class ReducerAstVisitor extends SimpleAstVisitor {
       throw Exception("method should contain mutation to fields");
     }
     final name = node.name.toString();
-    final params = node.parameters.parameters
-        .map((p) => Field(
-            name: p.identifier.toString(),
-            type: p.runtimeType.toString(),
-            value: null))
-        .toList();
+    final params = convertParamsToFields(node.parameters);
+
+    final paramsStr = _convertMethodParamsToString(params);
+    var mbody = "";
     if (body is ExpressionFunctionBody) {
       final e = body.expression;
       if (e is AssignmentExpression) {
@@ -78,18 +82,30 @@ class ReducerAstVisitor extends SimpleAstVisitor {
           throw Exception(
               "Singleline body should assigment expression of class variable with this. prefix");
         }
+        final pa = e.leftHandSide as PropertyAccess;
+        final fname = pa.toString().split(".")[1];
+        mbody = """
+           ${paramsStr}
+           return ${STATE_VARIABLE}.copyWith(${fname}:${e.rightHandSide.toString().replaceAll("this.", "${STATE_VARIABLE}.")});
+        """;
       } else {
         throw Exception(
             "Singleline body should assigment expression of class variable with this.prefix");
       }
-    } else if (body is BlockFunctionBody) {}
+    } else if (body is BlockFunctionBody) {
+      final s = processMethodStatements(body.block.statements);
+      mbody = """
+           ${paramsStr}
+           ${s}
+           """;
+    }
     if (node.body is BlockFunctionBody) {
       final ex = node.body as BlockFunctionBody;
-      ex.block.statements.forEach((element) {
+      ex.block.statements.forEach((statement) {
         print(
-            "************** Check ${element.toString()} ${element is ExpressionStatement}");
-        if (element is ExpressionStatement) {
-          final exp = element.expression;
+            "************** Check ${statement.toString()} ${statement.runtimeType}");
+        if (statement is ExpressionStatement) {
+          final exp = statement.expression;
           print("isAssignable ${exp.runtimeType}");
           if (exp is AssignmentExpression) {
             print("Hello ${exp.leftHandSide.runtimeType}");
@@ -99,9 +115,17 @@ class ReducerAstVisitor extends SimpleAstVisitor {
                   "Identifie: ${idn.inSetterContext()} ${idn.isQualified} ${idn.precedence} ${idn.parent} ${idn.inDeclarationContext()}");
             }
           }
+          if (exp is MethodInvocation) {
+            print(
+                "**MMMMMM*** ${exp.argumentList.arguments} Type:  ${exp.argumentList.arguments[0].runtimeType} ");
+          }
+        }
+        if (statement is IfStatement) {
+          print("****IFIF***** ${statement.thenStatement.runtimeType}");
         }
       });
     }
+    methods.add(ReducerMethod(name: name, params: params, body: mbody));
     return super.visitMethodDeclaration(node);
   }
 
@@ -126,25 +150,89 @@ class ReducerAstVisitor extends SimpleAstVisitor {
   }
 }
 
-class Field {
-  String name;
-  String type;
-  String value;
-
-  Field({@required this.name, @required this.type, @required this.value}) {}
-
-  @override
-  String toString() {
-    return "Field(Name : ${name} Type : ${type} Value : ${value})";
-  }
-}
-
-class Method {
+class ReducerMethod {
   final String name;
   final List<Field> params;
   final String body;
 
-  Method(this.name, this.params, this.body);
+  ReducerMethod(
+      {@required this.name, @required this.params, @required this.body});
+}
+
+enum MethodStatementKind {
+  GeneralStatement,
+  IfStatement,
+  IfElseStatement,
+  ForeachStatement,
+  MutationStatement,
+}
+
+abstract class StatementResult {
+  MethodStatementKind get kind;
+}
+
+class GeneralStatementResult extends StatementResult {
+  Statement statment;
+  GeneralStatementResult({
+    @required this.statment,
+  });
+  @override
+  MethodStatementKind get kind => MethodStatementKind.GeneralStatement;
+}
+
+class MutationStatementResult extends StatementResult {
+  final String key;
+  final String code;
+
+  MutationStatementResult({@required this.key, @required this.code});
+  @override
+  MethodStatementKind get kind => MethodStatementKind.MutationStatement;
+}
+
+class ForEachStatementResult extends StatementResult {
+  final ExpressionStatement statement;
+  final List<StatementResult> statementResults;
+
+  ForEachStatementResult(
+      {@required this.statement, @required this.statementResults});
+
+  @override
+  MethodStatementKind get kind => MethodStatementKind.ForeachStatement;
+}
+
+class IfStatementResult extends StatementResult {
+  final IfStatement statement;
+  final List<StatementResult> statementResults;
+
+  IfStatementResult(
+      {@required this.statement, @required this.statementResults});
+  @override
+  MethodStatementKind get kind => MethodStatementKind.IfStatement;
+}
+
+class IfElseStatementResult extends StatementResult {
+  final IfStatement statement;
+  final List<StatementResult> ifStatementResults;
+  final List<StatementResult> elseStatementResults;
+
+  IfElseStatementResult(
+      {@required this.statement,
+      @required this.ifStatementResults,
+      @required this.elseStatementResults});
+  @override
+  MethodStatementKind get kind => MethodStatementKind.IfElseStatement;
+}
+
+String _convertMethodParamsToString(List<Field> params) {
+  if (params.isEmpty) return "";
+  final p = params
+      .map((p) =>
+          "final ${p.name} = ${PAYLOAD_VARIBALE}[\"${p.name}\"] as ${p.type};")
+      .join("\n");
+  return """
+      final ${PAYLOAD_VARIBALE} = ${ACTION_VARIABLE}.payload;
+      ${p}
+  """;
 }
 
 String _createReducerModel(List<Field> fields, String name) {
@@ -164,6 +252,7 @@ String _createReducerModel(List<Field> fields, String name) {
   final result = """
       
       @immutable
+      @JsonSerializable()
       class ${name} {
         ${mFields}
 
@@ -184,4 +273,272 @@ bool _isThisPropertyAccessExpression(Expression exp) {
   } else {
     return false;
   }
+}
+
+class ProcessStatementOptions {
+  final bool isReturnSupported;
+
+  const ProcessStatementOptions({this.isReturnSupported = false});
+}
+
+bool isMutationStatement(Statement statement) {
+  var result = false;
+  //  print("*** is")
+  if (statement is ExpressionStatement) {
+    final exp = statement.expression;
+    if (exp is AssignmentExpression) {
+      result = _isThisPropertyAccessExpression(exp.leftHandSide);
+    }
+  }
+  return result;
+}
+
+bool isForEachStatement(Statement statement) {
+  var result = false;
+  if (statement is ExpressionStatement) {
+    final exp = statement.expression;
+    if (exp is MethodInvocation) {
+      result = exp.methodName == "forEach";
+    }
+  }
+  return result;
+}
+
+ForEachStatementResult processForEachStatement(Statement statement) {
+  List<StatementResult> statementResults = [];
+  final exp = statement as ExpressionStatement;
+  final mi = exp.expression as MethodInvocation;
+  final fExp = mi.argumentList.arguments[0] as FunctionExpression;
+  if (fExp == null) {
+    throw Exception("You should provide argument to forEach");
+  }
+  final body = fExp.body;
+  if (body is ExpressionFunctionBody) {
+    statementResults = processStatements([body.expression]);
+  } else if (body is BlockFunctionBody) {
+    statementResults = processStatements(body.block.statements);
+  }
+  return ForEachStatementResult(
+      statement: statement, statementResults: statementResults);
+}
+
+IfStatementResult processIfOnlyStatement(
+    Statement statement, ProcessStatementOptions options) {
+  final thenStatement = (statement as IfStatement).thenStatement;
+  List<StatementResult> statementResults = [];
+  if (thenStatement is ExpressionStatement) {
+    statementResults = processStatements([thenStatement], options);
+  }
+  if (thenStatement is Block) {
+    statementResults = processStatements(thenStatement.statements, options);
+  }
+  return IfStatementResult(
+      statement: statement, statementResults: statementResults);
+}
+
+IfElseStatementResult processIfElseStatement(
+    Statement statement, ProcessStatementOptions options) {
+  final thenStatement = (statement as IfStatement).thenStatement;
+  List<StatementResult> ifStatementResults = [];
+  if (thenStatement is ExpressionStatement) {
+    ifStatementResults = processStatements([thenStatement]);
+  }
+  if (thenStatement is Block) {
+    ifStatementResults = processStatements(thenStatement.statements);
+  }
+  List<StatementResult> elseStatementResults = [];
+  final elseStatement = (statement as IfStatement).elseStatement;
+  if (elseStatement is Block) {
+    elseStatementResults = processStatements(elseStatement.statements, options);
+  } else if (elseStatement is IfStatement &&
+      elseStatement.elseStatement == null) {
+    elseStatementResults = [processIfOnlyStatement(elseStatement, options)];
+  } else if (elseStatement is IfStatement) {
+    elseStatementResults = [processIfElseStatement(elseStatement, options)];
+  } else {
+    elseStatementResults = processStatements([elseStatement], options);
+  }
+  return IfElseStatementResult(
+      statement: statement,
+      ifStatementResults: ifStatementResults,
+      elseStatementResults: elseStatementResults);
+}
+
+List<StatementResult> processStatements(List<AstNode> statements,
+    [ProcessStatementOptions options = const ProcessStatementOptions()]) {
+  return statements.map((statement) {
+    StatementResult result = null;
+    if (isMutationStatement(statement)) {
+      final exp = ((statement as ExpressionStatement).expression
+          as AssignmentExpression);
+      final key = exp.leftHandSide.toString().split(".")[1];
+      final code =
+          """${DSTORE_PREFIX}${key} ${exp.operator} ${exp.rightHandSide.toString().replaceAll("this.", "${STATE_VARIABLE}.")};""";
+      result = MutationStatementResult(key: key, code: code);
+    } else if (isForEachStatement(statement)) {
+      result = processForEachStatement(statement);
+    } else if (statement is IfStatement && statement.elseStatement == null) {
+      // ifonly statement
+      result = processIfOnlyStatement(statement, options);
+    } else if (statement is IfStatement) {
+      // if else
+      result = processIfElseStatement(statement, options);
+    } else if (statement is ReturnStatement && !options.isReturnSupported) {
+      throw Exception("Return statement is not supported use if else");
+    } else {
+      result = GeneralStatementResult(statment: statement);
+    }
+    return result;
+  }).toList();
+}
+
+String replaceThisWithStateText(String input, Iterable<String> keys) {
+  var result = input;
+  keys.forEach((key) {
+    result = result.replaceAll("this.${key}", "${DSTORE_PREFIX}${key}");
+  });
+  result = result.replaceAll("this.", "${STATE_VARIABLE}.");
+  return result;
+}
+
+String replaceThisWithState(AstNode node, Iterable<String> keys) {
+  return replaceThisWithStateText(node.toString(), keys);
+}
+
+String convertIfStatementResultToString(
+    IfStatementResult statementResult, Iterable<String> keys) {
+  final condition =
+      replaceThisWithState(statementResult.statement.condition, keys);
+  return """
+       if(${condition}) {
+         ${convertStatementResultsToString(statementResult.statementResults, keys).join("\n")}
+       }
+   """;
+}
+
+String convertIfElseStatementResultToString(
+    IfElseStatementResult iesr, Iterable<String> keys) {
+  final ies = iesr.statement;
+  final ifCond = replaceThisWithState(ies.condition, keys);
+  final ifBody =
+      convertStatementResultsToString(iesr.ifStatementResults, keys).join("\n");
+  final elseS = ies.elseStatement;
+  var else_str = "";
+  if (elseS is Block || elseS is ExpressionStatement) {
+    else_str = """else {
+         ${convertStatementResultsToString(iesr.elseStatementResults, keys).join("\n")}
+       }""";
+  } else if (elseS is IfStatement && elseS.elseStatement == null) {
+    else_str =
+        "else ${convertIfStatementResultToString(iesr.elseStatementResults[0], keys)}";
+  } else if (elseS is IfStatement) {
+    else_str =
+        "else ${convertIfElseStatementResultToString(iesr.elseStatementResults[0], keys)}";
+  }
+
+  return """
+    if(${ifCond}) {
+      ${ifBody}
+    } ${else_str}
+  """;
+}
+
+String converForEachStatementResultToString(
+    ForEachStatementResult fesr, Iterable<String> keys) {
+  final mi = fesr.statement.expression as MethodInvocation;
+
+  final fExp = mi.argumentList.arguments[0] as FunctionExpression;
+  final params = fExp.parameters.parameters.map((p) => p.toString()).join(",");
+  final call = "${mi.target}.${mi.methodName}";
+  final body =
+      convertStatementResultsToString(fesr.statementResults, keys).join("\n");
+  return """${call}((${params}) => {
+     ${body}
+  }) """;
+}
+
+List<String> convertStatementResultsToString(
+    List<StatementResult> statmentResults, Iterable<String> keys) {
+  List<String> result = [];
+  statmentResults.forEach((sr) {
+    if (sr.kind == MethodStatementKind.MutationStatement) {
+      final msr = sr as MutationStatementResult;
+      result.add(msr.code);
+    } else if (sr.kind == MethodStatementKind.IfStatement) {
+      final isr = sr as IfStatementResult;
+      result.add(convertIfStatementResultToString(isr, keys));
+    } else if (sr.kind == MethodStatementKind.IfElseStatement) {
+      final iesr = sr as IfElseStatementResult;
+      result.add(convertIfElseStatementResultToString(iesr, keys));
+    } else if (sr.kind == MethodStatementKind.ForeachStatement) {
+      final fesr = sr as ForEachStatementResult;
+      result.add(converForEachStatementResultToString(fesr, keys));
+    } else if (sr.kind == MethodStatementKind.GeneralStatement) {
+      final gsr = sr as GeneralStatementResult;
+      result.add(replaceThisWithState(gsr.statment, keys));
+    }
+  });
+  return result;
+}
+
+String processMethodStatements(List<Statement> statements) {
+  final statementResults = processStatements(statements);
+  print("statementResults ${statementResults}");
+  List<MutationStatementResult> getMutationOnlyStatementResults(
+      List<StatementResult> statementResults) {
+    final List<MutationStatementResult> result = [];
+    statementResults.forEach((sr) {
+      if (sr.kind == MethodStatementKind.MutationStatement) {
+        result.add(sr);
+      } else if (sr.kind == MethodStatementKind.ForeachStatement) {
+        final fs = sr as ForEachStatementResult;
+        result.addAll(getMutationOnlyStatementResults(fs.statementResults));
+      } else if (sr.kind == MethodStatementKind.IfElseStatement) {
+        final ies = sr as IfElseStatementResult;
+        result.addAll(getMutationOnlyStatementResults(ies.ifStatementResults));
+        result
+            .addAll(getMutationOnlyStatementResults(ies.elseStatementResults));
+      } else if (sr.kind == MethodStatementKind.IfStatement) {
+        result.addAll(getMutationOnlyStatementResults(
+            (sr as IfStatementResult).statementResults));
+      }
+    });
+    return result;
+  }
+
+  final mutationStatements = getMutationOnlyStatementResults(statementResults);
+  if (mutationStatements.length == 0) {
+    throw Exception(
+        "There hsould be atleast one assignemtn operation for class fields");
+  }
+  final keys = mutationStatements.map((e) => e.key).toSet();
+  final statementsStr =
+      convertStatementResultsToString(statementResults, keys).join("\n");
+  return """
+    ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
+    ${statementsStr}
+    return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
+  """;
+}
+
+String _createReducerFunction(
+  List<ReducerMethod> methods,
+  String modelName,
+) {
+  final cases = methods.map((m) => """
+     case "${m.name}": {
+       ${m.body}
+     }
+  """).join("\n");
+  return """ 
+    (${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
+      final name = ${ACTION_VARIABLE}.name;
+      switch(name) {
+        ${cases}
+       default: {
+        return ${STATE_VARIABLE};
+       }
+      }
+    }
+  """;
 }

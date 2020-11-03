@@ -5,7 +5,7 @@ import "package:meta/meta.dart";
 class Action {
   final String name;
   final String group;
-  final dynamic payload;
+  final Map<String, dynamic> payload;
   final HttpPayload http;
   final ActionInternal internal;
 

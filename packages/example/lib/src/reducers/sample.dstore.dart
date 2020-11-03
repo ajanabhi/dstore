@@ -10,17 +10,67 @@ part of 'sample.dart';
 // class Name : _SampleReducer
 
 @immutable
+@JsonSerializable()
 class Sample {
   final int count;
   final int s;
+  final User name;
 
-  Sample({@required this.count, @required this.s});
+  Sample({@required this.count, @required this.s, @required this.name});
 
-  Sample copyWith({int count, int s}) =>
-      Sample(count: count ?? this.count, s: s ?? this.s);
+  Sample copyWith({int count, int s, User name}) => Sample(
+      count: count ?? this.count, s: s ?? this.s, name: name ?? this.name);
 
-  Sample copyWithMap(Map<String, dynamic> map) =>
-      Sample(count: map["count"] ?? this.count, s: map["s"] ?? this.s);
+  Sample copyWithMap(Map<String, dynamic> map) => Sample(
+      count: map["count"] ?? this.count,
+      s: map["s"] ?? this.s,
+      name: map["name"] ?? this.name);
 }
 
-// Methods : increment : increment() {var count2 = 4; count++; count = 3; count2 = 5; this.count = 6; print(count2);};
+final SampleReducerGroup = ReducerGroup(
+    group: "Sample",
+    reducer: (Sample _DStoreState, Action _DstoreAction) {
+      final name = _DstoreAction.name;
+      switch (name) {
+        case "increment":
+          {
+            var _DStore_count = _DStoreState.count;
+            _DStore_count = 6;
+            return _DStoreState.copyWith(count: _DStore_count);
+          }
+
+        case "decrement":
+          {
+            return _DStoreState.copyWith(count: 3);
+          }
+
+        case "increment2":
+          {
+            final _DstoreActionPayload = _DstoreAction.payload;
+            final x = _DstoreActionPayload["x"] as int;
+            final y = _DstoreActionPayload["y"] as dynamic;
+            final sn = _DstoreActionPayload["sn"] as int;
+            final y1 = _DstoreActionPayload["y1"] as dynamic;
+            final y2 = _DstoreActionPayload["y2"] as dynamic;
+
+            return _DStoreState.copyWith(count: x);
+          }
+
+        case "increment3":
+          {
+            final _DstoreActionPayload = _DstoreAction.payload;
+            final x = _DstoreActionPayload["x"] as int;
+            final y = _DstoreActionPayload["y"] as dynamic;
+            final si = _DstoreActionPayload["si"] as int;
+            final s2 = _DstoreActionPayload["s2"] as dynamic;
+
+            return _DStoreState.copyWith(count: x);
+          }
+
+        default:
+          {
+            return _DStoreState;
+          }
+      }
+    },
+    ds: Sample(count: 0, s: 0, name: User()));
