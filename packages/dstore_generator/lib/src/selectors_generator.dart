@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -17,19 +19,28 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
 
     final className = element.name;
 
-    final modelName = className.replaceFirst("Reducer", "").substring(1);
-    final visitor = SelectorsVisitor();
+    if (!className.startsWith("_")) {
+      throw Exception("Selectors functions class should start with _");
+    }
+    final modelName = className.substring(1);
+    final visitor = SelectorsVisitor(modelName);
     final astNode = getAstNodeFromElement(element);
     astNode.visitChildren(visitor);
 
     return """
        // Selector
+       class ${modelName} {
+         ${visitor.selectors.join("\n")}
+       }
     """;
   }
 }
 
 class SelectorsVisitor extends SimpleAstVisitor {
-  final selectors = <_SelectorMeta>[];
+  final String modelName;
+  final selectors = <String>[];
+
+  SelectorsVisitor(this.modelName);
 
   @override
   visitMethodDeclaration(MethodDeclaration node) {
@@ -40,24 +51,50 @@ class SelectorsVisitor extends SimpleAstVisitor {
     }
     final field = fields.first;
     var name = node.name.toString();
-    if (!name.startsWith("_")) {
-      throw Exception("Selector function should start with _");
+    if (node.returnType == null) {
+      throw Exception("You sould annontate return type of method ${name} ");
     }
-    name = name.substring(1);
+    final rType = node.returnType.toString();
+    final sType = field.type;
     final bvs = SelectorBodyVisitor(field.param.identifier);
     node.body.visitChildren(bvs);
-    final t = node.returnType;
-    print("%%%%% deps : ${bvs.deps}");
-    print("*******YYYYYY**** ${t}  ${t.type} ");
+    print("%%%%% deps : ${bvs.depsList}");
+    final depsMap = _convertDepsListToDeps(bvs.depsList)
+        .map((key, value) => MapEntry(key, value.toList()));
+    final result =
+        """static final ${name} = Selector<${sType},${rType}>(fn:_${modelName}.${name},deps:${jsonEncode(depsMap)});""";
+    print("Resuult :${result}");
+    selectors.add(result);
     //  node.body.visitChildren(visitor)
     return super.visitMethodDeclaration(node);
+  }
+
+  Map<String, Set<String>> _convertDepsListToDeps(List<List<String>> depsList) {
+    final result = <String, Set<String>>{};
+    depsList.forEach((dl) {
+      final key = dl[0];
+      final prop = dl.length > 1 ? dl[1] : null;
+      final existingValue = result[key];
+      if (existingValue != null) {
+        if (prop == null) {
+          // meaning selector depends on whole reducer
+          result[key] = {};
+        } else if (existingValue.isNotEmpty) {
+          existingValue.add(prop);
+          result[key] = existingValue;
+        }
+      } else {
+        result[key] = prop == null ? {} : {prop};
+      }
+    });
+    return result;
   }
 }
 
 class SelectorBodyVisitor extends RecursiveAstVisitor {
   final Identifier identifier;
 
-  final List<List<String>> deps = [];
+  final List<List<String>> depsList = [];
 
   SelectorBodyVisitor(this.identifier);
   List<String> getListOfPropAccess(PropertyAccess node) {
@@ -85,7 +122,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
     final sa = node.toString().split(".").toList();
     if (sa.length - 1 == list.length) {
       // property access of state identifier
-      deps.add(list.reversed.toList().take(2).toList());
+      depsList.add(list.reversed.toList().take(2).toList());
     }
     print("Property access list ++++=== ++++++ ${list}");
     // return super.visitPropertyAccess(node);
@@ -96,7 +133,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
     print(
         "**##### IdenAccess  ${node} id:  ${node.identifier} prefix : ${node.prefix} mid :${identifier.toString()}");
     if (node.prefix.toString() == identifier.toString()) {
-      deps.add([node.identifier.toString()]);
+      depsList.add([node.identifier.toString()]);
     } else {
       print("identifier is not equal ${node.prefix == identifier}");
     }

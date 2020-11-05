@@ -14,13 +14,13 @@ class AppState {
 }
 
 @Selectors()
-class AppSelectors {
-  static AppState _hello(AppState state) {
+// ignore: unused_element
+class _AppSelectors {
+  static dynamic hello(AppState state) {
     final n = state.sample.name.name;
-    final c = state.sample;
-    // final b = state.hello.bollo;
-    // return state.sample.s.toString();
-    return null;
+    // final c = state.sample;
+    final b = state.hello.bollo;
+    return state.sample.s.toString();
     // return state.sample.name.name;
   }
 }

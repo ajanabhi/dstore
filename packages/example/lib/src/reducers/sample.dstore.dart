@@ -11,7 +11,7 @@ part of 'sample.dart';
 
 @immutable
 @JsonSerializable()
-class Sample {
+class Sample implements ReducerModel {
   final int count;
   final int s;
   final User name;
@@ -25,9 +25,46 @@ class Sample {
       count: map["count"] ?? this.count,
       s: map["s"] ?? this.s,
       name: map["name"] ?? this.name);
+
+  Map<String, dynamic> toMap() =>
+      {"count": this.count, "s": this.s, "name": this.name};
 }
 
-final SampleReducerGroup = ReducerGroup(
+abstract class SampleActions {
+  static increment() {
+    return Action(
+        name: "increment",
+        group: "/dstore_example/lib/src/reducers/sample.dart");
+  }
+
+  static decrement() {
+    return Action(
+        name: "decrement",
+        group: "/dstore_example/lib/src/reducers/sample.dart");
+  }
+
+  static increment2(
+      {@required int x,
+      @required dynamic y,
+      int sn = 4,
+      dynamic y1,
+      dynamic y2}) {
+    return Action(
+        name: "increment2",
+        group: "/dstore_example/lib/src/reducers/sample.dart",
+        payload: {"x": x, "y": y, "sn": sn, "y1": y1, "y2": y2});
+  }
+
+  static increment3(
+      {@required int x, @required dynamic y, int si = 4, dynamic s2 = 3}) {
+    return Action(
+        name: "increment3",
+        group: "/dstore_example/lib/src/reducers/sample.dart",
+        payload: {"x": x, "y": y, "si": si, "s2": s2});
+  }
+}
+
+final SampleReducerGroup = ReducerGroup<Sample>(
     group: "Sample",
     reducer: (Sample _DStoreState, Action _DstoreAction) {
       final name = _DstoreAction.name;

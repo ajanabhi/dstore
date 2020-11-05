@@ -38,15 +38,20 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
     final reducerGroupName = element.source
         .fullName; //TODO get fullnamefrom path fn /dstore_example/lib/src/reducers/sample.dart
     final reducerGroup = """
-       final ${modelName}ReducerGroup = ReducerGroup(group:"${modelName}",
+       final ${modelName}ReducerGroup = ReducerGroup<${modelName}>(group:"${modelName}",
         reducer: ${reducerFunctionStr},
         ds:${defaultState});
     """;
+    final actions = _generateActionsCreators(
+        methods: visitor.methods,
+        modelName: modelName,
+        group: reducerGroupName);
 
     return """
        // class Name : ${element.name}
 
        ${_createReducerModel(fields, modelName)}
+       ${actions}
         ${reducerGroup}
     """;
   }
@@ -59,6 +64,43 @@ const ACTION_VARIABLE = "_DstoreAction";
 const PAYLOAD_VARIBALE = "_DstoreActionPayload";
 
 const DSTORE_PREFIX = "_DStore_";
+
+String _generateActionsCreators({
+  @required List<ReducerMethod> methods,
+  @required String modelName,
+  @required String group,
+}) {
+  final methodActions = methods.map((m) {
+    final params = m.params.map((p) {
+      if (!p.isOptional) {
+        return "@required ${p.type} ${p.name}";
+      } else {
+        final defaultValue = p.value != null ? "= ${p.value}" : "";
+        return "${p.type} ${p.name} ${defaultValue} ";
+      }
+    }).join(", ");
+
+    var payload = m.params.length > 0
+        ? "{ " +
+            m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
+            "}"
+        : "";
+    if (payload.isNotEmpty) {
+      payload = ", payload: ${payload}";
+    }
+    return """
+      static ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
+         return Action(name:"${m.name}",group:"${group}" ${payload});
+      }
+    """;
+  }).join("\n");
+
+  return """
+     abstract class ${modelName}Actions {
+         ${methodActions}
+     }
+  """;
+}
 
 class ReducerAstVisitor extends SimpleAstVisitor {
   List<Field> fields = [];
@@ -249,11 +291,14 @@ String _createReducerModel(List<Field> fields, String name) {
       .join(", ");
   final copyWithMap =
       "${name} copyWithMap(Map<String,dynamic> map) => ${name}(${copyWithMapBody});";
+
+  final toMap =
+      """Map<String,dynamic> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
   final result = """
       
       @immutable
       @JsonSerializable()
-      class ${name} {
+      class ${name} implements ReducerModel {
         ${mFields}
 
         ${constructor}
@@ -261,6 +306,8 @@ String _createReducerModel(List<Field> fields, String name) {
         ${copyWith}
 
         ${copyWithMap}
+
+        ${toMap}
       }
    """;
   return result;
