@@ -10,24 +10,36 @@ part of 'sample.dart';
 // class Name : _SampleReducer
 
 @immutable
-@JsonSerializable()
 class Sample implements ReducerModel {
   final int count;
   final int s;
   final User name;
+  final GetTodos todos;
 
-  Sample({@required this.count, @required this.s, @required this.name});
+  Sample(
+      {@required this.count,
+      @required this.s,
+      @required this.name,
+      @required this.todos});
 
-  Sample copyWith({int count, int s, User name}) => Sample(
-      count: count ?? this.count, s: s ?? this.s, name: name ?? this.name);
+  Sample copyWith({int count, int s, User name, GetTodos todos}) => Sample(
+      count: count ?? this.count,
+      s: s ?? this.s,
+      name: name ?? this.name,
+      todos: todos ?? this.todos);
 
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       count: map["count"] ?? this.count,
       s: map["s"] ?? this.s,
-      name: map["name"] ?? this.name);
+      name: map["name"] ?? this.name,
+      todos: map["todos"] ?? this.todos);
 
-  Map<String, dynamic> toMap() =>
-      {"count": this.count, "s": this.s, "name": this.name};
+  Map<String, dynamic> toMap() => {
+        "count": this.count,
+        "s": this.s,
+        "name": this.name,
+        "todos": this.todos
+      };
 }
 
 abstract class SampleActions {
@@ -65,7 +77,7 @@ abstract class SampleActions {
 }
 
 final SampleReducerGroup = ReducerGroup<Sample>(
-    group: "Sample",
+    group: "/dstore_example/lib/src/reducers/sample.dart",
     reducer: (Sample _DStoreState, Action _DstoreAction) {
       final name = _DstoreAction.name;
       switch (name) {
@@ -110,4 +122,4 @@ final SampleReducerGroup = ReducerGroup<Sample>(
           }
       }
     },
-    ds: Sample(count: 0, s: 0, name: User()));
+    ds: Sample(count: 0, s: 0, name: User(), todos: GetTodos()));

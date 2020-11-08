@@ -11,6 +11,8 @@ typedef Middleware<State extends AppStateI> = dynamic Function(
 
 typedef Callback = dynamic Function();
 
+typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions options);
+
 class Store<S extends AppStateI> {
   final Map<String, ReducerGroup<ReducerModel>> reducers;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
@@ -48,9 +50,94 @@ class Store<S extends AppStateI> {
     return dispatchers.reversed.toList();
   }
 
-  dynamic _defaultDispatch(Action action) {}
+  dynamic _defaultDispatch(Action action) {
+    final sk = this._reducerGroupToStateKeyMap[action.group];
+    final rg = this.reducers[sk];
+    final gsMap = _state.toMap();
+    final currentS = gsMap[sk];
+    final newS = rg.reducer(currentS, action);
+    gsMap[sk] = newS;
+    _state = _state.copyWithMap(gsMap);
+    _notifyListeners(stateKey: sk, previousState: currentS, currentState: newS);
+  }
 
-  
+  void _notifyListeners(
+      {@required String stateKey,
+      @required ReducerModel previousState,
+      @required ReducerModel currentState}) {
+    final ls = this.selectorListeners[stateKey];
+    final psMap = previousState.toMap();
+    final csMap = currentState.toMap();
+    if (ls != null) {
+      ls.forEach((sl) {
+        if (_isSelectorDependenciesChanged(
+            selector: sl.selector,
+            prevState: psMap,
+            currentState: csMap,
+            stateKey: stateKey)) {
+          sl.listener();
+        }
+      });
+    }
+  }
+
+  bool _isSelectorDependenciesChanged(
+      {@required Selector<S, dynamic> selector,
+      @required Map<String, dynamic> prevState,
+      @required Map<String, dynamic> currentState,
+      @required String stateKey}) {
+    var result = false;
+    selector.deps.forEach((key, value) {
+      if (key == stateKey) {
+        for (final prop in value) {
+          if (!identical(prevState[prop], currentState[prop])) {
+            result = true;
+            break;
+          }
+        }
+      }
+    });
+    return result;
+  }
+
+  void _resetToDefaultState(Selector<S, dynamic> selector) {
+    final keysToReset = <String>[];
+    final propsOfKeysToReset = <String, List<String>>{};
+    selector.deps.forEach((sk, values) {
+      final slsa = this.selectorListeners[sk];
+      if (slsa != null && slsa.length > 0) {
+        final existingStateKeyProps = <String>{};
+        slsa.forEach((sls) {
+          existingStateKeyProps.addAll(sls.selector.deps[sk]);
+        });
+        propsOfKeysToReset[sk] = [];
+        values.forEach((skp) {
+          if (!existingStateKeyProps.contains(skp)) {
+            propsOfKeysToReset[sk].add(skp);
+          }
+        });
+      } else {
+        // no listeneres for this state key
+        keysToReset.add(sk);
+      }
+      final sMap = _state.toMap();
+      keysToReset.forEach((sk) {
+        sMap[sk] = this.reducers[sk].ds;
+      });
+      propsOfKeysToReset.forEach((sk, props) {
+        if (props.length > 0) {
+          final rm = sMap[sk] as ReducerModel;
+          final rmMap = rm.toMap();
+          final rmDSMap = this.reducers[sk].ds.toMap();
+          props.forEach((prop) {
+            rmMap[prop] = rmDSMap[prop];
+          });
+          sMap[sk] = rm.copyWithMap(rmMap);
+        }
+      });
+      _state = _state.copyWithMap(sMap);
+    });
+  }
 
   /* public methods  */
 
@@ -62,7 +149,8 @@ class Store<S extends AppStateI> {
     _dispatchers[0](action);
   }
 
-  dynamic subscribeSelector(Selector<S, dynamic> selector, Callback listener) {
+  SelectorUnSubscribeFn subscribeSelector(
+      Selector<S, dynamic> selector, Callback listener) {
     final keys = selector.deps.keys;
     keys.forEach((sk) {
       final sls = this.selectorListeners[sk];
@@ -74,7 +162,7 @@ class Store<S extends AppStateI> {
       }
     });
     var isSubscribed = true;
-    return ([UnsubscribeOptions options]) {
+    return ([UnSubscribeOptions options]) {
       if (!isSubscribed) {
         return;
       }
@@ -86,16 +174,18 @@ class Store<S extends AppStateI> {
           sla.removeAt(index);
         }
       });
-      if (options != null && options.resetToDefault) {}
+      if (options != null && options.resetToDefault) {
+        _resetToDefaultState(selector);
+      }
       isSubscribed = false;
     };
   }
 }
 
-class UnsubscribeOptions {
+class UnSubscribeOptions {
   final bool resetToDefault;
 
-  UnsubscribeOptions({this.resetToDefault = false});
+  UnSubscribeOptions({this.resetToDefault = false});
 }
 
 class _SelectorListener<S extends AppStateI> {
@@ -111,14 +201,4 @@ abstract class AppStateI<S> {
   S copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();
   List<String> getFields();
-}
-
-dynamic compose(List<Function> funcs) {
-  if (funcs.length == 0) {
-    return (dynamic arg) => arg;
-  }
-  if (funcs.length == 1) {
-    return funcs[0];
-  }
-  // return funcs.reduce((value, element) => )
 }

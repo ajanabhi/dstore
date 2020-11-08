@@ -1,0 +1,15 @@
+name: middleware_dio
+version: 0.0.1
+description: >-
+  dstore.
+homepage: https://github.com/chandu0101/dstore
+environment:
+  sdk: '>=2.7.0 <3.0.0'
+dependencies:
+  dstore:
+    path: ../dstore
+  dio: 
+dev_dependencies:
+  
+      
+

@@ -3,6 +3,7 @@ import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:dstore_generator/src/utils.dart';
 import 'package:meta/meta.dart';
@@ -17,9 +18,9 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
     if (!(element is ClassElement)) {
       throw Exception("Reducer should be applied on class only");
     }
-    element = element as ClassElement;
+    final classElement = element as ClassElement;
     print(
-        "(((((((((((((((((************)))))))))${element.location} ${element.source.uri} fn ${element.source.fullName}");
+        "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
     final className = element.name;
     if (!className.startsWith("_") || !className.endsWith("Reducer")) {
       throw Exception(
@@ -27,25 +28,45 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
     }
     final modelName = className.replaceFirst("Reducer", "").substring(1);
     final visitor = ReducerAstVisitor();
-    final astNode = getAstNodeFromElement(element);
+    final astNode = getAstNodeFromElement(classElement);
     astNode.visitChildren(visitor);
     final fields = visitor.fields;
+    // fields.forEach((element) {
+    //   //  if(element.name)
+    //   if (element.name == "todos") {
+    //     print("++++++ Todos : ${element.param.runtimeType}");
+    //   }
+    // });
+    classElement.fields.forEach((element) {
+      if (element.name == "todos") {
+        print(
+            "++++++ Todos2 : ${element.type.runtimeType} meta ${element.type.element.metadata[0].element.runtimeType}");
+        final ce = element.type.element.metadata[0].computeConstantValue();
+        print(
+            "cv :  field ${ce.getField("responseType")} ${ce.getField("responseType").getField("JSON")} ");
+        final v = DSHttpResponseType.values.singleWhere((v) =>
+            ce.getField("responseType").getField(v.toString().split('.')[1]) !=
+            null);
+        print("CV value :$v");
+        final InterfaceType t = element.type;
+        print(
+            "supeclass ${t.allSupertypes} ${isSubTypeof(element.type, "HttpField")} ");
+      }
+    });
     final reducerFunctionStr =
         _createReducerFunction(visitor.methods, modelName);
     print(visitor.fields);
     final defaultState =
         "${modelName}(${fields.map((f) => "${f.name}:${f.value}").join(", ")})";
-    final reducerGroupName = element.source
+    final groupName = element.source
         .fullName; //TODO get fullnamefrom path fn /dstore_example/lib/src/reducers/sample.dart
     final reducerGroup = """
-       final ${modelName}ReducerGroup = ReducerGroup<${modelName}>(group:"${modelName}",
+       final ${modelName}ReducerGroup = ReducerGroup<${modelName}>(group:"${groupName}",
         reducer: ${reducerFunctionStr},
         ds:${defaultState});
     """;
     final actions = _generateActionsCreators(
-        methods: visitor.methods,
-        modelName: modelName,
-        group: reducerGroupName);
+        methods: visitor.methods, modelName: modelName, group: groupName);
 
     return """
        // class Name : ${element.name}
@@ -100,6 +121,49 @@ String _generateActionsCreators({
          ${methodActions}
      }
   """;
+}
+
+List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
+  final result = <_HttpFieldInfo>[];
+  fields.forEach((f) {
+    final ht = isSubTypeof(f.type, "HttpField");
+    if (ht != null) {
+      final queryParamsType =
+          ht.typeArguments[0].getDisplayString(withNullability: false);
+      final bodyType =
+          ht.typeArguments[1].getDisplayString(withNullability: false);
+      final responseType =
+          ht.typeArguments[2].getDisplayString(withNullability: false);
+      // f.type.element.metadata
+      if (f.type.element.metadata.isEmpty) {
+        throw Exception(
+            "You should annonate type with DSHttpRequest annonation");
+      }
+      final req = f.type.element.metadata[0].computeConstantValue();
+      final url = req.getField("url").toStringValue();
+      final method = req.getField("method").toStringValue();
+      DSHttpResponseType responseTypeEnum = null;
+      final responseTypeField = req.getField("responseType");
+      if (responseTypeField != null) {
+        responseTypeEnum = DSHttpResponseType.values.singleWhere((v) =>
+            responseTypeField.getField(v.toString().split('.')[1]) != null);
+      }
+      DSHttpInputType inputTypeEnum = null;
+      final inputTypeField = req.getField("inputType");
+      if (inputTypeField != null) {
+        inputTypeEnum = DSHttpInputType.values.singleWhere(
+            (v) => inputTypeField.getField(v.toString().split('.')[1]) != null);
+      }
+    }
+  });
+  return result;
+}
+
+class _HttpFieldInfo {
+  final String name;
+  final String headers;
+
+  _HttpFieldInfo(this.name, this.headers);
 }
 
 class ReducerAstVisitor extends SimpleAstVisitor {
@@ -297,7 +361,6 @@ String _createReducerModel(List<Field> fields, String name) {
   final result = """
       
       @immutable
-      @JsonSerializable()
       class ${name} implements ReducerModel {
         ${mFields}
 

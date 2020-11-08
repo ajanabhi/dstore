@@ -2,6 +2,7 @@ import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 
 AstNode getAstNodeFromElement(Element element) {
@@ -52,4 +53,21 @@ List<Field> convertParamsToFields(FormalParameterList parameters) {
         isOptional: param.isOptional,
         param: param);
   }).toList();
+}
+
+InterfaceType isSubTypeof(DartType sourceType, String superType) {
+  InterfaceType result = null;
+  if (sourceType is InterfaceType) {
+    for (final t in sourceType.allSupertypes) {
+      var name = t.getDisplayString(withNullability: false);
+      if (name.contains("<")) {
+        name = name.substring(0, name.indexOf("<"));
+      }
+      if (name == superType) {
+        result = t;
+        break;
+      }
+    }
+  }
+  return result;
 }

@@ -13,12 +13,16 @@ class User {
   static s() => 3;
 }
 
+final GetTodos g = GetTodos();
+
 @Reducer()
 // ignore: unused_element
 class _SampleReducer {
   int count = 0;
   int s = 0;
   User name = User();
+  GetTodos todos = GetTodos();
+
   increment() {
     this.count = 6;
     // [].forEach((element) {
