@@ -43,8 +43,10 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
             "++++++ Todos2 : ${element.type.runtimeType} meta ${element.type.element.metadata[0].element.runtimeType}");
         final ce = element.type.element.metadata[0].computeConstantValue();
         print(
-            "cv :  field ${ce.getField("responseType")} ${ce.getField("responseType").getField("JSON")} ");
-        final v = DSHttpResponseType.values.singleWhere((v) =>
+            "cv :  field ${ce.getField("responseType").toFunctionValue()} ${ce.getField("responseType").getField("JSON")} ");
+        print(
+            "dr : ${ce.getField("deserializeResponseFn").toFunctionValue().name}");
+        final v = HttpResponseType.values.singleWhere((v) =>
             ce.getField("responseType").getField(v.toString().split('.')[1]) !=
             null);
         print("CV value :$v");
@@ -128,31 +130,63 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
   fields.forEach((f) {
     final ht = isSubTypeof(f.type, "HttpField");
     if (ht != null) {
-      final queryParamsType =
+      if (ht.typeArguments.length != 4) {
+        throw Exception("You should specify all 4 generic types of HttpField");
+      }
+      String queryParamsType =
           ht.typeArguments[0].getDisplayString(withNullability: false);
-      final bodyType =
+      if (queryParamsType == "Null") {
+        queryParamsType = null;
+      }
+      String inputType =
           ht.typeArguments[1].getDisplayString(withNullability: false);
+      if (inputType == "Null") {
+        inputType = null;
+      }
       final responseType =
+          ht.typeArguments[2].getDisplayString(withNullability: false);
+      final errorType =
           ht.typeArguments[2].getDisplayString(withNullability: false);
       // f.type.element.metadata
       if (f.type.element.metadata.isEmpty) {
-        throw Exception(
-            "You should annonate type with DSHttpRequest annonation");
+        throw Exception("You should annonate type with HttpRequest annonation");
       }
       final req = f.type.element.metadata[0].computeConstantValue();
       final url = req.getField("url").toStringValue();
       final method = req.getField("method").toStringValue();
-      DSHttpResponseType responseTypeEnum = null;
+      HttpResponseType responseTypeEnum = null;
       final responseTypeField = req.getField("responseType");
       if (responseTypeField != null) {
-        responseTypeEnum = DSHttpResponseType.values.singleWhere((v) =>
+        responseTypeEnum = HttpResponseType.values.singleWhere((v) =>
             responseTypeField.getField(v.toString().split('.')[1]) != null);
+      } else {
+        if (responseType == "String") {
+          responseTypeEnum = HttpResponseType.STRING;
+        } else if (responseType != "Null") {
+          responseTypeEnum = HttpResponseType.JSON;
+        }
       }
-      DSHttpInputType inputTypeEnum = null;
+      HttpInputType inputTypeEnum = null;
       final inputTypeField = req.getField("inputType");
       if (inputTypeField != null) {
-        inputTypeEnum = DSHttpInputType.values.singleWhere(
+        inputTypeEnum = HttpInputType.values.singleWhere(
             (v) => inputTypeField.getField(v.toString().split('.')[1]) != null);
+      } else {
+        if (inputType == "String") {
+          inputTypeEnum = HttpInputType.TEXT;
+        } else {
+          inputTypeEnum = HttpInputType.JSON;
+        }
+      }
+      String responseDeserializer = "(resp) => resp";
+      final responseDeserializerField = req.getField("responseDeserializer");
+      if (responseDeserializerField != null) {
+        responseDeserializer = responseDeserializerField.toFunctionValue().name;
+      }
+      String errorDeserializer = "(err) => err";
+      final errorDeserializerField = req.getField("errorDeserializer");
+      if (errorDeserializerField != null) {
+        errorDeserializer = errorDeserializerField.toFunctionValue().name;
       }
     }
   });

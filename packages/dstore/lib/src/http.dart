@@ -10,25 +10,39 @@ class HttpError<RE> {
   HttpError({@required this.type, this.message, this.error});
 }
 
-enum DSHttpResponseType { JSON, STRING, BYTES, STREAM }
+enum HttpResponseType { JSON, STRING, BYTES, STREAM }
 
-enum DSHttpInputType { JSON, FORM, TEXT }
+enum HttpInputType { JSON, FORM, TEXT }
 
-class DSHttpRequest {
+class HttpRequest<R, E> {
   final String method;
   final String url;
-  final DSHttpResponseType responseType;
-  final DSHttpInputType inputType;
+  final R Function(dynamic) responseDeserializer;
+  final E Function(dynamic) errorDeserializer;
+  final HttpResponseType responseType;
+  final HttpInputType inputType;
+  final bool isGraphql;
 
-  const DSHttpRequest(
+  const HttpRequest(
       {@required this.method,
       @required this.url,
+      this.responseDeserializer,
       this.responseType,
+      this.errorDeserializer,
+      this.isGraphql,
       this.inputType});
 }
 
-@DSHttpRequest(method: "GET", url: "", responseType: DSHttpResponseType.JSON)
-class GetTodos = HttpField<Null, Null, String> with EmptyMixin;
+String getTodosSerializer(dynamic resp) {
+  return "";
+}
+
+@HttpRequest(
+    method: "GET",
+    url: "",
+    responseType: HttpResponseType.JSON,
+    responseDeserializer: getTodosSerializer)
+class GetTodos = HttpField<Null, Null, Null, String> with EmptyMixin;
 
 GetTodos gs = GetTodos();
 
@@ -43,10 +57,10 @@ abstract class AbortController {
   void abort();
 }
 
-@DSHttpRequest(method: "GET", url: "")
-class GetTodo = HttpField<Null, Null, String> with EmptyMixin;
+@HttpRequest(method: "GET", url: "")
+class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
 
-class HttpField<I, R, E> {
+class HttpField<QP, I, R, E> {
   final bool loading;
   final R data;
   final HttpError error;
@@ -59,14 +73,14 @@ class HttpField<I, R, E> {
       this.completed = false,
       this.abortController});
 
-  HttpField<I, R, E> copyWith({
+  HttpField<QP, I, R, E> copyWith({
     bool loading,
     R data,
     HttpError error,
     bool completed,
     AbortController abortController,
   }) {
-    return HttpField<I, R, E>(
+    return HttpField<QP, I, R, E>(
         loading: loading ?? this.loading,
         data: data ?? this.data,
         error: error ?? this.error,
@@ -79,31 +93,37 @@ class HttpField<I, R, E> {
       'HttpResult(loading: $loading, data: $data, error: $error)';
 }
 
-class HttpPayload {
+class HttpPayload<R, E> {
   final String url;
   final dynamic data;
   final String method;
-  final DSHttpResponseType responseType;
-  final DSHttpInputType inputType;
+  final HttpResponseType responseType;
+  final HttpInputType inputType;
+  final R Function(dynamic) responseDeserializer;
+  final E Function(dynamic) errorDeserializer;
   final Map<String, dynamic> headers;
   final Map<String, dynamic> queryParams;
   final int sendTimeout;
   final int receiveTieout;
   final bool offline;
   final bool abortable;
+  final bool isGraphql;
 
   HttpPayload(
       {@required this.url,
       @required this.method,
       this.data,
       @required this.responseType,
+      @required this.responseDeserializer,
+      @required this.errorDeserializer,
       this.inputType,
       this.headers,
       this.receiveTieout,
       this.queryParams,
       this.sendTimeout,
-      this.offline,
-      this.abortable});
+      this.isGraphql = false,
+      this.offline = false,
+      this.abortable = false});
 }
 
 class GlobalHttpOptions {

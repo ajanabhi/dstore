@@ -24,14 +24,29 @@ Options _getOptions(
   }
   String contentType;
   switch (payload.inputType) {
-    case DSHttpInputType.JSON:
+    case HttpInputType.JSON:
       contentType = Headers.jsonContentType;
       break;
-    case DSHttpInputType.FORM:
+    case HttpInputType.FORM:
       contentType = Headers.formUrlEncodedContentType;
       break;
-    case DSHttpInputType.TEXT:
+    case HttpInputType.TEXT:
       contentType = "text/plain;charset=UTF-8";
+  }
+  ResponseType responseType;
+  switch (payload.responseType) {
+    case HttpResponseType.JSON:
+      responseType = ResponseType.json;
+      break;
+    case HttpResponseType.STRING:
+      responseType = ResponseType.plain;
+      break;
+    case HttpResponseType.BYTES:
+      responseType = ResponseType.bytes;
+      break;
+    case HttpResponseType.STREAM:
+      responseType = ResponseType.stream;
+      break;
   }
   final Map<String, dynamic> headers = {};
   if (go.headers != null) {
@@ -41,10 +56,10 @@ Options _getOptions(
   return Options(
       contentType: contentType,
       headers: headers,
+      responseType: responseType,
       sendTimeout: payload.sendTimeout,
       receiveTimeout: payload.receiveTieout);
 }
-
 
 _processHttpAction(DioMiddlewareOptions middlewareOptions, Store store,
     Action action, Dio dio) async {
@@ -54,7 +69,9 @@ _processHttpAction(DioMiddlewareOptions middlewareOptions, Store store,
     cancelToken = CancelToken();
   }
   final options = _getOptions(payload, middlewareOptions);
-  store.dispatch(action.copyWith());
+  store.dispatch(action.copyWith(
+      internal:
+          ActionInternal(processed: true, data: HttpField(loading: true))));
   try {
     final response = await dio.request(payload.url,
         queryParameters: payload.queryParams,
