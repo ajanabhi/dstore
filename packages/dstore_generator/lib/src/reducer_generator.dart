@@ -5,11 +5,11 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/src/builder/build_step.dart';
-import 'package:dstore_generator/src/utils.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'package:dstore/dstore.dart';
+import 'package:dstore_generator/src/utils.dart';
 
 class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
   @override
@@ -67,8 +67,12 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
         reducer: ${reducerFunctionStr},
         ds:${defaultState});
     """;
+    final httpFields = _getHttpFields(classElement.fields);
     final actions = _generateActionsCreators(
-        methods: visitor.methods, modelName: modelName, group: groupName);
+        methods: visitor.methods,
+        modelName: modelName,
+        group: groupName,
+        httpFields: httpFields);
 
     return """
        // class Name : ${element.name}
@@ -90,6 +94,7 @@ const DSTORE_PREFIX = "_DStore_";
 
 String _generateActionsCreators({
   @required List<ReducerMethod> methods,
+  List<_HttpFieldInfo> httpFields = const [],
   @required String modelName,
   @required String group,
 }) {
@@ -117,10 +122,44 @@ String _generateActionsCreators({
       }
     """;
   }).join("\n");
+  final httpActions = httpFields.map((hf) {
+    final params = <String>[];
+    final payloadFields = <String>[];
+    if (hf.queryParamsType != null) {
+      params.add("@required ${hf.queryParamsType} queryParams");
+      payloadFields.add(
+          "queryParams: ${hf.queryParamsType.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
+    }
+    if (hf.inputType != null) {
+      params.add("@required ${hf.inputType} input");
+      payloadFields.add("input:input");
+    }
+    params.add("bool abortable = false");
+    payloadFields.add("abortable: abortable");
+    params.add("bool offline = false");
+    payloadFields.add("offline: offline");
+    params.add("Map<String,dynamic> headers");
+    payloadFields.add("headers:headers");
+    params.add("${hf.responseType} optimisticReposne");
+    payloadFields.add("optimistic:optiistic");
+    payloadFields.add("""url:"${hf.url}" """);
+    payloadFields.add("""method: "${hf.method}" """);
+    payloadFields.add("isGraphql:${hf.isGraphql}");
+    payloadFields.add("inputType:${hf.inputTypeEnum}");
+    payloadFields.add("responseType:${hf.responseTypeEnum}");
+    payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
+    payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
 
+    return """
+      static ${hf.name}({${params.join(", ")}}) {
+        return Action(name:"${hf.name}",group:"${group}",http:HttpPayload(${payloadFields.join(", ")}))
+      }
+    """;
+  }).join("\n");
   return """
      abstract class ${modelName}Actions {
          ${methodActions}
+         ${httpActions}
      }
   """;
 }
@@ -146,7 +185,7 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       final responseType =
           ht.typeArguments[2].getDisplayString(withNullability: false);
       final errorType =
-          ht.typeArguments[2].getDisplayString(withNullability: false);
+          ht.typeArguments[3].getDisplayString(withNullability: false);
       // f.type.element.metadata
       if (f.type.element.metadata.isEmpty) {
         throw Exception("You should annonate type with HttpRequest annonation");
@@ -188,6 +227,20 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       if (errorDeserializerField != null) {
         errorDeserializer = errorDeserializerField.toFunctionValue().name;
       }
+      final isGraphql = req.getField("isGraphql")?.toBoolValue() ?? false;
+      final hfi = _HttpFieldInfo(
+          name: f.name,
+          url: url,
+          method: method,
+          inputTypeEnum: inputTypeEnum,
+          responseTypeEnum: responseTypeEnum,
+          inputType: inputType,
+          responseDeserializer: responseDeserializer,
+          errorDeserializer: errorDeserializer,
+          queryParamsType: queryParamsType,
+          responseType: responseType,
+          isGraphql: isGraphql);
+      result.add(hfi);
     }
   });
   return result;
@@ -195,9 +248,30 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
 
 class _HttpFieldInfo {
   final String name;
-  final String headers;
+  final String url;
+  final String inputType;
+  final HttpInputType inputTypeEnum;
+  final HttpResponseType responseTypeEnum;
+  final String responseDeserializer;
+  final String errorDeserializer;
+  final String method;
+  final String queryParamsType;
+  final bool isGraphql;
+  final String responseType;
 
-  _HttpFieldInfo(this.name, this.headers);
+  _HttpFieldInfo({
+    this.name,
+    this.url,
+    this.inputType,
+    this.inputTypeEnum,
+    this.responseType,
+    this.responseTypeEnum,
+    this.responseDeserializer,
+    this.errorDeserializer,
+    this.method,
+    this.queryParamsType,
+    this.isGraphql,
+  });
 }
 
 class ReducerAstVisitor extends SimpleAstVisitor {

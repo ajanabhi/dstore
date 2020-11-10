@@ -98,6 +98,7 @@ class HttpPayload<R, E> {
   final dynamic data;
   final String method;
   final HttpResponseType responseType;
+  final R optimisticResponse;
   final HttpInputType inputType;
   final R Function(dynamic) responseDeserializer;
   final E Function(dynamic) errorDeserializer;
@@ -121,6 +122,7 @@ class HttpPayload<R, E> {
       this.receiveTieout,
       this.queryParams,
       this.sendTimeout,
+      this.optimisticResponse,
       this.isGraphql = false,
       this.offline = false,
       this.abortable = false});
