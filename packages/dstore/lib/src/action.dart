@@ -5,14 +5,18 @@ import "package:meta/meta.dart";
 class Action {
   final String name;
   final String group;
+  final bool isAsync;
   final Map<String, dynamic> payload;
   final HttpPayload http;
+  final dynamic extra;
   final ActionInternal internal;
 
   const Action(
       {@required this.name,
       @required this.group,
+      this.isAsync = false,
       this.payload,
+      this.extra,
       this.http,
       this.internal});
 
@@ -20,6 +24,7 @@ class Action {
       {String name,
       String group,
       dynamic payload,
+      dynamic extra,
       HttpPayload http,
       ActionInternal internal}) {
     return Action(
@@ -27,6 +32,7 @@ class Action {
         group: group ?? this.group,
         payload: payload ?? this.payload,
         http: http ?? this.http,
+        extra: extra ?? this.extra,
         internal: internal ?? this.internal);
   }
 
@@ -39,11 +45,15 @@ class ActionInternal {
   final ActionInternalType type;
   final dynamic data;
 
-  ActionInternal({this.processed = false, this.data, this.type});
+  ActionInternal(
+      {this.processed = false, @required this.data, @required this.type});
 
-  ActionInternal copyWith({bool processed, dynamic data}) {
+  ActionInternal copyWith(
+      {bool processed, dynamic data, ActionInternalType type}) {
     return ActionInternal(
-        processed: processed ?? this.processed, data: data ?? this.data);
+        processed: processed ?? this.processed,
+        type: type ?? this.type,
+        data: data ?? this.data);
   }
 }
 

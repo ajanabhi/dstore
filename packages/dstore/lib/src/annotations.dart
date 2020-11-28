@@ -1,5 +1,5 @@
-class Reducer {
-  const Reducer();
+class PState {
+  const PState();
 }
 
 class Selectors {

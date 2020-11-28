@@ -13,6 +13,7 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
     final classElement = element as ClassElement;
     final name = classElement.name;
     final fields = classElement.fields;
+    print("fields2 ${fields.map((e) => e.type.element.displayName)}");
     final copyWithMapBody = fields
         .map((f) => "${f.name} : map[\"${f.name}\"] ?? this.${f.name}")
         .join(", ");
@@ -21,18 +22,22 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
         "${name} copyWithMap(Map<String,dynamic> map) => ${name}(${copyWithMapBody});";
 
     final toMap =
-        """Map<String,dynamic> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
+        """Map<String,PStateModel> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
 
-    final getFields =
-        """List<String> getFields() => const [${fields.map((f) => """ "${f.name}" """).join(", ")}];""";
     final fieldGetters =
-        fields.map((f) => "${f.type} get ${f.name};").join("\n");
+        fields.map((f) => "PStateModel get ${f.name};").join("\n");
+
+    final createMeta = """
+      static Map<String,PStateMeta> createMeta({${fields.map((f) => "@required PStateMeta ${f.name}").join(", ")}}) {
+          return {${fields.map((f) => """ "${f.name}" : ${f.name} """).join(", ")}};
+       }
+    """;
     return """
       mixin _\$${name} {
         ${fieldGetters}
         ${copyWithMap}
         ${toMap}
-        ${getFields}
+        ${createMeta}
       }
     
     """;

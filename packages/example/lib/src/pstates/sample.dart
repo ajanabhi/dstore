@@ -1,6 +1,8 @@
-import 'package:dstore/dstore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+
+import 'package:dstore/dstore.dart';
+
 part "sample.dstore.dart";
 part "sample.g.dart";
 
@@ -15,9 +17,9 @@ class User {
 
 final GetTodos g = GetTodos();
 
-@Reducer()
+@PState()
 // ignore: unused_element
-class _SampleReducer {
+class _Sample {
   int count = 0;
   int s = 0;
   User name = User();
@@ -45,4 +47,41 @@ class _SampleReducer {
   increment2(@required int x, y, {int sn = 4, y1, dynamic y2}) =>
       this.count = x;
   increment3(@required int x, y, [int si = 4, s2 = 3]) => this.count = x;
+
+  fint() async {
+    await Future.delayed(const Duration(seconds: 1));
+    this.count = 5;
+  }
+}
+
+@JsonSerializable()
+class One {
+  final String name;
+
+  One(this.name);
+}
+
+class OneAlias = One with EmptyMixin;
+
+@JsonSerializable()
+class JsonEx {
+  final String name;
+  // final OneAlias one;
+  JsonEx(
+    this.name,
+  );
+}
+
+class _OneAliasConverter extends JsonConverter<OneAlias, Object> {
+  @override
+  OneAlias fromJson(Object json) {
+    // TODO: implement fromJson
+    throw UnimplementedError();
+  }
+
+  @override
+  Object toJson(OneAlias object) {
+    // TODO: implement toJson
+    throw UnimplementedError();
+  }
 }

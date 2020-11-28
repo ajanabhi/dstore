@@ -11,7 +11,7 @@ import 'package:source_gen/source_gen.dart';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_generator/src/utils.dart';
 
-class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
+class PStateGenerator extends GeneratorForAnnotation<PState> {
   @override
   generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
@@ -22,65 +22,75 @@ class ReducerGenerator extends GeneratorForAnnotation<Reducer> {
     print(
         "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
     final className = element.name;
-    if (!className.startsWith("_") || !className.endsWith("Reducer")) {
-      throw Exception(
-          "Reducer class should start with an underscore and end with Reducer example : _MyReducer");
+    if (!className.startsWith("_")) {
+      throw Exception("PState class should start with _");
     }
-    final modelName = className.replaceFirst("Reducer", "").substring(1);
+    final modelName = className.substring(1);
     final visitor = ReducerAstVisitor();
     final astNode = getAstNodeFromElement(classElement);
     astNode.visitChildren(visitor);
     final fields = visitor.fields;
+    final methods = visitor.methods;
+    fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
+        name: m.name,
+        type: "AsyncActionField",
+        value: "AsyncActionField()",
+        param: null)));
     // fields.forEach((element) {
     //   //  if(element.name)
     //   if (element.name == "todos") {
     //     print("++++++ Todos : ${element.param.runtimeType}");
     //   }
     // });
-    classElement.fields.forEach((element) {
-      if (element.name == "todos") {
-        print(
-            "++++++ Todos2 : ${element.type.runtimeType} meta ${element.type.element.metadata[0].element.runtimeType}");
-        final ce = element.type.element.metadata[0].computeConstantValue();
-        print(
-            "cv :  field ${ce.getField("responseType").toFunctionValue()} ${ce.getField("responseType").getField("JSON")} ");
-        print(
-            "dr : ${ce.getField("deserializeResponseFn").toFunctionValue().name}");
-        final v = HttpResponseType.values.singleWhere((v) =>
-            ce.getField("responseType").getField(v.toString().split('.')[1]) !=
-            null);
-        print("CV value :$v");
-        final InterfaceType t = element.type;
-        print(
-            "supeclass ${t.allSupertypes} ${isSubTypeof(element.type, "HttpField")} ");
-      }
-    });
-    final reducerFunctionStr =
-        _createReducerFunction(visitor.methods, modelName);
-    print(visitor.fields);
+    // classElement.fields.forEach((element) {
+    //   if (element.name == "todos") {
+    //     print(
+    //         "++++++ Todos2 : ${element.type.runtimeType} meta ${element.type.element.metadata[0].element.runtimeType}");
+    //     final ce = element.type.element.metadata[0].computeConstantValue();
+    //     // print(
+    //     //     "cv :  field ${ce.getField("responseType").toFunctionValue()} ${ce.getField("responseType").getField("JSON")} ");
+    //     // print(
+    //     //     "dr : ${ce.getField("deserializeResponseFn").toFunctionValue().name}");
+    //     final v = HttpResponseType.values.singleWhere((v) =>
+    //         ce.getField("responseType").getField(v.toString().split('.')[1]) !=
+    //         null);
+    //     print("CV value :$v");
+    //     final InterfaceType t = element.type;
+    //     print(
+    //         "supeclass ${t.allSupertypes} ${isSubTypeof(element.type, "HttpField")} ");
+    //   }
+    // });
+    final syncReducerFunctionStr =
+        _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
+    final asyncReducerFubctionStr =
+        _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
+    print(fields);
     final defaultState =
         "${modelName}(${fields.map((f) => "${f.name}:${f.value}").join(", ")})";
     final groupName = element.source
         .fullName; //TODO get fullnamefrom path fn /dstore_example/lib/src/reducers/sample.dart
     final reducerGroup = """
-       final ${modelName}ReducerGroup = ReducerGroup<${modelName}>(group:"${groupName}",
-        reducer: ${reducerFunctionStr},
-        ds:${defaultState});
+       final ${modelName}Meta = PStateMeta<${modelName}>(group:"${groupName}",
+        reducer: ${syncReducerFunctionStr},
+        aReducer: ${asyncReducerFubctionStr},
+        ds: () => ${defaultState});
     """;
-    final httpFields = _getHttpFields(classElement.fields);
+    // final httpFields = _getHttpFields(classElement.fields);
     final actions = _generateActionsCreators(
         methods: visitor.methods,
         modelName: modelName,
         group: groupName,
-        httpFields: httpFields);
+        httpFields: []);
 
-    return """
+    final result = """
        // class Name : ${element.name}
 
-       ${_createReducerModel(fields, modelName)}
+       ${_createPStateModel(fields, modelName)}
        ${actions}
         ${reducerGroup}
     """;
+    // print("********************* PState: $result");
+    return result;
   }
 }
 
@@ -118,7 +128,7 @@ String _generateActionsCreators({
     }
     return """
       static ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",group:"${group}" ${payload});
+         return Action(name:"${m.name}",group:"${group}" ${payload},isAsync: ${m.isAsync});
       }
     """;
   }).join("\n");
@@ -339,7 +349,11 @@ class ReducerAstVisitor extends SimpleAstVisitor {
         }
       });
     }
-    methods.add(ReducerMethod(name: name, params: params, body: mbody));
+    methods.add(ReducerMethod(
+        isAsync: node.body.isAsynchronous,
+        name: name,
+        params: params,
+        body: mbody));
     return super.visitMethodDeclaration(node);
   }
 
@@ -368,9 +382,13 @@ class ReducerMethod {
   final String name;
   final List<Field> params;
   final String body;
+  final bool isAsync;
 
   ReducerMethod(
-      {@required this.name, @required this.params, @required this.body});
+      {@required this.isAsync,
+      @required this.name,
+      @required this.params,
+      @required this.body});
 }
 
 enum MethodStatementKind {
@@ -449,7 +467,7 @@ String _convertMethodParamsToString(List<Field> params) {
   """;
 }
 
-String _createReducerModel(List<Field> fields, String name) {
+String _createPStateModel(List<Field> fields, String name) {
   final mFields = fields.map((f) => "final ${f.type} ${f.name};").join("\n");
   final cFields = fields.map((f) => "@required this.${f.name}").join(", ");
   final constructor = "${name}({${cFields}});";
@@ -469,7 +487,7 @@ String _createReducerModel(List<Field> fields, String name) {
   final result = """
       
       @immutable
-      class ${name} implements ReducerModel {
+      class ${name} implements PStateModel {
         ${mFields}
 
         ${constructor}
@@ -739,8 +757,8 @@ String processMethodStatements(List<Statement> statements) {
   """;
 }
 
-String _createReducerFunction(
-  List<ReducerMethod> methods,
+String _createReducerFunctionSync(
+  Iterable<ReducerMethod> methods,
   String modelName,
 ) {
   final cases = methods.map((m) => """
@@ -750,6 +768,28 @@ String _createReducerFunction(
   """).join("\n");
   return """ 
     (${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
+      final name = ${ACTION_VARIABLE}.name;
+      switch(name) {
+        ${cases}
+       default: {
+        return ${STATE_VARIABLE};
+       }
+      }
+    }
+  """;
+}
+
+String _createReducerFunctionAsync(
+  Iterable<ReducerMethod> methods,
+  String modelName,
+) {
+  final cases = methods.map((m) => """
+     case "${m.name}": {
+       ${m.body}
+     }
+  """).join("\n");
+  return """ 
+    (${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) async {
       final name = ${ACTION_VARIABLE}.name;
       switch(name) {
         ${cases}

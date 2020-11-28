@@ -4,13 +4,13 @@
 part of 'sample.dart';
 
 // **************************************************************************
-// ReducerGenerator
+// PStateGenerator
 // **************************************************************************
 
-// class Name : _SampleReducer
+// class Name : _Sample
 
 @immutable
-class Sample implements ReducerModel {
+class Sample implements PStateModel {
   final int count;
   final int s;
   final User name;
@@ -46,13 +46,15 @@ abstract class SampleActions {
   static increment() {
     return Action(
         name: "increment",
-        group: "/dstore_example/lib/src/reducers/sample.dart");
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        isAsync: false);
   }
 
   static decrement() {
     return Action(
         name: "decrement",
-        group: "/dstore_example/lib/src/reducers/sample.dart");
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        isAsync: false);
   }
 
   static increment2(
@@ -63,21 +65,30 @@ abstract class SampleActions {
       dynamic y2}) {
     return Action(
         name: "increment2",
-        group: "/dstore_example/lib/src/reducers/sample.dart",
-        payload: {"x": x, "y": y, "sn": sn, "y1": y1, "y2": y2});
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        payload: {"x": x, "y": y, "sn": sn, "y1": y1, "y2": y2},
+        isAsync: false);
   }
 
   static increment3(
       {@required int x, @required dynamic y, int si = 4, dynamic s2 = 3}) {
     return Action(
         name: "increment3",
-        group: "/dstore_example/lib/src/reducers/sample.dart",
-        payload: {"x": x, "y": y, "si": si, "s2": s2});
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        payload: {"x": x, "y": y, "si": si, "s2": s2},
+        isAsync: false);
+  }
+
+  static fint() {
+    return Action(
+        name: "fint",
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        isAsync: true);
   }
 }
 
-final SampleReducerGroup = ReducerGroup<Sample>(
-    group: "/dstore_example/lib/src/reducers/sample.dart",
+final SampleMeta = PStateMeta<Sample>(
+    group: "/dstore_example/lib/src/pstates/sample.dart",
     reducer: (Sample _DStoreState, Action _DstoreAction) {
       final name = _DstoreAction.name;
       switch (name) {
@@ -114,6 +125,23 @@ final SampleReducerGroup = ReducerGroup<Sample>(
             final s2 = _DstoreActionPayload["s2"] as dynamic;
 
             return _DStoreState.copyWith(count: x);
+          }
+
+        default:
+          {
+            return _DStoreState;
+          }
+      }
+    },
+    aReducer: (Sample _DStoreState, Action _DstoreAction) async {
+      final name = _DstoreAction.name;
+      switch (name) {
+        case "fint":
+          {
+            var _DStore_count = _DStoreState.count;
+            await Future.delayed(const Duration(seconds: 1));
+            _DStore_count = 5;
+            return _DStoreState.copyWith(count: _DStore_count);
           }
 
         default:

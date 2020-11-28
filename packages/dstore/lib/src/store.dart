@@ -1,7 +1,7 @@
+import 'package:dstore/dstore.dart';
 import 'package:meta/meta.dart';
 
 import 'package:dstore/src/action.dart';
-import 'package:dstore/src/reducer.dart';
 import 'package:dstore/src/selector.dart';
 
 typedef Dispatch = dynamic Function(Action action);
@@ -14,14 +14,14 @@ typedef Callback = dynamic Function();
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions options);
 
 class Store<S extends AppStateI> {
-  final Map<String, ReducerGroup<ReducerModel>> reducers;
+  final Map<String, PStateMeta<PStateModel>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   List<Dispatch> _dispatchers;
   Map<String, String> _reducerGroupToStateKeyMap = {};
   S _state;
 
   Store(
-      {@required this.reducers,
+      {@required this.meta,
       @required S Function() stateCreator,
       List<Middleware<S>> middlewares = const [],
       S initialState}) {
@@ -34,7 +34,7 @@ class Store<S extends AppStateI> {
   void _prepareNormalStore(S Function() stateCreator) {
     final AppStateI s = stateCreator();
     final Map<String, dynamic> map = {};
-    this.reducers.forEach((key, rg) {
+    this.meta.forEach((key, rg) {
       _reducerGroupToStateKeyMap[rg.group] = key;
       map[key] = rg.ds;
     });
@@ -52,19 +52,62 @@ class Store<S extends AppStateI> {
 
   dynamic _defaultDispatch(Action action) {
     final sk = this._reducerGroupToStateKeyMap[action.group];
-    final rg = this.reducers[sk];
+    final psm = this.meta[sk];
     final gsMap = _state.toMap();
     final currentS = gsMap[sk];
-    final newS = rg.reducer(currentS, action);
-    gsMap[sk] = newS;
-    _state = _state.copyWithMap(gsMap);
-    _notifyListeners(stateKey: sk, previousState: currentS, currentState: newS);
+    var newS = currentS;
+    if (action.isProcessed) {
+      // processed by middlewares
+      if (action.internal.type == ActionInternalType.DATA) {
+        final csMap = currentS.toMap();
+        csMap[action.name] = action.internal.data;
+        newS = currentS.copyWithMap(csMap);
+      } else if (action.internal.type == ActionInternalType.STATE) {
+        newS = action.internal.data;
+      }
+    } else {
+      if (action.isAsync) {
+        _processAsyncAction(action: action, currentS: currentS, psm: psm);
+      } else {
+        newS = psm.reducer(currentS, action);
+      }
+    }
+    if (!identical(newS, currentS)) {
+      gsMap[sk] = newS;
+      _state = _state.copyWithMap(gsMap);
+      _notifyListeners(
+          stateKey: sk, previousState: currentS, currentState: newS);
+    }
+  }
+
+  void _processAsyncAction(
+      {Action action, PStateMeta psm, dynamic currentS}) async {
+    dispatch(action.copyWith(
+        internal: ActionInternal(
+            processed: true,
+            type: ActionInternalType.DATA,
+            data: AsyncActionField(loading: true))));
+    try {
+      final s = await psm.aReducer(currentS, action);
+      final asm = s.toMap();
+      asm[action.name] = AsyncActionField();
+      final newS = s.copyWithMap(asm);
+      dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, data: newS, type: ActionInternalType.STATE)));
+    } catch (e) {
+      dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true,
+              type: ActionInternalType.DATA,
+              data: AsyncActionField(error: e))));
+    }
   }
 
   void _notifyListeners(
       {@required String stateKey,
-      @required ReducerModel previousState,
-      @required ReducerModel currentState}) {
+      @required PStateModel previousState,
+      @required PStateModel currentState}) {
     final ls = this.selectorListeners[stateKey];
     final psMap = previousState.toMap();
     final csMap = currentState.toMap();
@@ -122,13 +165,13 @@ class Store<S extends AppStateI> {
       }
       final sMap = _state.toMap();
       keysToReset.forEach((sk) {
-        sMap[sk] = this.reducers[sk].ds;
+        sMap[sk] = this.meta[sk].ds();
       });
       propsOfKeysToReset.forEach((sk, props) {
         if (props.length > 0) {
-          final rm = sMap[sk] as ReducerModel;
+          final rm = sMap[sk];
           final rmMap = rm.toMap();
-          final rmDSMap = this.reducers[sk].ds.toMap();
+          final rmDSMap = this.meta[sk].ds().toMap();
           props.forEach((prop) {
             rmMap[prop] = rmDSMap[prop];
           });
@@ -199,6 +242,5 @@ class _SelectorListener<S extends AppStateI> {
 
 abstract class AppStateI<S> {
   S copyWithMap(Map<String, dynamic> map);
-  Map<String, dynamic> toMap();
-  List<String> getFields();
+  Map<String, PStateModel> toMap();
 }
