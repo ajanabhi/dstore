@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dstore/dstore.dart';
 import 'package:meta/meta.dart';
 
@@ -25,6 +27,7 @@ class Store<S extends AppStateI> {
       @required S Function() stateCreator,
       List<Middleware<S>> middlewares = const [],
       S initialState}) {
+    middlewares.add(asyncMiddleware);
     _dispatchers = _createDispatchers(middlewares);
     _prepareNormalStore(stateCreator);
   }
@@ -67,7 +70,6 @@ class Store<S extends AppStateI> {
       }
     } else {
       if (action.isAsync) {
-        _processAsyncAction(action: action, currentS: currentS, psm: psm);
       } else {
         newS = psm.reducer(currentS, action);
       }
@@ -77,30 +79,6 @@ class Store<S extends AppStateI> {
       _state = _state.copyWithMap(gsMap);
       _notifyListeners(
           stateKey: sk, previousState: currentS, currentState: newS);
-    }
-  }
-
-  void _processAsyncAction(
-      {Action action, PStateMeta psm, dynamic currentS}) async {
-    dispatch(action.copyWith(
-        internal: ActionInternal(
-            processed: true,
-            type: ActionInternalType.DATA,
-            data: AsyncActionField(loading: true))));
-    try {
-      final s = await psm.aReducer(currentS, action);
-      final asm = s.toMap();
-      asm[action.name] = AsyncActionField();
-      final newS = s.copyWithMap(asm);
-      dispatch(action.copyWith(
-          internal: ActionInternal(
-              processed: true, data: newS, type: ActionInternalType.STATE)));
-    } catch (e) {
-      dispatch(action.copyWith(
-          internal: ActionInternal(
-              processed: true,
-              type: ActionInternalType.DATA,
-              data: AsyncActionField(error: e))));
     }
   }
 
@@ -143,7 +121,8 @@ class Store<S extends AppStateI> {
     return result;
   }
 
-  void _resetToDefaultState(Selector<S, dynamic> selector) {
+  void _resetToDefaultStateIfNotUsedByOtherSelectors(
+      Selector<S, dynamic> selector) {
     final keysToReset = <String>[];
     final propsOfKeysToReset = <String, List<String>>{};
     selector.deps.forEach((sk, values) {
@@ -188,6 +167,13 @@ class Store<S extends AppStateI> {
     return this._reducerGroupToStateKeyMap[key];
   }
 
+  dynamic getFieldFromAction(Action action) {
+    final sk = this._reducerGroupToStateKeyMap[action.group];
+    final gsMap = this.state.toMap();
+    final currentS = gsMap[sk] as PStateModel;
+    return currentS.toMap()[action.name];
+  }
+
   dynamic dispatch(Action action) {
     _dispatchers[0](action);
   }
@@ -218,12 +204,84 @@ class Store<S extends AppStateI> {
         }
       });
       if (options != null && options.resetToDefault) {
-        _resetToDefaultState(selector);
-      }
+        _resetToDefaultStateIfNotUsedByOtherSelectors(selector);
+      } else {}
       isSubscribed = false;
     };
   }
 }
+
+asyncMiddleware<S extends AppStateI>(
+    Store<S> store, Dispatch next, Action action) async {
+  if (action.isProcessed || !action.isAsync) {
+    next(action);
+  } else {
+    final sk = store.getStateKeyForReducerGroup(action.group);
+    final psm = store.meta[sk];
+    final gsMap = store.state.toMap();
+    final currentS = gsMap[sk];
+    store.dispatch(action.copyWith(
+        internal: ActionInternal(
+            processed: true,
+            type: ActionInternalType.DATA,
+            data: AsyncActionField(loading: true))));
+    try {
+      final s = await psm.aReducer(currentS, action);
+      final asm = s.toMap();
+      asm[action.name] = AsyncActionField();
+      final newS = s.copyWithMap(asm);
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, data: newS, type: ActionInternalType.STATE)));
+    } catch (e) {
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true,
+              type: ActionInternalType.DATA,
+              data: AsyncActionField(error: e))));
+    }
+  }
+}
+
+streamMiddleware<S extends AppStateI>(
+    Store<S> store, Dispatch next, Action action) async {
+  if (action.isProcessed || action.stream == null) {
+    next(action);
+  } else {
+    final sub = action.stream.listen((event) {
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(loading: false, data: event, error: null),
+        type: ActionInternalType.DATA,
+      )));
+    }, onError: (e) {
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(loading: false, error: e),
+        type: ActionInternalType.DATA,
+      )));
+    }, onDone: () {
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(loading: false, error: null, completed: true),
+        type: ActionInternalType.DATA,
+      )));
+    });
+    store.dispatch(action.copyWith(
+        internal: ActionInternal(
+            processed: true,
+            type: ActionInternalType.DATA,
+            data: StreamField(internalSubscription: sub, loading: true))));
+  }
+}
+
+enum ResetToDefaultType { FORCE, IF_NOT_USED_BY_OTHER_SELECTORS }
 
 class UnSubscribeOptions {
   final bool resetToDefault;

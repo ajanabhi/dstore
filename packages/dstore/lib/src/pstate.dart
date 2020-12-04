@@ -1,6 +1,9 @@
+import 'dart:async';
+
+import 'package:meta/meta.dart';
+
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
-import 'package:meta/meta.dart';
 
 typedef ReducerFn<S> = S Function(S state, Action action);
 
@@ -15,6 +18,37 @@ class AsyncActionField {
   // factory AsyncActionField.fromJson(Map<String, dynamic> json) =>
   //     AsyncActionField(loading: json["loading"] as bool, error: json["error"]);
   // Map<String, dynamic> toJson() => {"loading": loading, error: error};
+}
+
+class StreamField<D> {
+  final StreamSubscription internalSubscription;
+  final D data;
+  final dynamic error;
+  final bool loading;
+  final bool completed;
+
+  StreamField(
+      {this.loading = false,
+      this.completed = false,
+      this.internalSubscription,
+      this.data,
+      this.error});
+
+  StreamField<D> copyWith({
+    StreamSubscription internalSubscription,
+    D data,
+    dynamic error,
+    bool loading,
+    bool completed,
+  }) {
+    return StreamField<D>(
+      internalSubscription: internalSubscription ?? this.internalSubscription,
+      data: data ?? this.data,
+      error: error ?? this.error,
+      loading: loading ?? this.loading,
+      completed: completed ?? this.completed,
+    );
+  }
 }
 
 abstract class PStateModel<M> {

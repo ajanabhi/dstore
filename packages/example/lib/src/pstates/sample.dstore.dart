@@ -150,4 +150,4 @@ final SampleMeta = PStateMeta<Sample>(
           }
       }
     },
-    ds: Sample(count: 0, s: 0, name: User(), todos: GetTodos()));
+    ds: () => Sample(count: 0, s: 0, name: User(), todos: GetTodos()));

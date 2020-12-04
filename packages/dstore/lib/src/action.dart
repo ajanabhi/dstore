@@ -10,11 +10,13 @@ class Action {
   final HttpPayload http;
   final dynamic extra;
   final ActionInternal internal;
+  final Stream stream;
 
   const Action(
       {@required this.name,
       @required this.group,
       this.isAsync = false,
+      this.stream,
       this.payload,
       this.extra,
       this.http,
@@ -25,6 +27,7 @@ class Action {
       String group,
       dynamic payload,
       dynamic extra,
+      Stream stream,
       HttpPayload http,
       ActionInternal internal}) {
     return Action(
@@ -33,6 +36,7 @@ class Action {
         payload: payload ?? this.payload,
         http: http ?? this.http,
         extra: extra ?? this.extra,
+        stream: stream ?? this.stream,
         internal: internal ?? this.internal);
   }
 

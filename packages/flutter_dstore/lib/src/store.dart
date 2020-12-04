@@ -77,8 +77,8 @@ class _SelectorBuilderState extends State<SelectorBuilder> {
 
   @override
   void dispose() {
-    super.dispose();
     _unSubscribe(widget.options);
+    super.dispose();
   }
 
   @override
