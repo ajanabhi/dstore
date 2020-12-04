@@ -15,30 +15,41 @@ class Sample implements PStateModel {
   final int s;
   final User name;
   final GetTodos todos;
+  final AsyncActionField fint;
 
   Sample(
       {@required this.count,
       @required this.s,
       @required this.name,
-      @required this.todos});
+      @required this.todos,
+      @required this.fint});
 
-  Sample copyWith({int count, int s, User name, GetTodos todos}) => Sample(
-      count: count ?? this.count,
-      s: s ?? this.s,
-      name: name ?? this.name,
-      todos: todos ?? this.todos);
+  Sample copyWith(
+          {int count,
+          int s,
+          User name,
+          GetTodos todos,
+          AsyncActionField fint}) =>
+      Sample(
+          count: count ?? this.count,
+          s: s ?? this.s,
+          name: name ?? this.name,
+          todos: todos ?? this.todos,
+          fint: fint ?? this.fint);
 
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       count: map["count"] ?? this.count,
       s: map["s"] ?? this.s,
       name: map["name"] ?? this.name,
-      todos: map["todos"] ?? this.todos);
+      todos: map["todos"] ?? this.todos,
+      fint: map["fint"] ?? this.fint);
 
   Map<String, dynamic> toMap() => {
         "count": this.count,
         "s": this.s,
         "name": this.name,
-        "todos": this.todos
+        "todos": this.todos,
+        "fint": this.fint
       };
 }
 
@@ -84,6 +95,28 @@ abstract class SampleActions {
         name: "fint",
         group: "/dstore_example/lib/src/pstates/sample.dart",
         isAsync: true);
+  }
+
+  static todos(
+      {bool abortable = false,
+      bool offline = false,
+      Map<String, dynamic> headers,
+      Null optimisticResponse}) {
+    return Action(
+        name: "todos",
+        group: "/dstore_example/lib/src/pstates/sample.dart",
+        http: HttpPayload(
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "",
+            method: "GET",
+            isGraphql: false,
+            inputType: HttpInputType.JSON,
+            responseType: HttpResponseType.JSON,
+            responseDeserializer: getTodosSerializer,
+            errorDeserializer: (err) => err));
   }
 }
 
@@ -150,4 +183,9 @@ final SampleMeta = PStateMeta<Sample>(
           }
       }
     },
-    ds: () => Sample(count: 0, s: 0, name: User(), todos: GetTodos()));
+    ds: () => Sample(
+        count: 0,
+        s: 0,
+        name: User(),
+        todos: GetTodos(),
+        fint: AsyncActionField()));

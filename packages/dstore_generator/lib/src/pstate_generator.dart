@@ -36,30 +36,6 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         type: "AsyncActionField",
         value: "AsyncActionField()",
         param: null)));
-    // fields.forEach((element) {
-    //   //  if(element.name)
-    //   if (element.name == "todos") {
-    //     print("++++++ Todos : ${element.param.runtimeType}");
-    //   }
-    // });
-    // classElement.fields.forEach((element) {
-    //   if (element.name == "todos") {
-    //     print(
-    //         "++++++ Todos2 : ${element.type.runtimeType} meta ${element.type.element.metadata[0].element.runtimeType}");
-    //     final ce = element.type.element.metadata[0].computeConstantValue();
-    //     // print(
-    //     //     "cv :  field ${ce.getField("responseType").toFunctionValue()} ${ce.getField("responseType").getField("JSON")} ");
-    //     // print(
-    //     //     "dr : ${ce.getField("deserializeResponseFn").toFunctionValue().name}");
-    //     final v = HttpResponseType.values.singleWhere((v) =>
-    //         ce.getField("responseType").getField(v.toString().split('.')[1]) !=
-    //         null);
-    //     print("CV value :$v");
-    //     final InterfaceType t = element.type;
-    //     print(
-    //         "supeclass ${t.allSupertypes} ${isSubTypeof(element.type, "HttpField")} ");
-    //   }
-    // });
     final syncReducerFunctionStr =
         _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
     final asyncReducerFubctionStr =
@@ -75,12 +51,12 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         aReducer: ${asyncReducerFubctionStr},
         ds: () => ${defaultState});
     """;
-    // final httpFields = _getHttpFields(classElement.fields);
+    final httpFields = _getHttpFields(classElement.fields);
     final actions = _generateActionsCreators(
         methods: visitor.methods,
         modelName: modelName,
         group: groupName,
-        httpFields: []);
+        httpFields: httpFields);
 
     final result = """
        // class Name : ${element.name}
@@ -150,8 +126,8 @@ String _generateActionsCreators({
     payloadFields.add("offline: offline");
     params.add("Map<String,dynamic> headers");
     payloadFields.add("headers:headers");
-    params.add("${hf.responseType} optimisticReposne");
-    payloadFields.add("optimistic:optiistic");
+    params.add("${hf.responseType} optimisticResponse");
+    payloadFields.add("optimisticResponse:optimisticResponse");
     payloadFields.add("""url:"${hf.url}" """);
     payloadFields.add("""method: "${hf.method}" """);
     payloadFields.add("isGraphql:${hf.isGraphql}");
@@ -162,7 +138,7 @@ String _generateActionsCreators({
 
     return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",group:"${group}",http:HttpPayload(${payloadFields.join(", ")}))
+        return Action(name:"${hf.name}",group:"${group}",http:HttpPayload(${payloadFields.join(", ")}));
       }
     """;
   }).join("\n");
@@ -178,24 +154,26 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
   final result = <_HttpFieldInfo>[];
   fields.forEach((f) {
     final ht = isSubTypeof(f.type, "HttpField");
+    print("ht $ht");
     if (ht != null) {
       if (ht.typeArguments.length != 4) {
         throw Exception("You should specify all 4 generic types of HttpField");
       }
-      String queryParamsType =
-          ht.typeArguments[0].getDisplayString(withNullability: false);
+      String queryParamsType = replaceEndStar(
+          ht.typeArguments[0].getDisplayString(withNullability: true));
+      print("queryParamsType $queryParamsType");
       if (queryParamsType == "Null") {
         queryParamsType = null;
       }
-      String inputType =
-          ht.typeArguments[1].getDisplayString(withNullability: false);
+      String inputType = replaceEndStar(
+          ht.typeArguments[1].getDisplayString(withNullability: true));
       if (inputType == "Null") {
         inputType = null;
       }
-      final responseType =
-          ht.typeArguments[2].getDisplayString(withNullability: false);
-      final errorType =
-          ht.typeArguments[3].getDisplayString(withNullability: false);
+      final responseType = replaceEndStar(
+          ht.typeArguments[2].getDisplayString(withNullability: true));
+      final errorType = replaceEndStar(
+          ht.typeArguments[3].getDisplayString(withNullability: true));
       // f.type.element.metadata
       if (f.type.element.metadata.isEmpty) {
         throw Exception("You should annonate type with HttpRequest annonation");
@@ -205,7 +183,7 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       final method = req.getField("method").toStringValue();
       HttpResponseType responseTypeEnum = null;
       final responseTypeField = req.getField("responseType");
-      if (responseTypeField != null) {
+      if (!responseTypeField.isNull) {
         responseTypeEnum = HttpResponseType.values.singleWhere((v) =>
             responseTypeField.getField(v.toString().split('.')[1]) != null);
       } else {
@@ -217,7 +195,7 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       }
       HttpInputType inputTypeEnum = null;
       final inputTypeField = req.getField("inputType");
-      if (inputTypeField != null) {
+      if (!inputTypeField.isNull) {
         inputTypeEnum = HttpInputType.values.singleWhere(
             (v) => inputTypeField.getField(v.toString().split('.')[1]) != null);
       } else {
@@ -229,12 +207,12 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       }
       String responseDeserializer = "(resp) => resp";
       final responseDeserializerField = req.getField("responseDeserializer");
-      if (responseDeserializerField != null) {
+      if (!responseDeserializerField.isNull) {
         responseDeserializer = responseDeserializerField.toFunctionValue().name;
       }
       String errorDeserializer = "(err) => err";
       final errorDeserializerField = req.getField("errorDeserializer");
-      if (errorDeserializerField != null) {
+      if (!errorDeserializerField.isNull) {
         errorDeserializer = errorDeserializerField.toFunctionValue().name;
       }
       final isGraphql = req.getField("isGraphql")?.toBoolValue() ?? false;

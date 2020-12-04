@@ -71,3 +71,11 @@ InterfaceType isSubTypeof(DartType sourceType, String superType) {
   }
   return result;
 }
+
+String replaceEndStar(String input) {
+  var result = input;
+  if (input.endsWith("*")) {
+    result = input.substring(0, input.length - 1);
+  }
+  return result;
+}

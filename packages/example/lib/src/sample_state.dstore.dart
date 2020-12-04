@@ -12,7 +12,6 @@ mixin _$AppState {
   AppState copyWithMap(Map<String, dynamic> map) =>
       AppState(sample: map["sample"] ?? this.sample);
   Map<String, PStateModel> toMap() => {"sample": this.sample};
-  List<String> getFields() => const ["sample"];
   static Map<String, PStateMeta> createMeta({@required PStateMeta sample}) {
     return {"sample": sample};
   }
