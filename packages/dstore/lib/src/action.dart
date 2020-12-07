@@ -6,15 +6,15 @@ class Action {
   final String name;
   final String group;
   final bool isAsync;
-  final Map<String, dynamic> payload;
-  final HttpPayload http;
-  final dynamic extra;
-  final ActionInternal internal;
-  final Stream stream;
+  final Map<String, dynamic>? payload;
+  final HttpPayload? http;
+  final dynamic? extra;
+  final ActionInternal? internal;
+  final Stream? stream;
 
   const Action(
-      {@required this.name,
-      @required this.group,
+      {required this.name,
+      required this.group,
       this.isAsync = false,
       this.stream,
       this.payload,
@@ -23,13 +23,13 @@ class Action {
       this.internal});
 
   Action copyWith(
-      {String name,
-      String group,
-      dynamic payload,
-      dynamic extra,
-      Stream stream,
-      HttpPayload http,
-      ActionInternal internal}) {
+      {String? name,
+      String? group,
+      dynamic? payload,
+      dynamic? extra,
+      Stream? stream,
+      HttpPayload? http,
+      ActionInternal? internal}) {
     return Action(
         name: name ?? this.name,
         group: group ?? this.group,
@@ -40,7 +40,7 @@ class Action {
         internal: internal ?? this.internal);
   }
 
-  bool get isProcessed => this.internal != null && this.internal.processed;
+  bool get isProcessed => internal?.processed ?? false;
 }
 
 @immutable
@@ -50,10 +50,10 @@ class ActionInternal {
   final dynamic data;
 
   ActionInternal(
-      {this.processed = false, @required this.data, @required this.type});
+      {this.processed = false, required this.data, required this.type});
 
   ActionInternal copyWith(
-      {bool processed, dynamic data, ActionInternalType type}) {
+      {bool? processed, dynamic data, ActionInternalType? type}) {
     return ActionInternal(
         processed: processed ?? this.processed,
         type: type ?? this.type,

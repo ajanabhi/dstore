@@ -10,13 +10,11 @@ import 'package:source_gen/source_gen.dart';
 
 class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
   @override
-  generateForAnnotatedElement(
+  String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (!(element is ClassElement)) {
       throw Exception("Selectors should be applied on class only");
     }
-    element = element as ClassElement;
-
     final className = element.name;
 
     if (!className.startsWith("_")) {
@@ -43,7 +41,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
   SelectorsVisitor(this.modelName);
 
   @override
-  visitMethodDeclaration(MethodDeclaration node) {
+  dynamic visitMethodDeclaration(MethodDeclaration node) {
     final fields = convertParamsToFields(node.parameters);
     if (fields.isEmpty || fields.length > 1) {
       throw Exception(
@@ -56,7 +54,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
     }
     final rType = node.returnType.toString();
     final sType = field.type;
-    final bvs = SelectorBodyVisitor(field.param.identifier);
+    final bvs = SelectorBodyVisitor(field.param!.identifier);
     node.body.visitChildren(bvs);
     print("%%%%% deps : ${bvs.depsList}");
     final depsMap = _convertDepsListToDeps(bvs.depsList)
@@ -98,7 +96,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
 
   SelectorBodyVisitor(this.identifier);
   List<String> getListOfPropAccess(PropertyAccess node) {
-    List<String> result = [];
+    final result = <String>[];
     final prop = node.propertyName.toString();
     result.add(prop);
     final target = node.target;
@@ -116,7 +114,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
   }
 
   @override
-  visitPropertyAccess(PropertyAccess node) {
+  dynamic visitPropertyAccess(PropertyAccess node) {
     print("***&&& propsAccess  ${node}");
     final list = getListOfPropAccess(node);
     final sa = node.toString().split(".").toList();
@@ -129,7 +127,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
   }
 
   @override
-  visitPrefixedIdentifier(PrefixedIdentifier node) {
+  dynamic visitPrefixedIdentifier(PrefixedIdentifier node) {
     print(
         "**##### IdenAccess  ${node} id:  ${node.identifier} prefix : ${node.prefix} mid :${identifier.toString()}");
     if (node.prefix.toString() == identifier.toString()) {

@@ -25,7 +25,7 @@ class _Sample {
   User name = User();
   GetTodos todos = GetTodos();
 
-  increment() {
+  void increment() {
     this.count = 6;
     // [].forEach((element) {
     //   print("ForEach");
@@ -42,13 +42,12 @@ class _Sample {
     // }
   }
 
-  decrement() => this.count = 3;
+  void decrement() => this.count = 3;
 
-  increment2(@required int x, y, {int sn = 4, y1, dynamic y2}) =>
-      this.count = x;
-  increment3(@required int x, y, [int si = 4, s2 = 3]) => this.count = x;
+  void increment2(int x, y, {int sn = 4, y1, dynamic y2}) => this.count = x;
+  void increment3(int x, y, [int si = 4, s2 = 3]) => this.count = x;
 
-  fint() async {
+  void fint() async {
     await Future.delayed(const Duration(seconds: 1));
     this.count = 5;
   }

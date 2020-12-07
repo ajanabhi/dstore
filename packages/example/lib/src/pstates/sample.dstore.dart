@@ -18,11 +18,11 @@ class Sample implements PStateModel {
   final AsyncActionField fint;
 
   Sample(
-      {@required this.count,
-      @required this.s,
-      @required this.name,
-      @required this.todos,
-      @required this.fint});
+      {required this.count,
+      required this.s,
+      required this.name,
+      required this.todos,
+      required this.fint});
 
   Sample copyWith(
           {int count,
@@ -69,8 +69,8 @@ abstract class SampleActions {
   }
 
   static increment2(
-      {@required int x,
-      @required dynamic y,
+      {required int x,
+      required dynamic y,
       int sn = 4,
       dynamic y1,
       dynamic y2}) {
@@ -82,7 +82,7 @@ abstract class SampleActions {
   }
 
   static increment3(
-      {@required int x, @required dynamic y, int si = 4, dynamic s2 = 3}) {
+      {required int x, required dynamic y, int si = 4, dynamic s2 = 3}) {
     return Action(
         name: "increment3",
         group: "/dstore_example/lib/src/pstates/sample.dart",

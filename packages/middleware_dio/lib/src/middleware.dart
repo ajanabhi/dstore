@@ -12,9 +12,9 @@ class _DioAbort extends AbortController {
 }
 
 Options _getOptions(
-    HttpPayload payload, DioMiddlewareOptions middlewareOptions) {
+    HttpPayload payload, DioMiddlewareOptions? middlewareOptions) {
   final url = payload.url;
-  GlobalHttpOptions go = null;
+  GlobalHttpOptions? go;
   if (middlewareOptions != null) {
     for (final me in middlewareOptions.urlOptions.entries) {
       if (url.startsWith(me.key)) {
@@ -22,7 +22,7 @@ Options _getOptions(
       }
     }
   }
-  String contentType;
+  String? contentType;
   switch (payload.inputType) {
     case HttpInputType.JSON:
       contentType = Headers.jsonContentType;
@@ -32,6 +32,9 @@ Options _getOptions(
       break;
     case HttpInputType.TEXT:
       contentType = "text/plain;charset=UTF-8";
+      break;
+    default:
+      contentType = null;
   }
   ResponseType responseType;
   switch (payload.responseType) {
@@ -49,10 +52,10 @@ Options _getOptions(
       break;
   }
   final Map<String, dynamic> headers = {};
-  if (go.headers != null) {
-    headers.addAll(go.headers);
+  if (go?.headers != null) {
+    headers.addAll(go!.headers);
   }
-  headers.addAll(payload.headers);
+  headers.addAll(payload.headers ?? {});
   return Options(
       contentType: contentType,
       headers: headers,
@@ -61,17 +64,19 @@ Options _getOptions(
       receiveTimeout: payload.receiveTieout);
 }
 
-_processHttpAction(DioMiddlewareOptions middlewareOptions, Store store,
+_processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     Action action, Dio dio) async {
-  final payload = action.http;
-  CancelToken cancelToken = null;
+  final payload = action.http!;
+  CancelToken? cancelToken;
   if (payload.abortable) {
     cancelToken = CancelToken();
   }
   final options = _getOptions(payload, middlewareOptions);
   store.dispatch(action.copyWith(
-      internal:
-          ActionInternal(processed: true, data: HttpField(loading: true))));
+      internal: ActionInternal(
+          processed: true,
+          type: ActionInternalType.DATA,
+          data: HttpField(loading: true))));
   try {
     final response = await dio.request(payload.url,
         queryParameters: payload.queryParams,
@@ -83,11 +88,11 @@ _processHttpAction(DioMiddlewareOptions middlewareOptions, Store store,
 class DioMiddlewareOptions {
   final Map<String, GlobalHttpOptions Function()> urlOptions;
 
-  DioMiddlewareOptions({@required this.urlOptions});
+  DioMiddlewareOptions({required this.urlOptions});
 }
 
 Middleware<S> createDioMiddleware<S extends AppStateI>(
-    [DioMiddlewareOptions options]) {
+    [DioMiddlewareOptions? options]) {
   final dio = Dio();
   return (Store<S> store, Dispatch next, Action action) {
     if (action.isProcessed || action.http == null) {

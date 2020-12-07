@@ -19,12 +19,12 @@ class Field {
   String type;
   String value;
   bool isOptional;
-  FormalParameter param;
+  FormalParameter? param;
   Field(
-      {@required this.name,
-      @required this.type,
-      @required this.value,
-      @required this.param,
+      {required this.name,
+      required this.type,
+      required this.value,
+      this.param,
       this.isOptional = false}) {}
 
   @override
@@ -36,8 +36,8 @@ class Field {
 List<Field> convertParamsToFields(FormalParameterList parameters) {
   return parameters.parameters.map((param) {
     final name = param.identifier.toString();
-    String type = null;
-    String value = null;
+    late String type;
+    String? value;
     if (param is SimpleFormalParameter) {
       type = param.type?.toString() ?? "dynamic";
     }
@@ -49,14 +49,14 @@ List<Field> convertParamsToFields(FormalParameterList parameters) {
     return Field(
         name: name,
         type: type,
-        value: value,
+        value: value ?? "NO_DEFAULT_VALUE",
         isOptional: param.isOptional,
         param: param);
   }).toList();
 }
 
-InterfaceType isSubTypeof(DartType sourceType, String superType) {
-  InterfaceType result = null;
+InterfaceType? isSubTypeof(DartType sourceType, String superType) {
+  InterfaceType? result;
   if (sourceType is InterfaceType) {
     for (final t in sourceType.allSupertypes) {
       var name = t.getDisplayString(withNullability: false);

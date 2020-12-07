@@ -5,12 +5,12 @@ import 'package:source_gen/source_gen.dart';
 
 class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
   @override
-  generateForAnnotatedElement(
+  String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (!(element is ClassElement)) {
       throw Exception("AppStateAnnotation can only be used on classes");
     }
-    final classElement = element as ClassElement;
+    final classElement = element;
     final name = classElement.name;
     final fields = classElement.fields;
     print("fields2 ${fields.map((e) => e.type.element.displayName)}");
@@ -28,7 +28,7 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
         fields.map((f) => "PStateModel get ${f.name};").join("\n");
 
     final createMeta = """
-      static Map<String,PStateMeta> createMeta({${fields.map((f) => "@required PStateMeta ${f.name}").join(", ")}}) {
+      static Map<String,PStateMeta> createMeta({${fields.map((f) => "required PStateMeta ${f.name}").join(", ")}}) {
           return {${fields.map((f) => """ "${f.name}" : ${f.name} """).join(", ")}};
        }
     """;

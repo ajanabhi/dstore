@@ -1,13 +1,11 @@
-import 'package:meta/meta.dart';
-
 enum HttpErrorType { NoNetWork, ResponseError, Aborted, Timeout }
 
 class HttpError<RE> {
   final HttpErrorType type;
-  final String message;
-  final RE error;
+  final String? message;
+  final RE? error;
 
-  HttpError({@required this.type, this.message, this.error});
+  HttpError({required this.type, this.message, this.error});
 }
 
 enum HttpResponseType { JSON, STRING, BYTES, STREAM }
@@ -17,19 +15,19 @@ enum HttpInputType { JSON, FORM, TEXT }
 class HttpRequest<R, E> {
   final String method;
   final String url;
-  final R Function(dynamic) responseDeserializer;
-  final E Function(dynamic) errorDeserializer;
-  final HttpResponseType responseType;
-  final HttpInputType inputType;
+  final R Function(dynamic)? responseDeserializer;
+  final E Function(dynamic)? errorDeserializer;
+  final HttpResponseType? responseType;
+  final HttpInputType? inputType;
   final bool isGraphql;
 
   const HttpRequest(
-      {@required this.method,
-      @required this.url,
+      {required this.method,
+      required this.url,
       this.responseDeserializer,
       this.responseType,
       this.errorDeserializer,
-      this.isGraphql,
+      this.isGraphql = false,
       this.inputType});
 }
 
@@ -62,10 +60,10 @@ class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
 
 class HttpField<QP, I, R, E> {
   final bool loading;
-  final R data;
-  final HttpError error;
+  final R? data;
+  final HttpError? error;
   final bool completed;
-  final AbortController abortController;
+  final AbortController? abortController;
   const HttpField(
       {this.loading = false,
       this.data,
@@ -74,11 +72,11 @@ class HttpField<QP, I, R, E> {
       this.abortController});
 
   HttpField<QP, I, R, E> copyWith({
-    bool loading,
-    R data,
-    HttpError error,
-    bool completed,
-    AbortController abortController,
+    bool? loading,
+    R? data,
+    HttpError? error,
+    bool? completed,
+    AbortController? abortController,
   }) {
     return HttpField<QP, I, R, E>(
         loading: loading ?? this.loading,
@@ -98,25 +96,25 @@ class HttpPayload<R, E> {
   final dynamic data;
   final String method;
   final HttpResponseType responseType;
-  final R optimisticResponse;
-  final HttpInputType inputType;
+  final R? optimisticResponse;
+  final HttpInputType? inputType;
   final R Function(dynamic) responseDeserializer;
   final E Function(dynamic) errorDeserializer;
-  final Map<String, dynamic> headers;
-  final Map<String, dynamic> queryParams;
-  final int sendTimeout;
-  final int receiveTieout;
+  final Map<String, dynamic>? headers;
+  final Map<String, dynamic>? queryParams;
+  final int? sendTimeout;
+  final int? receiveTieout;
   final bool offline;
   final bool abortable;
   final bool isGraphql;
 
   HttpPayload(
-      {@required this.url,
-      @required this.method,
+      {required this.url,
+      required this.method,
       this.data,
-      @required this.responseType,
-      @required this.responseDeserializer,
-      @required this.errorDeserializer,
+      required this.responseType,
+      required this.responseDeserializer,
+      required this.errorDeserializer,
       this.inputType,
       this.headers,
       this.receiveTieout,
@@ -131,5 +129,5 @@ class HttpPayload<R, E> {
 class GlobalHttpOptions {
   final Map<String, dynamic> headers;
 
-  GlobalHttpOptions({this.headers});
+  GlobalHttpOptions({this.headers = const {}});
 }

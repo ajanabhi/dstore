@@ -10,9 +10,9 @@ part of 'sample_state.dart';
 mixin _$AppState {
   PStateModel get sample;
   AppState copyWithMap(Map<String, dynamic> map) =>
-      AppState(sample: map["sample"] ?? this.sample);
+      AppState()..sample = map["sample"] ?? this.sample;
   Map<String, PStateModel> toMap() => {"sample": this.sample};
-  static Map<String, PStateMeta> createMeta({@required PStateMeta sample}) {
+  static Map<String, PStateMeta> createMeta({required PStateMeta sample}) {
     return {"sample": sample};
   }
 }

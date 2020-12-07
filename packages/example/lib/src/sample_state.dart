@@ -5,7 +5,5 @@ part 'sample_state.dstore.dart';
 
 @AppStateAnnotation()
 class AppState with _$AppState implements AppStateI {
-  final Sample sample;
-
-  AppState({this.sample});
+  late final Sample sample;
 }

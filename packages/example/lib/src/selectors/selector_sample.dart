@@ -5,12 +5,12 @@ import 'package:dstore_example/src/selectors/types2.dart';
 part 'selector_sample.dstore.dart';
 
 class Hello {
-  String bollo;
+  String bollo = "";
 }
 
 class AppState {
-  Sample sample;
-  Hello hello;
+  Sample? sample;
+  Hello hello = Hello();
 }
 
 @Selectors()

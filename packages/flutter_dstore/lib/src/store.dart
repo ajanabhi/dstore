@@ -5,12 +5,10 @@ class StoreProvider<S extends dstore.AppStateI> extends InheritedWidget {
   final dstore.Store<S> _store;
 
   const StoreProvider({
-    Key key,
-    @required dstore.Store<S> store,
-    @required Widget child,
-  })  : assert(store != null),
-        assert(child != null),
-        _store = store,
+    Key? key,
+    required dstore.Store<S> store,
+    required Widget child,
+  })   : _store = store,
         super(key: key, child: child);
 
   @override
@@ -19,7 +17,7 @@ class StoreProvider<S extends dstore.AppStateI> extends InheritedWidget {
   }
 
   static dstore.Store<S> of<S extends dstore.AppStateI>(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<StoreProvider<S>>()._store;
+      context.dependOnInheritedWidgetOfExactType<StoreProvider<S>>()!._store;
 }
 
 extension DStoreContextExtensionMethods on BuildContext {
@@ -32,11 +30,11 @@ typedef SelectorBuilderFn<I> = Widget Function(BuildContext context, I state);
 
 class SelectorBuilder<S, I> extends StatefulWidget {
   final dstore.Selector<S, I> selector;
-  final dstore.UnSubscribeOptions options;
+  final dstore.UnSubscribeOptions? options;
   final SelectorBuilderFn<I> builder;
 
   const SelectorBuilder(
-      {Key key, @required this.selector, @required this.builder, this.options})
+      {Key? key, required this.selector, required this.builder, this.options})
       : super(key: key);
 
   @override
@@ -44,7 +42,7 @@ class SelectorBuilder<S, I> extends StatefulWidget {
 }
 
 class _SelectorBuilderState extends State<SelectorBuilder> {
-  dstore.SelectorUnSubscribeFn _unsubFn;
+  late dstore.SelectorUnSubscribeFn _unsubFn;
   dynamic _state;
   dynamic _lsitener;
   @override
@@ -71,7 +69,7 @@ class _SelectorBuilderState extends State<SelectorBuilder> {
     }
   }
 
-  _unSubscribe(dstore.UnSubscribeOptions options) {
+  void _unSubscribe(dstore.UnSubscribeOptions? options) {
     _unsubFn(options);
   }
 

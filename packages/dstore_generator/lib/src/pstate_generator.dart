@@ -13,12 +13,12 @@ import 'package:dstore_generator/src/utils.dart';
 
 class PStateGenerator extends GeneratorForAnnotation<PState> {
   @override
-  generateForAnnotatedElement(
+  String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     if (!(element is ClassElement)) {
       throw Exception("Reducer should be applied on class only");
     }
-    final classElement = element as ClassElement;
+    final classElement = element;
     print(
         "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
     final className = element.name;
@@ -79,22 +79,22 @@ const PAYLOAD_VARIBALE = "_DstoreActionPayload";
 const DSTORE_PREFIX = "_DStore_";
 
 String _generateActionsCreators({
-  @required List<ReducerMethod> methods,
+  required List<ReducerMethod> methods,
   List<_HttpFieldInfo> httpFields = const [],
-  @required String modelName,
-  @required String group,
+  required String modelName,
+  required String group,
 }) {
   final methodActions = methods.map((m) {
     final params = m.params.map((p) {
       if (!p.isOptional) {
-        return "@required ${p.type} ${p.name}";
+        return "required ${p.type} ${p.name}";
       } else {
         final defaultValue = p.value != null ? "= ${p.value}" : "";
         return "${p.type} ${p.name} ${defaultValue} ";
       }
     }).join(", ");
 
-    var payload = m.params.length > 0
+    var payload = m.params.isNotEmpty
         ? "{ " +
             m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
             "}"
@@ -112,12 +112,12 @@ String _generateActionsCreators({
     final params = <String>[];
     final payloadFields = <String>[];
     if (hf.queryParamsType != null) {
-      params.add("@required ${hf.queryParamsType} queryParams");
+      params.add("required ${hf.queryParamsType} queryParams");
       payloadFields.add(
-          "queryParams: ${hf.queryParamsType.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
+          "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
     }
     if (hf.inputType != null) {
-      params.add("@required ${hf.inputType} input");
+      params.add("required ${hf.inputType} input");
       payloadFields.add("input:input");
     }
     params.add("bool abortable = false");
@@ -159,13 +159,13 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       if (ht.typeArguments.length != 4) {
         throw Exception("You should specify all 4 generic types of HttpField");
       }
-      String queryParamsType = replaceEndStar(
+      String? queryParamsType = replaceEndStar(
           ht.typeArguments[0].getDisplayString(withNullability: true));
       print("queryParamsType $queryParamsType");
       if (queryParamsType == "Null") {
         queryParamsType = null;
       }
-      String inputType = replaceEndStar(
+      String? inputType = replaceEndStar(
           ht.typeArguments[1].getDisplayString(withNullability: true));
       if (inputType == "Null") {
         inputType = null;
@@ -181,7 +181,7 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       final req = f.type.element.metadata[0].computeConstantValue();
       final url = req.getField("url").toStringValue();
       final method = req.getField("method").toStringValue();
-      HttpResponseType responseTypeEnum = null;
+      late HttpResponseType responseTypeEnum;
       final responseTypeField = req.getField("responseType");
       if (!responseTypeField.isNull) {
         responseTypeEnum = HttpResponseType.values.singleWhere((v) =>
@@ -193,7 +193,7 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
           responseTypeEnum = HttpResponseType.JSON;
         }
       }
-      HttpInputType inputTypeEnum = null;
+      HttpInputType inputTypeEnum;
       final inputTypeField = req.getField("inputType");
       if (!inputTypeField.isNull) {
         inputTypeEnum = HttpInputType.values.singleWhere(
@@ -205,12 +205,12 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
           inputTypeEnum = HttpInputType.JSON;
         }
       }
-      String responseDeserializer = "(resp) => resp";
+      var responseDeserializer = "(resp) => resp";
       final responseDeserializerField = req.getField("responseDeserializer");
       if (!responseDeserializerField.isNull) {
         responseDeserializer = responseDeserializerField.toFunctionValue().name;
       }
-      String errorDeserializer = "(err) => err";
+      var errorDeserializer = "(err) => err";
       final errorDeserializerField = req.getField("errorDeserializer");
       if (!errorDeserializerField.isNull) {
         errorDeserializer = errorDeserializerField.toFunctionValue().name;
@@ -237,28 +237,28 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
 class _HttpFieldInfo {
   final String name;
   final String url;
-  final String inputType;
+  final String? inputType;
   final HttpInputType inputTypeEnum;
   final HttpResponseType responseTypeEnum;
   final String responseDeserializer;
   final String errorDeserializer;
   final String method;
-  final String queryParamsType;
+  final String? queryParamsType;
   final bool isGraphql;
   final String responseType;
 
   _HttpFieldInfo({
-    this.name,
-    this.url,
-    this.inputType,
-    this.inputTypeEnum,
-    this.responseType,
-    this.responseTypeEnum,
-    this.responseDeserializer,
-    this.errorDeserializer,
-    this.method,
-    this.queryParamsType,
-    this.isGraphql,
+    required this.name,
+    required this.url,
+    required this.inputType,
+    required this.inputTypeEnum,
+    required this.responseType,
+    required this.responseTypeEnum,
+    required this.responseDeserializer,
+    required this.errorDeserializer,
+    required this.method,
+    required this.queryParamsType,
+    required this.isGraphql,
   });
 }
 
@@ -267,7 +267,7 @@ class ReducerAstVisitor extends SimpleAstVisitor {
   List<ReducerMethod> methods = [];
 
   @override
-  visitMethodDeclaration(MethodDeclaration node) {
+  dynamic visitMethodDeclaration(MethodDeclaration node) {
     final body = node.body;
     if (body is EmptyFunctionBody) {
       throw Exception("method should contain mutation to fields");
@@ -336,7 +336,7 @@ class ReducerAstVisitor extends SimpleAstVisitor {
   }
 
   @override
-  visitFieldDeclaration(FieldDeclaration node) {
+  dynamic visitFieldDeclaration(FieldDeclaration node) {
     final type = node.fields.type;
     if (type == null) {
       throw Exception("Should provide type annotation for fields");
@@ -363,10 +363,10 @@ class ReducerMethod {
   final bool isAsync;
 
   ReducerMethod(
-      {@required this.isAsync,
-      @required this.name,
-      @required this.params,
-      @required this.body});
+      {required this.isAsync,
+      required this.name,
+      required this.params,
+      required this.body});
 }
 
 enum MethodStatementKind {
@@ -384,7 +384,7 @@ abstract class StatementResult {
 class GeneralStatementResult extends StatementResult {
   Statement statment;
   GeneralStatementResult({
-    @required this.statment,
+    required this.statment,
   });
   @override
   MethodStatementKind get kind => MethodStatementKind.GeneralStatement;
@@ -394,7 +394,7 @@ class MutationStatementResult extends StatementResult {
   final String key;
   final String code;
 
-  MutationStatementResult({@required this.key, @required this.code});
+  MutationStatementResult({required this.key, required this.code});
   @override
   MethodStatementKind get kind => MethodStatementKind.MutationStatement;
 }
@@ -404,7 +404,7 @@ class ForEachStatementResult extends StatementResult {
   final List<StatementResult> statementResults;
 
   ForEachStatementResult(
-      {@required this.statement, @required this.statementResults});
+      {required this.statement, required this.statementResults});
 
   @override
   MethodStatementKind get kind => MethodStatementKind.ForeachStatement;
@@ -414,8 +414,7 @@ class IfStatementResult extends StatementResult {
   final IfStatement statement;
   final List<StatementResult> statementResults;
 
-  IfStatementResult(
-      {@required this.statement, @required this.statementResults});
+  IfStatementResult({required this.statement, required this.statementResults});
   @override
   MethodStatementKind get kind => MethodStatementKind.IfStatement;
 }
@@ -426,9 +425,9 @@ class IfElseStatementResult extends StatementResult {
   final List<StatementResult> elseStatementResults;
 
   IfElseStatementResult(
-      {@required this.statement,
-      @required this.ifStatementResults,
-      @required this.elseStatementResults});
+      {required this.statement,
+      required this.ifStatementResults,
+      required this.elseStatementResults});
   @override
   MethodStatementKind get kind => MethodStatementKind.IfElseStatement;
 }
@@ -447,7 +446,7 @@ String _convertMethodParamsToString(List<Field> params) {
 
 String _createPStateModel(List<Field> fields, String name) {
   final mFields = fields.map((f) => "final ${f.type} ${f.name};").join("\n");
-  final cFields = fields.map((f) => "@required this.${f.name}").join(", ");
+  final cFields = fields.map((f) => "required this.${f.name}").join(", ");
   final constructor = "${name}({${cFields}});";
   final copyWithParams = fields.map((f) => "${f.type} ${f.name}").join(", ");
   final copyWithBody =
@@ -495,7 +494,7 @@ class ProcessStatementOptions {
   const ProcessStatementOptions({this.isReturnSupported = false});
 }
 
-bool isMutationStatement(Statement statement) {
+bool isMutationStatement(AstNode statement) {
   var result = false;
   //  print("*** is")
   if (statement is ExpressionStatement) {
@@ -507,7 +506,7 @@ bool isMutationStatement(Statement statement) {
   return result;
 }
 
-bool isForEachStatement(Statement statement) {
+bool isForEachStatement(AstNode statement) {
   var result = false;
   if (statement is ExpressionStatement) {
     final exp = statement.expression;
@@ -519,10 +518,10 @@ bool isForEachStatement(Statement statement) {
 }
 
 ForEachStatementResult processForEachStatement(Statement statement) {
-  List<StatementResult> statementResults = [];
+  var statementResults = <StatementResult>[];
   final exp = statement as ExpressionStatement;
   final mi = exp.expression as MethodInvocation;
-  final fExp = mi.argumentList.arguments[0] as FunctionExpression;
+  final fExp = mi.argumentList.arguments[0] as FunctionExpression?;
   if (fExp == null) {
     throw Exception("You should provide argument to forEach");
   }
@@ -539,7 +538,7 @@ ForEachStatementResult processForEachStatement(Statement statement) {
 IfStatementResult processIfOnlyStatement(
     Statement statement, ProcessStatementOptions options) {
   final thenStatement = (statement as IfStatement).thenStatement;
-  List<StatementResult> statementResults = [];
+  var statementResults = <StatementResult>[];
   if (thenStatement is ExpressionStatement) {
     statementResults = processStatements([thenStatement], options);
   }
@@ -553,15 +552,15 @@ IfStatementResult processIfOnlyStatement(
 IfElseStatementResult processIfElseStatement(
     Statement statement, ProcessStatementOptions options) {
   final thenStatement = (statement as IfStatement).thenStatement;
-  List<StatementResult> ifStatementResults = [];
+  var ifStatementResults = <StatementResult>[];
   if (thenStatement is ExpressionStatement) {
     ifStatementResults = processStatements([thenStatement]);
   }
   if (thenStatement is Block) {
     ifStatementResults = processStatements(thenStatement.statements);
   }
-  List<StatementResult> elseStatementResults = [];
-  final elseStatement = (statement as IfStatement).elseStatement;
+  var elseStatementResults = <StatementResult>[];
+  final elseStatement = statement.elseStatement;
   if (elseStatement is Block) {
     elseStatementResults = processStatements(elseStatement.statements, options);
   } else if (elseStatement is IfStatement &&
@@ -581,7 +580,7 @@ IfElseStatementResult processIfElseStatement(
 List<StatementResult> processStatements(List<AstNode> statements,
     [ProcessStatementOptions options = const ProcessStatementOptions()]) {
   return statements.map((statement) {
-    StatementResult result = null;
+    late StatementResult result;
     if (isMutationStatement(statement)) {
       final exp = ((statement as ExpressionStatement).expression
           as AssignmentExpression);
@@ -590,7 +589,7 @@ List<StatementResult> processStatements(List<AstNode> statements,
           """${DSTORE_PREFIX}${key} ${exp.operator} ${exp.rightHandSide.toString().replaceAll("this.", "${STATE_VARIABLE}.")};""";
       result = MutationStatementResult(key: key, code: code);
     } else if (isForEachStatement(statement)) {
-      result = processForEachStatement(statement);
+      result = processForEachStatement(statement as Statement);
     } else if (statement is IfStatement && statement.elseStatement == null) {
       // ifonly statement
       result = processIfOnlyStatement(statement, options);
@@ -600,7 +599,7 @@ List<StatementResult> processStatements(List<AstNode> statements,
     } else if (statement is ReturnStatement && !options.isReturnSupported) {
       throw Exception("Return statement is not supported use if else");
     } else {
-      result = GeneralStatementResult(statment: statement);
+      result = GeneralStatementResult(statment: statement as Statement);
     }
     return result;
   }).toList();
@@ -644,10 +643,10 @@ String convertIfElseStatementResultToString(
        }""";
   } else if (elseS is IfStatement && elseS.elseStatement == null) {
     else_str =
-        "else ${convertIfStatementResultToString(iesr.elseStatementResults[0], keys)}";
+        "else ${convertIfStatementResultToString(iesr.elseStatementResults[0] as IfStatementResult, keys)}";
   } else if (elseS is IfStatement) {
     else_str =
-        "else ${convertIfElseStatementResultToString(iesr.elseStatementResults[0], keys)}";
+        "else ${convertIfElseStatementResultToString(iesr.elseStatementResults[0] as IfElseStatementResult, keys)}";
   }
 
   return """
@@ -673,7 +672,7 @@ String converForEachStatementResultToString(
 
 List<String> convertStatementResultsToString(
     List<StatementResult> statmentResults, Iterable<String> keys) {
-  List<String> result = [];
+  final result = <String>[];
   statmentResults.forEach((sr) {
     if (sr.kind == MethodStatementKind.MutationStatement) {
       final msr = sr as MutationStatementResult;
@@ -700,10 +699,10 @@ String processMethodStatements(List<Statement> statements) {
   print("statementResults ${statementResults}");
   List<MutationStatementResult> getMutationOnlyStatementResults(
       List<StatementResult> statementResults) {
-    final List<MutationStatementResult> result = [];
+    final result = <MutationStatementResult>[];
     statementResults.forEach((sr) {
       if (sr.kind == MethodStatementKind.MutationStatement) {
-        result.add(sr);
+        result.add(sr as MutationStatementResult);
       } else if (sr.kind == MethodStatementKind.ForeachStatement) {
         final fs = sr as ForEachStatementResult;
         result.addAll(getMutationOnlyStatementResults(fs.statementResults));
@@ -721,7 +720,7 @@ String processMethodStatements(List<Statement> statements) {
   }
 
   final mutationStatements = getMutationOnlyStatementResults(statementResults);
-  if (mutationStatements.length == 0) {
+  if (mutationStatements.isEmpty) {
     throw Exception(
         "There hsould be atleast one assignemtn operation for class fields");
   }
