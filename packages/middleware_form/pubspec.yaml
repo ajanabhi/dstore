@@ -1,0 +1,16 @@
+name: middleware_form
+version: 0.0.1
+description: >-
+  dstore.
+homepage: https://github.com/chandu0101/dstore
+environment:
+  sdk: ">=2.12.0-0 <3.0.0"
+dependencies:
+  dstore:
+    path: ../dstore
+  
+dev_dependencies:
+  pedantic:
+  
+      
+

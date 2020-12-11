@@ -1,3 +1,4 @@
+import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
 import "package:meta/meta.dart";
 
@@ -11,6 +12,7 @@ class Action {
   final dynamic? extra;
   final ActionInternal? internal;
   final Stream? stream;
+  final FormReq? form;
 
   const Action(
       {required this.name,
@@ -20,6 +22,7 @@ class Action {
       this.payload,
       this.extra,
       this.http,
+      this.form,
       this.internal});
 
   Action copyWith(
@@ -29,6 +32,7 @@ class Action {
       dynamic? extra,
       Stream? stream,
       HttpPayload? http,
+      FormReq? form,
       ActionInternal? internal}) {
     return Action(
         name: name ?? this.name,
@@ -36,6 +40,7 @@ class Action {
         payload: payload ?? this.payload,
         http: http ?? this.http,
         extra: extra ?? this.extra,
+        form: form ?? this.form,
         stream: stream ?? this.stream,
         internal: internal ?? this.internal);
   }

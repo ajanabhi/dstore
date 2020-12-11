@@ -445,35 +445,25 @@ String _convertMethodParamsToString(List<Field> params) {
 }
 
 String _createPStateModel(List<Field> fields, String name) {
-  final mFields = fields.map((f) => "final ${f.type} ${f.name};").join("\n");
-  final cFields = fields.map((f) => "required this.${f.name}").join(", ");
-  final constructor = "${name}({${cFields}});";
-  final copyWithParams = fields.map((f) => "${f.type} ${f.name}").join(", ");
-  final copyWithBody =
-      fields.map((f) => "${f.name} : ${f.name} ?? this.${f.name}").join(", ");
-  final copyWith =
-      "${name} copyWith({${copyWithParams}}) => ${name}(${copyWithBody});";
-  final copyWithMapBody = fields
-      .map((f) => "${f.name} : map[\"${f.name}\"] ?? this.${f.name}")
-      .join(", ");
-  final copyWithMap =
-      "${name} copyWithMap(Map<String,dynamic> map) => ${name}(${copyWithMapBody});";
-
-  final toMap =
-      """Map<String,dynamic> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
   final result = """
       
       @immutable
       class ${name} implements PStateModel {
-        ${mFields}
+        ${getFinalFieldsFromFieldsList(fields)}
 
-        ${constructor}
+        ${createConstructorFromFieldsList(name, fields)}
 
-        ${copyWith}
+        ${createCopyWithFromFieldsList(name, fields)}
 
-        ${copyWithMap}
+        ${createCopyWithMapFromFieldsList(name, fields)}
 
-        ${toMap}
+        ${createToMapFromFieldsList(fields)}
+        
+        ${createEqualsFromFieldsList(name, fields)}
+
+        ${createHashcodeFromFieldsList(fields)}
+
+        ${createToMapFromFieldsList(fields)}
       }
    """;
   return result;
@@ -511,7 +501,7 @@ bool isForEachStatement(AstNode statement) {
   if (statement is ExpressionStatement) {
     final exp = statement.expression;
     if (exp is MethodInvocation) {
-      result = exp.methodName == "forEach";
+      result = exp.methodName.toString() == "forEach";
     }
   }
   return result;

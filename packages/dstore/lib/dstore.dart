@@ -5,3 +5,5 @@ export "src/selector.dart";
 export 'src/store.dart';
 export "src/http.dart";
 export 'src/storage.dart';
+export 'src/form.dart';
+export 'src/helper_classes.dart';
