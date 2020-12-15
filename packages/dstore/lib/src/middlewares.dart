@@ -1,4 +1,5 @@
 import 'package:dstore/src/action.dart';
+import 'package:dstore/src/form.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
@@ -70,4 +71,15 @@ dynamic streamMiddleware<S extends AppStateI>(
             type: ActionInternalType.DATA,
             data: StreamField(internalSubscription: sub, loading: true))));
   }
+}
+
+abstract class MiddlewareFormUtils {
+  static getFormOps(FormField ff, Dispatch dispatch) {}
+}
+
+dynamic formMiddleware<S extends AppStateI>(
+    Store<S> store, Dispatch next, Action action) async {
+  if (action.isProcessed || action.form == null) {
+    next(action);
+  } else {}
 }
