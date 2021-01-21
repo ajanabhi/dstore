@@ -43,19 +43,23 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
     print(fields);
     final defaultState =
         "${modelName}(${fields.map((f) => "${f.name}:${f.value}").join(", ")})";
-    final groupName = element.source
-        .fullName; //TODO get fullnamefrom path fn /dstore_example/lib/src/reducers/sample.dart
+    final group = "${element.source.fullName}_${className}".hashCode;
+
     final reducerGroup = """
-       final ${modelName}Meta = PStateMeta<${modelName}>(group:"${groupName}",
-        reducer: ${syncReducerFunctionStr},
-        aReducer: ${asyncReducerFubctionStr},
-        ds: () => ${defaultState});
+       $syncReducerFunctionStr
+       $asyncReducerFubctionStr
+       $modelName ${modelName}_DS() => $defaultState;
+       
+       const ${modelName}Meta = PStateMeta<${modelName}>(group:${group},
+        reducer: ${modelName}_SyncReducer,
+        aReducer: ${modelName}_AsyncReducer,
+        ds: ${modelName}_DS);
     """;
     final httpFields = _getHttpFields(classElement.fields);
     final actions = _generateActionsCreators(
         methods: visitor.methods,
         modelName: modelName,
-        group: groupName,
+        group: group,
         httpFields: httpFields);
 
     final result = """
@@ -82,7 +86,7 @@ String _generateActionsCreators({
   required List<ReducerMethod> methods,
   List<_HttpFieldInfo> httpFields = const [],
   required String modelName,
-  required String group,
+  required int group,
 }) {
   final methodActions = methods.map((m) {
     final params = m.params.map((p) {
@@ -103,8 +107,8 @@ String _generateActionsCreators({
       payload = ", payload: ${payload}";
     }
     return """
-      static ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",group:"${group}" ${payload},isAsync: ${m.isAsync});
+      static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
+         return Action(name:"${m.name}",group:${group} ${payload},isAsync: ${m.isAsync});
       }
     """;
   }).join("\n");
@@ -124,7 +128,7 @@ String _generateActionsCreators({
     payloadFields.add("abortable: abortable");
     params.add("bool offline = false");
     payloadFields.add("offline: offline");
-    params.add("Map<String,dynamic> headers");
+    params.add("Map<String,dynamic>? headers");
     payloadFields.add("headers:headers");
     params.add("${hf.responseType} optimisticResponse");
     payloadFields.add("optimisticResponse:optimisticResponse");
@@ -138,7 +142,7 @@ String _generateActionsCreators({
 
     return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",group:"${group}",http:HttpPayload(${payloadFields.join(", ")}));
+        return Action(name:"${hf.name}",group:${group},http:HttpPayload(${payloadFields.join(", ")}));
       }
     """;
   }).join("\n");
@@ -439,7 +443,7 @@ String _convertMethodParamsToString(List<Field> params) {
           "final ${p.name} = ${PAYLOAD_VARIBALE}[\"${p.name}\"] as ${p.type};")
       .join("\n");
   return """
-      final ${PAYLOAD_VARIBALE} = ${ACTION_VARIABLE}.payload;
+      final ${PAYLOAD_VARIBALE} = ${ACTION_VARIABLE}.payload!;
       ${p}
   """;
 }
@@ -462,8 +466,6 @@ String _createPStateModel(List<Field> fields, String name) {
         ${createEqualsFromFieldsList(name, fields)}
 
         ${createHashcodeFromFieldsList(fields)}
-
-        ${createToMapFromFieldsList(fields)}
       }
    """;
   return result;
@@ -734,7 +736,7 @@ String _createReducerFunctionSync(
      }
   """).join("\n");
   return """ 
-    (${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
+   $modelName ${modelName}_SyncReducer(${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
       final name = ${ACTION_VARIABLE}.name;
       switch(name) {
         ${cases}
@@ -756,7 +758,7 @@ String _createReducerFunctionAsync(
      }
   """).join("\n");
   return """ 
-    (${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) async {
+   Future<$modelName> ${modelName}_AsyncReducer(${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) async {
       final name = ${ACTION_VARIABLE}.name;
       switch(name) {
         ${cases}

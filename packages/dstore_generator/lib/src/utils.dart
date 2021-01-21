@@ -27,7 +27,7 @@ class Field {
       required this.type,
       this.value,
       this.param,
-      this.isOptional = false}) {}
+      this.isOptional = false});
 
   @override
   String toString() {
@@ -115,11 +115,11 @@ String createCopyWithFromFieldsList(String name, List<Field> fields,
   } else {
     final cfields = fields
         .map((f) =>
-            "${f.name} : ${(f.type.endsWith("?") || f.isOptional) ? "${f.name} != null ? ${f.name}.value : this.${f.name}" : "${f.name} ?? this.${f.name}"} }")
+            "${f.name} : ${(f.type.endsWith("?") || f.isOptional) ? "${f.name} != null ? ${f.name}.value : this.${f.name}" : "${f.name} ?? this.${f.name}"}")
         .join(", ");
     cons = "${name}($cfields);";
   }
-  return "$name copyWith({$params}) => $cons";
+  return """$name copyWith({$params}) => $cons""";
 }
 
 String createCopyWithMapFromFieldsList(String name, List<Field> fields,
@@ -136,7 +136,10 @@ String createCopyWithMapFromFieldsList(String name, List<Field> fields,
         .join(", ");
     cons = "${name}($cfields);";
   }
-  return "$name copyWithMap(Map<String,dynamic> map) => $cons";
+  return """
+  @override
+  $name copyWithMap(Map<String,dynamic> map) => $cons
+  """;
 }
 
 String createToMapFromFieldsList(List<Field> fields) {

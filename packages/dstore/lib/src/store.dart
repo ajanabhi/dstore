@@ -17,7 +17,7 @@ class Store<S extends AppStateI> {
   final Map<String, PStateMeta<PStateModel>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
-  final Map<String, String> _reducerGroupToStateKeyMap = {};
+  final Map<int, String> _pStateGroupToStateKeyMap = {};
   late S _state;
 
   Store(
@@ -36,7 +36,7 @@ class Store<S extends AppStateI> {
     final AppStateI s = stateCreator();
     final map = <String, dynamic>{};
     meta.forEach((key, rg) {
-      _reducerGroupToStateKeyMap[rg.group] = key;
+      _pStateGroupToStateKeyMap[rg.group] = key;
       map[key] = rg.ds;
     });
     _state = s.copyWithMap(map);
@@ -52,7 +52,7 @@ class Store<S extends AppStateI> {
   }
 
   dynamic _defaultDispatch(Action action) {
-    final sk = _reducerGroupToStateKeyMap[action.group]!;
+    final sk = _pStateGroupToStateKeyMap[action.group]!;
     final psm = meta[sk]!;
     final gsMap = _state.toMap();
     final currentS = gsMap[sk]!;
@@ -161,15 +161,20 @@ class Store<S extends AppStateI> {
 
   /* public methods  */
 
-  String getStateKeyForReducerGroup(String key) {
-    return _reducerGroupToStateKeyMap[key]!;
+  String getStateKeyForReducerGroup(int key) {
+    return _pStateGroupToStateKeyMap[key]!;
   }
 
   dynamic getFieldFromAction(Action action) {
-    final sk = _reducerGroupToStateKeyMap[action.group];
+    final sk = _pStateGroupToStateKeyMap[action.group];
     final gsMap = state.toMap();
     final currentS = gsMap[sk] as PStateModel;
     return currentS.toMap()[action.name];
+  }
+
+  PStateMeta getPStateMetaFromAction(Action action) {
+    final sk = _pStateGroupToStateKeyMap[action.group];
+    return meta[sk]!;
   }
 
   dynamic dispatch(Action action) {

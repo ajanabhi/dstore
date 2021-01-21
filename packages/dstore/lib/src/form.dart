@@ -1,3 +1,6 @@
+import 'package:dstore/src/action.dart';
+import 'package:dstore/src/store.dart';
+
 typedef FormFieldValidator = dynamic Function(dynamic value);
 
 abstract class FormFieldObject<M> {
@@ -16,7 +19,7 @@ class FormField<F extends FormFieldObject> {
   final bool validateOnChange;
   final bool validateOnBlur;
   final String internalAName;
-  final String internalAGroup;
+  final int internalAGroup;
   FormField(
       {required this.value,
       required this.validators,
@@ -27,7 +30,7 @@ class FormField<F extends FormFieldObject> {
       this.validateOnChange = false,
       this.validateOnBlur = false,
       this.internalAName = "",
-      this.internalAGroup = "",
+      this.internalAGroup = 0,
       this.errors = const {}});
 
   FormField<F> copyWith({
@@ -41,7 +44,7 @@ class FormField<F extends FormFieldObject> {
     bool? validateOnChange,
     bool? validateOnBlur,
     String? internalAName,
-    String? internalAGroup,
+    int? internalAGroup,
   }) {
     return FormField<F>(
       value: value ?? this.value,
@@ -61,53 +64,53 @@ class FormField<F extends FormFieldObject> {
 
 abstract class FormReq {}
 
-class SetFieldValueReq extends FormReq {
+class FormSetFieldValue extends FormReq {
   final String key;
   final dynamic value;
   final bool validate;
 
-  SetFieldValueReq(
+  FormSetFieldValue(
       {required this.key, required this.value, this.validate = false});
 }
 
-class SetFieldTouchedReq extends FormReq {
+class FormSetFieldTouched extends FormReq {
   final String key;
   final bool validate;
 
-  SetFieldTouchedReq({required this.key, this.validate = false});
+  FormSetFieldTouched({required this.key, this.validate = false});
 }
 
-class SetFieldErrorReq extends FormReq {
+class FormSetFieldError extends FormReq {
   final String key;
   final String? value;
 
-  SetFieldErrorReq({required this.key, this.value});
+  FormSetFieldError({required this.key, this.value});
 }
 
-class SetErrorsReq extends FormReq {
+class FormSetErrors extends FormReq {
   final Map<String, String> errors;
 
-  SetErrorsReq(this.errors);
+  FormSetErrors(this.errors);
 }
 
-class FormSubmittingReq extends FormReq {
+class FormSetSubmitting extends FormReq {
   final bool isSubmitting;
 
-  FormSubmittingReq(this.isSubmitting);
+  FormSetSubmitting(this.isSubmitting);
 }
 
-class FormResetReq extends FormReq {}
+class FormReset extends FormReq {}
 
-class FormValidateReq extends FormReq {}
+class FormValidate extends FormReq {}
 
 class FormOps {
-  final void Function(SetFieldErrorReq req) setFieldValue;
-  final void Function(SetFieldTouchedReq req) setFieldTouched;
-  final void Function(SetFieldErrorReq req) setFieldError;
-  final void Function(SetErrorsReq req) setErrors;
-  final void Function(FormSubmittingReq req) setSubmitting;
-  final void Function(FormResetReq req) resetForm;
-  final void Function(FormValidateReq req) validateForm;
+  final void Function(FormSetFieldError req) setFieldValue;
+  final void Function(FormSetFieldTouched req) setFieldTouched;
+  final void Function(FormSetFieldError req) setFieldError;
+  final void Function(FormSetErrors req) setErrors;
+  final void Function(FormSetSubmitting req) setSubmitting;
+  final void Function(FormReset req) resetForm;
+  final void Function(FormValidate req) validateForm;
 
   FormOps(
       {required this.setFieldValue,
@@ -117,4 +120,63 @@ class FormOps {
       required this.setSubmitting,
       required this.resetForm,
       required this.validateForm});
+}
+
+abstract class MiddlewareFormUtils {
+  static FormOps getFormOps(FormField ff, Dispatch dispatch) {
+    return FormOps(
+      setFieldValue: (FormSetFieldError req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      setFieldTouched: (FormSetFieldTouched req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      setFieldError: (FormSetFieldError req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      setErrors: (FormSetErrors req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      setSubmitting: (FormSetSubmitting req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      resetForm: (FormReset req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+      validateForm: (FormValidate req) {
+        final a =
+            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+        dispatch(a);
+      },
+    );
+  }
+
+  static Future<Map<String, String>> isFormValid(FormField ff) async {
+    final errors = <String, String>{};
+    try {
+      final values = ff.value.toMap();
+
+      for (final e in ff.validators.entries) {
+        final r = await e.value(values[e.key]);
+        if (r != null) {
+          errors[e.key] = r;
+        }
+      }
+    } catch (e) {
+      errors["VALIDATION_EXCEPTION"] = "$e";
+    }
+    return errors;
+  }
 }

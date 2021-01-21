@@ -5,7 +5,7 @@ import "package:meta/meta.dart";
 @immutable
 class Action {
   final String name;
-  final String group;
+  final int group;
   final bool isAsync;
   final Map<String, dynamic>? payload;
   final HttpPayload? http;
@@ -27,7 +27,7 @@ class Action {
 
   Action copyWith(
       {String? name,
-      String? group,
+      int? group,
       dynamic? payload,
       dynamic? extra,
       Stream? stream,
