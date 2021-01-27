@@ -45,7 +45,8 @@ List<Field> convertParamsToFields(FormalParameterList parameters) {
     }
     if (param is DefaultFormalParameter) {
       value = param.defaultValue?.toString();
-      final t = (param.parameter as SimpleFormalParameter).type;
+      final t =
+          (param.parameter as SimpleFormalParameter).type as TypeAnnotation?;
       type = t?.toString() ?? "dynamic";
     }
     return Field(
@@ -54,6 +55,21 @@ List<Field> convertParamsToFields(FormalParameterList parameters) {
         value: value,
         isOptional: param.isOptional,
         param: param);
+  }).toList();
+}
+
+List<Field> convertParamElementsToFields(List<ParameterElement> params) {
+  return params.map((param) {
+    final name = param.name;
+    final type = param.type != null
+        ? param.type.getDisplayString(withNullability: true)
+        : "dynamic";
+    return Field(
+      name: name,
+      type: type,
+      value: param.defaultValueCode,
+      isOptional: param.isOptional,
+    );
   }).toList();
 }
 
@@ -83,11 +99,14 @@ String replaceEndStar(String input) {
 }
 
 String getFinalFieldsFromFieldsList(List<Field> fields,
-    {bool addLateModifier = false}) {
+    {bool addLateModifier = false, bool addOverrideAnnotation = false}) {
   return fields.map((f) {
     final type =
         f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : "${f.type}";
-    return "${addLateModifier ? "late" : ""} final $type ${f.name};";
+    return """
+     ${addOverrideAnnotation ? "@override" : ""}
+     ${addLateModifier ? "late" : ""} final $type ${f.name};
+    """;
   }).join("\n ");
 }
 
@@ -96,7 +115,7 @@ String createConstructorFromFieldsList(String name, List<Field> fields,
   final cf = fields.map((f) {
     return "${!f.isOptional ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${f.value}" : ""}";
   }).join(", ");
-  return "${name}({$cf});";
+  return "const ${name}({$cf});";
 }
 
 String createCopyWithFromFieldsList(String name, List<Field> fields,

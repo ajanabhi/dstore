@@ -18,3 +18,7 @@ class GraphqlApi {
 class GraphqlOps {
   const GraphqlOps(GraphqlApi api);
 }
+
+class DImmutable {
+  const DImmutable();
+}

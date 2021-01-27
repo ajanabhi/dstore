@@ -1,9 +1,13 @@
+import 'dart:svg';
+
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'package:dstore/dstore.dart';
 
 part "sample.dstore.dart";
+part "sample.freezed.dart";
 part "sample.g.dart";
 
 @JsonSerializable()
@@ -83,4 +87,17 @@ class _OneAliasConverter extends JsonConverter<OneAlias, Object> {
     // TODO: implement toJson
     throw UnimplementedError();
   }
+}
+
+@freezed
+abstract class Person with _$Person {
+  const factory Person(
+      {required String name,
+      required int age,
+      @Default(2) String? name2}) = _Person;
+}
+
+@DImmutable()
+abstract class P2 with _$P2 {
+  factory P2({required String name, required int age, int? a2}) = _P2;
 }

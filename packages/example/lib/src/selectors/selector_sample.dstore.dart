@@ -11,7 +11,6 @@ part of 'selector_sample.dart';
 class AppSelectors {
   static final hello =
       Selector<AppState, dynamic>(fn: _AppSelectors.hello, deps: {
-    "sample": ["name", "s"],
-    "hello": ["bollo"]
+    "sample": ["name", "s"]
   });
 }

@@ -15,11 +15,11 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
     final fields = classElement.fields;
     print("fields2 ${fields.map((e) => e.type.element.displayName)}");
     final copyWithMapBody = fields
-        .map((f) => "${f.name} : map[\"${f.name}\"] ?? this.${f.name}")
-        .join(", ");
+        .map((f) => "..${f.name} = map[\"${f.name}\"] ?? this.${f.name}")
+        .join("\n");
 
     final copyWithMap =
-        "${name} copyWithMap(Map<String,dynamic> map) => ${name}(${copyWithMapBody});";
+        "${name} copyWithMap(Map<String,dynamic> map) => ${name}()${copyWithMapBody};";
 
     final toMap =
         """Map<String,PStateModel> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";

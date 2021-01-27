@@ -1,5 +1,6 @@
 import 'package:build/build.dart';
 import 'package:dstore_generator/src/app_state_generator.dart';
+import 'package:dstore_generator/src/immutable_generator.dart';
 import 'package:dstore_generator/src/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors_generator.dart';
 import 'package:source_gen/source_gen.dart';
@@ -9,7 +10,12 @@ Builder dstoreGen(BuilderOptions options) {
   print("************************* options ${options.config}");
 
   return PartBuilder(
-      [PStateGenerator(), SelectorsGenerator(), AppStateGenerator()],
+      [
+        PStateGenerator(),
+        SelectorsGenerator(),
+        AppStateGenerator(),
+        DImmutableGenerator()
+      ],
       '.dstore.dart',
       header: '''
 // GENERATED CODE - DO NOT MODIFY BY HAND

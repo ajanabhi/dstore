@@ -12,12 +12,16 @@ part of 'sample.dart';
 @immutable
 class Sample implements PStateModel {
   final int count;
+
   final int s;
+
   final User name;
+
   final GetTodos todos;
+
   final AsyncActionField fint;
 
-  Sample(
+  const Sample(
       {required this.count,
       required this.s,
       required this.name,
@@ -197,8 +201,52 @@ Future<Sample> Sample_AsyncReducer(
 
 Sample Sample_DS() => Sample(
     count: 0, s: 0, name: User(), todos: GetTodos(), fint: AsyncActionField());
+
 const SampleMeta = PStateMeta<Sample>(
     group: 536232238,
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
     ds: Sample_DS);
+
+// **************************************************************************
+// DImmutableGenerator
+// **************************************************************************
+
+mixin _$P2 {
+  String get name;
+  int get age;
+  int? get a2;
+
+  P2 copyWith({String? name, int? age, Nullable<int>? a2});
+}
+
+class _P2 implements P2 {
+  @override
+  final String name;
+
+  @override
+  final int age;
+
+  @override
+  final int? a2;
+
+  const _P2({required this.name, required this.age, this.a2});
+
+  @override
+  _P2 copyWith({String? name, int? age, Nullable<int>? a2}) => _P2(
+      name: name ?? this.name,
+      age: age ?? this.age,
+      a2: a2 != null ? a2.value : this.a2);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is _P2 && o.name == name && o.age == age && o.a2 == a2;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ age.hashCode ^ a2.hashCode;
+
+  @override
+  String toString() => "P2(name: this.name, age: this.age, a2: this.a2)";
+}
