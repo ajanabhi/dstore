@@ -6,14 +6,6 @@ part of 'sample.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-User _$UserFromJson(Map<String, dynamic> json) {
-  return User()..name = json['name'] as String;
-}
-
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'name': instance.name,
-    };
-
 One _$OneFromJson(Map<String, dynamic> json) {
   return One(
     json['name'] as String,

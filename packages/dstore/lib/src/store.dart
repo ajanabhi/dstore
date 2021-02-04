@@ -23,8 +23,9 @@ class Store<S extends AppStateI> {
   Store(
       {required this.meta,
       required S Function() stateCreator,
-      List<Middleware<S>> middlewares = const [],
+      List<Middleware<S>>? middlewares,
       S? initialState}) {
+    middlewares ??= [];
     middlewares.add(asyncMiddleware);
     _dispatchers = _createDispatchers(middlewares);
     _prepareNormalStore(stateCreator);
@@ -36,8 +37,12 @@ class Store<S extends AppStateI> {
     final AppStateI s = stateCreator();
     final map = <String, dynamic>{};
     meta.forEach((key, rg) {
+      if (_pStateGroupToStateKeyMap[rg.group] != null) {
+        throw Exception(
+            "You already selected same PState before with key ${_pStateGroupToStateKeyMap[rg.group]}  ");
+      }
       _pStateGroupToStateKeyMap[rg.group] = key;
-      map[key] = rg.ds;
+      map[key] = rg.ds();
     });
     _state = s.copyWithMap(map);
   }
@@ -67,10 +72,7 @@ class Store<S extends AppStateI> {
         newS = action.internal!.data;
       }
     } else {
-      if (action.isAsync) {
-      } else {
-        newS = psm.reducer(currentS, action);
-      }
+      newS = psm.reducer(currentS, action);
     }
     if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
@@ -125,7 +127,7 @@ class Store<S extends AppStateI> {
     final propsOfKeysToReset = <String, List<String>>{};
     selector.deps.forEach((sk, values) {
       final slsa = selectorListeners[sk];
-      if (slsa != null && slsa.length > 0) {
+      if (slsa != null && slsa.isNotEmpty) {
         final existingStateKeyProps = <String>{};
         slsa.forEach((sls) {
           existingStateKeyProps.addAll(sls.selector.deps[sk]!);
@@ -145,7 +147,7 @@ class Store<S extends AppStateI> {
         sMap[sk] = meta[sk]!.ds();
       });
       propsOfKeysToReset.forEach((sk, props) {
-        if (props.length > 0) {
+        if (props.isNotEmpty) {
           final rm = sMap[sk]!;
           final rmMap = rm.toMap();
           final rmDSMap = meta[sk]!.ds().toMap();
@@ -168,7 +170,7 @@ class Store<S extends AppStateI> {
   dynamic getFieldFromAction(Action action) {
     final sk = _pStateGroupToStateKeyMap[action.group];
     final gsMap = state.toMap();
-    final currentS = gsMap[sk] as PStateModel;
+    final currentS = gsMap[sk]!;
     return currentS.toMap()[action.name];
   }
 
@@ -187,9 +189,11 @@ class Store<S extends AppStateI> {
     keys.forEach((sk) {
       final sls = selectorListeners[sk];
       final v = _SelectorListener(selector: selector, listener: listener);
+      print("sls $sls");
       if (sls != null) {
         sls.add(v);
       } else {
+        print("selector added $sk");
         selectorListeners[sk] = [v];
       }
     });

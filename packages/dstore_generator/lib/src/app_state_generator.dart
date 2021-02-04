@@ -28,7 +28,7 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
         fields.map((f) => "PStateModel get ${f.name};").join("\n");
 
     final createMeta = """
-      static Map<String,PStateMeta> createMeta({${fields.map((f) => "required PStateMeta ${f.name}").join(", ")}}) {
+       Map<String,PStateMeta> create${name}Meta({${fields.map((f) => "required PStateMeta ${f.name}").join(", ")}}) {
           return {${fields.map((f) => """ "${f.name}" : ${f.name} """).join(", ")}};
        }
     """;
@@ -37,9 +37,8 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
         ${fieldGetters}
         ${copyWithMap}
         ${toMap}
-        ${createMeta}
       }
-    
+     ${createMeta}
     """;
   }
 }

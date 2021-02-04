@@ -13,6 +13,7 @@ dependencies:
   source_gen: ^0.9.10+1 
   ansicolor: ^1.1.1
   gql:
+  dio: 
   dstore:
     path: ../dstore
 

@@ -7,7 +7,6 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
-
 import 'package:dstore/dstore.dart';
 import 'package:dstore_generator/src/utils.dart';
 
@@ -310,25 +309,9 @@ class ReducerAstVisitor extends SimpleAstVisitor {
       ex.block.statements.forEach((statement) {
         print(
             "************** Check ${statement.toString()} ${statement.runtimeType}");
-        if (statement is ExpressionStatement) {
-          final exp = statement.expression;
-          print("isAssignable ${exp.runtimeType}");
-          if (exp is AssignmentExpression) {
-            print("Hello ${exp.leftHandSide.runtimeType}");
-            if (exp.leftHandSide is SimpleIdentifier) {
-              final idn = exp.leftHandSide as SimpleIdentifier;
-              print(
-                  "Identifie: ${idn.inSetterContext()} ${idn.isQualified} ${idn.precedence} ${idn.parent} ${idn.inDeclarationContext()}");
-            }
-          }
-          if (exp is MethodInvocation) {
-            print(
-                "**MMMMMM*** ${exp.argumentList.arguments} Type:  ${exp.argumentList.arguments[0].runtimeType} ");
-          }
-        }
-        if (statement is IfStatement) {
-          print("****IFIF***** ${statement.thenStatement.runtimeType}");
-        }
+        // if(statement is TryStatement) {
+        //    statement.
+        // }
       });
     }
     methods.add(ReducerMethod(
@@ -341,18 +324,19 @@ class ReducerAstVisitor extends SimpleAstVisitor {
 
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
-    final type = node.fields.type;
-    if (type == null) {
+    final typeA = node.fields.type as TypeAnnotation?;
+    if (typeA == null) {
       throw Exception("Should provide type annotation for fields");
     }
+    final type = typeA.toString();
     node.fields.variables.forEach((v) {
       final name = v.name.toString();
-      final value = v.initializer;
-      if (value == null) {
+      final valueE = v.initializer as Expression?;
+      if (!type.endsWith("?") && valueE == null) {
         throw Exception("Should provide initital value for fields");
       }
-      fields.add(
-          Field(name: name, type: type.toString(), value: value.toString()));
+      // final value = type.endsWith("?") ? "null" : valueE.toString();
+      fields.add(Field(name: name, type: type, value: valueE.toString()));
     });
     print(
         "declared element : ${node.fields.type} node : ${node.fields.variables[0]}");
@@ -378,6 +362,7 @@ enum MethodStatementKind {
   IfStatement,
   IfElseStatement,
   ForeachStatement,
+  TryStatement,
   MutationStatement,
 }
 
@@ -436,6 +421,21 @@ class IfElseStatementResult extends StatementResult {
   MethodStatementKind get kind => MethodStatementKind.IfElseStatement;
 }
 
+class TryStatementResult extends StatementResult {
+  final TryStatement statement;
+  final List<StatementResult> tryStatementResults;
+  final List<List<StatementResult>> catchStatementResults;
+  final List<StatementResult> finalStatementResults;
+
+  TryStatementResult(
+      {required this.statement,
+      required this.tryStatementResults,
+      required this.catchStatementResults,
+      required this.finalStatementResults});
+  @override
+  MethodStatementKind get kind => MethodStatementKind.TryStatement;
+}
+
 String _convertMethodParamsToString(List<Field> params) {
   if (params.isEmpty) return "";
   final p = params
@@ -466,6 +466,8 @@ String _createPStateModel(List<Field> fields, String name) {
         ${createEqualsFromFieldsList(name, fields)}
 
         ${createHashcodeFromFieldsList(fields)}
+
+        ${createToStringFromFieldsList(name, fields)}
       }
    """;
   return result;
@@ -569,6 +571,26 @@ IfElseStatementResult processIfElseStatement(
       elseStatementResults: elseStatementResults);
 }
 
+TryStatementResult processTryStatement(
+    TryStatement statement, ProcessStatementOptions options) {
+  print("Processing try statement $statement");
+  final tryStatementResults =
+      processStatements(statement.body.statements, options);
+  final catchStatementResults = statement.catchClauses
+      .map((cc) => processStatements(cc.body.statements, options))
+      .toList();
+  print("catch done");
+  final List<StatementResult> finalStatementResults =
+      statement.finallyBlock == null
+          ? []
+          : processStatements(statement.finallyBlock.statements, options);
+  return TryStatementResult(
+      statement: statement,
+      tryStatementResults: tryStatementResults,
+      catchStatementResults: catchStatementResults,
+      finalStatementResults: finalStatementResults);
+}
+
 List<StatementResult> processStatements(List<AstNode> statements,
     [ProcessStatementOptions options = const ProcessStatementOptions()]) {
   return statements.map((statement) {
@@ -588,6 +610,8 @@ List<StatementResult> processStatements(List<AstNode> statements,
     } else if (statement is IfStatement) {
       // if else
       result = processIfElseStatement(statement, options);
+    } else if (statement is TryStatement) {
+      result = processTryStatement(statement, options);
     } else if (statement is ReturnStatement && !options.isReturnSupported) {
       throw Exception("Return statement is not supported use if else");
     } else {
@@ -662,6 +686,42 @@ String converForEachStatementResultToString(
   }) """;
 }
 
+String convertTryStatementResultToString(
+    TryStatementResult tsr, Iterable<String> keys) {
+  final tb =
+      convertStatementResultsToString(tsr.tryStatementResults, keys).join("\n");
+  print("tb $tb");
+  final cb = tsr.statement.catchClauses.asMap().entries.map((me) {
+    final i = me.key;
+    final c = me.value;
+    final cb =
+        convertStatementResultsToString(tsr.catchStatementResults[i], keys)
+            .join("\n");
+    print(
+        "cblock $c ck ${c.catchKeyword} cp ${c.exceptionParameter} sp ${c.stackTraceParameter} ");
+    final onException =
+        c.exceptionType != null ? "on ${c.exceptionType} " : " ";
+    final catchClause = c.catchKeyword != null
+        ? "catch(${c.exceptionParameter}${c.stackTraceParameter != null ? ", ${c.stackTraceParameter}" : ""})"
+        : "";
+    return """${onException} ${catchClause} {
+        ${cb}
+      }""";
+  }).join("\n");
+  final fb = tsr.finalStatementResults.isNotEmpty
+      ? """ finally {
+        ${convertStatementResultsToString(tsr.finalStatementResults, keys).join("\n")}
+      }
+        """
+      : "";
+  return """
+       try {
+          ${tb}
+       } ${cb}
+        ${fb}
+      """;
+}
+
 List<String> convertStatementResultsToString(
     List<StatementResult> statmentResults, Iterable<String> keys) {
   final result = <String>[];
@@ -678,6 +738,9 @@ List<String> convertStatementResultsToString(
     } else if (sr.kind == MethodStatementKind.ForeachStatement) {
       final fesr = sr as ForEachStatementResult;
       result.add(converForEachStatementResultToString(fesr, keys));
+    } else if (sr.kind == MethodStatementKind.TryStatement) {
+      final tsr = sr as TryStatementResult;
+      result.add(convertTryStatementResultToString(tsr, keys));
     } else if (sr.kind == MethodStatementKind.GeneralStatement) {
       final gsr = sr as GeneralStatementResult;
       result.add(replaceThisWithState(gsr.statment, keys));
@@ -693,19 +756,38 @@ String processMethodStatements(List<Statement> statements) {
       List<StatementResult> statementResults) {
     final result = <MutationStatementResult>[];
     statementResults.forEach((sr) {
-      if (sr.kind == MethodStatementKind.MutationStatement) {
-        result.add(sr as MutationStatementResult);
-      } else if (sr.kind == MethodStatementKind.ForeachStatement) {
-        final fs = sr as ForEachStatementResult;
-        result.addAll(getMutationOnlyStatementResults(fs.statementResults));
-      } else if (sr.kind == MethodStatementKind.IfElseStatement) {
-        final ies = sr as IfElseStatementResult;
-        result.addAll(getMutationOnlyStatementResults(ies.ifStatementResults));
-        result
-            .addAll(getMutationOnlyStatementResults(ies.elseStatementResults));
-      } else if (sr.kind == MethodStatementKind.IfStatement) {
-        result.addAll(getMutationOnlyStatementResults(
-            (sr as IfStatementResult).statementResults));
+      switch (sr.kind) {
+        case MethodStatementKind.GeneralStatement:
+          break;
+        case MethodStatementKind.IfStatement:
+          result.addAll(getMutationOnlyStatementResults(
+              (sr as IfStatementResult).statementResults));
+          break;
+        case MethodStatementKind.IfElseStatement:
+          final ies = sr as IfElseStatementResult;
+          result
+              .addAll(getMutationOnlyStatementResults(ies.ifStatementResults));
+          result.addAll(
+              getMutationOnlyStatementResults(ies.elseStatementResults));
+          break;
+        case MethodStatementKind.ForeachStatement:
+          final fs = sr as ForEachStatementResult;
+          result.addAll(getMutationOnlyStatementResults(fs.statementResults));
+          break;
+        case MethodStatementKind.TryStatement:
+          final tsr = sr as TryStatementResult;
+          result
+              .addAll(getMutationOnlyStatementResults(tsr.tryStatementResults));
+          tsr.catchStatementResults.forEach((csr) {
+            result.addAll(getMutationOnlyStatementResults(csr));
+          });
+
+          result.addAll(
+              getMutationOnlyStatementResults(tsr.finalStatementResults));
+          break;
+        case MethodStatementKind.MutationStatement:
+          result.add(sr as MutationStatementResult);
+          break;
       }
     });
     return result;
@@ -719,6 +801,7 @@ String processMethodStatements(List<Statement> statements) {
   final keys = mutationStatements.map((e) => e.key).toSet();
   final statementsStr =
       convertStatementResultsToString(statementResults, keys).join("\n");
+  print("hellokeys $keys");
   return """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
@@ -736,7 +819,8 @@ String _createReducerFunctionSync(
      }
   """).join("\n");
   return """ 
-   $modelName ${modelName}_SyncReducer(${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
+   dynamic ${modelName}_SyncReducer(dynamic ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) {
+      ${STATE_VARIABLE} = ${STATE_VARIABLE} as ${modelName};
       final name = ${ACTION_VARIABLE}.name;
       switch(name) {
         ${cases}
@@ -758,7 +842,8 @@ String _createReducerFunctionAsync(
      }
   """).join("\n");
   return """ 
-   Future<$modelName> ${modelName}_AsyncReducer(${modelName} ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) async {
+   Future<dynamic> ${modelName}_AsyncReducer(dynamic ${STATE_VARIABLE},Action ${ACTION_VARIABLE}) async {
+      ${STATE_VARIABLE} = ${STATE_VARIABLE} as ${modelName};
       final name = ${ACTION_VARIABLE}.name;
       switch(name) {
         ${cases}

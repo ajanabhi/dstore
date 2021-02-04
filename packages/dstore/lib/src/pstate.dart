@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 
-typedef ReducerFn<S> = S Function(S state, Action action);
+typedef ReducerFn = dynamic Function(dynamic state, Action action);
 
-typedef AReducerFn<S> = Future<S> Function(S state, Action action);
+typedef AReducerFn = Future<dynamic> Function(dynamic state, Action action);
 
 class AsyncActionField {
   final bool loading;
@@ -56,8 +56,8 @@ abstract class PStateModel<M> {
 
 class PStateMeta<S extends PStateModel> {
   final int group;
-  final ReducerFn<S> reducer;
-  final AReducerFn<S> aReducer;
+  final ReducerFn reducer;
+  final AReducerFn aReducer;
   final S Function() ds;
   final Map<String, dynamic> Function(S)? serialize;
   final S Function(Map<String, dynamic>)? deserialize;

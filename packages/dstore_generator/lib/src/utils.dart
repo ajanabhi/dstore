@@ -168,7 +168,7 @@ String createToMapFromFieldsList(List<Field> fields) {
 String createToStringFromFieldsList(String name, List<Field> fields) {
   return """
   @override
-  String toString() => "${name}(${fields.map((f) => "${f.name}: this.${f.name}").join(", ")})";
+  String toString() => "${name}(${fields.map((f) => "${f.name}: \${this.${f.name}}").join(", ")})";
    """;
 }
 

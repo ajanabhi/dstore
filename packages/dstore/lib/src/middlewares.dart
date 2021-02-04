@@ -3,8 +3,8 @@ import 'package:dstore/src/form.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
-dynamic asyncMiddleware<S extends AppStateI>(
-    Store<S> store, Dispatch next, Action action) async {
+final Middleware asyncMiddleware =
+    (Store<dynamic> store, Dispatch next, Action action) async {
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
@@ -33,7 +33,7 @@ dynamic asyncMiddleware<S extends AppStateI>(
               data: AsyncActionField(error: e))));
     }
   }
-}
+};
 
 dynamic streamMiddleware<S extends AppStateI>(
     Store<S> store, Dispatch next, Action action) async {

@@ -1,5 +1,3 @@
-import 'dart:svg';
-
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -7,16 +5,11 @@ import 'package:meta/meta.dart';
 import 'package:dstore/dstore.dart';
 
 part "sample.dstore.dart";
-part "sample.freezed.dart";
 part "sample.g.dart";
 
-@JsonSerializable()
-class User {
-  String name = "";
-  User();
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
-  Map<String, dynamic> toJson() => _$UserToJson(this);
-  static s() => 3;
+@DImmutable()
+abstract class User with _$User {
+  const factory User({required String name}) = _User;
 }
 
 final GetTodos g = GetTodos();
@@ -26,7 +19,7 @@ final GetTodos g = GetTodos();
 class _Sample {
   int count = 0;
   int s = 0;
-  User name = User();
+  User name = User(name: "first");
   GetTodos todos = GetTodos();
 
   void increment() {
@@ -50,6 +43,13 @@ class _Sample {
 
   void increment2(int x, y, {int sn = 4, y1, dynamic y2}) => this.count = x;
   void increment3(int x, y, [int si = 4, s2 = 3]) => this.count = x;
+  void changeUserName(String name) {
+    this.name = this.name.copyWith(name: name);
+  }
+
+  void changeS(int s) {
+    this.s = s;
+  }
 
   void fint() async {
     await Future.delayed(const Duration(seconds: 1));
@@ -87,14 +87,6 @@ class _OneAliasConverter extends JsonConverter<OneAlias, Object> {
     // TODO: implement toJson
     throw UnimplementedError();
   }
-}
-
-@freezed
-abstract class Person with _$Person {
-  const factory Person(
-      {required String name,
-      required int age,
-      @Default(2) String? name2}) = _Person;
 }
 
 @DImmutable()

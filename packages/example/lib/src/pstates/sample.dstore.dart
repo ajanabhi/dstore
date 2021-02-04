@@ -75,6 +75,10 @@ class Sample implements PStateModel {
       name.hashCode ^
       todos.hashCode ^
       fint.hashCode;
+
+  @override
+  String toString() =>
+      "Sample(count: ${this.count}, s: ${this.s}, name: ${this.name}, todos: ${this.todos}, fint: ${this.fint})";
 }
 
 abstract class SampleActions {
@@ -108,6 +112,19 @@ abstract class SampleActions {
         isAsync: false);
   }
 
+  static Action changeUserName({required String name}) {
+    return Action(
+        name: "changeUserName",
+        group: 536232238,
+        payload: {"name": name},
+        isAsync: false);
+  }
+
+  static Action changeS({required int s}) {
+    return Action(
+        name: "changeS", group: 536232238, payload: {"s": s}, isAsync: false);
+  }
+
   static Action fint() {
     return Action(name: "fint", group: 536232238, isAsync: true);
   }
@@ -135,7 +152,8 @@ abstract class SampleActions {
   }
 }
 
-Sample Sample_SyncReducer(Sample _DStoreState, Action _DstoreAction) {
+dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
+  _DStoreState = _DStoreState as Sample;
   final name = _DstoreAction.name;
   switch (name) {
     case "increment":
@@ -173,6 +191,26 @@ Sample Sample_SyncReducer(Sample _DStoreState, Action _DstoreAction) {
         return _DStoreState.copyWith(count: x);
       }
 
+    case "changeUserName":
+      {
+        final _DstoreActionPayload = _DstoreAction.payload!;
+        final name = _DstoreActionPayload["name"] as String;
+
+        var _DStore_name = _DStoreState.name;
+        _DStore_name = _DStoreState.name.copyWith(name: name);
+        return _DStoreState.copyWith(name: _DStore_name);
+      }
+
+    case "changeS":
+      {
+        final _DstoreActionPayload = _DstoreAction.payload!;
+        final s = _DstoreActionPayload["s"] as int;
+
+        var _DStore_s = _DStoreState.s;
+        _DStore_s = s;
+        return _DStoreState.copyWith(s: _DStore_s);
+      }
+
     default:
       {
         return _DStoreState;
@@ -180,8 +218,9 @@ Sample Sample_SyncReducer(Sample _DStoreState, Action _DstoreAction) {
   }
 }
 
-Future<Sample> Sample_AsyncReducer(
-    Sample _DStoreState, Action _DstoreAction) async {
+Future<dynamic> Sample_AsyncReducer(
+    dynamic _DStoreState, Action _DstoreAction) async {
+  _DStoreState = _DStoreState as Sample;
   final name = _DstoreAction.name;
   switch (name) {
     case "fint":
@@ -200,7 +239,11 @@ Future<Sample> Sample_AsyncReducer(
 }
 
 Sample Sample_DS() => Sample(
-    count: 0, s: 0, name: User(), todos: GetTodos(), fint: AsyncActionField());
+    count: 0,
+    s: 0,
+    name: User(name: "first"),
+    todos: GetTodos(),
+    fint: AsyncActionField());
 
 const SampleMeta = PStateMeta<Sample>(
     group: 536232238,
@@ -211,6 +254,34 @@ const SampleMeta = PStateMeta<Sample>(
 // **************************************************************************
 // DImmutableGenerator
 // **************************************************************************
+
+mixin _$User {
+  String get name;
+
+  User copyWith({String? name});
+}
+
+class _User implements User {
+  @override
+  final String name;
+
+  const _User({required this.name});
+
+  @override
+  _User copyWith({String? name}) => _User(name: name ?? this.name);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is _User && o.name == name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() => "User(name: ${this.name})";
+}
 
 mixin _$P2 {
   String get name;
@@ -248,5 +319,6 @@ class _P2 implements P2 {
   int get hashCode => name.hashCode ^ age.hashCode ^ a2.hashCode;
 
   @override
-  String toString() => "P2(name: this.name, age: this.age, a2: this.a2)";
+  String toString() =>
+      "P2(name: ${this.name}, age: ${this.age}, a2: ${this.a2})";
 }

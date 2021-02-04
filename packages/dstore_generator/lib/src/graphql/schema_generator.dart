@@ -11,7 +11,7 @@ import "dart:io";
 
 class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
   @override
-  generateForAnnotatedElement(
+  Future<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) async {
     if (!(element is ClassElement)) {
       throw Exception(
@@ -32,6 +32,7 @@ class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
     graphqlSchemaMap[apiUrl] = schema;
     final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
     schema.inputObjectTypes;
+    return "";
   }
 }
 
