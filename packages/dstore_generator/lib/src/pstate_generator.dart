@@ -50,8 +50,8 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
        $modelName ${modelName}_DS() => $defaultState;
        
        const ${modelName}Meta = PStateMeta<${modelName}>(group:${group},
-        reducer: ${modelName}_SyncReducer,
-        aReducer: ${modelName}_AsyncReducer,
+        reducer: ${syncReducerFunctionStr.isNotEmpty ? "${modelName}_SyncReducer" : "null"} ,
+        aReducer: ${asyncReducerFubctionStr.isNotEmpty ? "${modelName}_AsyncReducer" : "null"} ,
         ds: ${modelName}_DS);
     """;
     final httpFields = _getHttpFields(classElement.fields);
@@ -312,6 +312,10 @@ class ReducerAstVisitor extends SimpleAstVisitor {
         // if(statement is TryStatement) {
         //    statement.
         // }
+        if (statement is ForStatement) {
+          print(
+              "forstatement lp ${statement.forLoopParts} body ${statement.body.runtimeType}");
+        }
       });
     }
     methods.add(ReducerMethod(
@@ -364,6 +368,7 @@ enum MethodStatementKind {
   ForeachStatement,
   TryStatement,
   MutationStatement,
+  ForLoopStatement
 }
 
 abstract class StatementResult {
@@ -434,6 +439,15 @@ class TryStatementResult extends StatementResult {
       required this.finalStatementResults});
   @override
   MethodStatementKind get kind => MethodStatementKind.TryStatement;
+}
+
+class ForStatementResult extends StatementResult {
+  final ForStatement statement;
+  final List<StatementResult> statementResults;
+
+  ForStatementResult({required this.statement, required this.statementResults});
+  @override
+  MethodStatementKind get kind => MethodStatementKind.ForLoopStatement;
 }
 
 String _convertMethodParamsToString(List<Field> params) {
@@ -591,6 +605,19 @@ TryStatementResult processTryStatement(
       finalStatementResults: finalStatementResults);
 }
 
+ForStatementResult processForStatement(
+    ForStatement statement, ProcessStatementOptions options) {
+  late List<StatementResult> statementResults;
+  final body = statement.body;
+  if (body is Block) {
+    statementResults = processStatements(body.statements, options);
+  } else {
+    statementResults = processStatements([body], options);
+  }
+  return ForStatementResult(
+      statement: statement, statementResults: statementResults);
+}
+
 List<StatementResult> processStatements(List<AstNode> statements,
     [ProcessStatementOptions options = const ProcessStatementOptions()]) {
   return statements.map((statement) {
@@ -612,6 +639,8 @@ List<StatementResult> processStatements(List<AstNode> statements,
       result = processIfElseStatement(statement, options);
     } else if (statement is TryStatement) {
       result = processTryStatement(statement, options);
+    } else if (statement is ForStatement) {
+      result = processForStatement(statement, options);
     } else if (statement is ReturnStatement && !options.isReturnSupported) {
       throw Exception("Return statement is not supported use if else");
     } else {
@@ -722,28 +751,49 @@ String convertTryStatementResultToString(
       """;
 }
 
+String convertForStatementResultToString(
+    ForStatementResult fsr, Iterable<String> keys) {
+  final flp = replaceThisWithState(fsr.statement.forLoopParts, keys);
+  return """
+    for(${flp}) {
+      ${convertStatementResultsToString(fsr.statementResults, keys).join("\n")}
+    }
+  """;
+}
+
 List<String> convertStatementResultsToString(
     List<StatementResult> statmentResults, Iterable<String> keys) {
   final result = <String>[];
   statmentResults.forEach((sr) {
-    if (sr.kind == MethodStatementKind.MutationStatement) {
-      final msr = sr as MutationStatementResult;
-      result.add(msr.code);
-    } else if (sr.kind == MethodStatementKind.IfStatement) {
-      final isr = sr as IfStatementResult;
-      result.add(convertIfStatementResultToString(isr, keys));
-    } else if (sr.kind == MethodStatementKind.IfElseStatement) {
-      final iesr = sr as IfElseStatementResult;
-      result.add(convertIfElseStatementResultToString(iesr, keys));
-    } else if (sr.kind == MethodStatementKind.ForeachStatement) {
-      final fesr = sr as ForEachStatementResult;
-      result.add(converForEachStatementResultToString(fesr, keys));
-    } else if (sr.kind == MethodStatementKind.TryStatement) {
-      final tsr = sr as TryStatementResult;
-      result.add(convertTryStatementResultToString(tsr, keys));
-    } else if (sr.kind == MethodStatementKind.GeneralStatement) {
-      final gsr = sr as GeneralStatementResult;
-      result.add(replaceThisWithState(gsr.statment, keys));
+    switch (sr.kind) {
+      case MethodStatementKind.GeneralStatement:
+        final gsr = sr as GeneralStatementResult;
+        result.add(replaceThisWithState(gsr.statment, keys));
+        break;
+      case MethodStatementKind.IfStatement:
+        final isr = sr as IfStatementResult;
+        result.add(convertIfStatementResultToString(isr, keys));
+        break;
+      case MethodStatementKind.IfElseStatement:
+        final iesr = sr as IfElseStatementResult;
+        result.add(convertIfElseStatementResultToString(iesr, keys));
+        break;
+      case MethodStatementKind.ForeachStatement:
+        final fesr = sr as ForEachStatementResult;
+        result.add(converForEachStatementResultToString(fesr, keys));
+        break;
+      case MethodStatementKind.TryStatement:
+        final tsr = sr as TryStatementResult;
+        result.add(convertTryStatementResultToString(tsr, keys));
+        break;
+      case MethodStatementKind.MutationStatement:
+        final msr = sr as MutationStatementResult;
+        result.add(msr.code);
+        break;
+      case MethodStatementKind.ForLoopStatement:
+        final fsr = sr as ForStatementResult;
+        result.add(convertForStatementResultToString(fsr, keys));
+        break;
     }
   });
   return result;
@@ -788,6 +838,10 @@ String processMethodStatements(List<Statement> statements) {
         case MethodStatementKind.MutationStatement:
           result.add(sr as MutationStatementResult);
           break;
+        case MethodStatementKind.ForLoopStatement:
+          final fsr = sr as ForStatementResult;
+          result.addAll(getMutationOnlyStatementResults(fsr.statementResults));
+          break;
       }
     });
     return result;
@@ -813,6 +867,9 @@ String _createReducerFunctionSync(
   Iterable<ReducerMethod> methods,
   String modelName,
 ) {
+  if (methods.isEmpty) {
+    return "";
+  }
   final cases = methods.map((m) => """
      case "${m.name}": {
        ${m.body}
@@ -836,6 +893,9 @@ String _createReducerFunctionAsync(
   Iterable<ReducerMethod> methods,
   String modelName,
 ) {
+  if (methods.isEmpty) {
+    return "";
+  }
   final cases = methods.map((m) => """
      case "${m.name}": {
        ${m.body}

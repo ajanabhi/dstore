@@ -72,7 +72,7 @@ class Store<S extends AppStateI> {
         newS = action.internal!.data;
       }
     } else {
-      newS = psm.reducer(currentS, action);
+      newS = psm.reducer!(currentS, action);
     }
     if (!identical(newS, currentS)) {
       gsMap[sk] = newS;

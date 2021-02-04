@@ -8,6 +8,7 @@ class _Sample2 {
   int count = 0;
   String name = "hello";
   List<String> s = [];
+  String? comment;
   void increment() {
     this.count += 1;
     print("hello");
@@ -18,5 +19,6 @@ class _Sample2 {
     } catch (e2) {} finally {
       print("final");
     }
+    for (var i = 0; i < 10; i++) this.count = 4;
   }
 }

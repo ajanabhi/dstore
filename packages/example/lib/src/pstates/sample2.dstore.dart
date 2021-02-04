@@ -17,32 +17,56 @@ class Sample2 implements PStateModel {
 
   final List<String> s;
 
-  const Sample2({required this.count, required this.name, required this.s});
+  final String? comment;
 
-  Sample2 copyWith({int? count, String? name, List<String>? s}) => Sample2(
-      count: count ?? this.count, name: name ?? this.name, s: s ?? this.s);
+  const Sample2(
+      {required this.count,
+      required this.name,
+      required this.s,
+      required this.comment});
+
+  Sample2 copyWith(
+          {int? count,
+          String? name,
+          List<String>? s,
+          Nullable<String>? comment}) =>
+      Sample2(
+          count: count ?? this.count,
+          name: name ?? this.name,
+          s: s ?? this.s,
+          comment: comment != null ? comment.value : this.comment);
 
   @override
   Sample2 copyWithMap(Map<String, dynamic> map) => Sample2(
       count: map["count"] ?? this.count,
       name: map["name"] ?? this.name,
-      s: map["s"] ?? this.s);
+      s: map["s"] ?? this.s,
+      comment: map["comment"] ?? this.comment);
 
-  Map<String, dynamic> toMap() =>
-      {"count": this.count, "name": this.name, "s": this.s};
+  Map<String, dynamic> toMap() => {
+        "count": this.count,
+        "name": this.name,
+        "s": this.s,
+        "comment": this.comment
+      };
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is Sample2 && o.count == count && o.name == name && o.s == s;
+    return o is Sample2 &&
+        o.count == count &&
+        o.name == name &&
+        o.s == s &&
+        o.comment == comment;
   }
 
   @override
-  int get hashCode => count.hashCode ^ name.hashCode ^ s.hashCode;
+  int get hashCode =>
+      count.hashCode ^ name.hashCode ^ s.hashCode ^ comment.hashCode;
 
   @override
   String toString() =>
-      "Sample2(count: ${this.count}, name: ${this.name}, s: ${this.s})";
+      "Sample2(count: ${this.count}, name: ${this.name}, s: ${this.s}, comment: ${this.comment})";
 }
 
 abstract class Sample2Actions {
@@ -69,6 +93,10 @@ dynamic Sample2_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
           print("final");
         }
 
+        for (var i = 0; i < 10; i++) {
+          _DStore_count = 4;
+        }
+
         return _DStoreState.copyWith(count: _DStore_count, name: _DStore_name);
       }
 
@@ -79,22 +107,10 @@ dynamic Sample2_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
   }
 }
 
-Future<dynamic> Sample2_AsyncReducer(
-    dynamic _DStoreState, Action _DstoreAction) async {
-  _DStoreState = _DStoreState as Sample2;
-  final name = _DstoreAction.name;
-  switch (name) {
-    default:
-      {
-        return _DStoreState;
-      }
-  }
-}
-
-Sample2 Sample2_DS() => Sample2(count: 0, name: "hello", s: []);
+Sample2 Sample2_DS() => Sample2(count: 0, name: "hello", s: [], comment: null);
 
 const Sample2Meta = PStateMeta<Sample2>(
     group: 33202611,
     reducer: Sample2_SyncReducer,
-    aReducer: Sample2_AsyncReducer,
+    aReducer: null,
     ds: Sample2_DS);

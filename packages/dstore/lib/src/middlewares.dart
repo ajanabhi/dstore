@@ -18,7 +18,7 @@ final Middleware asyncMiddleware =
             type: ActionInternalType.DATA,
             data: AsyncActionField(loading: true))));
     try {
-      final s = await psm.aReducer(currentS, action);
+      final s = await psm.aReducer!(currentS, action);
       final asm = s.toMap();
       asm[action.name] = AsyncActionField();
       final newS = s.copyWithMap(asm);

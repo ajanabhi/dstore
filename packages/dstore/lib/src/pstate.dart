@@ -56,17 +56,17 @@ abstract class PStateModel<M> {
 
 class PStateMeta<S extends PStateModel> {
   final int group;
-  final ReducerFn reducer;
-  final AReducerFn aReducer;
+  final ReducerFn? reducer;
+  final AReducerFn? aReducer;
   final S Function() ds;
   final Map<String, dynamic> Function(S)? serialize;
   final S Function(Map<String, dynamic>)? deserialize;
 
   const PStateMeta(
-      {required this.aReducer,
+      {this.aReducer,
       required this.group,
       this.serialize,
       this.deserialize,
-      required this.reducer,
+      this.reducer,
       required this.ds});
 }
