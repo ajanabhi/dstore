@@ -13,18 +13,25 @@ class GField {
   final String? type;
   final List<GField> fields;
   // final List<String> enumValues;
-  final List<GFragment> framents;
+  final List<GFragment> fragments;
   final String? defaultValue;
+  final bool isUnion;
 
   GField(
       {required this.name,
       required this.optional,
       required this.listType,
       this.type,
+      this.isUnion = false,
       this.jsonKey,
       this.defaultValue,
-      this.framents = const [],
+      this.fragments = const [],
       this.fields = const []});
+
+  @override
+  String toString() {
+    return 'GField(name: $name, jsonKey: $jsonKey, optional: $optional, listType: $listType, type: $type, fields: $fields, framents: $fragments, defaultValue: $defaultValue)';
+  }
 }
 
 class Stack<T> {
@@ -302,7 +309,7 @@ class OperationVisitor extends RecursiveVisitor {
           jsonKey: name.substring(1),
           optional: !fm.strict,
           fields: fields,
-          framents: fragments));
+          fragments: fragments));
     }
     print("field leave ${node.name.value} $fm");
   }
@@ -384,4 +391,117 @@ class OperationVisitor extends RecursiveVisitor {
         return customScalar ? typeDef.name : "dynamic";
     }
   }
+}
+
+class Field {
+  final String name;
+  final String type;
+  final String? jsonKey;
+  final GType? gType;
+
+  Field(
+      {required this.name,
+      required this.type,
+      required this.jsonKey,
+      this.gType});
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+
+    return o is Field && o.name == name && o.jsonKey == jsonKey;
+  }
+
+  @override
+  int get hashCode => name.hashCode ^ jsonKey.hashCode;
+
+  @override
+  String toString() {
+    return "Field(name: ${name}, type: ${type}, jsonKey: ${jsonKey} , gType: ${gType})";
+  }
+}
+
+class GType {
+  final Set<Field> fields;
+  final String name;
+  GType({required this.fields, required this.name});
+
+  @override
+  String toString() {
+    return "GType(fields: ${fields}, name: ${name});";
+  }
+}
+
+Field convertGraphqlFieldToField(
+    GField gf, String prefix, Map<String, ToplevelFragment> fragmentFieldsMap) {
+  if (gf.isUnion) {
+    // union type
+    return Field(name: gf.name, jsonKey: gf.jsonKey, type: "dynamic");
+  } else if (gf.fields.isNotEmpty || gf.fragments.isNotEmpty) {
+    // object or interface
+    final type = "${prefix}_${gf.name}";
+    final gt = getGType(gf.fields, gf.fragments, type, fragmentFieldsMap);
+
+    return Field(name: gf.name, jsonKey: gf.jsonKey, type: type, gType: gt);
+  } else {
+    return Field(
+        name: gf.name, jsonKey: gf.jsonKey, type: getDType(gf, gf.type!));
+  }
+}
+
+GType getGType(List<GField> fields, List<GFragment> fragments, String prefix,
+    Map<String, ToplevelFragment> fragmentFieldsMap) {
+  final fFields = <Field>{};
+
+  fFields.addAll(fields
+      .map((gf) => convertGraphqlFieldToField(gf, prefix, fragmentFieldsMap)));
+  fFields.addAll(getFieldsFromFragment(fragments, fragmentFieldsMap, prefix));
+
+  return GType(fields: fFields, name: prefix);
+}
+
+Set<Field> getFieldsFromFragment(List<GFragment> fragments,
+    Map<String, ToplevelFragment> fragmentFieldsMap, String prefix) {
+  final fragFields = <Field>{};
+  fragments.forEach((frag) {
+    var fields = frag.fields;
+    var frags = frag.fragments;
+    if (frag.typeNode != null) {
+      final tf = fragmentFieldsMap[frag.typeNode]!;
+      fields = tf.fields;
+      frags = tf.fragments;
+    }
+    fragFields.addAll(fields.map(
+        (gf) => convertGraphqlFieldToField(gf, prefix, fragmentFieldsMap)));
+    fragFields.addAll(getFieldsFromFragment(frags, fragmentFieldsMap, prefix));
+  });
+  return fragFields;
+}
+
+String getDType(GField gf, String type) {
+  String getListType(List<GListType> list, String type) {
+    final lt = list.first;
+    final ltt = lt == GListType.nonstrict ? "List<$type>?" : "List<$type>";
+    if (list.length == 1) {
+      return ltt;
+    } else {
+      return getListType(list.sublist(1), ltt);
+    }
+  }
+
+  final t = gf.optional ? "$type?" : type;
+  if (gf.listType.isNotEmpty) {
+    return getListType(gf.listType, t);
+  } else {
+    return t;
+  }
+}
+
+String getTypes(OperationVisitor visitor) {
+  final list = <GType>[];
+  final fragmentMap = visitor.fragmentFieldsMap;
+
+  final gt = getGType(visitor.fields, visitor.fragments, "OpData", fragmentMap);
+  print(gt);
+  return "";
 }

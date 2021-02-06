@@ -22,11 +22,11 @@ class StreamField<D> {
   final StreamSubscription? internalSubscription;
   final D? data;
   final dynamic? error;
-  final bool loading;
+  final bool listening;
   final bool completed;
 
   StreamField(
-      {this.loading = false,
+      {this.listening = false,
       this.completed = false,
       this.internalSubscription,
       this.data,
@@ -36,14 +36,14 @@ class StreamField<D> {
     StreamSubscription? internalSubscription,
     D? data,
     dynamic? error,
-    bool? loading,
+    bool? listening,
     bool? completed,
   }) {
     return StreamField<D>(
       internalSubscription: internalSubscription ?? this.internalSubscription,
       data: data ?? this.data,
       error: error ?? this.error,
-      loading: loading ?? this.loading,
+      listening: listening ?? this.listening,
       completed: completed ?? this.completed,
     );
   }

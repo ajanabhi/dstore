@@ -4,7 +4,7 @@ import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
 final Middleware asyncMiddleware =
-    (Store<dynamic> store, Dispatch next, Action action) async {
+    (Store store, Dispatch next, Action action) async {
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
@@ -35,44 +35,51 @@ final Middleware asyncMiddleware =
   }
 };
 
-dynamic streamMiddleware<S extends AppStateI>(
-    Store<S> store, Dispatch next, Action action) async {
+final Middleware streamMiddleware =
+    (Store store, Dispatch next, Action action) async {
   if (action.isProcessed || action.stream == null) {
     next(action);
   } else {
-    final sub = action.stream?.listen((event) {
-      final field = store.getFieldFromAction(action) as StreamField;
+    final field = store.getFieldFromAction(action) as StreamField;
+    if (field.listening) {
+      //  already listening
       store.dispatch(action.copyWith(
           internal: ActionInternal(
-        processed: true,
-        data: field.copyWith(loading: false, data: event, error: null),
-        type: ActionInternalType.DATA,
-      )));
-    }, onError: (e) {
-      final field = store.getFieldFromAction(action) as StreamField;
+              processed: true, type: ActionInternalType.DATA, data: field)));
+    } else {
+      final sub = action.stream?.listen((event) {
+        final field = store.getFieldFromAction(action) as StreamField;
+        store.dispatch(action.copyWith(
+            internal: ActionInternal(
+          processed: true,
+          data: field.copyWith(data: event, error: null),
+          type: ActionInternalType.DATA,
+        )));
+      }, onError: (e) {
+        final field = store.getFieldFromAction(action) as StreamField;
+        store.dispatch(action.copyWith(
+            internal: ActionInternal(
+          processed: true,
+          data: field.copyWith(error: e),
+          type: ActionInternalType.DATA,
+        )));
+      }, onDone: () {
+        final field = store.getFieldFromAction(action) as StreamField;
+        store.dispatch(action.copyWith(
+            internal: ActionInternal(
+          processed: true,
+          data: field.copyWith(listening: false, error: null, completed: true),
+          type: ActionInternalType.DATA,
+        )));
+      });
       store.dispatch(action.copyWith(
           internal: ActionInternal(
-        processed: true,
-        data: field.copyWith(loading: false, error: e),
-        type: ActionInternalType.DATA,
-      )));
-    }, onDone: () {
-      final field = store.getFieldFromAction(action) as StreamField;
-      store.dispatch(action.copyWith(
-          internal: ActionInternal(
-        processed: true,
-        data: field.copyWith(loading: false, error: null, completed: true),
-        type: ActionInternalType.DATA,
-      )));
-    });
-    store.dispatch(action.copyWith(
-        internal: ActionInternal(
-            processed: true,
-            type: ActionInternalType.DATA,
-            data: StreamField(internalSubscription: sub, loading: true))));
+              processed: true,
+              type: ActionInternalType.DATA,
+              data: StreamField(internalSubscription: sub, listening: true))));
+    }
   }
-}
-
+};
 dynamic formMiddleware<S extends AppStateI>(
     Store<S> store, Dispatch next, Action action) async {
   if (action.isProcessed || action.form == null) {
