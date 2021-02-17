@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -10,8 +12,8 @@ import 'package:source_gen/source_gen.dart';
 
 class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
   @override
-  String generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) {
+  Future<String> generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) async {
     if (!(element is ClassElement)) {
       throw Exception("Selectors should be applied on class only");
     }
@@ -22,7 +24,7 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
     }
     final modelName = className.substring(1);
     final visitor = SelectorsVisitor(modelName);
-    final astNode = getAstNodeFromElement(element);
+    final astNode = await getResolvedAstNodeFromElement(element);
     astNode.visitChildren(visitor);
 
     return """
@@ -105,6 +107,8 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
       result.addAll(getListOfPropAccess(target));
     } else if (target is PrefixedIdentifier) {
       if (target.prefix.toString() == identifier.toString()) {
+        print(
+            "IdentifierElement3 ${target.identifier.toString()}  ${target.staticType}  ${target.identifier.staticType}");
         result.add(target.identifier.toString());
       } else {
         print("target is not identifier ${target.runtimeType} ${target}");
@@ -131,6 +135,9 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
     print(
         "**##### IdenAccess  ${node} id:  ${node.identifier} prefix : ${node.prefix} mid :${identifier.toString()}");
     if (node.prefix.toString() == identifier.toString()) {
+      print(
+          "IdentifierElement1 ${node.identifier.staticElement} ${node.identifier.staticType}");
+
       depsList.add([node.identifier.toString()]);
     } else {
       print("identifier is not equal ${node.prefix == identifier}");

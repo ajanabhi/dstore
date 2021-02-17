@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dio/dio.dart';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
+import 'package:dstore_generator/src/graphql/introspection.dart';
 import 'package:dstore_generator/src/utils.dart';
 import 'package:gql/language.dart' as glang;
 import 'package:gql/schema.dart' as gschema;
@@ -19,6 +23,7 @@ class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
     }
 
     final gApi = element.metadata.first.computeConstantValue();
+    print("gApi $gApi , apiUrl ${gApi.getField("apiUrl")}");
     final apiUrl = gApi.getField("apiUrl").toStringValue();
     final schemaPath = gApi.getField("schemaPath").toStringValue();
     String? wsUrl;
@@ -26,13 +31,22 @@ class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
     if (!wsUrlField.isNull) {
       wsUrl = wsUrlField.toStringValue();
     }
-    final schemaStr = await File(schemaPath).readAsString();
-    final schemaDoc = glang.parseString(schemaStr);
-    final schema = gschema.GraphQLSchema.fromNode(schemaDoc);
+    // final schemaStr = await File(schemaPath).readAsString();
+    // final schemaDoc = glang.parseString(schemaStr);
+    final schema = await getGraphqlSchemaFromApiUrl(apiUrl);
     graphqlSchemaMap[apiUrl] = schema;
     final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
+    final inputs = schema.inputObjectTypes
+        .map((e) => _convertGInputTypeToDType(e))
+        .join("\n");
     schema.inputObjectTypes;
-    return "";
+    return """
+      
+      $enums 
+
+      $inputs
+    
+    """;
   }
 }
 
@@ -97,4 +111,20 @@ String _convertGInputTypeToDType(gschema.InputObjectTypeDefinition it) {
      ${createToStringFromFieldsList(name, fields)}
    }
   """;
+}
+
+Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(String url) async {
+  late gschema.GraphQLSchema schema;
+  try {
+    final dio = Dio();
+    final resp = await dio.post(url, data: {"query": getIntrospectionQuery()});
+    final respStr = jsonEncode(resp.data);
+    // await File("schema.json").writeAsString(respStr);
+    schema = buildSchemaFromIntrospection(
+        IntrospectionQuery.fromJson(resp.data["data"]));
+  } catch (e) {
+    throw Exception("Error while getting graphql schema from api url $url $e ");
+  }
+  graphqlSchemaMap[url] = schema;
+  return schema;
 }

@@ -20,6 +20,7 @@ class _AppSelectors {
   static S1 hello(AppState state) {
     final n = state.sample.name.name;
     // final c = state.sample;
+    print("hellos");
     final s = state.sample.s;
     return S1(name: n, s: s);
     // return state.sample.name.name;

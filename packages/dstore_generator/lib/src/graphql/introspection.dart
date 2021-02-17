@@ -542,28 +542,3 @@ DirectiveDefinition buildDirectiveDef(
       locations: locations,
       args: args));
 }
-
-void introSpectionTest() async {
-  final dio = Dio();
-  // final url =
-  //     "https://available-wilderness.ap-south-1.aws.cloud.dgraph.io/graphql";
-  final url = "http://localhost:4000/";
-  final resp = await dio.post(url, data: {"query": getIntrospectionQuery()});
-  final respStr = jsonEncode(resp.data);
-  await File("schema.json").writeAsString(respStr);
-  final schema = buildSchemaFromIntrospection(
-      IntrospectionQuery.fromJson(resp.data["data"]));
-  print(schema.query);
-}
-
-Future<GraphQLSchema> getScchema() async {
-  final dio = Dio();
-  final url = "http://localhost:4000/";
-  final resp = await dio.post(url, data: {"query": getIntrospectionQuery()});
-  final respStr = jsonEncode(resp.data);
-  await File("schema.json").writeAsString(respStr);
-  final schema = buildSchemaFromIntrospection(
-      IntrospectionQuery.fromJson(resp.data["data"]));
-  print(schema.query);
-  return schema;
-}

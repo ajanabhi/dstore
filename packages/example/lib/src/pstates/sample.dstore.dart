@@ -131,7 +131,6 @@ abstract class SampleActions {
 
   static todos(
       {bool abortable = false,
-      bool offline = false,
       Map<String, dynamic>? headers,
       Null optimisticResponse}) {
     return Action(
@@ -139,12 +138,10 @@ abstract class SampleActions {
         group: 536232238,
         http: HttpPayload(
             abortable: abortable,
-            offline: offline,
             headers: headers,
             optimisticResponse: optimisticResponse,
             url: "",
             method: "GET",
-            isGraphql: false,
             inputType: HttpInputType.JSON,
             responseType: HttpResponseType.JSON,
             responseDeserializer: getTodosSerializer,

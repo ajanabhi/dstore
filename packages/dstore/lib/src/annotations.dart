@@ -11,12 +11,16 @@ class AppStateAnnotation {
 }
 
 class GraphqlApi {
+  final String apiUrl;
+  final String schemaPath;
+  final String? wsUrl;
   const GraphqlApi(
-      {required String apiUrl, required String schemaPath, String? wsUrl});
+      {required this.apiUrl, required this.schemaPath, String? this.wsUrl});
 }
 
 class GraphqlOps {
-  const GraphqlOps(GraphqlApi api);
+  final GraphqlApi api;
+  const GraphqlOps(this.api);
 }
 
 class DImmutable {

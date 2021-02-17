@@ -1,5 +1,6 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
+import 'package:dstore/src/websocket.dart';
 import "package:meta/meta.dart";
 
 @immutable
@@ -9,6 +10,7 @@ class Action {
   final bool isAsync;
   final Map<String, dynamic>? payload;
   final HttpPayload? http;
+  final WebSocketPayload? ws;
   final dynamic? extra;
   final ActionInternal? internal;
   final Stream? stream;
@@ -20,6 +22,7 @@ class Action {
       this.isAsync = false,
       this.stream,
       this.payload,
+      this.ws,
       this.extra,
       this.http,
       this.form,
@@ -32,6 +35,7 @@ class Action {
       dynamic? extra,
       Stream? stream,
       HttpPayload? http,
+      WebSocketPayload? ws,
       FormReq? form,
       ActionInternal? internal}) {
     return Action(
@@ -41,6 +45,7 @@ class Action {
         http: http ?? this.http,
         extra: extra ?? this.extra,
         form: form ?? this.form,
+        ws: ws ?? this.ws,
         stream: stream ?? this.stream,
         internal: internal ?? this.internal);
   }

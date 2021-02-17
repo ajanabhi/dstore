@@ -1,4 +1,11 @@
-enum HttpErrorType { NoNetWork, ResponseError, Aborted, Timeout }
+enum HttpErrorType {
+  Default,
+  Response,
+  Aborted,
+  ConnectTimeout,
+  SendTimeout,
+  ReceiveTimeout
+}
 
 class HttpError<RE> {
   final HttpErrorType type;
@@ -12,22 +19,30 @@ enum HttpResponseType { JSON, STRING, BYTES, STREAM }
 
 enum HttpInputType { JSON, FORM, TEXT }
 
-class HttpRequest<R, E> {
+class HttpRequestExtension {
+  final HttpField Function(HttpField)? transformer;
+
+  const HttpRequestExtension({this.transformer});
+}
+
+class HttpRequest<I, R, E> {
   final String method;
   final String url;
   final R Function(dynamic)? responseDeserializer;
+  final dynamic Function(I)? inputSerializer;
   final E Function(dynamic)? errorDeserializer;
   final HttpResponseType? responseType;
   final HttpInputType? inputType;
-  final bool isGraphql;
+  final String? graphqlQuery;
 
   const HttpRequest(
       {required this.method,
       required this.url,
       this.responseDeserializer,
+      this.inputSerializer,
       this.responseType,
       this.errorDeserializer,
-      this.isGraphql = false,
+      this.graphqlQuery,
       this.inputType});
 }
 
@@ -61,20 +76,22 @@ class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
 class HttpField<QP, I, R, E> {
   final bool loading;
   final R? data;
-  final HttpError? error;
+  final HttpError<E>? error;
   final bool completed;
+  final bool optimistic;
   final AbortController? abortController;
   const HttpField(
       {this.loading = false,
       this.data,
       this.error,
+      this.optimistic = false,
       this.completed = false,
       this.abortController});
 
   HttpField<QP, I, R, E> copyWith({
     bool? loading,
     R? data,
-    HttpError? error,
+    HttpError<E>? error,
     bool? completed,
     AbortController? abortController,
   }) {
@@ -88,41 +105,42 @@ class HttpField<QP, I, R, E> {
 
   @override
   String toString() =>
-      'HttpResult(loading: $loading, data: $data, error: $error)';
+      'HttpField(loading: $loading, data: $data, error: $error)';
 }
 
-class HttpPayload<R, E> {
+class HttpPayload<I, R, E, T> {
   final String url;
-  final dynamic data;
+  final I? data;
   final String method;
   final HttpResponseType responseType;
   final R? optimisticResponse;
   final HttpInputType? inputType;
   final R Function(dynamic) responseDeserializer;
-  final E Function(dynamic) errorDeserializer;
+  final HttpField Function(HttpField currentField, HttpField newField)?
+      transformer;
+  final dynamic Function(I)? inputSerializer;
+  final E Function(dynamic)? errorDeserializer;
   final Map<String, dynamic>? headers;
   final Map<String, dynamic>? queryParams;
   final int? sendTimeout;
   final int? receiveTieout;
-  final bool offline;
   final bool abortable;
-  final bool isGraphql;
 
   HttpPayload(
       {required this.url,
+      this.inputSerializer,
       required this.method,
       this.data,
+      this.transformer,
       required this.responseType,
       required this.responseDeserializer,
-      required this.errorDeserializer,
+      this.errorDeserializer,
       this.inputType,
       this.headers,
       this.receiveTieout,
       this.queryParams,
       this.sendTimeout,
       this.optimisticResponse,
-      this.isGraphql = false,
-      this.offline = false,
       this.abortable = false});
 }
 

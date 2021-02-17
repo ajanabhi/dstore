@@ -1,5 +1,7 @@
 import 'package:build/build.dart';
 import 'package:dstore_generator/src/app_state_generator.dart';
+import 'package:dstore_generator/src/graphql/graphql_ops_generator.dart';
+import 'package:dstore_generator/src/graphql/schema_generator.dart';
 import 'package:dstore_generator/src/immutable_generator.dart';
 import 'package:dstore_generator/src/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors_generator.dart';
@@ -14,7 +16,9 @@ Builder dstoreGen(BuilderOptions options) {
         PStateGenerator(),
         SelectorsGenerator(),
         AppStateGenerator(),
-        DImmutableGenerator()
+        DImmutableGenerator(),
+        GraphlSchemaGenerator(),
+        GraphqlOpsGenerator()
       ],
       '.dstore.dart',
       header: '''

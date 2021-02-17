@@ -16,6 +16,15 @@ AstNode getAstNodeFromElement(Element element) {
   return elDeclarationResult.node;
 }
 
+Future<AstNode> getResolvedAstNodeFromElement(Element element) async {
+  AnalysisSession session = element.session;
+
+  final s = await session.getResolvedLibraryByElement(element.library);
+  final s2 = s.getElementDeclaration(element);
+
+  return s2.node;
+}
+
 class Field {
   String name;
   String type;

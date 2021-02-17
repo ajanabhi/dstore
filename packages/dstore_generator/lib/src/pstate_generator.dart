@@ -40,10 +40,9 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
     final asyncReducerFubctionStr =
         _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
     print(fields);
-    final defaultState =
-        "${modelName}(${fields.map((f) => "${f.name}:${f.value}").join(", ")})";
     final group = "${element.source.fullName}_${className}".hashCode;
-
+    final defaultState =
+        "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, group: group) : f.value}").join(", ")})";
     final reducerGroup = """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
@@ -55,10 +54,12 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         ds: ${modelName}_DS);
     """;
     final httpFields = _getHttpFields(classElement.fields);
+    final formFields = fields.where((f) => f.type.startsWith("FomField"));
     final actions = _generateActionsCreators(
         methods: visitor.methods,
         modelName: modelName,
         group: group,
+        formFields: formFields,
         httpFields: httpFields);
 
     final result = """
@@ -73,6 +74,11 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
   }
 }
 
+String _addActionNameAndGroupNameToFormField(
+    {required String value, required String actionName, required int group}) {
+  return "${value.substring(0, value.lastIndexOf(")"))},internalAName: \"$actionName\",internalAGroup:$group)";
+}
+
 const STATE_VARIABLE = "_DStoreState";
 
 const ACTION_VARIABLE = "_DstoreAction";
@@ -84,6 +90,7 @@ const DSTORE_PREFIX = "_DStore_";
 String _generateActionsCreators({
   required List<ReducerMethod> methods,
   List<_HttpFieldInfo> httpFields = const [],
+  Iterable<Field> formFields = const [],
   required String modelName,
   required int group,
 }) {
@@ -120,20 +127,32 @@ String _generateActionsCreators({
           "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
     }
     if (hf.inputType != null) {
-      params.add("required ${hf.inputType} input");
-      payloadFields.add("input:input");
+      if (hf.inputType!.startsWith("GraphqlRequestInput")) {
+        final it = hf.inputType!;
+        final query = hf.graphqlQuery!;
+        final variableType = it.contains("<")
+            ? it.substring(it.indexOf("<"), it.indexOf(">"))
+            : null;
+        if (variableType != null) {
+          params.add("required ${variableType} variables");
+          payloadFields.add("input: GraphqlRequestInput(\"$query\",variables)");
+        } else {
+          payloadFields.add("input: GraphqlRequestInput(\"$query\",null)");
+        }
+      } else {
+        params.add("required ${hf.inputType} input");
+        payloadFields.add("input:input");
+      }
     }
     params.add("bool abortable = false");
     payloadFields.add("abortable: abortable");
-    params.add("bool offline = false");
-    payloadFields.add("offline: offline");
     params.add("Map<String,dynamic>? headers");
     payloadFields.add("headers:headers");
     params.add("${hf.responseType} optimisticResponse");
     payloadFields.add("optimisticResponse:optimisticResponse");
     payloadFields.add("""url:"${hf.url}" """);
     payloadFields.add("""method: "${hf.method}" """);
-    payloadFields.add("isGraphql:${hf.isGraphql}");
+    // payloadFields.add("isGraphql:${hf.isGraphql}");
     payloadFields.add("inputType:${hf.inputTypeEnum}");
     payloadFields.add("responseType:${hf.responseTypeEnum}");
     payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
@@ -145,10 +164,20 @@ String _generateActionsCreators({
       }
     """;
   }).join("\n");
+
+  final formActions = formFields.map((ff) {
+    return """
+   static ${ff.name}(FormReq req) {
+     return Action(name:"$ff.name}",group:${group},form:req);
+   }
+   """;
+  }).join("\n");
+
   return """
      abstract class ${modelName}Actions {
          ${methodActions}
          ${httpActions}
+         ${formActions}
      }
   """;
 }
@@ -218,7 +247,24 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       if (!errorDeserializerField.isNull) {
         errorDeserializer = errorDeserializerField.toFunctionValue().name;
       }
-      final isGraphql = req.getField("isGraphql")?.toBoolValue() ?? false;
+      final graphqlQuery = req.getField("graphqlQuery")?.toStringValue();
+      String? inputSerializer;
+      final inputSerializerField = req.getField("inputSerializer");
+      if (!inputSerializerField.isNull) {
+        inputSerializer = inputSerializerField.toFunctionValue().name;
+      }
+
+      final reqEA = f.metadata
+          .where((a) => a.element.name.startsWith("HttpRequestExtension"));
+      String? transformer;
+      if (reqEA.isNotEmpty) {
+        final reqE = f.metadata.first.computeConstantValue();
+        final tf = reqE.getField("transformer");
+        if (!tf.isNull) {
+          transformer = tf.toFunctionValue().name;
+        }
+      }
+
       final hfi = _HttpFieldInfo(
           name: f.name,
           url: url,
@@ -229,8 +275,10 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
           responseDeserializer: responseDeserializer,
           errorDeserializer: errorDeserializer,
           queryParamsType: queryParamsType,
+          inputSerializer: inputSerializer,
           responseType: responseType,
-          isGraphql: isGraphql);
+          transformer: transformer,
+          graphqlQuery: graphqlQuery);
       result.add(hfi);
     }
   });
@@ -244,10 +292,12 @@ class _HttpFieldInfo {
   final HttpInputType inputTypeEnum;
   final HttpResponseType responseTypeEnum;
   final String responseDeserializer;
+  final String? inputSerializer;
+  final String? transformer;
   final String errorDeserializer;
   final String method;
   final String? queryParamsType;
-  final bool isGraphql;
+  final String? graphqlQuery;
   final String responseType;
 
   _HttpFieldInfo({
@@ -260,8 +310,10 @@ class _HttpFieldInfo {
     required this.responseDeserializer,
     required this.errorDeserializer,
     required this.method,
+    this.inputSerializer,
+    this.transformer,
     required this.queryParamsType,
-    required this.isGraphql,
+    this.graphqlQuery,
   });
 }
 
