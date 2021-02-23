@@ -290,10 +290,13 @@ class DWebSocket {
     });
   }
 
-  void _dispatchActionToStore(Action action, dynamic data) {
+  void _dispatchActionToStore(Action action, WebSocketField data) {
     store.dispatch(action.copyWith(
         internal: ActionInternal(
-            data: data, processed: true, type: ActionInternalType.DATA)));
+            data: data.copyWith(
+                internalUnsubscribe: Nullable(_getUnSunscribeFuntion(action))),
+            processed: true,
+            type: ActionInternalType.DATA)));
   }
 
   bool removeFromSubscriptions(Action action) {
@@ -340,6 +343,14 @@ class DWebSocket {
       }
     }
     //TODO check if this sends a complete event.
+  }
+
+  void Function() _getUnSunscribeFuntion(Action action) {
+    return () => store.dispatch(Action(
+        name: action.name,
+        group: action.group,
+        ws: WebSocketPayload(
+            url: url, responseDeserializer: IdentifyFn, unsubscribe: true)));
   }
 
   void handleAction(Action action) {

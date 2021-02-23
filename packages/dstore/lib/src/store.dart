@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dstore/dstore.dart';
 
 import 'package:dstore/src/action.dart';
@@ -18,20 +20,62 @@ class Store<S extends AppStateI> {
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
   final Map<int, String> _pStateGroupToStateKeyMap = {};
+  final Map<String, Timer> internalDebounceTimers = {};
   late S _state;
+  var isReady = false;
+  final StorageOptions? storageOptions;
+  void Function()? _onReadyListener = null;
+  final NetworkOptions? networkOptions;
 
   Store(
       {required this.meta,
+      this.storageOptions,
+      this.networkOptions,
       required S Function() stateCreator,
       List<Middleware<S>>? middlewares,
       S? initialState}) {
     middlewares ??= [];
     middlewares.add(asyncMiddleware);
     _dispatchers = _createDispatchers(middlewares);
-    _prepareNormalStore(stateCreator);
+    if (storageOptions != null) {
+      _prepareStoreFromStorage(stateCreator);
+    } else {
+      _prepareNormalStore(stateCreator);
+    }
+  }
+
+  void listenForReadyState(Function() fn) {
+    _onReadyListener = fn;
   }
 
   S get state => _state;
+
+  void _prepareStoreFromStorage(S Function() stateCreator) async {
+    try {
+      final so = storageOptions!;
+      final sState = await so.storage.getState(meta.keys);
+      if (sState == null) {
+        // meaning running app first time or user deleted app data
+        _prepareNormalStore(stateCreator);
+      } else {
+        final AppStateI s = stateCreator();
+        final map = <String, dynamic>{};
+        meta.forEach((key, rg) {
+          if (_pStateGroupToStateKeyMap[rg.group] != null) {
+            throw Exception(
+                "You already selected same PState before with key ${_pStateGroupToStateKeyMap[rg.group]}  ");
+          }
+          _pStateGroupToStateKeyMap[rg.group] = key;
+          final ds = rg.ds();
+          map[key] = sState[key] != null ? ds.copyWithMap(sState[key]!) : ds;
+        });
+        _state = s.copyWithMap(map);
+      }
+    } finally {
+      isReady = true;
+      _onReadyListener?.call();
+    }
+  }
 
   void _prepareNormalStore(S Function() stateCreator) {
     final AppStateI s = stateCreator();
@@ -45,6 +89,7 @@ class Store<S extends AppStateI> {
       map[key] = rg.ds();
     });
     _state = s.copyWithMap(map);
+    isReady = true;
   }
 
   List<Dispatch> _createDispatchers(List<Middleware<S>> middlewares) {
@@ -121,8 +166,79 @@ class Store<S extends AppStateI> {
     return result;
   }
 
+  void _closeStreams(Selector selector, Map<String, PStateModel> sMap) {
+    if (selector.sfDeps != null) {
+      // selector.sfDeps!.forEach((key, values) {
+      //   final slsa = selectorListeners[key];
+      //   final propsOfKeysToCloseStreams = <String, List<String>>{};
+      //   if (slsa != null && slsa.isNotEmpty) {
+      //     final existingStateKeyProps = <String>{};
+      //     slsa.forEach((sls) {
+      //       existingStateKeyProps.addAll(sls.selector.deps[key]!);
+      //     });
+      //     propsOfKeysToCloseStreams[key] = [];
+      //     values.forEach((skp) {
+      //       if (!existingStateKeyProps.contains(skp)) {
+      //         propsOfKeysToCloseStreams[key]!.add(skp);
+      //       }
+      //     });
+      //   } else {
+      //     propsOfKeysToCloseStreams[key] = values;
+      //   }
+      //   propsOfKeysToCloseStreams.forEach((key, props) {
+      //     if (props.isNotEmpty) {
+      //       final pm = sMap[key]!;
+      //       final pmMap = pm.toMap();
+      //       // final rmDSMap = meta[sk]!.ds().toMap();
+      //       props.forEach((prop) {
+      //         final sf = pmMap[prop] as StreamField;
+      //         sf.internalSubscription?.cancel();
+      //         pmMap[prop] = StreamField();
+      //       });
+      //       sMap[key] = pm.copyWithMap(pmMap);
+      //     }
+      //   });
+      // });
+    }
+  }
+
+  void _closeWebSockets(Selector selector, Map<String, PStateModel> sMap) {
+    if (selector.sfDeps != null) {
+      // selector.sfDeps!.forEach((key, values) {
+      //   final slsa = selectorListeners[key];
+      //   final propsOfKeysToCloseWebSockets = <String, List<String>>{};
+      //   if (slsa != null && slsa.isNotEmpty) {
+      //     final existingStateKeyProps = <String>{};
+      //     slsa.forEach((sls) {
+      //       existingStateKeyProps.addAll(sls.selector.deps[key]!);
+      //     });
+      //     propsOfKeysToCloseWebSockets[key] = [];
+      //     values.forEach((skp) {
+      //       if (!existingStateKeyProps.contains(skp)) {
+      //         propsOfKeysToCloseWebSockets[key]!.add(skp);
+      //       }
+      //     });
+      //   } else {
+      //     propsOfKeysToCloseWebSockets[key] = values;
+      //   }
+      //   propsOfKeysToCloseWebSockets.forEach((key, props) {
+      //     if (props.isNotEmpty) {
+      //       final pm = sMap[key]!;
+      //       final pmMap = pm.toMap();
+      //       props.forEach((prop) {
+      //         final wf = pmMap[prop] as WebSocketField;
+      //         wf.internalUnsubscribe?.call();
+      //         pmMap[prop] = WebSocketField();
+      //       });
+      //       sMap[key] = pm.copyWithMap(pmMap);
+      //     }
+      //   });
+      // });
+    }
+  }
+
   void _resetToDefaultStateIfNotUsedByOtherSelectors(
-      Selector<S, dynamic> selector) {
+      Selector selector, Map<String, PStateModel> sMap) {
     final keysToReset = <String>[];
     final propsOfKeysToReset = <String, List<String>>{};
     selector.deps.forEach((sk, values) {
@@ -142,7 +258,7 @@ class Store<S extends AppStateI> {
         // no listeneres for this state key
         keysToReset.add(sk);
       }
-      final sMap = _state.toMap();
+
       keysToReset.forEach((sk) {
         sMap[sk] = meta[sk]!.ds();
       });
@@ -157,8 +273,60 @@ class Store<S extends AppStateI> {
           sMap[sk] = rm.copyWithMap(rmMap);
         }
       });
-      _state = _state.copyWithMap(sMap);
     });
+  }
+
+  void _handleUnsubscribe(Selector selector, UnSubscribeOptions? options) {
+    final process = selector.wsDeps != null ||
+        selector.sfDeps != null ||
+        (options != null && options.resetToDefault != null);
+    if (process) {
+      final sMap = _state.toMap();
+      final isForceReset = options?.resetToDefault == ResetToDefault.FORCE;
+      //   _closeStreams(selector, sMap);
+      //   _closeWebSockets(selector, sMap);
+      //   if (options != null && options.resetToDefault) {
+      //     _resetToDefaultStateIfNotUsedByOtherSelectors(selector, sMap);
+      //   }
+      //   _state = _state.copyWithMap(sMap);
+      if (isForceReset) {
+      } else {
+        final keysToReset = <String>[];
+        final propsOfKeysToReset = <String, List<String>>{};
+        selector.deps.forEach((sk, values) {
+          final slsa = selectorListeners[sk];
+          if (slsa != null && slsa.isNotEmpty) {
+            final existingStateKeyProps = <String>{};
+            slsa.forEach((sls) {
+              existingStateKeyProps.addAll(sls.selector.deps[sk]!);
+            });
+            propsOfKeysToReset[sk] = [];
+            values.forEach((skp) {
+              if (!existingStateKeyProps.contains(skp)) {
+                propsOfKeysToReset[sk]!.add(skp);
+              }
+            });
+          } else {}
+
+          // keysToReset.forEach((sk) {
+          //   sMap[sk] = meta[sk]!.ds();
+          // });
+          // propsOfKeysToReset.forEach((sk, props) {
+          //   if (props.isNotEmpty) {
+          //     final rm = sMap[sk]!;
+          //     final rmMap = rm.toMap();
+          //     final rmDSMap = meta[sk]!.ds().toMap();
+          //     props.forEach((prop) {
+          //       rmMap[prop] = rmDSMap[prop];
+          //     });
+          //     sMap[sk] = rm.copyWithMap(rmMap);
+          //   }
+          // });
+        });
+      }
+      // }
+
+    }
   }
 
   /* public methods  */
@@ -210,21 +378,22 @@ class Store<S extends AppStateI> {
           sla.removeAt(index);
         }
       });
-      if (options != null && options.resetToDefault) {
-        _resetToDefaultStateIfNotUsedByOtherSelectors(
-            selector as Selector<S, dynamic>);
-      } else {}
+      // if (options != null && options.resetToDefault) {
+      //   _resetToDefaultStateIfNotUsedByOtherSelectors(
+      //       selector as Selector<S, dynamic>);
+      // } else {}
+      _handleUnsubscribe(selector, options);
       isSubscribed = false;
     };
   }
 }
 
-enum ResetToDefaultType { FORCE, IF_NOT_USED_BY_OTHER_SELECTORS }
+enum ResetToDefault { FORCE, IF_NOT_USED_BY_OTHER_WIDGETS }
 
 class UnSubscribeOptions {
-  final bool resetToDefault;
+  final ResetToDefault? resetToDefault;
 
-  UnSubscribeOptions({this.resetToDefault = false});
+  UnSubscribeOptions({this.resetToDefault});
 }
 
 class _SelectorListener<S extends AppStateI> {

@@ -1,4 +1,4 @@
-name: dstore
+name: network_status_default
 version: 0.0.1
 description: >-
   dstore.
@@ -6,9 +6,15 @@ homepage: https://github.com/chandu0101/dstore
 environment:
   sdk: ">=2.12.0-0 <3.0.0"
 dependencies:
+  flutter: 
+    sdk: flutter
   meta:
-  collection: 1.15.0  
+  connectivity: 3.0.0-nullsafety.3
+  dstore:
+    path: ../dstore
+    
   
 
 dev_dependencies:
-  pedantic:
+  pedantic: 
+    

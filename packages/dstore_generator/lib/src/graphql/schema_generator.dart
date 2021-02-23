@@ -7,7 +7,7 @@ import 'package:dio/dio.dart';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/introspection.dart';
-import 'package:dstore_generator/src/utils.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/language.dart' as glang;
 import 'package:gql/schema.dart' as gschema;
 import 'package:source_gen/source_gen.dart';
@@ -25,15 +25,10 @@ class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
     final gApi = element.metadata.first.computeConstantValue();
     print("gApi $gApi , apiUrl ${gApi.getField("apiUrl")}");
     final apiUrl = gApi.getField("apiUrl").toStringValue();
-    final schemaPath = gApi.getField("schemaPath").toStringValue();
-    String? wsUrl;
-    final wsUrlField = gApi.getField("wsUrl");
-    if (!wsUrlField.isNull) {
-      wsUrl = wsUrlField.toStringValue();
-    }
-    // final schemaStr = await File(schemaPath).readAsString();
-    // final schemaDoc = glang.parseString(schemaStr);
-    final schema = await getGraphqlSchemaFromApiUrl(apiUrl);
+    final schemaPath = gApi.getField("schemaPath")?.toStringValue();
+    final wsUrl = gApi.getField("wsUrl")?.toStringValue();
+
+    final schema = await getGraphqlSchemaFromApiUrl(apiUrl, schemaPath);
     graphqlSchemaMap[apiUrl] = schema;
     final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
     final inputs = schema.inputObjectTypes
@@ -96,24 +91,25 @@ String _convertGInputTypeToDType(gschema.InputObjectTypeDefinition it) {
   return """
    @JsonSerializable(createFactory: false)
    class  $name {
-     ${getFinalFieldsFromFieldsList(fields)}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
 
-     ${createConstructorFromFieldsList(name, fields)}
+     ${ModelUtils.createConstructorFromFieldsList(name, fields)}
       
-     ${createToJson(name)} 
+     ${ModelUtils.createToJson(name)} 
      
-     ${createCopyWithFromFieldsList(name, fields)}
+     ${ModelUtils.createCopyWithFromFieldsList(name, fields)}
 
-     ${createEqualsFromFieldsList(name, fields)}
+     ${ModelUtils.createEqualsFromFieldsList(name, fields)}
 
-     ${createHashcodeFromFieldsList(fields)}
+     ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
-     ${createToStringFromFieldsList(name, fields)}
+     ${ModelUtils.createToStringFromFieldsList(name, fields)}
    }
   """;
 }
 
-Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(String url) async {
+Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
+    String url, String? schemaPath) async {
   late gschema.GraphQLSchema schema;
   try {
     final dio = Dio();
@@ -123,8 +119,25 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(String url) async {
     schema = buildSchemaFromIntrospection(
         IntrospectionQuery.fromJson(resp.data["data"]));
   } catch (e) {
-    throw Exception("Error while getting graphql schema from api url $url $e ");
+    if (schemaPath != null) {
+      print(
+          "Error getting schema from apiUrl $e , Try to get schema from file $schemaPath");
+      schema = await getSchemaFromPath(schemaPath);
+    } else {
+      throw Exception(
+          "Error while getting graphql schema from api url $url $e ");
+    }
   }
   graphqlSchemaMap[url] = schema;
   return schema;
+}
+
+Future<gschema.GraphQLSchema> getSchemaFromPath(String schemaPath) async {
+  try {
+    final schemaStr = await File(schemaPath).readAsString();
+    final schemaDoc = glang.parseString(schemaStr);
+    return gschema.GraphQLSchema.fromNode(schemaDoc);
+  } catch (e) {
+    throw Exception("Error getting schema from file $schemaPath");
+  }
 }

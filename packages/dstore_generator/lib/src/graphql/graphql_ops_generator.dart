@@ -26,11 +26,12 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
     final opsAnnotations = element.metadata.first.computeConstantValue();
     final api = opsAnnotations.getField("api");
     final apiUrl = api.getField("apiUrl").toStringValue();
+    final schemaPath = api.getField("schemaPath")?.toStringValue();
     GraphQLSchema schema;
 
     final eSchema = graphqlSchemaMap[apiUrl];
     if (eSchema == null) {
-      schema = await getGraphqlSchemaFromApiUrl(apiUrl);
+      schema = await getGraphqlSchemaFromApiUrl(apiUrl, schemaPath);
     } else {
       schema = eSchema;
     }

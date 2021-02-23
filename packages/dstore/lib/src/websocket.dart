@@ -1,10 +1,12 @@
+import 'package:dstore/src/helper_classes.dart';
+
 class WebSocketRequest<I, R> {
   final String url;
   final String? graphqlQuery;
   final dynamic Function(I)? inputSerializer;
   final R Function(dynamic) responseDeserializer;
 
-  WebSocketRequest(
+  const WebSocketRequest(
       {required this.url,
       this.graphqlQuery,
       this.inputSerializer,
@@ -16,21 +18,29 @@ class WebSocketField<I, R, E> {
   final R? data;
   final E? error;
   final bool completed;
+  final void Function()? internalUnsubscribe;
   const WebSocketField(
-      {this.loading = false, this.data, this.error, this.completed = false});
+      {this.loading = false,
+      this.data,
+      this.internalUnsubscribe,
+      this.error,
+      this.completed = false});
 
   WebSocketField<I, R, E> copyWith({
     bool? loading,
-    R? data,
-    dynamic? error,
+    Nullable<R>? data,
+    Nullable<dynamic>? error,
+    Nullable<void Function()>? internalUnsubscribe,
     bool? completed,
   }) {
     return WebSocketField<I, R, E>(
-      loading: loading ?? this.loading,
-      data: data ?? this.data,
-      error: error ?? this.error,
-      completed: completed ?? this.completed,
-    );
+        loading: loading ?? this.loading,
+        data: data != null ? data.value : this.data,
+        error: error != null ? error.value : this.error,
+        completed: completed ?? this.completed,
+        internalUnsubscribe: internalUnsubscribe != null
+            ? internalUnsubscribe.value
+            : this.internalUnsubscribe);
   }
 
   @override

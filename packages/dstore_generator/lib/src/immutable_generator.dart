@@ -1,7 +1,7 @@
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore/dstore.dart';
-import 'package:dstore_generator/src/utils.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
 class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
@@ -22,28 +22,32 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       throw Exception(
           "DImmutable constructor should contain only named params");
     }
-    final fields = convertParamElementsToFields(ctor.parameters);
+    final fields = processFields(convertParamElementsToFields(ctor.parameters));
     final name = element.name;
     print("Params : $fields");
     return """
       ${_createMixin(name, fields)}
 
       ${_createClass(name, fields)}
+
+      ${ModelUtils.createCopyWithClasses(name, fields)}
     """;
   }
 }
 
 String _createMixin(String name, List<Field> fields) {
-  final params = fields
-      .map((f) =>
-          "${(f.type.endsWith("?") || f.isOptional) ? "Nullable<${f.type.replaceFirst("?", "")}>?" : "${f.type}?"} ${f.name}")
-      .join(", ");
+  // final params = fields
+  //     .map((f) =>
+  //         "${(f.type.endsWith("?") || f.isOptional) ? "Nullable<${f.type.replaceFirst("?", "")}>?" : "${f.type}?"} ${f.name}")
+  //     .join(", ");
   return """
    mixin _\$$name {
 
-    ${fields.map((f) => "${f.type} get ${f.name};").join("\n")}
+    ${fields.map((f) => "${f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : f.type} get ${f.name};").join("\n")}
     
-    $name copyWith({$params});
+    @JsonKey(ignore: true)
+    \$${name}CopyWith<${name}> get copyWith;
+   
    }
   """;
 }
@@ -53,18 +57,17 @@ String _createClass(String name, List<Field> fields) {
   return """
    class $className implements $name {
      
-     ${getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
-
-     ${createConstructorFromFieldsList(className, fields)}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
      
-     @override
-     ${createCopyWithFromFieldsList(className, fields)}
+     ${ModelUtils.getCopyWithField(name)}
+      
+     ${ModelUtils.createConstructorFromFieldsList(className, fields)}
      
-     ${createEqualsFromFieldsList(className, fields)}
+     ${ModelUtils.createEqualsFromFieldsList(className, fields)}
 
-     ${createHashcodeFromFieldsList(fields)}
+     ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
-     ${createToStringFromFieldsList(name, fields)}
+     ${ModelUtils.createToStringFromFieldsList(name, fields)}
    }
   
   """;

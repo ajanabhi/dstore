@@ -14,6 +14,7 @@ class Action {
   final dynamic? extra;
   final ActionInternal? internal;
   final Stream? stream;
+  final Duration? debounce;
   final FormReq? form;
 
   const Action(
@@ -22,6 +23,7 @@ class Action {
       this.isAsync = false,
       this.stream,
       this.payload,
+      this.debounce,
       this.ws,
       this.extra,
       this.http,

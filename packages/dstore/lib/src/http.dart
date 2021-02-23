@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:dstore/dstore.dart';
+
 enum HttpErrorType {
   Default,
   Response,
@@ -108,6 +112,26 @@ class HttpField<QP, I, R, E> {
       'HttpField(loading: $loading, data: $data, error: $error)';
 }
 
+class HttpMeta<I, R, E, T> {
+  final R Function(dynamic) responseDeserializer;
+  final dynamic Function(R)? responseSerializer;
+  final HttpField Function(HttpField currentField, HttpField newField)?
+      transformer;
+  final dynamic Function(I)? inputSerializer;
+  final Future<dynamic> Function(I)? inputStorageSerializer;
+  final Future<I> Function(dynamic)? inputDeserializer;
+  final E Function(dynamic)? errorDeserializer;
+
+  HttpMeta(
+      {required this.responseDeserializer,
+      this.transformer,
+      this.inputStorageSerializer,
+      this.inputSerializer,
+      this.responseSerializer,
+      this.inputDeserializer,
+      this.errorDeserializer});
+}
+
 class HttpPayload<I, R, E, T> {
   final String url;
   final I? data;
@@ -115,11 +139,7 @@ class HttpPayload<I, R, E, T> {
   final HttpResponseType responseType;
   final R? optimisticResponse;
   final HttpInputType? inputType;
-  final R Function(dynamic) responseDeserializer;
-  final HttpField Function(HttpField currentField, HttpField newField)?
-      transformer;
-  final dynamic Function(I)? inputSerializer;
-  final E Function(dynamic)? errorDeserializer;
+
   final Map<String, dynamic>? headers;
   final Map<String, dynamic>? queryParams;
   final int? sendTimeout;
@@ -128,13 +148,9 @@ class HttpPayload<I, R, E, T> {
 
   HttpPayload(
       {required this.url,
-      this.inputSerializer,
       required this.method,
       this.data,
-      this.transformer,
       required this.responseType,
-      required this.responseDeserializer,
-      this.errorDeserializer,
       this.inputType,
       this.headers,
       this.receiveTieout,
@@ -142,6 +158,32 @@ class HttpPayload<I, R, E, T> {
       this.sendTimeout,
       this.optimisticResponse,
       this.abortable = false});
+
+  Future<Map<String, dynamic>> toJson(
+      {Future<dynamic> Function(I)? inputSerializer,
+      dynamic Function(R)? responseSerializer}) async {
+    dynamic data = this.data;
+    if (inputSerializer != null) {
+      data = await inputSerializer(data);
+    }
+    dynamic or = optimisticResponse;
+    if (or != null && responseSerializer != null) {
+      or = responseSerializer(or);
+    }
+    return {
+      'url': url,
+      'data': data,
+      'method': method,
+      'responseType': convertEnumOrNullToString(responseType),
+      'optimisticResponse': or,
+      'inputType': convertEnumOrNullToString(inputType),
+      'headers': headers,
+      'queryParams': queryParams,
+      'sendTimeout': sendTimeout,
+      'receiveTieout': receiveTieout,
+      'abortable': abortable,
+    };
+  }
 }
 
 class GlobalHttpOptions {

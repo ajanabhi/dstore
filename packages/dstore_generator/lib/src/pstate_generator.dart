@@ -8,7 +8,7 @@ import 'package:build/src/builder/build_step.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:dstore/dstore.dart';
-import 'package:dstore_generator/src/utils.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 
 class PStateGenerator extends GeneratorForAnnotation<PState> {
   @override
@@ -21,20 +21,22 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
     print(
         "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
     final className = element.name;
-    if (!className.startsWith("_")) {
-      throw Exception("PState class should start with _");
+    if (!className.startsWith("\$")) {
+      throw Exception("PState class should start with \$");
     }
+    // final persist = _getPersistValue(element);
     final modelName = className.substring(1);
     final visitor = ReducerAstVisitor();
     final astNode = getAstNodeFromElement(classElement);
     astNode.visitChildren(visitor);
-    final fields = visitor.fields;
+    var fields = visitor.fields;
     final methods = visitor.methods;
     fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
         name: m.name,
         type: "AsyncActionField",
         value: "AsyncActionField()",
         param: null)));
+    fields = processFields(fields);
     final syncReducerFunctionStr =
         _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
     final asyncReducerFubctionStr =
@@ -74,6 +76,30 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
   }
 }
 
+bool _getPersistValue(ClassElement element) {
+  final annot = element.metadata
+      .firstWhere((element) => element.toString().startsWith("PState"))
+      .computeConstantValue();
+  final persistMode = Globals.psBuilderOptions.persistMode;
+  var persist = annot.getField("persist")?.toBoolValue();
+  if (persistMode == null && persist != null) {
+    throw Exception(
+        "You should provider pesistMode option in build.yaml for dstore|ps builder");
+  }
+  if (persistMode == null) {
+    return false;
+  }
+  switch (persistMode) {
+    case PersistMode.ExplicitPersist:
+      persist = persist == true;
+      break;
+    case PersistMode.ExplicitNoPersist:
+      persist = persist != false;
+      break;
+  }
+  return persist;
+}
+
 String _addActionNameAndGroupNameToFormField(
     {required String value, required String actionName, required int group}) {
   return "${value.substring(0, value.lastIndexOf(")"))},internalAName: \"$actionName\",internalAGroup:$group)";
@@ -95,14 +121,18 @@ String _generateActionsCreators({
   required int group,
 }) {
   final methodActions = methods.map((m) {
-    final params = m.params.map((p) {
+    final paramsList = m.params.map((p) {
       if (!p.isOptional) {
         return "required ${p.type} ${p.name}";
       } else {
         final defaultValue = p.value != null ? "= ${p.value}" : "";
         return "${p.type} ${p.name} ${defaultValue} ";
       }
-    }).join(", ");
+    }).toList();
+    if (m.isAsync) {
+      paramsList.add("Duration? debounce");
+    }
+    final params = paramsList.join(", ");
 
     var payload = m.params.isNotEmpty
         ? "{ " +
@@ -114,7 +144,7 @@ String _generateActionsCreators({
     }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",group:${group} ${payload},isAsync: ${m.isAsync});
+         return Action(name:"${m.name}",group:${group} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");
@@ -155,12 +185,13 @@ String _generateActionsCreators({
     // payloadFields.add("isGraphql:${hf.isGraphql}");
     payloadFields.add("inputType:${hf.inputTypeEnum}");
     payloadFields.add("responseType:${hf.responseTypeEnum}");
-    payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
-    payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
+    // payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
+    // payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
 
+    params.add("Duration? debounce");
     return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",group:${group},http:HttpPayload(${payloadFields.join(", ")}));
+        return Action(name:"${hf.name}",group:${group},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
   }).join("\n");
@@ -519,22 +550,22 @@ String _createPStateModel(List<Field> fields, String name) {
       
       @immutable
       class ${name} implements PStateModel {
-        ${getFinalFieldsFromFieldsList(fields)}
+        ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
+        ${ModelUtils.getCopyWithField(name)}
+        ${ModelUtils.createConstructorFromFieldsList(name, fields)}
 
-        ${createConstructorFromFieldsList(name, fields)}
+        ${ModelUtils.createCopyWithMapFromFieldsList(name, fields)}
 
-        ${createCopyWithFromFieldsList(name, fields)}
-
-        ${createCopyWithMapFromFieldsList(name, fields)}
-
-        ${createToMapFromFieldsList(fields)}
+        ${ModelUtils.createToMapFromFieldsList(fields)}
         
-        ${createEqualsFromFieldsList(name, fields)}
+        ${ModelUtils.createEqualsFromFieldsList(name, fields)}
 
-        ${createHashcodeFromFieldsList(fields)}
+        ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
-        ${createToStringFromFieldsList(name, fields)}
+        ${ModelUtils.createToStringFromFieldsList(name, fields)}
       }
+
+      ${ModelUtils.createCopyWithClasses(name, fields)}
    """;
   return result;
 }

@@ -8,17 +8,33 @@ import 'package:dstore_generator/src/selectors_generator.dart';
 import 'package:source_gen/source_gen.dart';
 
 /// Builds generators for `build_runner` to run
-Builder dstoreGen(BuilderOptions options) {
+Builder dstorePSGen(BuilderOptions options) {
+  print("************************* options ${options.config}");
+  // PStateGeneratorBuildOptions.fromOptions(options.config);
+  return PartBuilder(
+    [
+      PStateGenerator(),
+    ],
+    '.ps.dstore.dart',
+  );
+}
+
+Builder dstoreGqlGen(BuilderOptions options) {
   print("************************* options ${options.config}");
 
   return PartBuilder(
+    [GraphlSchemaGenerator(), GraphqlOpsGenerator()],
+    '.gql.dstore.dart',
+  );
+}
+
+Builder dstoreGen(BuilderOptions options) {
+  return PartBuilder(
       [
-        PStateGenerator(),
-        SelectorsGenerator(),
+        // PStateGenerator(),
         AppStateGenerator(),
+        SelectorsGenerator(),
         DImmutableGenerator(),
-        GraphlSchemaGenerator(),
-        GraphqlOpsGenerator()
       ],
       '.dstore.dart',
       header: '''

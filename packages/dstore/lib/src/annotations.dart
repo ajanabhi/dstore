@@ -1,5 +1,6 @@
 class PState {
-  const PState();
+  final bool persist;
+  const PState({this.persist = false});
 }
 
 class Selectors {
@@ -12,10 +13,9 @@ class AppStateAnnotation {
 
 class GraphqlApi {
   final String apiUrl;
-  final String schemaPath;
+  final String? schemaPath;
   final String? wsUrl;
-  const GraphqlApi(
-      {required this.apiUrl, required this.schemaPath, String? this.wsUrl});
+  const GraphqlApi({required this.apiUrl, this.schemaPath, this.wsUrl});
 }
 
 class GraphqlOps {
@@ -25,4 +25,11 @@ class GraphqlOps {
 
 class DImmutable {
   const DImmutable();
+}
+
+const dimmutable = DImmutable();
+
+class PersistKey {
+  final bool ignore;
+  const PersistKey({this.ignore = false});
 }

@@ -1,13 +1,14 @@
 import 'package:dstore/dstore.dart';
+import 'package:dstore_example/src/selectors/selector_sample.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:meta/meta.dart';
-part 'sample2.dstore.dart';
+part 'sample2.ps.dstore.dart';
 
 @PState()
 // ignore: unused_element
-class _Sample2 {
+class $Sample2 {
   int count = 0;
-  String name = "hello";
-  List<String> s = [];
+  String name = "hello2";
   String? comment;
   void increment() {
     this.count += 1;

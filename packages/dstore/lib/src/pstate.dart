@@ -34,15 +34,15 @@ class StreamField<D> {
 
   StreamField<D> copyWith({
     StreamSubscription? internalSubscription,
-    D? data,
-    dynamic? error,
+    Nullable<D>? data,
+    Nullable<dynamic>? error,
     bool? listening,
     bool? completed,
   }) {
     return StreamField<D>(
       internalSubscription: internalSubscription ?? this.internalSubscription,
-      data: data ?? this.data,
-      error: error ?? this.error,
+      data: data != null ? data.value : this.data,
+      error: error != null ? error.value : this.error,
       listening: listening ?? this.listening,
       completed: completed ?? this.completed,
     );
@@ -54,19 +54,31 @@ abstract class PStateModel<M> {
   Map<String, dynamic> toMap();
 }
 
+class PStateStorageMeta<S extends PStateModel> {
+  final List<String> keys;
+  final dynamic Function(S) serializer;
+  final S Function(dynamic) deserializer;
+  final bool encryptonRest;
+
+  PStateStorageMeta(
+      {required this.keys,
+      this.encryptonRest = false,
+      required this.serializer,
+      required this.deserializer});
+}
+
 class PStateMeta<S extends PStateModel> {
   final int group;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
   final S Function() ds;
-  final Map<String, dynamic> Function(S)? serialize;
-  final S Function(Map<String, dynamic>)? deserialize;
+
+  final PStateStorageMeta? sm;
 
   const PStateMeta(
       {this.aReducer,
+      this.sm,
       required this.group,
-      this.serialize,
-      this.deserialize,
       this.reducer,
       required this.ds});
 }

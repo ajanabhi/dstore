@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:dstore_generator/src/constants.dart';
-import 'package:dstore_generator/src/utils.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:meta/meta.dart';
@@ -628,19 +628,19 @@ String createVariableType(List<GField> gFields, String name) {
    @JsonSerializable(createFactory: false)
    class $name {
      
-     ${getFinalFieldsFromFieldsList(fields)}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
 
-     ${createConstructorFromFieldsList(name, fields)}
+     ${ModelUtils.createConstructorFromFieldsList(name, fields)}
 
-     ${createCopyWithFromFieldsList(name, fields)}
+     ${ModelUtils.createCopyWithFromFieldsList(name, fields)}
 
-     ${createToJson(name)}
+     ${ModelUtils.createToJson(name)}
 
-     ${createToStringFromFieldsList(name, fields)}
+     ${ModelUtils.createToStringFromFieldsList(name, fields)}
 
-     ${createEqualsFromFieldsList(name, fields)}
+     ${ModelUtils.createEqualsFromFieldsList(name, fields)}
 
-     ${createHashcodeFromFieldsList(fields)}
+     ${ModelUtils.createHashcodeFromFieldsList(fields)}
    }
   
   """;

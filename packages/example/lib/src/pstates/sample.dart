@@ -1,9 +1,10 @@
+import 'package:dstore_example/src/selectors/selector_sample.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
 import 'package:dstore/dstore.dart';
-
+part "sample.ps.dstore.dart";
 part "sample.dstore.dart";
 part "sample.g.dart";
 
@@ -12,15 +13,23 @@ abstract class User with _$User {
   const factory User({required String name}) = _User;
 }
 
+dynamic s(dynamic a) => a;
+
+@WebSocketRequest(url: "ws2", responseDeserializer: s)
+class WsMessage = WebSocketField with EmptyMixin;
+
 final GetTodos g = GetTodos();
 
 @PState()
-// ignore: unused_element
-class _Sample {
+class $Sample {
   int count = 0;
   int s = 0;
   User name = User(name: "first");
   GetTodos todos = GetTodos();
+
+  StreamField sf = StreamField();
+
+  WsMessage wm = WsMessage();
 
   void increment() {
     this.count = 6;

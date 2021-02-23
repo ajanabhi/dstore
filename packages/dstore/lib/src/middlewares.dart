@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/form.dart';
+import 'package:dstore/src/helper_classes.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
@@ -35,6 +38,29 @@ final Middleware asyncMiddleware =
   }
 };
 
+final Middleware debounceMiddleware =
+    (Store store, Dispatch next, Action action) async {
+  if (action.isProcessed || action.debounce == null) {
+    next(action);
+  } else {
+    final duration = action.debounce!;
+    final id = "${action.group}.${action.name}";
+    if (duration == Duration.zero) {
+      // if duration is zero then execute immediatley
+      store.internalDebounceTimers[id]?.cancel();
+      store.internalDebounceTimers.remove(id);
+      next(action);
+    } else {
+      store.internalDebounceTimers[id]?.cancel();
+      store.internalDebounceTimers[id] = Timer(duration, () {
+        store.internalDebounceTimers[id]?.cancel();
+        store.internalDebounceTimers.remove(id);
+        next(action);
+      });
+    }
+  }
+};
+
 final Middleware streamMiddleware =
     (Store store, Dispatch next, Action action) async {
   if (action.isProcessed || action.stream == null) {
@@ -52,7 +78,7 @@ final Middleware streamMiddleware =
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(data: event, error: null),
+          data: field.copyWith(data: Nullable(event), error: Nullable(null)),
           type: ActionInternalType.DATA,
         )));
       }, onError: (e) {
@@ -60,7 +86,7 @@ final Middleware streamMiddleware =
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(error: e),
+          data: field.copyWith(error: Nullable(e)),
           type: ActionInternalType.DATA,
         )));
       }, onDone: () {
@@ -68,7 +94,8 @@ final Middleware streamMiddleware =
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(listening: false, error: null, completed: true),
+          data: field.copyWith(
+              listening: false, error: Nullable(null), completed: true),
           type: ActionInternalType.DATA,
         )));
       });
