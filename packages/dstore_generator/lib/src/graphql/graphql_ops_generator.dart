@@ -24,20 +24,20 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
       print("${f.name} ${f.isStatic} ${f.isConst}");
     });
     final opsAnnotations = element.metadata.first.computeConstantValue();
-    final api = opsAnnotations.getField("api");
-    final apiUrl = api.getField("apiUrl").toStringValue();
-    final schemaPath = api.getField("schemaPath")?.toStringValue();
+    final api = opsAnnotations?.getField("api");
+    final apiUrl = api?.getField("apiUrl")?.toStringValue();
+    final schemaPath = api?.getField("schemaPath")?.toStringValue();
     GraphQLSchema schema;
 
     final eSchema = graphqlSchemaMap[apiUrl];
     if (eSchema == null) {
-      schema = await getGraphqlSchemaFromApiUrl(apiUrl, schemaPath);
+      schema = await getGraphqlSchemaFromApiUrl(apiUrl!, schemaPath);
     } else {
       schema = eSchema;
     }
     print("Api Type ${api}");
     final ops = element.fields.where((f) => f.isStatic && f.isConst).map((e) {
-      final v = e.computeConstantValue();
+      final v = e.computeConstantValue()!;
       var result = "";
       if (v.type.toString() == "String") {
         final query = v.toStringValue();
@@ -50,7 +50,7 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
           }
           final tn = "${name}_${e.name}";
           result = generateOpsTypeForQuery(
-              schema: schema, query: query, doc: doc, url: apiUrl, name: tn);
+              schema: schema, query: query!, doc: doc, url: apiUrl!, name: tn);
         }
       }
       print("opsvalue $v ${v.type}");

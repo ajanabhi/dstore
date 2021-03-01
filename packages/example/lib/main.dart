@@ -3,8 +3,10 @@ import 'package:dstore_example/src/pstates/sample.dart';
 import 'package:dstore_example/src/pstates/sample2.dart';
 import 'package:dstore_example/src/sample_state.dart';
 import 'package:dstore_example/src/selectors/selector_sample.dart';
+import "package:ansicolor/ansicolor.dart";
 
 void main() async {
+  ansiColorDisabled = false;
   final s2 = S1(name: "n1", s: 3);
   final s3 = s2.copyWith(op3: "op3", s: 4);
   final s4 = s3.copyWith(op3: null, name: "s2");

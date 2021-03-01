@@ -6,7 +6,6 @@ import 'package:dstore_example/src/sample_state.dart';
 import 'package:dstore_example/src/selectors/types2.dart';
 
 part 'selector_sample.dstore.dart';
-part 'selector_sample.freezed.dart';
 part 'selector_sample.g.dart';
 
 // class Hello {
@@ -102,10 +101,4 @@ class M {
 @DImmutable()
 abstract class S1 with _$S1 {
   const factory S1({required String name, required int s, String? op3}) = _S1;
-}
-
-@freezed
-abstract class S1F with _$S1F {
-  @JsonSerializable()
-  const factory S1F({required String name, required int s, String? op3}) = _S1F;
 }

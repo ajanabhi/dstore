@@ -8,6 +8,7 @@ abstract class ModelUtils {
           f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : "${f.type}";
       return """
      ${addOverrideAnnotation ? "@override" : ""}
+     ${f.annotations != null ? f.annotations!.join("\n") : ""}
      ${addLateModifier ? "late" : ""} final $type ${f.name};
     """;
     }).join("\n ");

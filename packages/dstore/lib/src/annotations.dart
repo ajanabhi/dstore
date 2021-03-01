@@ -33,3 +33,7 @@ class PersistKey {
   final bool ignore;
   const PersistKey({this.ignore = false});
 }
+
+class Default {
+  const Default(dynamic value);
+}

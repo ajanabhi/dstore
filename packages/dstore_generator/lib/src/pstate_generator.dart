@@ -5,6 +5,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/src/builder/build_step.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:dstore/dstore.dart';
@@ -27,7 +28,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
     // final persist = _getPersistValue(element);
     final modelName = className.substring(1);
     final visitor = ReducerAstVisitor();
-    final astNode = getAstNodeFromElement(classElement);
+    final astNode = AstUtils.getAstNodeFromElement(classElement);
     astNode.visitChildren(visitor);
     var fields = visitor.fields;
     final methods = visitor.methods;
@@ -56,6 +57,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         ds: ${modelName}_DS);
     """;
     final httpFields = _getHttpFields(classElement.fields);
+    print("httpFields $httpFields");
     final formFields = fields.where((f) => f.type.startsWith("FomField"));
     final actions = _generateActionsCreators(
         methods: visitor.methods,
@@ -79,7 +81,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
 bool _getPersistValue(ClassElement element) {
   final annot = element.metadata
       .firstWhere((element) => element.toString().startsWith("PState"))
-      .computeConstantValue();
+      .computeConstantValue()!;
   final persistMode = Globals.psBuilderOptions.persistMode;
   var persist = annot.getField("persist")?.toBoolValue();
   if (persistMode == null && persist != null) {
@@ -216,7 +218,7 @@ String _generateActionsCreators({
 List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
   final result = <_HttpFieldInfo>[];
   fields.forEach((f) {
-    final ht = isSubTypeof(f.type, "HttpField");
+    final ht = AstUtils.isSubTypeof(f.type, "HttpField");
     print("ht $ht");
     if (ht != null) {
       if (ht.typeArguments.length != 4) {
@@ -238,15 +240,16 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
       final errorType = replaceEndStar(
           ht.typeArguments[3].getDisplayString(withNullability: true));
       // f.type.element.metadata
-      if (f.type.element.metadata.isEmpty) {
+      print("_getHttpFields ${f.type.element}");
+      if (f.type.element!.metadata.isEmpty) {
         throw Exception("You should annonate type with HttpRequest annonation");
       }
-      final req = f.type.element.metadata[0].computeConstantValue();
-      final url = req.getField("url").toStringValue();
-      final method = req.getField("method").toStringValue();
+      final req = f.type.element!.metadata[0].computeConstantValue()!;
+      final url = req.getField("url")!.toStringValue();
+      final method = req.getField("method")!.toStringValue();
       late HttpResponseType responseTypeEnum;
       final responseTypeField = req.getField("responseType");
-      if (!responseTypeField.isNull) {
+      if (responseTypeField != null && !responseTypeField.isNull) {
         responseTypeEnum = HttpResponseType.values.singleWhere((v) =>
             responseTypeField.getField(v.toString().split('.')[1]) != null);
       } else {
@@ -256,9 +259,11 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
           responseTypeEnum = HttpResponseType.JSON;
         }
       }
+      print("_getHttpFields response done");
       HttpInputType inputTypeEnum;
       final inputTypeField = req.getField("inputType");
-      if (!inputTypeField.isNull) {
+      print("_getHttpFields inputTypeField $inputTypeField");
+      if (inputTypeField != null && !inputTypeField.isNull) {
         inputTypeEnum = HttpInputType.values.singleWhere(
             (v) => inputTypeField.getField(v.toString().split('.')[1]) != null);
       } else {
@@ -268,38 +273,43 @@ List<_HttpFieldInfo> _getHttpFields(List<FieldElement> fields) {
           inputTypeEnum = HttpInputType.JSON;
         }
       }
+      print("_getHttpFields input done");
       var responseDeserializer = "(resp) => resp";
       final responseDeserializerField = req.getField("responseDeserializer");
-      if (!responseDeserializerField.isNull) {
-        responseDeserializer = responseDeserializerField.toFunctionValue().name;
+      if (responseDeserializerField != null &&
+          !responseDeserializerField.isNull) {
+        responseDeserializer =
+            responseDeserializerField.toFunctionValue()!.name;
       }
+      print("_getHttpFields responseDeserializer done");
       var errorDeserializer = "(err) => err";
       final errorDeserializerField = req.getField("errorDeserializer");
-      if (!errorDeserializerField.isNull) {
-        errorDeserializer = errorDeserializerField.toFunctionValue().name;
+      if (errorDeserializerField != null && !errorDeserializerField.isNull) {
+        errorDeserializer = errorDeserializerField.toFunctionValue()!.name;
       }
+      print("_getHttpFields responseDeserializer done");
       final graphqlQuery = req.getField("graphqlQuery")?.toStringValue();
       String? inputSerializer;
       final inputSerializerField = req.getField("inputSerializer");
-      if (!inputSerializerField.isNull) {
-        inputSerializer = inputSerializerField.toFunctionValue().name;
+      if (inputSerializerField != null && !inputSerializerField.isNull) {
+        inputSerializer = inputSerializerField.toFunctionValue()!.name;
       }
 
       final reqEA = f.metadata
-          .where((a) => a.element.name.startsWith("HttpRequestExtension"));
+          .where((a) => a.element!.name!.startsWith("HttpRequestExtension"));
       String? transformer;
       if (reqEA.isNotEmpty) {
-        final reqE = f.metadata.first.computeConstantValue();
+        final reqE = f.metadata.first.computeConstantValue()!;
         final tf = reqE.getField("transformer");
-        if (!tf.isNull) {
-          transformer = tf.toFunctionValue().name;
+        if (tf != null) {
+          transformer = tf.toFunctionValue()!.name;
         }
       }
 
       final hfi = _HttpFieldInfo(
           name: f.name,
-          url: url,
-          method: method,
+          url: url!,
+          method: method!,
           inputTypeEnum: inputTypeEnum,
           responseTypeEnum: responseTypeEnum,
           inputType: inputType,
@@ -359,7 +369,7 @@ class ReducerAstVisitor extends SimpleAstVisitor {
       throw Exception("method should contain mutation to fields");
     }
     final name = node.name.toString();
-    final params = convertParamsToFields(node.parameters);
+    final params = AstUtils.convertParamsToFields(node.parameters);
 
     final paramsStr = _convertMethodParamsToString(params);
     var mbody = "";
@@ -660,7 +670,7 @@ IfElseStatementResult processIfElseStatement(
   } else if (elseStatement is IfStatement) {
     elseStatementResults = [processIfElseStatement(elseStatement, options)];
   } else {
-    elseStatementResults = processStatements([elseStatement], options);
+    elseStatementResults = processStatements([elseStatement!], options);
   }
   return IfElseStatementResult(
       statement: statement,
@@ -680,7 +690,7 @@ TryStatementResult processTryStatement(
   final List<StatementResult> finalStatementResults =
       statement.finallyBlock == null
           ? []
-          : processStatements(statement.finallyBlock.statements, options);
+          : processStatements(statement.finallyBlock!.statements, options);
   return TryStatementResult(
       statement: statement,
       tryStatementResults: tryStatementResults,
@@ -789,7 +799,7 @@ String converForEachStatementResultToString(
   final mi = fesr.statement.expression as MethodInvocation;
 
   final fExp = mi.argumentList.arguments[0] as FunctionExpression;
-  final params = fExp.parameters.parameters.map((p) => p.toString()).join(",");
+  final params = fExp.parameters!.parameters.map((p) => p.toString()).join(",");
   final call = "${mi.target}.${mi.methodName}";
   final body =
       convertStatementResultsToString(fesr.statementResults, keys).join("\n");

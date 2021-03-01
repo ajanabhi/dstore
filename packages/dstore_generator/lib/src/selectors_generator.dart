@@ -25,7 +25,7 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
     }
     final modelName = className.substring(1);
     final visitor = SelectorsVisitor(modelName);
-    final astNode = await getResolvedAstNodeFromElement(element);
+    final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
     astNode.visitChildren(visitor);
 
     return """
@@ -45,7 +45,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
-    final fields = convertParamsToFields(node.parameters);
+    final fields = AstUtils.convertParamsToFields(node.parameters);
     if (fields.isEmpty || fields.length > 1) {
       throw Exception(
           "Selector functions should be only one param with app state");
@@ -57,7 +57,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
     }
     final rType = node.returnType.toString();
     final sType = field.type;
-    final bvs = SelectorBodyVisitor(field.param!.identifier);
+    final bvs = SelectorBodyVisitor(field.param!.identifier!);
     node.body.visitChildren(bvs);
     print("%%%%% deps : ${bvs.depsList}");
     final depsMap = _convertDepsListToDeps(bvs.depsList)
@@ -221,16 +221,16 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
     print(
         "IdentifierElement4 ${node.staticType} ${node.propertyName.staticElement}");
     if (prop == "wm") {
-      final isCe = node.staticType.element is ClassElement;
+      final isCe = node.staticType?.element is ClassElement;
       print("wm $isCe");
       if (isCe) {
-        print((node.staticType.element as ClassElement)
+        print((node.staticType?.element as ClassElement)
             .allSupertypes
             .map((e) => e.getDisplayString(withNullability: true))
             .join(", "));
       }
     }
-    result.add(MapEntry(prop, node.staticType));
+    result.add(MapEntry(prop, node.staticType!));
     final target = node.target;
     print("target type ${target.runtimeType}");
     if (target is PropertyAccess) {
@@ -240,7 +240,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
         print(
             "IdentifierElement3 ${target.identifier.toString()} ${target.staticElement} ${target.staticType}  ${target.identifier.staticType}");
         result.add(MapEntry(
-            target.identifier.toString(), target.identifier.staticType));
+            target.identifier.toString(), target.identifier.staticType!));
       } else {
         print("target is not identifier ${target.runtimeType} ${target}");
       }
@@ -270,7 +270,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
           "IdentifierElement1 ${node.identifier.staticElement} ${node.identifier.staticType}");
 
       depsList.add(
-          [MapEntry(node.identifier.toString(), node.identifier.staticType)]);
+          [MapEntry(node.identifier.toString(), node.identifier.staticType!)]);
     } else {
       print("identifier is not equal ${node.prefix == identifier}");
     }

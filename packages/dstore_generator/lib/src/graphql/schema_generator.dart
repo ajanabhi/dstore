@@ -22,13 +22,13 @@ class GraphlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
           "Graphql Api annotation should only be applied on classes");
     }
 
-    final gApi = element.metadata.first.computeConstantValue();
+    final gApi = element.metadata.first.computeConstantValue()!;
     print("gApi $gApi , apiUrl ${gApi.getField("apiUrl")}");
-    final apiUrl = gApi.getField("apiUrl").toStringValue();
+    final apiUrl = gApi.getField("apiUrl")!.toStringValue();
     final schemaPath = gApi.getField("schemaPath")?.toStringValue();
     final wsUrl = gApi.getField("wsUrl")?.toStringValue();
 
-    final schema = await getGraphqlSchemaFromApiUrl(apiUrl, schemaPath);
+    final schema = await getGraphqlSchemaFromApiUrl(apiUrl!, schemaPath);
     graphqlSchemaMap[apiUrl] = schema;
     final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
     final inputs = schema.inputObjectTypes

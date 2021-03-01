@@ -13,7 +13,7 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
     final classElement = element;
     final name = classElement.name;
     final fields = classElement.fields;
-    print("fields2 ${fields.map((e) => e.type.element.displayName)}");
+    // print("fields2 ${fields.map((e) => e.type.element!.displayName)}");
     final copyWithMapBody = fields
         .map((f) => "..${f.name} = map[\"${f.name}\"] ?? this.${f.name}")
         .join("\n");

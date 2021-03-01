@@ -1,5 +1,7 @@
 import 'dart:convert';
 export "model_utils.dart";
+export "ast_utils.dart";
+export "logger.dart";
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -8,40 +10,24 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore/dstore.dart';
 import 'package:meta/meta.dart';
 
-AstNode getAstNodeFromElement(Element element) {
-  AnalysisSession session = element.session;
-  ParsedLibraryResult parsedLibResult =
-      session.getParsedLibraryByElement(element.library);
-  ElementDeclarationResult elDeclarationResult =
-      parsedLibResult.getElementDeclaration(element);
-  return elDeclarationResult.node;
-}
-
-Future<AstNode> getResolvedAstNodeFromElement(Element element) async {
-  AnalysisSession session = element.session;
-
-  final s = await session.getResolvedLibraryByElement(element.library);
-  final s2 = s.getElementDeclaration(element);
-
-  return s2.node;
-}
-
 class Field {
   String name;
   String type;
   String? value;
+  List<String>? annotations;
   bool isOptional;
   FormalParameter? param;
   Field(
       {required this.name,
       required this.type,
       this.value,
+      this.annotations,
       this.param,
       this.isOptional = false});
 
   @override
   String toString() {
-    return "Field(Name : ${name} Type : ${type} Value : ${value})";
+    return "Field(Name : ${name} Type : ${type} Value : ${value} isOptional : $isOptional annotations : $annotations)";
   }
 
   Field copyWith({
@@ -59,61 +45,6 @@ class Field {
       param: param ?? this.param,
     );
   }
-}
-
-List<Field> convertParamsToFields(FormalParameterList parameters) {
-  return parameters.parameters.map((param) {
-    final name = param.identifier.toString();
-    late String type;
-    String? value;
-    if (param is SimpleFormalParameter) {
-      type = param.type?.toString() ?? "dynamic";
-    }
-    if (param is DefaultFormalParameter) {
-      value = param.defaultValue?.toString();
-      final t =
-          (param.parameter as SimpleFormalParameter).type as TypeAnnotation?;
-      type = t?.toString() ?? "dynamic";
-    }
-    return Field(
-        name: name,
-        type: type,
-        value: value,
-        isOptional: param.isOptional,
-        param: param);
-  }).toList();
-}
-
-List<Field> convertParamElementsToFields(List<ParameterElement> params) {
-  return params.map((param) {
-    final name = param.name;
-    final type = param.type != null
-        ? param.type.getDisplayString(withNullability: true)
-        : "dynamic";
-    return Field(
-      name: name,
-      type: type,
-      value: param.defaultValueCode,
-      isOptional: param.isOptional,
-    );
-  }).toList();
-}
-
-InterfaceType? isSubTypeof(DartType sourceType, String superType) {
-  InterfaceType? result;
-  if (sourceType is InterfaceType) {
-    for (final t in sourceType.allSupertypes) {
-      var name = t.getDisplayString(withNullability: false);
-      if (name.contains("<")) {
-        name = name.substring(0, name.indexOf("<"));
-      }
-      if (name == superType) {
-        result = t;
-        break;
-      }
-    }
-  }
-  return result;
 }
 
 String replaceEndStar(String input) {

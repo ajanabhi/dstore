@@ -1,8 +1,10 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_example/src/selectors/selector_sample.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
+import 'package:union/union.dart';
 part 'sample2.ps.dstore.dart';
+part 'sample2.dstore.dart';
 
 @PState()
 // ignore: unused_element
@@ -22,4 +24,13 @@ class $Sample2 {
     }
     for (var i = 0; i < 10; i++) this.count = 4;
   }
+}
+
+@DImmutable()
+abstract class TU with _$TU {
+  @JsonSerializable()
+  const factory TU(
+      {required String name,
+      required Union2<String, int> u,
+      @Default("hello") String h}) = _TU;
 }
