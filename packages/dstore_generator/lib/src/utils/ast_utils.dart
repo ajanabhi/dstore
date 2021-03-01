@@ -37,6 +37,7 @@ abstract class AstUtils {
     }
     return parameters.parameters.map((param) {
       final name = param.identifier.toString();
+      var isOptional = param.isOptional;
       late String type;
       String? value;
       if (param is SimpleFormalParameter) {
@@ -58,7 +59,8 @@ abstract class AstUtils {
           }
           value =
               dAnno.substring(dAnno.indexOf("(") + 1, dAnno.lastIndexOf(")"));
-          annotations.add("@JsonKey(default : $value)");
+          isOptional = false;
+          annotations.add("@JsonKey(defaultValue : $value)");
         }
       }
       return Field(
@@ -66,7 +68,7 @@ abstract class AstUtils {
           type: type,
           value: value,
           annotations: annotations,
-          isOptional: param.isOptional,
+          isOptional: isOptional,
           param: param);
     }).toList();
   }

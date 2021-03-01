@@ -34,15 +34,20 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       final astVisitor = DImmutableAstVisitor();
       astNode.visitChildren(astVisitor);
       print(astVisitor);
-      final fields =
-          processFields(AstUtils.convertParamElementsToFields(ctor.parameters));
+      final fields = processFields(astVisitor.fields);
       final name = element.name;
       print("Params : $fields");
+      final annotations = <String>[];
+      final jsonSerializableAnno = astVisitor.jsonSerializable;
+      if (jsonSerializableAnno != null) {
+        annotations.add(jsonSerializableAnno);
+      }
+      final isJosnSerializable = jsonSerializableAnno != null;
       return """
-      ${_createMixin(name, fields)}
+      ${_createMixin(name: name, fields: fields, isJsonSerializable: isJosnSerializable)}
 
-      ${_createClass(name, fields)}
-
+      ${_createClass(name: name, fields: fields, annotations: annotations, isJsonSerializable: isJosnSerializable)}
+      ${isJosnSerializable ? "$name _\$${name}FromJson(Map<String,dynamic> json) => _${name}.fromJson(json);" : ""}
       ${ModelUtils.createCopyWithClasses(name, fields)}
     """;
     } catch (e, st) {
@@ -84,10 +89,11 @@ class DImmutableAstVisitor extends SimpleAstVisitor {
         // defaul factory constructor
         fields.addAll(AstUtils.convertParamsToFields(node.parameters,
             isDImmutable: true));
+        jsonSerializable = node.metadata
+            .singleWhereOrNull(
+                (a) => a.toString().startsWith("@JsonSerializable"))
+            ?.toString();
       }
-      jsonSerializable = node.metadata
-          .singleWhereOrNull((a) => a.toString().startsWith("JosnSerializable"))
-          ?.toString();
     }
     return super.visitConstructorDeclaration(node);
   }
@@ -98,7 +104,10 @@ class DImmutableAstVisitor extends SimpleAstVisitor {
   }
 }
 
-String _createMixin(String name, List<Field> fields) {
+String _createMixin(
+    {required String name,
+    required List<Field> fields,
+    required bool isJsonSerializable}) {
   // final params = fields
   //     .map((f) =>
   //         "${(f.type.endsWith("?") || f.isOptional) ? "Nullable<${f.type.replaceFirst("?", "")}>?" : "${f.type}?"} ${f.name}")
@@ -108,24 +117,33 @@ String _createMixin(String name, List<Field> fields) {
 
     ${fields.map((f) => "${f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : f.type} get ${f.name};").join("\n")}
     
-    @JsonKey(ignore: true)
+    ${isJsonSerializable ? "@JsonKey(ignore: true)" : ""}
     \$${name}CopyWith<${name}> get copyWith;
-   
+    ${isJsonSerializable ? ModelUtils.createToJson() : ""}
    }
   """;
 }
 
-String _createClass(String name, List<Field> fields) {
+String _createClass(
+    {required String name,
+    required List<Field> fields,
+    required List<String> annotations,
+    required bool isJsonSerializable}) {
   final className = "_$name";
   return """
+  ${annotations.join("\n")}
    class $className implements $name {
      
      ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
      
-     ${ModelUtils.getCopyWithField(name)}
+     ${ModelUtils.getCopyWithField(name, addJsonKey: isJsonSerializable)}
       
      ${ModelUtils.createConstructorFromFieldsList(className, fields)}
      
+      ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
+
+      ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
+
      ${ModelUtils.createEqualsFromFieldsList(className, fields)}
 
      ${ModelUtils.createHashcodeFromFieldsList(fields)}

@@ -1,6 +1,14 @@
 import 'dart:convert';
 
 import 'package:dstore/dstore.dart';
+import "package:json_annotation/json_annotation.dart";
+
+part "http.dstore.dart";
+
+@DImmutable()
+abstract class Hello with _$Hello {
+  const factory Hello({required String name}) = _Hello;
+}
 
 enum HttpErrorType {
   Default,

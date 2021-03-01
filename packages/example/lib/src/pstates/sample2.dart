@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:dstore/dstore.dart';
 import 'package:dstore_example/src/selectors/selector_sample.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -5,6 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:union/union.dart';
 part 'sample2.ps.dstore.dart';
 part 'sample2.dstore.dart';
+part 'sample2.g.dart';
 
 @PState()
 // ignore: unused_element
@@ -29,8 +32,6 @@ class $Sample2 {
 @DImmutable()
 abstract class TU with _$TU {
   @JsonSerializable()
-  const factory TU(
-      {required String name,
-      required Union2<String, int> u,
-      @Default("hello") String h}) = _TU;
+  const factory TU({required String name, @Default("hello") String h}) = _TU;
+  factory TU.fromJson(Map<String, dynamic> json) => _$TUFromJson(json);
 }

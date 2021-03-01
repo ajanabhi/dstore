@@ -17,8 +17,14 @@ dependencies:
     path: ../dstore
   collection:
   ansicolor: 2.0.0-nullsafety.0
-  logging: 1.0.0  
+  logging: 1.0.0
+  json_annotation: 4.0.0 
 
 dev_dependencies:
-  pedantic: 
+  pedantic: 1.10.0
+  build_runner: 1.11.5 
+  grinder: 0.9.0-nullsafety.0
+  json_serializable: 4.0.1
+  test: 
+  
     

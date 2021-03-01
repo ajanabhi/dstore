@@ -1,3 +1,4 @@
+
 builders:
   dstore_generator|gql:
     import: "package:dstore_generator/builder.dart"
@@ -20,3 +21,21 @@ builders:
     auto_apply: dependents
     build_to: source
     runs_before: []  
+
+targets:
+  $default:
+    builders:
+      dstore_generator:
+        generate_for:
+          - test/**
+      dstore_generator|ps:
+        generate_for:
+          - test/**
+      dstore_generator|gql:
+        generate_for:
+          - test/**
+      json_serializable:
+        generate_for:
+          - test/**
+    sources: 
+    - "test/**" 

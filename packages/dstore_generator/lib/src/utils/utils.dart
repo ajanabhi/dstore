@@ -34,6 +34,7 @@ class Field {
     String? name,
     String? type,
     String? value,
+    List<String>? annotations,
     bool? isOptional,
     FormalParameter? param,
   }) {
@@ -41,6 +42,7 @@ class Field {
       name: name ?? this.name,
       type: type ?? this.type,
       value: value ?? this.value,
+      annotations: annotations ?? this.annotations,
       isOptional: isOptional ?? this.isOptional,
       param: param ?? this.param,
     );

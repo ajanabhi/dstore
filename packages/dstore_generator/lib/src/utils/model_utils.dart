@@ -15,9 +15,9 @@ abstract class ModelUtils {
   }
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
-      {bool assignDefaults = false}) {
+      {bool assignDefaults = true}) {
     final cf = fields.map((f) {
-      return "${!f.isOptional ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${f.value}" : ""}";
+      return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${f.value}" : ""}";
     }).join(", ");
     return "const ${name}({$cf});";
   }
@@ -78,10 +78,11 @@ abstract class ModelUtils {
   """;
   }
 
-  static String getCopyWithField(String name, {bool override = false}) {
+  static String getCopyWithField(String name,
+      {bool override = false, bool addJsonKey = false}) {
     return """
   ${override ? "@override" : ""}
-  @JsonKey(ignore: true)
+  ${addJsonKey ? "@JsonKey(ignore: true)" : ""} 
   _\$${name}CopyWith<$name> get copyWith => __\$${name}CopyWithImpl<$name>(this,IdentityFn);
   """;
   }
@@ -140,12 +141,14 @@ abstract class ModelUtils {
    """;
   }
 
-  static String createToJson(String name) {
-    return "Map<String,dynamic> toJson() => _\$${name}ToJson(this);";
+  static String createToJson([String? name]) {
+    return name == null
+        ? "Map<String,dynamic> toJson();"
+        : "Map<String,dynamic> toJson() => _\$${name}ToJson(this);";
   }
 
   static String createFromJson(String name) {
-    return "factory ${name}.fromJson(Map<String,dynamic> json) => _\$${name}FromJson(json)";
+    return "factory ${name}.fromJson(Map<String,dynamic> json) => _\$${name}FromJson(json);";
   }
 
   static String createEqualsFromFieldsList(String name, List<Field> fields) {
