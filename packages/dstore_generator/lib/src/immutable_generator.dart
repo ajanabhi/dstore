@@ -16,8 +16,8 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       Element element, ConstantReader annotation, BuildStep buildStep) {
     try {
       ansiColorDisabled = false;
-      if (!(element is ClassElement) || !element.isAbstract) {
-        throw Exception("DImmutable should only be used on immutable classes");
+      if (!(element is ClassElement)) {
+        throw UnsupportedError("DImmutable should only be used on classes");
       }
       print("ctors ${element.constructors.length}");
       // if (element.constructors.length != 1 ||
@@ -27,9 +27,13 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       // }
       final ctor = element.constructors.first;
       if (!ctor.parameters.every((p) => p.isNamed)) {
-        throw Exception(
+        throw ArgumentError.value(
             "DImmutable constructor should contain only named params");
       }
+      final typeParamsWithBounds =
+          element.typeParameters.map((e) => e.toString()).join(",");
+      final typeParams = element.typeParameters.map((e) => e.name).join(",");
+      logger.shout("typeParams : $typeParamsWithBounds");
       final astNode = AstUtils.getAstNodeFromElement(element);
       final astVisitor = DImmutableAstVisitor();
       astNode.visitChildren(astVisitor);
@@ -44,15 +48,15 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       }
       final isJosnSerializable = jsonSerializableAnno != null;
       return """
-      ${_createMixin(name: name, fields: fields, isJsonSerializable: isJosnSerializable)}
+      ${_createMixin(name: name, fields: fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable)}
 
-      ${_createClass(name: name, fields: fields, annotations: annotations, isJsonSerializable: isJosnSerializable)}
+      ${_createClass(name: name, fields: fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, annotations: annotations, isJsonSerializable: isJosnSerializable)}
       ${isJosnSerializable ? "$name _\$${name}FromJson(Map<String,dynamic> json) => _${name}.fromJson(json);" : ""}
-      ${ModelUtils.createCopyWithClasses(name, fields)}
+      ${ModelUtils.createCopyWithClasses(name: name, fields: fields, typeParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
     """;
     } catch (e, st) {
       logger.error(
-          "Exception in generating immutable class for ${element.name}", e, st);
+          "Error in generating immutable class for ${element.name}", e, st);
       rethrow;
     }
   }
@@ -61,26 +65,6 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
 class DImmutableAstVisitor extends SimpleAstVisitor {
   final List<Field> fields = [];
   String? jsonSerializable;
-  // @override
-  // dynamic visitFieldDeclaration(FieldDeclaration node) {
-  //   final typeA = node.fields.type as TypeAnnotation?;
-  //   if (typeA == null) {
-  //     throw Exception("Should provide type annotation for fields");
-  //   }
-  //   final type = typeA.toString();
-  //   node.fields.variables.forEach((v) {
-  //     final name = v.name.toString();
-  //     final valueE = v.initializer as Expression?;
-  //     if (!type.endsWith("?") && valueE == null) {
-  //       throw Exception("Should provide initital value for fields");
-  //     }
-  //     // final value = type.endsWith("?") ? "null" : valueE.toString();
-  //     fields.add(Field(name: name, type: type, value: valueE.toString()));
-  //   });
-  //   print(
-  //       "declared element : ${node.fields.type} node : ${node.fields.variables[0]}");
-  //   return super.visitFieldDeclaration(node);
-  // }
   @override
   dynamic visitConstructorDeclaration(ConstructorDeclaration node) {
     if (node.factoryKeyword != null) {
@@ -107,18 +91,20 @@ class DImmutableAstVisitor extends SimpleAstVisitor {
 String _createMixin(
     {required String name,
     required List<Field> fields,
+    required String typeParamsWithBounds,
+    required String typeParams,
     required bool isJsonSerializable}) {
   // final params = fields
   //     .map((f) =>
   //         "${(f.type.endsWith("?") || f.isOptional) ? "Nullable<${f.type.replaceFirst("?", "")}>?" : "${f.type}?"} ${f.name}")
   //     .join(", ");
   return """
-   mixin _\$$name {
+   mixin _\$$name${typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>"} {
 
     ${fields.map((f) => "${f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : f.type} get ${f.name};").join("\n")}
     
     ${isJsonSerializable ? "@JsonKey(ignore: true)" : ""}
-    \$${name}CopyWith<${name}> get copyWith;
+    \$${name}CopyWith<${typeParams.isEmpty ? "" : "${typeParams},"}${name}${typeParams.isEmpty ? "" : "<${typeParams}>"}> get copyWith;
     ${isJsonSerializable ? ModelUtils.createToJson() : ""}
    }
   """;
@@ -127,16 +113,18 @@ String _createMixin(
 String _createClass(
     {required String name,
     required List<Field> fields,
+    required String typeParams,
+    required String typeParamsWithBounds,
     required List<String> annotations,
     required bool isJsonSerializable}) {
   final className = "_$name";
   return """
   ${annotations.join("\n")}
-   class $className implements $name {
+   class $className${typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>"} implements $name${typeParams.isEmpty ? "" : "<$typeParams>"} {
      
      ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
      
-     ${ModelUtils.getCopyWithField(name, addJsonKey: isJsonSerializable)}
+     ${ModelUtils.getCopyWithField(name, addJsonKey: isJsonSerializable, typeParams: typeParams)}
       
      ${ModelUtils.createConstructorFromFieldsList(className, fields)}
      

@@ -2,6 +2,7 @@ import 'dart:convert';
 export "model_utils.dart";
 export "ast_utils.dart";
 export "logger.dart";
+export "builder_utils.dart";
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
@@ -67,30 +68,4 @@ List<Field> processFields(List<Field> fields) {
           type: _getFinalTypeOfField(f),
           isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?")))
       .toList();
-}
-
-enum PersistMode { ExplicitPersist, ExplicitNoPersist }
-
-abstract class Globals {
-  static var psBuilderOptions = PStateGeneratorBuildOptions();
-}
-
-class PStateGeneratorBuildOptions {
-  final PersistMode? persistMode;
-
-  PStateGeneratorBuildOptions({this.persistMode});
-
-  static void fromOptions(Map<String, dynamic> config) {
-    PersistMode? persistMode;
-    // final pms = config["persistMode"];
-    // if (pms != null) {
-    //   if (pms != "ExplicitPersist" && pms != "ExplicitNoPersist") {
-    //     throw Exception(
-    //         "You should provide persistMode one of two options ExplicitPersist or ExplicitNoPersist");
-    //   }
-    //   persistMode = convertStringToEnum(pms, PersistMode.values);
-    // }
-    final options = PStateGeneratorBuildOptions(persistMode: persistMode);
-    Globals.psBuilderOptions = options;
-  }
 }

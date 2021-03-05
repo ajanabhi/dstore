@@ -5,6 +5,7 @@ import 'package:dstore_generator/src/graphql/schema_generator.dart';
 import 'package:dstore_generator/src/immutable_generator.dart';
 import 'package:dstore_generator/src/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors_generator.dart';
+import 'package:dstore_generator/src/utils/builder_utils.dart';
 import 'package:source_gen/source_gen.dart';
 
 var lDebugMode = true;
@@ -12,7 +13,7 @@ var lDebugMode = true;
 /// Builds generators for `build_runner` to run
 Builder dstorePSGen(BuilderOptions options) {
   print("************************* options ${options.config}");
-  // PStateGeneratorBuildOptions.fromOptions(options.config);
+  PStateGeneratorBuildOptions.fromOptions(options.config);
   return PartBuilder(
     [
       PStateGenerator(),

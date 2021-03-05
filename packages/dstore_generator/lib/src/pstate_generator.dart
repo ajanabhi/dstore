@@ -23,8 +23,11 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
     final className = element.name;
     if (!className.startsWith("\$")) {
-      throw Exception("PState class should start with \$");
+      throw ArgumentError.value("PState class should start with \$");
     }
+    final typeParamsWithBounds =
+        element.typeParameters.map((e) => e.toString()).join(",");
+    final typeParams = element.typeParameters.map((e) => e.name).join(",");
     // final persist = _getPersistValue(element);
     final modelName = className.substring(1);
     final visitor = ReducerAstVisitor();
@@ -69,7 +72,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
     final result = """
        // class Name : ${element.name}
 
-       ${_createPStateModel(fields, modelName)}
+       ${_createPStateModel(fields: fields, name: modelName, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
        ${actions}
         ${reducerGroup}
     """;
@@ -82,7 +85,7 @@ bool _getPersistValue(ClassElement element) {
   final annot = element.metadata
       .firstWhere((element) => element.toString().startsWith("PState"))
       .computeConstantValue()!;
-  final persistMode = Globals.psBuilderOptions.persistMode;
+  final persistMode = DBuilderOptions.psBuilderOptions.persistMode;
   var persist = annot.getField("persist")?.toBoolValue();
   if (persistMode == null && persist != null) {
     throw Exception(
@@ -555,7 +558,11 @@ String _convertMethodParamsToString(List<Field> params) {
   """;
 }
 
-String _createPStateModel(List<Field> fields, String name) {
+String _createPStateModel(
+    {required List<Field> fields,
+    required String name,
+    required String typeParams,
+    required String typaParamsWithBounds}) {
   final result = """
       
       @immutable
@@ -575,7 +582,7 @@ String _createPStateModel(List<Field> fields, String name) {
         ${ModelUtils.createToStringFromFieldsList(name, fields)}
       }
 
-      ${ModelUtils.createCopyWithClasses(name, fields)}
+      ${ModelUtils.createCopyWithClasses(name: name, typeParams: typeParams, typeParamsWithBounds: typaParamsWithBounds, fields: fields)}
    """;
   return result;
 }

@@ -29,7 +29,11 @@ abstract class ModelUtils {
   """;
   }
 
-  static String createCopyWithClasses(String name, List<Field> fields) {
+  static String createCopyWithClasses(
+      {required String name,
+      required List<Field> fields,
+      required String typeParamsWithBounds,
+      required String typeParams}) {
     final callParams = fields.map((f) => "${f.type} ${f.name}").join(", ");
     final callImplParams =
         fields.map((f) => "Object? ${f.name} = dimmutable").join(", ");
@@ -41,15 +45,19 @@ abstract class ModelUtils {
     final aImplName = "_${aName}Impl";
     final aName2 = "_$aName";
     final aImplName2 = "_${aName2}Impl";
+    final typwd =
+        typeParamsWithBounds.isEmpty ? "" : "${typeParamsWithBounds},";
+    final tpp = typeParams.isEmpty ? "" : "${typeParams},";
+    final tppA = typeParams.isEmpty ? "" : "<${typeParams}>";
 
     return """
-   abstract class $aName<O> {
-     factory $aName($name value, O Function($name) then) = $aImplName<O>;
+   abstract class $aName<${typwd}O> {
+     factory $aName($name$tppA value, O Function($name$tppA) then) = $aImplName<${tpp}O>;
      O call({$callParams});
    }
-   class $aImplName<O> implements $aName<O> {
-     final $name _value;
-     final O Function($name) _then;
+   class $aImplName<${typwd}O> implements $aName<${tpp}O> {
+     final $name${tppA} _value;
+     final O Function($name${tppA}) _then;
      $aImplName(this._value,this._then);
 
      @override
@@ -58,17 +66,17 @@ abstract class ModelUtils {
      }
    }
 
-   abstract class $aName2<O> implements ${aName}<O> {
-     factory $aName2($name value, O Function($name) then) = $aImplName2<O>;
+   abstract class $aName2<${typwd}O> implements ${aName}<${tpp}O> {
+     factory $aName2($name${tppA} value, O Function($name${tppA}) then) = $aImplName2<${tpp}O>;
      O call({$callParams});
    }
 
-   class $aImplName2<O> extends ${aImplName}<O>  implements $aName2<O> {
+   class $aImplName2<${typwd}O> extends ${aImplName}<${tpp}O>  implements $aName2<${tpp}O> {
      
-    $aImplName2($name _value,O Function($name) _then): super(_value,(v) => _then(v));
+    $aImplName2($name${tppA} _value,O Function($name${tppA}) _then): super(_value,(v) => _then(v));
 
      @override
-     $name get _value => super._value;
+     $name${tppA} get _value => super._value;
 
      @override
      O call({$callImplParams}) {
@@ -79,11 +87,15 @@ abstract class ModelUtils {
   }
 
   static String getCopyWithField(String name,
-      {bool override = false, bool addJsonKey = false}) {
+      {bool override = false,
+      String typeParams = "",
+      bool addJsonKey = false}) {
+    final tpp = typeParams.isEmpty ? "" : "${typeParams},";
+    final tppA = typeParams.isEmpty ? "" : "<${typeParams}>";
     return """
   ${override ? "@override" : ""}
   ${addJsonKey ? "@JsonKey(ignore: true)" : ""} 
-  _\$${name}CopyWith<$name> get copyWith => __\$${name}CopyWithImpl<$name>(this,IdentityFn);
+  _\$${name}CopyWith<$tpp$name$tppA> get copyWith => __\$${name}CopyWithImpl<$tpp$name$tppA>(this,IdentityFn);
   """;
   }
 

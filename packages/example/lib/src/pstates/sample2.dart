@@ -30,8 +30,8 @@ class $Sample2 {
 }
 
 @DImmutable()
-abstract class TU with _$TU {
-  @JsonSerializable()
-  const factory TU({required String name, @Default("hello") String h}) = _TU;
-  factory TU.fromJson(Map<String, dynamic> json) => _$TUFromJson(json);
+abstract class TU<S extends TU<dynamic>> with _$TU<S> {
+  // @JsonSerializable()
+  const factory TU({required S s, @Default("hello") String h}) = _TU<S>;
+  // factory TU.fromJson(Map<String, dynamic> json) => _$TUFromJson(json);
 }

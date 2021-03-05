@@ -22,20 +22,20 @@ builders:
     build_to: source
     runs_before: []  
 
-targets:
-  $default:
-    builders:
-      dstore_generator:
-        generate_for:
-          - test/**
-      dstore_generator|ps:
-        generate_for:
-          - test/**
-      dstore_generator|gql:
-        generate_for:
-          - test/**
-      json_serializable:
-        generate_for:
-          - test/**
-    sources: 
-    - "test/**" 
+# targets:
+#   $default:
+#     builders:
+#       dstore_generator:
+#         generate_for:
+#           - test/**
+#       dstore_generator|ps:
+#         generate_for:
+#           - test/**
+#       dstore_generator|gql:
+#         generate_for:
+#           - test/**
+#       json_serializable:
+#         generate_for:
+#           - test/**
+#     sources: 
+#     - "test/**" 
