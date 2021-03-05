@@ -1,21 +1,21 @@
 import 'package:grinder/grinder.dart';
 
-main(args) => grind(args);
+void main(args) => grind(args);
 
 @Task()
-test() => new TestRunner().testAsync();
+dynamic test() => TestRunner().testAsync();
 
 @DefaultTask()
 @Depends(test)
-build() {
+dynamic build() {
   Pub.build();
 }
 
 @Task()
-clean() => defaultClean();
+dynamic clean() => defaultClean();
 
 @Task()
-gen() {
+void gen() {
   Pub.runAsync("build_runner",
       arguments: ["watch", "--delete-conflicting-outputs"]);
 }

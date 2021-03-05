@@ -1,5 +1,7 @@
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/store.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
+part "form.dstore.dart";
 
 typedef FormFieldValidator = dynamic Function(dynamic value);
 
@@ -8,58 +10,20 @@ abstract class FormFieldObject<M> {
   Map<String, dynamic> toMap();
 }
 
-class FormField<F extends FormFieldObject> {
-  final F value;
-  final Map<String, FormFieldValidator> validators;
-  final Map<String, String> errors;
-  final Map<String, bool> touched;
-  final bool isValid;
-  final bool isSubmitting;
-  final bool isValidating;
-  final bool validateOnChange;
-  final bool validateOnBlur;
-  final String internalAName;
-  final int internalAGroup;
-  FormField(
-      {required this.value,
-      required this.validators,
-      this.touched = const {},
-      this.isValid = false,
-      this.isSubmitting = false,
-      this.isValidating = false,
-      this.validateOnChange = false,
-      this.validateOnBlur = false,
-      this.internalAName = "",
-      this.internalAGroup = 0,
-      this.errors = const {}});
-
-  FormField<F> copyWith({
-    F? value,
-    Map<String, FormFieldValidator>? validators,
-    Map<String, String>? errors,
-    Map<String, bool>? touched,
-    bool? isValid,
-    bool? isSubmitting,
-    bool? isValidating,
-    bool? validateOnChange,
-    bool? validateOnBlur,
-    String? internalAName,
-    int? internalAGroup,
-  }) {
-    return FormField<F>(
-      value: value ?? this.value,
-      validators: validators ?? this.validators,
-      errors: errors ?? this.errors,
-      touched: touched ?? this.touched,
-      isValid: isValid ?? this.isValid,
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isValidating: isValidating ?? this.isValidating,
-      validateOnChange: validateOnChange ?? this.validateOnChange,
-      validateOnBlur: validateOnBlur ?? this.validateOnBlur,
-      internalAName: internalAName ?? this.internalAName,
-      internalAGroup: internalAGroup ?? this.internalAGroup,
-    );
-  }
+@DImmutable()
+abstract class FormField<F extends FormFieldObject> with _$FormField<F> {
+  const factory FormField(
+      {required F value,
+      required Map<String, FormFieldValidator> validators,
+      @Default({}) Map<String, String> errors,
+      @Default({}) Map<String, bool> touched,
+      @Default(false) bool isValid,
+      @Default(false) bool isSubmitting,
+      @Default(false) bool isValidating,
+      @Default(false) bool validateOnChange,
+      @Default(false) bool validateOnBlur,
+      @Default("") String internalAName,
+      @Default(0) int internalAGroup}) = _FormField<F>;
 }
 
 abstract class FormReq {}
