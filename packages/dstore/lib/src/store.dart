@@ -24,7 +24,7 @@ class Store<S extends AppStateI> {
   late S _state;
   var isReady = false;
   final StorageOptions? storageOptions;
-  void Function()? _onReadyListener = null;
+  void Function()? _onReadyListener;
   final NetworkOptions? networkOptions;
 
   Store(

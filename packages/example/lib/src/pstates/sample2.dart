@@ -35,3 +35,8 @@ abstract class TU<S extends TU<dynamic>> with _$TU<S> {
   const factory TU({required S s, @Default("hello") String h}) = _TU<S>;
   // factory TU.fromJson(Map<String, dynamic> json) => _$TUFromJson(json);
 }
+
+@DImmutable()
+abstract class Hello with _$Hello {
+  const factory Hello({required String name}) = _Hello;
+}

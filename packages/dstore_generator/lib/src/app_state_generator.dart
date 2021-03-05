@@ -1,6 +1,6 @@
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:dstore/dstore.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {

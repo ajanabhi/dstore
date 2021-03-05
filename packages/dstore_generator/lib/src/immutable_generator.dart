@@ -3,7 +3,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:dstore/dstore.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';

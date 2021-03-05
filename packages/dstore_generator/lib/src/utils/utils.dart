@@ -1,15 +1,9 @@
-import 'dart:convert';
 export "model_utils.dart";
 export "ast_utils.dart";
 export "logger.dart";
 export "builder_utils.dart";
-import 'package:analyzer/dart/analysis/results.dart';
-import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
-import 'package:dstore/dstore.dart';
-import 'package:meta/meta.dart';
+import "package:collection/collection.dart";
 
 class Field {
   String name;
@@ -68,4 +62,31 @@ List<Field> processFields(List<Field> fields) {
           type: _getFinalTypeOfField(f),
           isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?")))
       .toList();
+}
+
+String convertEnumToString(Object enumEntry) {
+  final description = enumEntry.toString();
+  final indexOfDot = description.indexOf('.');
+  assert(
+    indexOfDot != -1 && indexOfDot < description.length - 1,
+    'The provided object "$enumEntry" is not an enum.',
+  );
+  return description.substring(indexOfDot + 1);
+}
+
+String? convertEnumOrNullToString(Object? enumEntry) {
+  if (enumEntry == null) {
+    return null;
+  }
+  final description = enumEntry.toString();
+  final indexOfDot = description.indexOf('.');
+  assert(
+    indexOfDot != -1 && indexOfDot < description.length - 1,
+    'The provided object "$enumEntry" is not an enum.',
+  );
+  return description.substring(indexOfDot + 1);
+}
+
+E? convertStringToEnum<E>(String s, List<E> values) {
+  return values.firstWhereOrNull((v) => v.toString().split('.')[1] == s);
 }

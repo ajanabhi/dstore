@@ -7,10 +7,10 @@ include: package:pedantic/analysis_options.yaml
 # Uncomment to specify additional rules.
 # linter:
 #   rules:
-    
+#     - camel_case_types
 
 analyzer:
   errors:
     prefer_single_quotes: ignore
-  exclude:
-    - "**/*.dstore.dart"
+#   exclude:
+#     - path/to/excluded/files/**

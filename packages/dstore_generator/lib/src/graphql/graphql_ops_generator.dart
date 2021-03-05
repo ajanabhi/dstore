@@ -1,6 +1,6 @@
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:dstore/dstore.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/introspection.dart';
 import 'package:dstore_generator/src/graphql/schema_generator.dart';
