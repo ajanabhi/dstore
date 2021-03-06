@@ -16,8 +16,6 @@ class Sample implements PStateModel {
 
   final User name;
 
-  final GetTodos todos;
-
   final StreamField sf;
 
   final WsMessage wm;
@@ -31,7 +29,6 @@ class Sample implements PStateModel {
       {this.count = 0,
       this.s = 0,
       this.name = User(name: "first"),
-      this.todos = GetTodos(),
       this.sf = StreamField(),
       this.wm = WsMessage(),
       this.fint = AsyncActionField()});
@@ -41,7 +38,6 @@ class Sample implements PStateModel {
       count: map["count"] ?? this.count,
       s: map["s"] ?? this.s,
       name: map["name"] ?? this.name,
-      todos: map["todos"] ?? this.todos,
       sf: map["sf"] ?? this.sf,
       wm: map["wm"] ?? this.wm,
       fint: map["fint"] ?? this.fint);
@@ -50,7 +46,6 @@ class Sample implements PStateModel {
         "count": this.count,
         "s": this.s,
         "name": this.name,
-        "todos": this.todos,
         "sf": this.sf,
         "wm": this.wm,
         "fint": this.fint
@@ -63,7 +58,6 @@ class Sample implements PStateModel {
         o.count == count &&
         o.s == s &&
         o.name == name &&
-        o.todos == todos &&
         o.sf == sf &&
         o.wm == wm &&
         o.fint == fint;
@@ -74,14 +68,13 @@ class Sample implements PStateModel {
       count.hashCode ^
       s.hashCode ^
       name.hashCode ^
-      todos.hashCode ^
       sf.hashCode ^
       wm.hashCode ^
       fint.hashCode;
 
   @override
   String toString() =>
-      "Sample(count: ${this.count}, s: ${this.s}, name: ${this.name}, todos: ${this.todos}, sf: ${this.sf}, wm: ${this.wm}, fint: ${this.fint})";
+      "Sample(count: ${this.count}, s: ${this.s}, name: ${this.name}, sf: ${this.sf}, wm: ${this.wm}, fint: ${this.fint})";
 }
 
 abstract class $SampleCopyWith<O> {
@@ -91,7 +84,6 @@ abstract class $SampleCopyWith<O> {
       {int count,
       int s,
       User name,
-      GetTodos todos,
       StreamField sf,
       WsMessage wm,
       AsyncActionField fint});
@@ -107,7 +99,6 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
       {Object? count = dimmutable,
       Object? s = dimmutable,
       Object? name = dimmutable,
-      Object? todos = dimmutable,
       Object? sf = dimmutable,
       Object? wm = dimmutable,
       Object? fint = dimmutable}) {
@@ -115,7 +106,6 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
         count: count == dimmutable ? _value.count : count as int,
         s: s == dimmutable ? _value.s : s as int,
         name: name == dimmutable ? _value.name : name as User,
-        todos: todos == dimmutable ? _value.todos : todos as GetTodos,
         sf: sf == dimmutable ? _value.sf : sf as StreamField,
         wm: wm == dimmutable ? _value.wm : wm as WsMessage,
         fint: fint == dimmutable ? _value.fint : fint as AsyncActionField));
@@ -129,7 +119,6 @@ abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
       {int count,
       int s,
       User name,
-      GetTodos todos,
       StreamField sf,
       WsMessage wm,
       AsyncActionField fint});
@@ -148,7 +137,6 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
       {Object? count = dimmutable,
       Object? s = dimmutable,
       Object? name = dimmutable,
-      Object? todos = dimmutable,
       Object? sf = dimmutable,
       Object? wm = dimmutable,
       Object? fint = dimmutable}) {
@@ -156,7 +144,6 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
         count: count == dimmutable ? _value.count : count as int,
         s: s == dimmutable ? _value.s : s as int,
         name: name == dimmutable ? _value.name : name as User,
-        todos: todos == dimmutable ? _value.todos : todos as GetTodos,
         sf: sf == dimmutable ? _value.sf : sf as StreamField,
         wm: wm == dimmutable ? _value.wm : wm as WsMessage,
         fint: fint == dimmutable ? _value.fint : fint as AsyncActionField));
@@ -210,25 +197,6 @@ abstract class SampleActions {
   static Action fint({Duration? debounce}) {
     return Action(
         name: "fint", group: 240344394, isAsync: true, debounce: debounce);
-  }
-
-  static todos(
-      {bool abortable = false,
-      Map<String, dynamic>? headers,
-      Null optimisticResponse,
-      Duration? debounce}) {
-    return Action(
-        name: "todos",
-        group: 240344394,
-        http: HttpPayload(
-            abortable: abortable,
-            headers: headers,
-            optimisticResponse: optimisticResponse,
-            url: "",
-            method: "GET",
-            inputType: HttpInputType.JSON,
-            responseType: HttpResponseType.JSON),
-        debounce: debounce);
   }
 }
 
@@ -322,7 +290,6 @@ Sample Sample_DS() => Sample(
     count: 0,
     s: 0,
     name: User(name: "first"),
-    todos: GetTodos(),
     sf: StreamField(),
     wm: WsMessage(),
     fint: AsyncActionField());

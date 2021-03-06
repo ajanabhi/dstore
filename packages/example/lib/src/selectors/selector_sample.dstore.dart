@@ -16,6 +16,14 @@ class AppSelectors {
   }, sfDeps: {
     "sample": ["sf"]
   });
+  static final hello2 =
+      Selector<AppState, dynamic>(fn: _AppSelectors.hello2, deps: {
+    "sample": []
+  }, wsDeps: {
+    "sample": ["wm"]
+  }, sfDeps: {
+    "sample": ["sf"]
+  });
 }
 
 // **************************************************************************
@@ -25,7 +33,6 @@ class AppSelectors {
 mixin _$S1 {
   String get name;
   int get s;
-  String? get op3;
 
   $S1CopyWith<S1> get copyWith;
 }
@@ -37,29 +44,26 @@ class _S1 implements S1 {
   @override
   final int s;
 
-  @override
-  final String? op3;
-
   _$S1CopyWith<S1> get copyWith => __$S1CopyWithImpl<S1>(this, IdentityFn);
 
-  const _S1({required this.name, required this.s, this.op3});
+  const _S1({required this.name, required this.s});
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _S1 && o.name == name && o.s == s && o.op3 == op3;
+    return o is _S1 && o.name == name && o.s == s;
   }
 
   @override
-  int get hashCode => name.hashCode ^ s.hashCode ^ op3.hashCode;
+  int get hashCode => name.hashCode ^ s.hashCode;
 
   @override
-  String toString() => "S1(name: ${this.name}, s: ${this.s}, op3: ${this.op3})";
+  String toString() => "S1(name: ${this.name}, s: ${this.s})";
 }
 
 abstract class $S1CopyWith<O> {
   factory $S1CopyWith(S1 value, O Function(S1) then) = _$S1CopyWithImpl<O>;
-  O call({String name, int s, String? op3});
+  O call({String name, int s});
 }
 
 class _$S1CopyWithImpl<O> implements $S1CopyWith<O> {
@@ -68,20 +72,16 @@ class _$S1CopyWithImpl<O> implements $S1CopyWith<O> {
   _$S1CopyWithImpl(this._value, this._then);
 
   @override
-  O call(
-      {Object? name = dimmutable,
-      Object? s = dimmutable,
-      Object? op3 = dimmutable}) {
+  O call({Object? name = dimmutable, Object? s = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
-        s: s == dimmutable ? _value.s : s as int,
-        op3: op3 == dimmutable ? _value.op3 : op3 as String?));
+        s: s == dimmutable ? _value.s : s as int));
   }
 }
 
 abstract class _$S1CopyWith<O> implements $S1CopyWith<O> {
   factory _$S1CopyWith(S1 value, O Function(S1) then) = __$S1CopyWithImpl<O>;
-  O call({String name, int s, String? op3});
+  O call({String name, int s});
 }
 
 class __$S1CopyWithImpl<O> extends _$S1CopyWithImpl<O>
@@ -93,13 +93,9 @@ class __$S1CopyWithImpl<O> extends _$S1CopyWithImpl<O>
   S1 get _value => super._value;
 
   @override
-  O call(
-      {Object? name = dimmutable,
-      Object? s = dimmutable,
-      Object? op3 = dimmutable}) {
+  O call({Object? name = dimmutable, Object? s = dimmutable}) {
     return _then(S1(
         name: name == dimmutable ? _value.name : name as String,
-        s: s == dimmutable ? _value.s : s as int,
-        op3: op3 == dimmutable ? _value.op3 : op3 as String?));
+        s: s == dimmutable ? _value.s : s as int));
   }
 }

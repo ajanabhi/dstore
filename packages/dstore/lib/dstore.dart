@@ -11,3 +11,4 @@ export 'src/form.dart';
 export 'src/utils.dart';
 export 'src/offline.dart';
 export 'src/helper_classes.dart';
+export "package:dstore_annotation/dstore_annotation.dart";

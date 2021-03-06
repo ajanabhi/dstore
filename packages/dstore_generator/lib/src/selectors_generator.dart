@@ -9,31 +9,39 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
+import "package:collection/collection.dart";
 
 class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
   @override
   Future<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) async {
-    if (!(element is ClassElement)) {
-      throw Exception("Selectors should be applied on class only");
-    }
-    final className = element.name;
+    try {
+      if (!(element is ClassElement)) {
+        throw Exception("Selectors should be applied on class only");
+      }
+      final className = element.name;
 
-    if (!className.startsWith("_")) {
-      throw Exception("Selectors functions class should start with _");
-    }
-    final modelName = className.substring(1);
-    final visitor = SelectorsVisitor(modelName);
-    final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
-    astNode.visitChildren(visitor);
+      if (!className.startsWith("_")) {
+        throw Exception("Selectors functions class should start with _");
+      }
+      final modelName = className.substring(1);
+      final visitor = SelectorsVisitor(modelName);
+      final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
 
-    return """
+      astNode.visitChildren(visitor);
+
+      return """
        // Selector
        class ${modelName} {
          ${visitor.selectors.join("\n")}
        }
     """;
+    } catch (e, st) {
+      logger.error("Failed generating selectors for ${element.name}", e, st);
+      rethrow;
+    }
   }
 }
 
@@ -59,6 +67,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
     final sType = field.type;
     final bvs = SelectorBodyVisitor(field.param!.identifier!);
     node.body.visitChildren(bvs);
+
     print("%%%%% deps : ${bvs.depsList}");
     final depsMap = _convertDepsListToDeps(bvs.depsList)
         .map((key, value) => MapEntry(key, value.toList()));
@@ -263,7 +272,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
 
   @override
   dynamic visitPrefixedIdentifier(PrefixedIdentifier node) {
-    print(
+    logger.shout(
         "**##### IdenAccess  ${node} id:  ${node.identifier} prefix : ${node.prefix} mid :${identifier.toString()}");
     if (node.prefix.toString() == identifier.toString()) {
       print(
@@ -273,9 +282,63 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
           [MapEntry(node.identifier.toString(), node.identifier.staticType!)]);
     } else {
       print("identifier is not equal ${node.prefix == identifier}");
+      logger.shout(node.runtimeType);
     }
     // return super.visitPrefixedIdentifier(node);
   }
+
+  @override
+  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
+    logger.shout("visitFunctionExpressionInvocation ${node.runtimeType}");
+    return super.visitFunctionExpressionInvocation(node);
+  }
+
+  @override
+  void visitFunctionExpression(FunctionExpression node) {
+    logger.shout("visitFunctionExpression ${node.runtimeType}");
+    return super.visitFunctionExpression(node);
+  }
+
+  @override
+  void visitExpressionStatement(ExpressionStatement node) {
+    logger.shout("ExpressionStatement $node");
+    return super.visitExpressionStatement(node);
+  }
+
+  @override
+  void visitMethodInvocation(MethodInvocation node) {
+    logger.shout(
+        "visitMethodInvocation node ${node.target.runtimeType} ${node.target != null ? (node.target as SimpleIdentifier).staticElement?.metadata.map((e) => e.toString()).join(",") : ""} ${node.target?.staticType}");
+
+    if (node.target != null && node.target is SimpleIdentifier) {
+      if (node.argumentList.arguments.length == 1) {
+        final arg = node.argumentList.arguments.first;
+        if (arg is SimpleIdentifier &&
+            arg.toString() == identifier.toString()) {
+          // passing state to another method
+          final element = (node.target as SimpleIdentifier).staticElement;
+          if (_isSelectorsClass(element)) {
+            logger.shout(
+                "its selector invocation ${node.staticParameterElement}");
+            node.childEntities.forEach((element) {
+              logger.shout("Method child ${element}");
+            });
+          }
+        }
+      }
+    }
+
+    node.argumentList.arguments.forEach((element) {
+      logger.shout("Argument $element ${element.runtimeType}");
+    });
+    return super.visitMethodInvocation(node);
+  }
+
+  bool _isSelectorsClass(Element? element) =>
+      element != null &&
+      element.metadata.singleWhereOrNull(
+              (a) => a.toString().startsWith("@Selectors")) !=
+          null;
 }
 
 class _SelectorMeta {

@@ -16,6 +16,7 @@ dependencies:
   collection:
   ansicolor: 2.0.0-nullsafety.0
   logging: 1.0.0
+  
   json_annotation: 4.0.0
   dstore_annotation:
     path: ../dstore_annotation

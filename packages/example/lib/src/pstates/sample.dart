@@ -18,14 +18,12 @@ dynamic s(dynamic a) => a;
 @WebSocketRequest(url: "ws2", responseDeserializer: s)
 class WsMessage = WebSocketField with EmptyMixin;
 
-final GetTodos g = GetTodos();
-
 @PState()
 class $Sample {
   int count = 0;
   int s = 0;
   User name = User(name: "first");
-  GetTodos todos = GetTodos();
+  // GetTodos todos = GetTodos();
 
   StreamField sf = StreamField();
 
