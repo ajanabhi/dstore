@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/utils/annotation_utils.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:logging/logging.dart';
@@ -34,7 +37,12 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       final typeParamsWithBounds =
           element.typeParameters.map((e) => e.toString()).join(",");
       final typeParams = element.typeParameters.map((e) => e.name).join(",");
-      logger.shout("typeParams : $typeParamsWithBounds");
+      logger
+          .shout("typeParams : $typeParamsWithBounds fields ${element.fields}");
+      ctor.parameters.forEach((element) {
+        final jk = AnnotationUtils.getJsonKey(element);
+        logger.shout("Json Key ${jk?.ignore}");
+      });
       final astNode = AstUtils.getAstNodeFromElement(element);
       final astVisitor = DImmutableAstVisitor();
       astNode.visitChildren(astVisitor);

@@ -40,9 +40,11 @@ mixin _$S1 {
 
 class _S1 implements S1 {
   @override
+  @JsonKey()
   final String name;
 
   @override
+  @JsonKey(ignore: true)
   final int s;
 
   _$S1CopyWith<S1> get copyWith => __$S1CopyWithImpl<S1>(this, IdentityFn);

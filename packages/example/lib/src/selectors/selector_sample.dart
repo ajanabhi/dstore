@@ -18,7 +18,9 @@ part 'selector_sample.dstore.dart';
 
 @dimmutable
 abstract class S1 with _$S1 {
-  const factory S1({required String name, required int s}) = _S1;
+  const factory S1(
+      {@JsonKey() required String name,
+      @JsonKey(ignore: true) required int s}) = _S1;
 }
 
 @Selectors()

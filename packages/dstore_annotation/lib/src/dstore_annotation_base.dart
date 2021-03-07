@@ -79,3 +79,9 @@ class HttpRequest<I, R, E> {
       this.graphqlQuery,
       this.inputType});
 }
+
+class ExcludeThisKeyWhilePersit {
+  const ExcludeThisKeyWhilePersit();
+}
+
+const excludeThisKeyWhilePersist = ExcludeThisKeyWhilePersit();
