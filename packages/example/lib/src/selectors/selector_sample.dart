@@ -16,6 +16,11 @@ part 'selector_sample.dstore.dart';
 //   Hello hello = Hello();
 // }
 
+@dimmutable
+abstract class S1 with _$S1 {
+  const factory S1({required String name, required int s}) = _S1;
+}
+
 @Selectors()
 // ignore: unused_element
 class _AppSelectors {
@@ -34,12 +39,9 @@ class _AppSelectors {
   }
 
   static dynamic hello2(AppState state) {
-    final n = state.sample;
+    final n = state.sample2;
+    final n1 = state.sample;
+    print("dude");
     final d = _AppSelectors.hello(state);
   }
-}
-
-@dimmutable
-abstract class S1 with _$S1 {
-  const factory S1({required String name, required int s}) = _S1;
 }

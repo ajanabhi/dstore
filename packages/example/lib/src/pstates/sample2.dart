@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:union/union.dart';
 part 'sample2.ps.dstore.dart';
 part 'sample2.dstore.dart';
-part 'sample2.g.dart';
+// part 'sample2.g.dart';
 
 @PState()
 // ignore: unused_element

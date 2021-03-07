@@ -137,7 +137,7 @@ dynamic Sample2_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 Sample2 Sample2_DS() => Sample2(count: 0, name: "hello2", comment: null);
 
 const Sample2Meta = PStateMeta<Sample2>(
-    group: 264296239,
+    type: Sample2,
     reducer: Sample2_SyncReducer,
     aReducer: null,
     ds: Sample2_DS);

@@ -9,7 +9,7 @@ part of 'action.dart';
 
 mixin _$Action {
   String get name;
-  int get group;
+  Type get type;
   bool get isAsync;
   Map<String, dynamic>? get payload;
   HttpPayload? get http;
@@ -28,7 +28,7 @@ class _Action implements Action {
   final String name;
 
   @override
-  final int group;
+  final Type type;
 
   @override
   @Default(false)
@@ -64,7 +64,7 @@ class _Action implements Action {
 
   const _Action(
       {required this.name,
-      required this.group,
+      required this.type,
       this.isAsync = false,
       this.payload,
       this.http,
@@ -80,7 +80,7 @@ class _Action implements Action {
     if (identical(this, o)) return true;
     return o is _Action &&
         o.name == name &&
-        o.group == group &&
+        o.type == type &&
         o.isAsync == isAsync &&
         o.payload == payload &&
         o.http == http &&
@@ -95,7 +95,7 @@ class _Action implements Action {
   @override
   int get hashCode =>
       name.hashCode ^
-      group.hashCode ^
+      type.hashCode ^
       isAsync.hashCode ^
       payload.hashCode ^
       http.hashCode ^
@@ -108,7 +108,7 @@ class _Action implements Action {
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, group: ${this.group}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, form: ${this.form})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, form: ${this.form})";
 }
 
 abstract class $ActionCopyWith<O> {
@@ -116,7 +116,7 @@ abstract class $ActionCopyWith<O> {
       _$ActionCopyWithImpl<O>;
   O call(
       {String name,
-      int group,
+      Type type,
       bool isAsync,
       Map<String, dynamic>? payload,
       HttpPayload? http,
@@ -136,7 +136,7 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
   @override
   O call(
       {Object? name = dimmutable,
-      Object? group = dimmutable,
+      Object? type = dimmutable,
       Object? isAsync = dimmutable,
       Object? payload = dimmutable,
       Object? http = dimmutable,
@@ -148,7 +148,7 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
       Object? form = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
-        group: group == dimmutable ? _value.group : group as int,
+        type: type == dimmutable ? _value.type : type as Type,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
         payload: payload == dimmutable
             ? _value.payload
@@ -171,7 +171,7 @@ abstract class _$ActionCopyWith<O> implements $ActionCopyWith<O> {
       __$ActionCopyWithImpl<O>;
   O call(
       {String name,
-      int group,
+      Type type,
       bool isAsync,
       Map<String, dynamic>? payload,
       HttpPayload? http,
@@ -194,7 +194,7 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
   @override
   O call(
       {Object? name = dimmutable,
-      Object? group = dimmutable,
+      Object? type = dimmutable,
       Object? isAsync = dimmutable,
       Object? payload = dimmutable,
       Object? http = dimmutable,
@@ -206,7 +206,7 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
       Object? form = dimmutable}) {
     return _then(Action(
         name: name == dimmutable ? _value.name : name as String,
-        group: group == dimmutable ? _value.group : group as int,
+        type: type == dimmutable ? _value.type : type as Type,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
         payload: payload == dimmutable
             ? _value.payload

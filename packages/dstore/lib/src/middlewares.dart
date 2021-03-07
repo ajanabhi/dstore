@@ -11,7 +11,7 @@ final Middleware asyncMiddleware =
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
-    final sk = store.getStateKeyForReducerGroup(action.group);
+    final sk = store.getStateKeyForReducerGroup(action.type);
     final psm = store.meta[sk]!;
     final gsMap = store.state.toMap();
     final currentS = gsMap[sk]!;
@@ -44,7 +44,7 @@ final Middleware debounceMiddleware =
     next(action);
   } else {
     final duration = action.debounce!;
-    final id = "${action.group}.${action.name}";
+    final id = "${action.type.hashCode}.${action.name}";
     if (duration == Duration.zero) {
       // if duration is zero then execute immediatley
       store.internalDebounceTimers[id]?.cancel();

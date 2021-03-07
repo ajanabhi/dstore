@@ -13,6 +13,31 @@ import 'package:logging/logging.dart';
 import 'package:source_gen/source_gen.dart';
 import "package:collection/collection.dart";
 
+class SelectorDeps {
+  final Map<String, List<String>> mainDeps;
+  final Map<String, List<String>>? wsDeps;
+  final Map<String, List<String>>? sfDeps;
+
+  SelectorDeps({required this.mainDeps, this.wsDeps, this.sfDeps});
+}
+
+final selectorDepsCache = <int, Map<String, SelectorDeps>>{};
+
+SelectorDeps? getSelectorCachedDeps(Element element, String name) {
+  final code = "${element.source?.fullName}${element.name}".hashCode;
+  return selectorDepsCache[code]?[name];
+}
+
+void addSelectorCacheDeps(Element element, String name, SelectorDeps sdeps) {
+  final code = "${element.source?.fullName}${element.name}".hashCode;
+  final existinValue = selectorDepsCache[code];
+  if (existinValue == null) {
+    selectorDepsCache[code] = {name: sdeps};
+  } else {
+    existinValue[name] = sdeps;
+  }
+}
+
 class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
   @override
   Future<String> generateForAnnotatedElement(
@@ -27,7 +52,7 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
         throw Exception("Selectors functions class should start with _");
       }
       final modelName = className.substring(1);
-      final visitor = SelectorsVisitor(modelName);
+      final visitor = SelectorsVisitor(modelName, element);
       final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
 
       astNode.visitChildren(visitor);
@@ -47,9 +72,10 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
 
 class SelectorsVisitor extends SimpleAstVisitor {
   final String modelName;
+  final Element element;
   final selectors = <String>[];
 
-  SelectorsVisitor(this.modelName);
+  SelectorsVisitor(this.modelName, this.element);
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
@@ -71,11 +97,13 @@ class SelectorsVisitor extends SimpleAstVisitor {
     print("%%%%% deps : ${bvs.depsList}");
     final depsMap = _convertDepsListToDeps(bvs.depsList)
         .map((key, value) => MapEntry(key, value.toList()));
+    mergeDeps(depsMap, bvs.subSelectorDeps);
     final webSocketFieldDepsMap = Map.fromEntries(
         (_convertDepsListToWebSocketFields(bvs.depsList)
             .map((key, value) => MapEntry(key, value.toList()))
             .entries
             .where((e) => e.value.isNotEmpty)));
+    mergeWsDeps(webSocketFieldDepsMap, bvs.subSelectorDeps);
     final wsDeps = webSocketFieldDepsMap.isEmpty
         ? ""
         : ",wsDeps: ${jsonEncode(webSocketFieldDepsMap)}";
@@ -85,12 +113,21 @@ class SelectorsVisitor extends SimpleAstVisitor {
             .map((key, value) => MapEntry(key, value.toList()))
             .entries
             .where((e) => e.value.isNotEmpty));
+    mergeStreamFieldsDeps(streamFieldsMap, bvs.subSelectorDeps);
     final sfDeps = streamFieldsMap.isEmpty
         ? ""
         : ", sfDeps: ${jsonEncode(streamFieldsMap)}";
     final result =
         """static final ${name} = Selector<${sType},${rType}>(fn:_${modelName}.${name},deps:${jsonEncode(depsMap)}$wsDeps ${sfDeps});""";
     print("Resuult :${result}");
+    addSelectorCacheDeps(
+        element,
+        name,
+        SelectorDeps(
+            mainDeps: depsMap,
+            wsDeps:
+                webSocketFieldDepsMap.isEmpty ? null : webSocketFieldDepsMap,
+            sfDeps: streamFieldsMap.isEmpty ? null : streamFieldsMap));
     selectors.add(result);
     //  node.body.visitChildren(visitor)
     return super.visitMethodDeclaration(node);
@@ -215,12 +252,70 @@ class SelectorsVisitor extends SimpleAstVisitor {
         .getDisplayString(withNullability: true)
         .startsWith("WebSocketField<"));
   }
+
+  void mergeDeps(
+      Map<String, List<String>> deps, List<SelectorDeps> subSelectorDeps) {
+    subSelectorDeps.forEach((sd) {
+      final sdDeps = sd.mainDeps;
+      sdDeps.forEach((key, value) {
+        if (deps.containsKey(key)) {
+          final v = deps[key]!.toSet();
+          if (value.isNotEmpty && v.isNotEmpty) {
+            // if its empty we depends on all fields no need to merge
+            v.addAll(value);
+            deps[key] = v.toList();
+          } else {
+            deps[key] = [];
+          }
+        } else {
+          deps[key] = value;
+        }
+      });
+    });
+  }
+
+  void mergeWsDeps(
+      Map<String, List<String>> wsDeps, List<SelectorDeps> subSelectorDeps) {
+    subSelectorDeps.forEach((sd) {
+      if (sd.wsDeps != null) {
+        final sdDeps = sd.wsDeps!;
+        sdDeps.forEach((key, value) {
+          if (wsDeps.containsKey(key)) {
+            final v = wsDeps[key]!.toSet();
+            v.addAll(value);
+            wsDeps[key] = v.toList();
+          } else {
+            wsDeps[key] = value;
+          }
+        });
+      }
+    });
+  }
+
+  void mergeStreamFieldsDeps(
+      Map<String, List<String>> sfDeps, List<SelectorDeps> subSelectorDeps) {
+    subSelectorDeps.forEach((sd) {
+      if (sd.sfDeps != null) {
+        final sdDeps = sd.sfDeps!;
+        sdDeps.forEach((key, value) {
+          if (sfDeps.containsKey(key)) {
+            final v = sfDeps[key]!.toSet();
+            v.addAll(value);
+            sfDeps[key] = v.toList();
+          } else {
+            sfDeps[key] = value;
+          }
+        });
+      }
+    });
+  }
 }
 
 class SelectorBodyVisitor extends RecursiveAstVisitor {
   final Identifier identifier;
 
   final List<List<MapEntry<String, DartType>>> depsList = [];
+  final List<SelectorDeps> subSelectorDeps = [];
 
   SelectorBodyVisitor(this.identifier);
   List<MapEntry<String, DartType>> getPropNamesAndTheirTypes(
@@ -288,25 +383,7 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
   }
 
   @override
-  void visitFunctionExpressionInvocation(FunctionExpressionInvocation node) {
-    logger.shout("visitFunctionExpressionInvocation ${node.runtimeType}");
-    return super.visitFunctionExpressionInvocation(node);
-  }
-
-  @override
-  void visitFunctionExpression(FunctionExpression node) {
-    logger.shout("visitFunctionExpression ${node.runtimeType}");
-    return super.visitFunctionExpression(node);
-  }
-
-  @override
-  void visitExpressionStatement(ExpressionStatement node) {
-    logger.shout("ExpressionStatement $node");
-    return super.visitExpressionStatement(node);
-  }
-
-  @override
-  void visitMethodInvocation(MethodInvocation node) {
+  void visitMethodInvocation(MethodInvocation node) async {
     logger.shout(
         "visitMethodInvocation node ${node.target.runtimeType} ${node.target != null ? (node.target as SimpleIdentifier).staticElement?.metadata.map((e) => e.toString()).join(",") : ""} ${node.target?.staticType}");
 
@@ -320,9 +397,18 @@ class SelectorBodyVisitor extends RecursiveAstVisitor {
           if (_isSelectorsClass(element)) {
             logger.shout(
                 "its selector invocation ${node.staticParameterElement}");
-            node.childEntities.forEach((element) {
-              logger.shout("Method child ${element}");
-            });
+            var scd = getSelectorCachedDeps(element!, node.methodName.name);
+            if (scd == null) {
+              logger
+                  .shout("Subselector deps Not found in cache so fetching now");
+              final astNode =
+                  await AstUtils.getResolvedAstNodeFromElement(element);
+              astNode.visitChildren(
+                  SelectorsVisitor(element.name!.substring(1), element));
+              scd = getSelectorCachedDeps(element, node.methodName.name);
+            }
+            logger.shout("Cached Deps $scd");
+            subSelectorDeps.add(scd!);
           }
         }
       }

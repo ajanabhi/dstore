@@ -15,6 +15,7 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     try {
+      logger.shout("Genertating DImmutable for ${element.name}");
       ansiColorDisabled = false;
       if (!(element is ClassElement)) {
         throw UnsupportedError("DImmutable should only be used on classes");
@@ -47,13 +48,14 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
         annotations.add(jsonSerializableAnno);
       }
       final isJosnSerializable = jsonSerializableAnno != null;
-      return """
+      final result = """
       ${_createMixin(name: name, fields: fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable)}
 
       ${_createClass(name: name, fields: fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, annotations: annotations, isJsonSerializable: isJosnSerializable)}
       ${isJosnSerializable ? "$name _\$${name}FromJson(Map<String,dynamic> json) => _${name}.fromJson(json);" : ""}
       ${ModelUtils.createCopyWithClasses(name: name, fields: fields, typeParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
     """;
+      return result;
     } catch (e, st) {
       logger.error(
           "Error in generating immutable class for ${element.name}", e, st);

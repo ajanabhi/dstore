@@ -23,7 +23,7 @@ abstract class FormField<F extends FormFieldObject> with _$FormField<F> {
       @Default(false) bool validateOnChange,
       @Default(false) bool validateOnBlur,
       @Default("") String internalAName,
-      @Default(0) int internalAGroup}) = _FormField<F>;
+      @Default(Object) Type internalAType}) = _FormField<F>;
 }
 
 abstract class FormReq {}
@@ -91,37 +91,37 @@ abstract class MiddlewareFormUtils {
     return FormOps(
       setFieldValue: (FormSetFieldError req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setFieldTouched: (FormSetFieldTouched req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setFieldError: (FormSetFieldError req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setErrors: (FormSetErrors req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setSubmitting: (FormSetSubmitting req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       resetForm: (FormReset req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       validateForm: (FormValidate req) {
         final a =
-            Action(name: ff.internalAName, group: ff.internalAGroup, form: req);
+            Action(name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
     );

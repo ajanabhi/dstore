@@ -68,7 +68,7 @@ class PStateStorageMeta<S extends PStateModel> {
 }
 
 class PStateMeta<S extends PStateModel> {
-  final int group;
+  final Type type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
   final S Function() ds;
@@ -78,7 +78,7 @@ class PStateMeta<S extends PStateModel> {
   const PStateMeta(
       {this.aReducer,
       this.sm,
-      required this.group,
+      required this.type,
       this.reducer,
       required this.ds});
 }

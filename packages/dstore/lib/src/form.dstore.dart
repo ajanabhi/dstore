@@ -18,7 +18,7 @@ mixin _$FormField<F extends FormFieldObject<dynamic>> {
   bool get validateOnChange;
   bool get validateOnBlur;
   String get internalAName;
-  int get internalAGroup;
+  Type get internalAType;
 
   $FormFieldCopyWith<F, FormField<F>> get copyWith;
 }
@@ -71,9 +71,9 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
   final String internalAName;
 
   @override
-  @Default(0)
-  @JsonKey(defaultValue: 0)
-  final int internalAGroup;
+  @Default(Object)
+  @JsonKey(defaultValue: Object)
+  final Type internalAType;
 
   _$FormFieldCopyWith<F, FormField<F>> get copyWith =>
       __$FormFieldCopyWithImpl<F, FormField<F>>(this, IdentityFn);
@@ -89,7 +89,7 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
       this.validateOnChange = false,
       this.validateOnBlur = false,
       this.internalAName = "",
-      this.internalAGroup = 0});
+      this.internalAType = Object});
 
   @override
   bool operator ==(Object o) {
@@ -105,7 +105,7 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
         o.validateOnChange == validateOnChange &&
         o.validateOnBlur == validateOnBlur &&
         o.internalAName == internalAName &&
-        o.internalAGroup == internalAGroup;
+        o.internalAType == internalAType;
   }
 
   @override
@@ -120,11 +120,11 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
       validateOnChange.hashCode ^
       validateOnBlur.hashCode ^
       internalAName.hashCode ^
-      internalAGroup.hashCode;
+      internalAType.hashCode;
 
   @override
   String toString() =>
-      "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalAName: ${this.internalAName}, internalAGroup: ${this.internalAGroup})";
+      "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
 }
 
 abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
@@ -142,7 +142,7 @@ abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
       bool validateOnChange,
       bool validateOnBlur,
       String internalAName,
-      int internalAGroup});
+      Type internalAType});
 }
 
 class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
@@ -163,7 +163,7 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
       Object? validateOnChange = dimmutable,
       Object? validateOnBlur = dimmutable,
       Object? internalAName = dimmutable,
-      Object? internalAGroup = dimmutable}) {
+      Object? internalAType = dimmutable}) {
     return _then(_value.copyWith(
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
@@ -191,9 +191,9 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,
-        internalAGroup: internalAGroup == dimmutable
-            ? _value.internalAGroup
-            : internalAGroup as int));
+        internalAType: internalAType == dimmutable
+            ? _value.internalAType
+            : internalAType as Type));
   }
 }
 
@@ -213,7 +213,7 @@ abstract class _$FormFieldCopyWith<F extends FormFieldObject<dynamic>, O>
       bool validateOnChange,
       bool validateOnBlur,
       String internalAName,
-      int internalAGroup});
+      Type internalAType});
 }
 
 class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
@@ -236,7 +236,7 @@ class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
       Object? validateOnChange = dimmutable,
       Object? validateOnBlur = dimmutable,
       Object? internalAName = dimmutable,
-      Object? internalAGroup = dimmutable}) {
+      Object? internalAType = dimmutable}) {
     return _then(FormField(
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
@@ -264,8 +264,8 @@ class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,
-        internalAGroup: internalAGroup == dimmutable
-            ? _value.internalAGroup
-            : internalAGroup as int));
+        internalAType: internalAType == dimmutable
+            ? _value.internalAType
+            : internalAType as Type));
   }
 }

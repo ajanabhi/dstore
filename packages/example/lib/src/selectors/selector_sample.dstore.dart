@@ -18,6 +18,7 @@ class AppSelectors {
   });
   static final hello2 =
       Selector<AppState, dynamic>(fn: _AppSelectors.hello2, deps: {
+    "sample2": [],
     "sample": []
   }, wsDeps: {
     "sample": ["wm"]

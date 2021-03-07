@@ -295,7 +295,7 @@ Sample Sample_DS() => Sample(
     fint: AsyncActionField());
 
 const SampleMeta = PStateMeta<Sample>(
-    group: 240344394,
+    type: Sample,
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
     ds: Sample_DS);

@@ -15,69 +15,74 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
   @override
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
-    if (!(element is ClassElement)) {
-      throw Exception("Reducer should be applied on class only");
-    }
-    final classElement = element;
-    print(
-        "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
-    final className = element.name;
-    if (!className.startsWith("\$")) {
-      throw ArgumentError.value("PState class should start with \$");
-    }
-    final typeParamsWithBounds =
-        element.typeParameters.map((e) => e.toString()).join(",");
-    final typeParams = element.typeParameters.map((e) => e.name).join(",");
-    // final persist = _getPersistValue(element);
-    final modelName = className.substring(1);
-    final visitor = ReducerAstVisitor();
-    final astNode = AstUtils.getAstNodeFromElement(classElement);
-    astNode.visitChildren(visitor);
-    var fields = visitor.fields;
-    final methods = visitor.methods;
-    fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
-        name: m.name,
-        type: "AsyncActionField",
-        value: "AsyncActionField()",
-        param: null)));
-    fields = processFields(fields);
-    final syncReducerFunctionStr =
-        _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
-    final asyncReducerFubctionStr =
-        _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
-    print(fields);
-    final group = "${element.source.fullName}_${className}".hashCode;
-    final defaultState =
-        "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, group: group) : f.value}").join(", ")})";
-    final reducerGroup = """
+    try {
+      if (!(element is ClassElement)) {
+        throw Exception("Reducer should be applied on class only");
+      }
+      final classElement = element;
+      print(
+          "(((((((((((((((((************)))))))))${classElement.location} ${classElement.source.uri} fn ${classElement.source.fullName}");
+      final className = element.name;
+      if (!className.startsWith("\$")) {
+        throw ArgumentError.value("PState class should start with \$");
+      }
+      final typeParamsWithBounds =
+          element.typeParameters.map((e) => e.toString()).join(",");
+      final typeParams = element.typeParameters.map((e) => e.name).join(",");
+      // final persist = _getPersistValue(element);
+      final modelName = className.substring(1);
+      final visitor = ReducerAstVisitor();
+      final astNode = AstUtils.getAstNodeFromElement(classElement);
+      astNode.visitChildren(visitor);
+      var fields = visitor.fields;
+      final methods = visitor.methods;
+      fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
+          name: m.name,
+          type: "AsyncActionField",
+          value: "AsyncActionField()",
+          param: null)));
+      fields = processFields(fields);
+      final syncReducerFunctionStr = _createReducerFunctionSync(
+          methods.where((m) => !m.isAsync), modelName);
+      final asyncReducerFubctionStr = _createReducerFunctionAsync(
+          methods.where((m) => m.isAsync), modelName);
+      print(fields);
+      final group = "${element.source.fullName}_${className}".hashCode;
+      final defaultState =
+          "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, group: group) : f.value}").join(", ")})";
+      final reducerGroup = """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
        $modelName ${modelName}_DS() => $defaultState;
        
-       const ${modelName}Meta = PStateMeta<${modelName}>(group:${group},
+       const ${modelName}Meta = PStateMeta<${modelName}>(type:$modelName,
         reducer: ${syncReducerFunctionStr.isNotEmpty ? "${modelName}_SyncReducer" : "null"} ,
         aReducer: ${asyncReducerFubctionStr.isNotEmpty ? "${modelName}_AsyncReducer" : "null"} ,
         ds: ${modelName}_DS);
     """;
-    final httpFields = _getHttpFields(classElement.fields);
-    print("httpFields $httpFields");
-    final formFields = fields.where((f) => f.type.startsWith("FomField"));
-    final actions = _generateActionsCreators(
-        methods: visitor.methods,
-        modelName: modelName,
-        group: group,
-        formFields: formFields,
-        httpFields: httpFields);
+      final httpFields = _getHttpFields(classElement.fields);
+      print("httpFields $httpFields");
+      final formFields = fields.where((f) => f.type.startsWith("FomField"));
+      final actions = _generateActionsCreators(
+          methods: visitor.methods,
+          modelName: modelName,
+          group: group,
+          formFields: formFields,
+          httpFields: httpFields);
 
-    final result = """
+      final result = """
        // class Name : ${element.name}
 
        ${_createPStateModel(fields: fields, name: modelName, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
        ${actions}
         ${reducerGroup}
     """;
-    // print("********************* PState: $result");
-    return result;
+      // print("********************* PState: $result");
+      return result;
+    } catch (e, st) {
+      logger.error("Error in generate PState for ${element.name}", e, st);
+      rethrow;
+    }
   }
 }
 

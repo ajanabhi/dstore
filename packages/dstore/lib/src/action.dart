@@ -2,13 +2,14 @@ import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
 import 'package:dstore/src/websocket.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+
 part "action.dstore.dart";
 
 @dimmutable
 abstract class Action with _$Action {
   const factory Action({
     required String name,
-    required int group,
+    required Type type,
     @Default(false) bool isAsync,
     Map<String, dynamic>? payload,
     HttpPayload? http,
