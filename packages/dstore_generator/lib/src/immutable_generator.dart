@@ -1,15 +1,11 @@
 import 'dart:developer';
 
-import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:ansicolor/ansicolor.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
-import 'package:dstore_generator/src/utils/annotation_utils.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:gql/ast.dart';
-import 'package:logging/logging.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:collection/collection.dart';
 
@@ -24,12 +20,13 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
         throw UnsupportedError("DImmutable should only be used on classes");
       }
       print("ctors ${element.constructors.length}");
-      // if (element.constructors.length != 1 ||
-      //     !element.constructors.first.isFactory) {
-      //   throw Exception(
-      //       "DImmutable class should contain only single factory constructor");
-      // }
-      final ctor = element.constructors.first;
+
+      final ctor = element.constructors
+          .singleWhereOrNull((c) => c.isFactory && c.name.isEmpty);
+      if (ctor == null) {
+        throw ArgumentError.value(
+            "DImmutable should have factory constructor with non name");
+      }
       if (!ctor.parameters.every((p) => p.isNamed)) {
         throw ArgumentError.value(
             "DImmutable constructor should contain only named params");
@@ -39,23 +36,17 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
       final typeParams = element.typeParameters.map((e) => e.name).join(",");
       logger
           .shout("typeParams : $typeParamsWithBounds fields ${element.fields}");
-      ctor.parameters.forEach((element) {
-        final jk = AnnotationUtils.getJsonKey(element);
-        logger.shout("Json Key ${jk?.ignore}");
-      });
-      final astNode = AstUtils.getAstNodeFromElement(element);
-      final astVisitor = DImmutableAstVisitor();
-      astNode.visitChildren(astVisitor);
-      print(astVisitor);
-      final fields = processFields(astVisitor.fields);
+
+      final fields = processFields(
+          AstUtils.convertParamElementsToFields(ctor.parameters, dim: true));
       final name = element.name;
       print("Params : $fields");
       final annotations = <String>[];
-      final jsonSerializableAnno = astVisitor.jsonSerializable;
-      if (jsonSerializableAnno != null) {
-        annotations.add(jsonSerializableAnno);
+      final jsonSerializableAnnot = ctor.annotationFromType(JsonSerializable);
+      if (jsonSerializableAnnot != null) {
+        annotations.add(jsonSerializableAnnot.toSource());
       }
-      final isJosnSerializable = jsonSerializableAnno != null;
+      final isJosnSerializable = jsonSerializableAnnot != null;
       final result = """
       ${_createMixin(name: name, fields: fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable)}
 
@@ -69,32 +60,6 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
           "Error in generating immutable class for ${element.name}", e, st);
       rethrow;
     }
-  }
-}
-
-class DImmutableAstVisitor extends SimpleAstVisitor {
-  final List<Field> fields = [];
-  String? jsonSerializable;
-  @override
-  dynamic visitConstructorDeclaration(ConstructorDeclaration node) {
-    if (node.factoryKeyword != null) {
-      print("Factory Constructor ${node.name?.name}");
-      if (node.name == null) {
-        // defaul factory constructor
-        fields.addAll(AstUtils.convertParamsToFields(node.parameters,
-            isDImmutable: true));
-        jsonSerializable = node.metadata
-            .singleWhereOrNull(
-                (a) => a.toString().startsWith("@JsonSerializable"))
-            ?.toString();
-      }
-    }
-    return super.visitConstructorDeclaration(node);
-  }
-
-  @override
-  String toString() {
-    return "DImmutableAstVisitor(fields :$fields josnSerializable : $jsonSerializable)";
   }
 }
 

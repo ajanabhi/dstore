@@ -7,78 +7,98 @@ part of 'sample2.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$TU<S extends TU<dynamic>> {
-  S get s;
+mixin _$TU {
+  String get s;
+  String get h2;
   String get h;
 
-  $TUCopyWith<S, TU<S>> get copyWith;
+  @JsonKey(ignore: true)
+  $TUCopyWith<TU> get copyWith;
+  Map<String, dynamic> toJson();
 }
 
-class _TU<S extends TU<dynamic>> implements TU<S> {
+@JsonSerializable()
+class _TU implements TU {
   @override
-  final S s;
+  final String s;
+
+  @override
+  @JsonKey(nullable: true, defaultValue: "2")
+  @Default("hello2")
+  final String h2;
 
   @override
   @Default("hello")
   @JsonKey(defaultValue: "hello")
   final String h;
 
-  _$TUCopyWith<S, TU<S>> get copyWith =>
-      __$TUCopyWithImpl<S, TU<S>>(this, IdentityFn);
+  @JsonKey(ignore: true)
+  _$TUCopyWith<TU> get copyWith => __$TUCopyWithImpl<TU>(this, IdentityFn);
 
-  const _TU({required this.s, this.h = "hello"});
+  const _TU({required this.s, this.h2 = "hello2", this.h = "hello"});
+
+  factory _TU.fromJson(Map<String, dynamic> json) => _$_TUFromJson(json);
+
+  Map<String, dynamic> toJson() => _$_TUToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _TU && o.s == s && o.h == h;
+    return o is _TU && o.s == s && o.h2 == h2 && o.h == h;
   }
 
   @override
-  int get hashCode => s.hashCode ^ h.hashCode;
+  int get hashCode => s.hashCode ^ h2.hashCode ^ h.hashCode;
 
   @override
-  String toString() => "TU(s: ${this.s}, h: ${this.h})";
+  String toString() => "TU(s: ${this.s}, h2: ${this.h2}, h: ${this.h})";
 }
 
-abstract class $TUCopyWith<S extends TU<dynamic>, O> {
-  factory $TUCopyWith(TU<S> value, O Function(TU<S>) then) =
-      _$TUCopyWithImpl<S, O>;
-  O call({S s, String h});
+TU _$TUFromJson(Map<String, dynamic> json) => _TU.fromJson(json);
+
+abstract class $TUCopyWith<O> {
+  factory $TUCopyWith(TU value, O Function(TU) then) = _$TUCopyWithImpl<O>;
+  O call({String s, String h2, String h});
 }
 
-class _$TUCopyWithImpl<S extends TU<dynamic>, O> implements $TUCopyWith<S, O> {
-  final TU<S> _value;
-  final O Function(TU<S>) _then;
+class _$TUCopyWithImpl<O> implements $TUCopyWith<O> {
+  final TU _value;
+  final O Function(TU) _then;
   _$TUCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? s = dimmutable, Object? h = dimmutable}) {
+  O call(
+      {Object? s = dimmutable,
+      Object? h2 = dimmutable,
+      Object? h = dimmutable}) {
     return _then(_value.copyWith(
-        s: s == dimmutable ? _value.s : s as S,
+        s: s == dimmutable ? _value.s : s as String,
+        h2: h2 == dimmutable ? _value.h2 : h2 as String,
         h: h == dimmutable ? _value.h : h as String));
   }
 }
 
-abstract class _$TUCopyWith<S extends TU<dynamic>, O>
-    implements $TUCopyWith<S, O> {
-  factory _$TUCopyWith(TU<S> value, O Function(TU<S>) then) =
-      __$TUCopyWithImpl<S, O>;
-  O call({S s, String h});
+abstract class _$TUCopyWith<O> implements $TUCopyWith<O> {
+  factory _$TUCopyWith(TU value, O Function(TU) then) = __$TUCopyWithImpl<O>;
+  O call({String s, String h2, String h});
 }
 
-class __$TUCopyWithImpl<S extends TU<dynamic>, O> extends _$TUCopyWithImpl<S, O>
-    implements _$TUCopyWith<S, O> {
-  __$TUCopyWithImpl(TU<S> _value, O Function(TU<S>) _then)
+class __$TUCopyWithImpl<O> extends _$TUCopyWithImpl<O>
+    implements _$TUCopyWith<O> {
+  __$TUCopyWithImpl(TU _value, O Function(TU) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  TU<S> get _value => super._value;
+  TU get _value => super._value;
 
   @override
-  O call({Object? s = dimmutable, Object? h = dimmutable}) {
+  O call(
+      {Object? s = dimmutable,
+      Object? h2 = dimmutable,
+      Object? h = dimmutable}) {
     return _then(TU(
-        s: s == dimmutable ? _value.s : s as S,
+        s: s == dimmutable ? _value.s : s as String,
+        h2: h2 == dimmutable ? _value.h2 : h2 as String,
         h: h == dimmutable ? _value.h : h as String));
   }
 }

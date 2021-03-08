@@ -7,7 +7,7 @@ import 'package:meta/meta.dart';
 import 'package:union/union.dart';
 part 'sample2.ps.dstore.dart';
 part 'sample2.dstore.dart';
-// part 'sample2.g.dart';
+part 'sample2.g.dart';
 
 @PState()
 // ignore: unused_element
@@ -30,9 +30,12 @@ class $Sample2 {
 }
 
 @DImmutable()
-abstract class TU<S extends TU<dynamic>> with _$TU<S> {
-  // @JsonSerializable()
-  const factory TU({required S s, @Default("hello") String h}) = _TU<S>;
+abstract class TU with _$TU {
+  @JsonSerializable()
+  const factory TU(
+      {required String s,
+      @JsonKey(nullable: true, defaultValue: "2") @Default("hello2") String h2,
+      @Default("hello") String h}) = _TU;
   // factory TU.fromJson(Map<String, dynamic> json) => _$TUFromJson(json);
 }
 
