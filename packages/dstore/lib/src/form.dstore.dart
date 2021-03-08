@@ -9,7 +9,7 @@ part of 'form.dart';
 
 mixin _$FormField<F extends FormFieldObject<dynamic>> {
   F get value;
-  Map<String, FormFieldValidator> get validators;
+  Map<String, dynamic Function(dynamic)> get validators;
   Map<String, String> get errors;
   Map<String, bool> get touched;
   bool get isValid;
@@ -28,16 +28,16 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
   final F value;
 
   @override
-  final Map<String, FormFieldValidator> validators;
+  final Map<String, dynamic Function(dynamic)> validators;
 
   @override
   @Default({})
-  @JsonKey(defaultValue: {})
+  @JsonKey(defaultValue: const {})
   final Map<String, String> errors;
 
   @override
   @Default({})
-  @JsonKey(defaultValue: {})
+  @JsonKey(defaultValue: const {})
   final Map<String, bool> touched;
 
   @override
@@ -81,8 +81,8 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
   const _FormField(
       {required this.value,
       required this.validators,
-      this.errors = {},
-      this.touched = {},
+      this.errors = const {},
+      this.touched = const {},
       this.isValid = false,
       this.isSubmitting = false,
       this.isValidating = false,
@@ -133,7 +133,7 @@ abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
       _$FormFieldCopyWithImpl<F, O>;
   O call(
       {F value,
-      Map<String, FormFieldValidator> validators,
+      Map<String, dynamic Function(dynamic)> validators,
       Map<String, String> errors,
       Map<String, bool> touched,
       bool isValid,
@@ -168,7 +168,7 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, FormFieldValidator>,
+            : validators as Map<String, dynamic Function(dynamic)>,
         errors: errors == dimmutable
             ? _value.errors
             : errors as Map<String, String>,
@@ -204,7 +204,7 @@ abstract class _$FormFieldCopyWith<F extends FormFieldObject<dynamic>, O>
       __$FormFieldCopyWithImpl<F, O>;
   O call(
       {F value,
-      Map<String, FormFieldValidator> validators,
+      Map<String, dynamic Function(dynamic)> validators,
       Map<String, String> errors,
       Map<String, bool> touched,
       bool isValid,
@@ -241,7 +241,7 @@ class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, FormFieldValidator>,
+            : validators as Map<String, dynamic Function(dynamic)>,
         errors: errors == dimmutable
             ? _value.errors
             : errors as Map<String, String>,

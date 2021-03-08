@@ -12,11 +12,11 @@ mixin _$Action {
   Type get type;
   bool get isAsync;
   Map<String, dynamic>? get payload;
-  HttpPayload? get http;
-  WebSocketPayload? get ws;
-  dynamic? get extra;
+  HttpPayload<dynamic, dynamic, dynamic, dynamic>? get http;
+  WebSocketPayload<dynamic, dynamic, dynamic>? get ws;
+  dynamic get extra;
   ActionInternal? get internal;
-  Stream? get stream;
+  Stream<dynamic>? get stream;
   Duration? get debounce;
   FormReq? get form;
 
@@ -39,19 +39,21 @@ class _Action implements Action {
   final Map<String, dynamic>? payload;
 
   @override
-  final HttpPayload? http;
+  final HttpPayload<dynamic, dynamic, dynamic, dynamic>? http;
 
   @override
-  final WebSocketPayload? ws;
+  final WebSocketPayload<dynamic, dynamic, dynamic>? ws;
 
   @override
-  final dynamic? extra;
+  @Default(null)
+  @JsonKey(defaultValue: null)
+  final dynamic extra;
 
   @override
   final ActionInternal? internal;
 
   @override
-  final Stream? stream;
+  final Stream<dynamic>? stream;
 
   @override
   final Duration? debounce;
@@ -69,7 +71,7 @@ class _Action implements Action {
       this.payload,
       this.http,
       this.ws,
-      this.extra,
+      this.extra = null,
       this.internal,
       this.stream,
       this.debounce,
@@ -119,11 +121,11 @@ abstract class $ActionCopyWith<O> {
       Type type,
       bool isAsync,
       Map<String, dynamic>? payload,
-      HttpPayload? http,
-      WebSocketPayload? ws,
-      dynamic? extra,
+      HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
+      WebSocketPayload<dynamic, dynamic, dynamic>? ws,
+      dynamic extra,
       ActionInternal? internal,
-      Stream? stream,
+      Stream<dynamic>? stream,
       Duration? debounce,
       FormReq? form});
 }
@@ -153,13 +155,18 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
-        http: http == dimmutable ? _value.http : http as HttpPayload?,
-        ws: ws == dimmutable ? _value.ws : ws as WebSocketPayload?,
-        extra: extra == dimmutable ? _value.extra : extra as dynamic?,
+        http: http == dimmutable
+            ? _value.http
+            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic>?,
+        ws: ws == dimmutable
+            ? _value.ws
+            : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
+        extra: extra == dimmutable ? _value.extra : extra as dynamic,
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
-        stream: stream == dimmutable ? _value.stream : stream as Stream?,
+        stream:
+            stream == dimmutable ? _value.stream : stream as Stream<dynamic>?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         form: form == dimmutable ? _value.form : form as FormReq?));
@@ -174,11 +181,11 @@ abstract class _$ActionCopyWith<O> implements $ActionCopyWith<O> {
       Type type,
       bool isAsync,
       Map<String, dynamic>? payload,
-      HttpPayload? http,
-      WebSocketPayload? ws,
-      dynamic? extra,
+      HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
+      WebSocketPayload<dynamic, dynamic, dynamic>? ws,
+      dynamic extra,
       ActionInternal? internal,
-      Stream? stream,
+      Stream<dynamic>? stream,
       Duration? debounce,
       FormReq? form});
 }
@@ -211,13 +218,18 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
-        http: http == dimmutable ? _value.http : http as HttpPayload?,
-        ws: ws == dimmutable ? _value.ws : ws as WebSocketPayload?,
-        extra: extra == dimmutable ? _value.extra : extra as dynamic?,
+        http: http == dimmutable
+            ? _value.http
+            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic>?,
+        ws: ws == dimmutable
+            ? _value.ws
+            : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
+        extra: extra == dimmutable ? _value.extra : extra as dynamic,
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
-        stream: stream == dimmutable ? _value.stream : stream as Stream?,
+        stream:
+            stream == dimmutable ? _value.stream : stream as Stream<dynamic>?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         form: form == dimmutable ? _value.form : form as FormReq?));

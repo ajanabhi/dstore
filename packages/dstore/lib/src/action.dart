@@ -14,7 +14,7 @@ abstract class Action with _$Action {
     Map<String, dynamic>? payload,
     HttpPayload? http,
     WebSocketPayload? ws,
-    dynamic? extra,
+    @Default(null) dynamic? extra,
     ActionInternal? internal,
     Stream? stream,
     Duration? debounce,

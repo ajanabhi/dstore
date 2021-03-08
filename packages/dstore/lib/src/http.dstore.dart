@@ -238,8 +238,9 @@ class __$HttpFieldCopyWithImpl<QP, I, R, E, O>
 mixin _$Httpmeta<I, R, E, T> {
   R Function(dynamic) get responseDeserializer;
   dynamic Function(R)? get responseSerializer;
-  HttpField Function(HttpField currentField, HttpField newField)?
-      get transformer;
+  HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+      HttpField<dynamic, dynamic, dynamic, dynamic>,
+      HttpField<dynamic, dynamic, dynamic, dynamic>)? get transformer;
   dynamic Function(I)? get inputSerializer;
   Future<dynamic> Function(I)? get inputStorageSerializer;
   Future<I> Function(dynamic)? get inputDeserializer;
@@ -256,8 +257,9 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   final dynamic Function(R)? responseSerializer;
 
   @override
-  final HttpField Function(HttpField currentField, HttpField newField)?
-      transformer;
+  final HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+      HttpField<dynamic, dynamic, dynamic, dynamic>,
+      HttpField<dynamic, dynamic, dynamic, dynamic>)? transformer;
 
   @override
   final dynamic Function(I)? inputSerializer;
@@ -319,7 +321,9 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
   O call(
       {R Function(dynamic) responseDeserializer,
       dynamic Function(R)? responseSerializer,
-      HttpField Function(HttpField currentField, HttpField newField)?
+      HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+              HttpField<dynamic, dynamic, dynamic, dynamic>,
+              HttpField<dynamic, dynamic, dynamic, dynamic>)?
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
@@ -351,8 +355,10 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
             : responseSerializer as dynamic Function(R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField Function(
-                HttpField currentField, HttpField newField)?,
+            : transformer
+                as HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+                    HttpField<dynamic, dynamic, dynamic, dynamic>,
+                    HttpField<dynamic, dynamic, dynamic, dynamic>)?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,
@@ -376,7 +382,9 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
   O call(
       {R Function(dynamic) responseDeserializer,
       dynamic Function(R)? responseSerializer,
-      HttpField Function(HttpField currentField, HttpField newField)?
+      HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+              HttpField<dynamic, dynamic, dynamic, dynamic>,
+              HttpField<dynamic, dynamic, dynamic, dynamic>)?
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
@@ -412,8 +420,10 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
             : responseSerializer as dynamic Function(R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField Function(
-                HttpField currentField, HttpField newField)?,
+            : transformer
+                as HttpField<dynamic, dynamic, dynamic, dynamic> Function(
+                    HttpField<dynamic, dynamic, dynamic, dynamic>,
+                    HttpField<dynamic, dynamic, dynamic, dynamic>)?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,

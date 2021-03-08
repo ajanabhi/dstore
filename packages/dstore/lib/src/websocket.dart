@@ -1,51 +1,16 @@
+import 'package:dstore/dstore.dart';
 import 'package:dstore/src/helper_classes.dart';
+part "websocket.dstore.dart";
 
-class WebSocketRequest<I, R> {
-  final String url;
-  final String? graphqlQuery;
-  final dynamic Function(I)? inputSerializer;
-  final R Function(dynamic) responseDeserializer;
-
-  const WebSocketRequest(
-      {required this.url,
-      this.graphqlQuery,
-      this.inputSerializer,
-      required this.responseDeserializer});
-}
-
-class WebSocketField<I, R, E> {
-  final bool loading;
-  final R? data;
-  final E? error;
-  final bool completed;
-  final void Function()? internalUnsubscribe;
-  const WebSocketField(
-      {this.loading = false,
-      this.data,
-      this.internalUnsubscribe,
-      this.error,
-      this.completed = false});
-
-  WebSocketField<I, R, E> copyWith({
-    bool? loading,
-    Nullable<R>? data,
-    Nullable<dynamic>? error,
-    Nullable<void Function()>? internalUnsubscribe,
-    bool? completed,
-  }) {
-    return WebSocketField<I, R, E>(
-        loading: loading ?? this.loading,
-        data: data != null ? data.value : this.data,
-        error: error != null ? error.value : this.error,
-        completed: completed ?? this.completed,
-        internalUnsubscribe: internalUnsubscribe != null
-            ? internalUnsubscribe.value
-            : this.internalUnsubscribe);
-  }
-
-  @override
-  String toString() =>
-      'WebsocketField(loading: $loading, data: $data, error: $error completed :$completed)';
+@dimmutable
+abstract class WebSocketField<I, R, E> with _$WebSocketField<I, R, E> {
+  const factory WebSocketField({
+    @Default(false) bool loading,
+    R? data,
+    E? error,
+    @Default(false) bool completed,
+    void Function()? internalUnsubscribe,
+  }) = _WebSocketField<I, R, E>;
 }
 
 class WebSocketPayload<I, R, E> {

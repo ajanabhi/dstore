@@ -24,6 +24,13 @@ abstract class AstUtils {
     return s2.node;
   }
 
+  static String addConstToDefaultValue(String value) {
+    return !value.trimLeft().startsWith("const") &&
+            (value.contains("(") || value.contains("[") || value.contains("{"))
+        ? "const $value"
+        : value;
+  }
+
   static List<Field> convertParamsToFields(FormalParameterList? parameters,
       {bool isDImmutable = false}) {
     if (parameters == null) {
@@ -126,7 +133,8 @@ abstract class AnnotationUtils {
       return null;
     }
     final s = annot.toSource().trim();
-    return s.substring(s.indexOf("(") + 1, s.length - 1);
+    final v = s.substring(s.indexOf("(") + 1, s.length - 1);
+    return AstUtils.addConstToDefaultValue(v);
   }
 
   static List<String> addDefaultValueToJsonKeyAndReturnAnnotations(

@@ -86,6 +86,25 @@ class HttpRequestExtension<T> {
   const HttpRequestExtension({this.transformer});
 }
 
+class WebSocketRequest<I, R> {
+  final String url;
+  final String? graphqlQuery;
+  final dynamic Function(I)? inputSerializer;
+  final R Function(dynamic) responseDeserializer;
+
+  const WebSocketRequest(
+      {required this.url,
+      this.graphqlQuery,
+      this.inputSerializer,
+      required this.responseDeserializer});
+}
+
+class WebSocketRequestExtension<T> {
+  final T Function(T)? transformer;
+
+  const WebSocketRequestExtension({this.transformer});
+}
+
 class ExcludeThisKeyWhilePersit {
   const ExcludeThisKeyWhilePersit();
 }

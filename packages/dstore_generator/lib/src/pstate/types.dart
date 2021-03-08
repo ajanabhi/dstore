@@ -47,6 +47,13 @@ class WebSocketFieldInfo {
       this.responseDeserializer});
 }
 
+class StreamFieldInfo {
+  final String outputType;
+  final String name;
+
+  StreamFieldInfo({required this.name, required this.outputType});
+}
+
 class PStateMethod {
   final String name;
   final List<Field> params;

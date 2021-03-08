@@ -2,51 +2,28 @@ import 'dart:async';
 
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
+part "pstate.dstore.dart";
 
 typedef ReducerFn = dynamic Function(dynamic state, Action action);
 
 typedef AReducerFn = Future<dynamic> Function(dynamic state, Action action);
 
-class AsyncActionField {
-  final bool loading;
-  final dynamic error;
-
-  AsyncActionField({this.loading = false, this.error});
-
-  // factory AsyncActionField.fromJson(Map<String, dynamic> json) =>
-  //     AsyncActionField(loading: json["loading"] as bool, error: json["error"]);
-  // Map<String, dynamic> toJson() => {"loading": loading, error: error};
+@dimmutable
+abstract class AsyncActionField with _$AsyncActionField {
+  const factory AsyncActionField(
+      {@Default(false) bool loading,
+      @Default(null) dynamic error}) = _AsyncActionField;
 }
 
-class StreamField<D> {
-  final StreamSubscription? internalSubscription;
-  final D? data;
-  final dynamic? error;
-  final bool listening;
-  final bool completed;
-
-  StreamField(
-      {this.listening = false,
-      this.completed = false,
-      this.internalSubscription,
-      this.data,
-      this.error});
-
-  StreamField<D> copyWith({
+@dimmutable
+abstract class StreamField<D> with _$StreamField<D> {
+  const factory StreamField({
+    D? d,
     StreamSubscription? internalSubscription,
-    Nullable<D>? data,
-    Nullable<dynamic>? error,
-    bool? listening,
-    bool? completed,
-  }) {
-    return StreamField<D>(
-      internalSubscription: internalSubscription ?? this.internalSubscription,
-      data: data != null ? data.value : this.data,
-      error: error != null ? error.value : this.error,
-      listening: listening ?? this.listening,
-      completed: completed ?? this.completed,
-    );
-  }
+    @Default(null) dynamic? error,
+    @Default(false) bool listening,
+    @Default(false) bool completed,
+  }) = _StreamField<D>;
 }
 
 abstract class PStateModel<M> {

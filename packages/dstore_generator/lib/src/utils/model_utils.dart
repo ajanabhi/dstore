@@ -17,7 +17,7 @@ abstract class ModelUtils {
   static String createConstructorFromFieldsList(String name, List<Field> fields,
       {bool assignDefaults = true}) {
     final cf = fields.map((f) {
-      return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${f.value}" : ""}";
+      return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${AstUtils.addConstToDefaultValue(f.value!)}" : ""}";
     }).join(", ");
     return "const ${name}({$cf});";
   }
