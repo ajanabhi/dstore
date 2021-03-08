@@ -63,7 +63,6 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
 
   HttpInputType inputTypeEnum;
   final inputTypeField = reader.read("inputType") as ConstantReader?;
-  print("_getHttpFields inputTypeField $inputTypeField");
   if (inputTypeField != null && !inputTypeField.isNull) {
     inputTypeEnum = inputTypeField.enumValue(HttpInputType.values)!;
   } else {
@@ -73,21 +72,18 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       inputTypeEnum = HttpInputType.JSON;
     }
   }
-  print("_getHttpFields input done");
   var responseDeserializer = "(resp) => resp";
   final responseDeserializerField = reader.read("responseDeserializer");
   if (responseDeserializerField != null && !responseDeserializerField.isNull) {
     responseDeserializer =
         responseDeserializerField.objectValue.toFunctionValue()!.name;
   }
-  print("_getHttpFields responseDeserializer done");
   var errorDeserializer = "(err) => err";
   final errorDeserializerField = reader.read("errorDeserializer");
   if (errorDeserializerField != null && !errorDeserializerField.isNull) {
     errorDeserializer =
         errorDeserializerField.objectValue.toFunctionValue()!.name;
   }
-  print("_getHttpFields responseDeserializer done");
   final graphqlQuery = reader.read("graphqlQuery")?.stringValue;
   String? inputSerializer;
   final inputSerializerField = reader.read("inputSerializer");
@@ -120,4 +116,53 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       responseType: responseType,
       transformer: transformer,
       graphqlQuery: graphqlQuery);
+}
+
+String convertHttpFieldInfoToAction(
+    {required HttpFieldInfo hf, required String type}) {
+  final params = <String>[];
+  final payloadFields = <String>[];
+  if (hf.queryParamsType != null) {
+    params.add("required ${hf.queryParamsType} queryParams");
+    payloadFields.add(
+        "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
+  }
+  if (hf.inputType != null) {
+    if (hf.inputType!.startsWith("GraphqlRequestInput")) {
+      final it = hf.inputType!;
+      final query = hf.graphqlQuery!;
+      final variableType = it.contains("<")
+          ? it.substring(it.indexOf("<"), it.indexOf(">"))
+          : null;
+      if (variableType != null) {
+        params.add("required ${variableType} variables");
+        payloadFields.add("input: GraphqlRequestInput(\"$query\",variables)");
+      } else {
+        payloadFields.add("input: GraphqlRequestInput(\"$query\",null)");
+      }
+    } else {
+      params.add("required ${hf.inputType} input");
+      payloadFields.add("input:input");
+    }
+  }
+  params.add("bool abortable = false");
+  payloadFields.add("abortable: abortable");
+  params.add("Map<String,dynamic>? headers");
+  payloadFields.add("headers:headers");
+  params.add("${hf.responseType} optimisticResponse");
+  payloadFields.add("optimisticResponse:optimisticResponse");
+  payloadFields.add("""url:"${hf.url}" """);
+  payloadFields.add("""method: "${hf.method}" """);
+  // payloadFields.add("isGraphql:${hf.isGraphql}");
+  payloadFields.add("inputType:${hf.inputTypeEnum}");
+  payloadFields.add("responseType:${hf.responseTypeEnum}");
+  // payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
+  // payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
+
+  params.add("Duration? debounce");
+  return """
+      static ${hf.name}({${params.join(", ")}}) {
+        return Action(name:"${hf.name}",type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+      }
+    """;
 }

@@ -1,8 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
+import 'package:dstore_generator/src/pstate/stream.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/pstate/visitors.dart';
+import 'package:dstore_generator/src/pstate/websocket.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
 String generatePStateForClassElement(ClassElement element) {
@@ -40,12 +42,15 @@ String generatePStateForClassElement(ClassElement element) {
         ds: ${modelName}_DS);
     """;
   final httpFields = getHttpFields(element.fields);
-  print("httpFields $httpFields");
+  final streamFields = getStreamFields(element.fields);
+  final websocketFields = getWebSocketFields(element.fields);
   final formFields = fields.where((f) => f.type.startsWith("FomField"));
   final actions = _generateActionsCreators(
       methods: visitor.methods,
       modelName: modelName,
       type: modelName,
+      streamFields: streamFields,
+      websocketFields: websocketFields,
       formFields: formFields,
       httpFields: httpFields);
 
@@ -91,6 +96,8 @@ String _addActionNameAndGroupNameToFormField(
 String _generateActionsCreators({
   required List<PStateMethod> methods,
   List<HttpFieldInfo> httpFields = const [],
+  List<StreamFieldInfo> streamFields = const [],
+  List<WebSocketFieldInfo> websocketFields = const [],
   Iterable<Field> formFields = const [],
   required String modelName,
   required String type,
@@ -123,53 +130,15 @@ String _generateActionsCreators({
       }
     """;
   }).join("\n");
-  final httpActions = httpFields.map((hf) {
-    final params = <String>[];
-    final payloadFields = <String>[];
-    if (hf.queryParamsType != null) {
-      params.add("required ${hf.queryParamsType} queryParams");
-      payloadFields.add(
-          "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
-    }
-    if (hf.inputType != null) {
-      if (hf.inputType!.startsWith("GraphqlRequestInput")) {
-        final it = hf.inputType!;
-        final query = hf.graphqlQuery!;
-        final variableType = it.contains("<")
-            ? it.substring(it.indexOf("<"), it.indexOf(">"))
-            : null;
-        if (variableType != null) {
-          params.add("required ${variableType} variables");
-          payloadFields.add("input: GraphqlRequestInput(\"$query\",variables)");
-        } else {
-          payloadFields.add("input: GraphqlRequestInput(\"$query\",null)");
-        }
-      } else {
-        params.add("required ${hf.inputType} input");
-        payloadFields.add("input:input");
-      }
-    }
-    params.add("bool abortable = false");
-    payloadFields.add("abortable: abortable");
-    params.add("Map<String,dynamic>? headers");
-    payloadFields.add("headers:headers");
-    params.add("${hf.responseType} optimisticResponse");
-    payloadFields.add("optimisticResponse:optimisticResponse");
-    payloadFields.add("""url:"${hf.url}" """);
-    payloadFields.add("""method: "${hf.method}" """);
-    // payloadFields.add("isGraphql:${hf.isGraphql}");
-    payloadFields.add("inputType:${hf.inputTypeEnum}");
-    payloadFields.add("responseType:${hf.responseTypeEnum}");
-    // payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
-    // payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
+  final httpActions = httpFields
+      .map((hf) => convertHttpFieldInfoToAction(hf: hf, type: type))
+      .join("\n");
 
-    params.add("Duration? debounce");
-    return """
-      static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
-      }
-    """;
-  }).join("\n");
+  final streamActions = streamFields
+      .map((e) => convertStreamFieldInfoToAction(sfi: e, type: type))
+      .join("\n");
+
+  final websocketActions = websocketFields.map((e) => convertW)    
 
   final formActions = formFields.map((ff) {
     return """
@@ -184,6 +153,7 @@ String _generateActionsCreators({
          ${methodActions}
          ${httpActions}
          ${formActions}
+         ${streamActions}
      }
   """;
 }

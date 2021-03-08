@@ -39,10 +39,14 @@ class WebSocketFieldInfo {
   final String? graphqlQuery;
   final String? inputSerializer;
   final String? responseDeserializer;
+  final String? transformer;
+  final String inputType;
 
   WebSocketFieldInfo(
       {required this.url,
       this.graphqlQuery,
+      this.transformer,
+      required this.inputType,
       this.inputSerializer,
       this.responseDeserializer});
 }
