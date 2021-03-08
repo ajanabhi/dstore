@@ -9,12 +9,6 @@ abstract class Hello with _$Hello {
   const factory Hello({required String name}) = _Hello;
 }
 
-class HttpRequestExtension {
-  final HttpField Function(HttpField)? transformer;
-
-  const HttpRequestExtension({this.transformer});
-}
-
 String getTodosSerializer(dynamic resp) {
   return "";
 }

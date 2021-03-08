@@ -1,10 +1,10 @@
 import 'package:build/build.dart';
-import 'package:dstore_generator/src/app_state_generator.dart';
+import 'package:dstore_generator/src/appstate/app_state_generator.dart';
 import 'package:dstore_generator/src/graphql/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema_generator.dart';
-import 'package:dstore_generator/src/immutable_generator.dart';
-import 'package:dstore_generator/src/pstate_generator.dart';
-import 'package:dstore_generator/src/selectors_generator.dart';
+import 'package:dstore_generator/src/dimmutable/immutable_generator.dart';
+import 'package:dstore_generator/src/pstate/pstate_generator.dart';
+import 'package:dstore_generator/src/selectors/selectors_generator.dart';
 import 'package:dstore_generator/src/utils/builder_utils.dart';
 import 'package:source_gen/source_gen.dart';
 

@@ -2,6 +2,8 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/pstate/pstate_generator.dart';
+import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 import './utils.dart';
@@ -170,6 +172,13 @@ extension ParameterElementExt on ParameterElement {
 
   List<String> addDefaultValueToJsonKeyAndReturnAnnotations(Object? value) =>
       AnnotationUtils.addDefaultValueToJsonKeyAndReturnAnnotations(this, value);
+}
+
+extension ConstReadExt on ConstantReader {
+  T? enumValue<T>(List<T> values) {
+    return values
+        .singleWhereOrNull((e) => read(e.toString().split(".")[1]) != null);
+  }
 }
 
 extension FieldElementExt on FieldElement {

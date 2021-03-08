@@ -80,6 +80,12 @@ class HttpRequest<I, R, E> {
       this.inputType});
 }
 
+class HttpRequestExtension<T> {
+  final T Function(T)? transformer;
+
+  const HttpRequestExtension({this.transformer});
+}
+
 class ExcludeThisKeyWhilePersit {
   const ExcludeThisKeyWhilePersit();
 }
