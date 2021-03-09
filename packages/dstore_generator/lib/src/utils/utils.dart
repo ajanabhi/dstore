@@ -2,6 +2,7 @@ export "model_utils.dart";
 export "ast_utils.dart";
 export "logger.dart";
 export "builder_utils.dart";
+export "package:collection/collection.dart";
 import 'package:analyzer/dart/ast/ast.dart';
 import "package:collection/collection.dart";
 

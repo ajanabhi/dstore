@@ -1,6 +1,6 @@
 class PState {
-  final bool persist;
-  const PState({this.persist = false});
+  final bool? persist;
+  const PState({this.persist});
 }
 
 class Selectors {

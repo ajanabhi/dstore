@@ -1,17 +1,19 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
+import 'package:dstore_generator/src/pstate/persitance.dart';
 import 'package:dstore_generator/src/pstate/stream.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/pstate/visitors.dart';
 import 'package:dstore_generator/src/pstate/websocket.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:source_gen/source_gen.dart';
 
 String generatePStateForClassElement(ClassElement element) {
   final typeParamsWithBounds =
       element.typeParameters.map((e) => e.toString()).join(",");
   final typeParams = element.typeParameters.map((e) => e.name).join(",");
-  // final persist = _getPersistValue(element);
   final modelName = element.name.substring(1);
   final visitor = PStateAstVisitor();
   final astNode = AstUtils.getAstNodeFromElement(element);
@@ -24,14 +26,37 @@ String generatePStateForClassElement(ClassElement element) {
       value: "AsyncActionField()",
       param: null)));
   fields = processFields(fields);
+  final actions =
+      _getActions(element: element, visitor: visitor, modelName: modelName);
+  final pstateMeta =
+      _getPStateMeta(modelName: modelName, fields: fields, methods: methods);
+  final pstate = element.getPState();
+  final isPerssit = isPersitable(pstate);
+  final annotations = <String>[];
+  if (isPerssit) {
+    annotations.add("@JsonSerializable()");
+  }
+  final result = """
+       ${_createPStateModel(fields: fields, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
+       ${actions}
+        ${pstateMeta}
+    """;
+  return result;
+}
+
+String _getPStateMeta(
+    {required String modelName,
+    required List<Field> fields,
+    required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
       _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
   final asyncReducerFubctionStr =
       _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
   print(fields);
+
   final defaultState =
       "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
-  final reducerGroup = """
+  return """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
        $modelName ${modelName}_DS() => $defaultState;
@@ -41,11 +66,19 @@ String generatePStateForClassElement(ClassElement element) {
         aReducer: ${asyncReducerFubctionStr.isNotEmpty ? "${modelName}_AsyncReducer" : "null"} ,
         ds: ${modelName}_DS);
     """;
+}
+
+String _getActions(
+    {required ClassElement element,
+    required PStateAstVisitor visitor,
+    required String modelName}) {
   final httpFields = getHttpFields(element.fields);
   final streamFields = getStreamFields(element.fields);
   final websocketFields = getWebSocketFields(element.fields);
-  final formFields = fields.where((f) => f.type.startsWith("FomField"));
-  final actions = _generateActionsCreators(
+  final formFields = visitor.fields
+      .where((f) => f.type.toString().startsWith("FomField"))
+      .toList();
+  return _generateActionsCreators(
       methods: visitor.methods,
       modelName: modelName,
       type: modelName,
@@ -53,39 +86,15 @@ String generatePStateForClassElement(ClassElement element) {
       websocketFields: websocketFields,
       formFields: formFields,
       httpFields: httpFields);
-
-  final result = """
-       // class Name : ${element.name}
-
-       ${_createPStateModel(fields: fields, name: modelName, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
-       ${actions}
-        ${reducerGroup}
-    """;
-  return result;
 }
 
-bool _getPersistValue(ClassElement element) {
-  final annot = element.metadata
-      .firstWhere((element) => element.toString().startsWith("PState"))
-      .computeConstantValue()!;
-  final persistMode = DBuilderOptions.psBuilderOptions.persistMode;
-  var persist = annot.getField("persist")?.toBoolValue();
-  if (persistMode == null && persist != null) {
-    throw Exception(
-        "You should provider pesistMode option in build.yaml for dstore|ps builder");
+extension PStateExtension on ClassElement {
+  PState getPState() {
+    final annot = annotationFromType(PState)!;
+    final reader = ConstantReader(annot.computeConstantValue());
+    final persit = reader.peek("persit")?.boolValue;
+    return PState(persist: persit);
   }
-  if (persistMode == null) {
-    return false;
-  }
-  switch (persistMode) {
-    case PersistMode.ExplicitPersist:
-      persist = persist == true;
-      break;
-    case PersistMode.ExplicitNoPersist:
-      persist = persist != false;
-      break;
-  }
-  return persist;
 }
 
 String _addActionNameAndGroupNameToFormField(
@@ -138,7 +147,9 @@ String _generateActionsCreators({
       .map((e) => convertStreamFieldInfoToAction(sfi: e, type: type))
       .join("\n");
 
-  final websocketActions = websocketFields.map((e) => convertW)    
+  final websocketActions = websocketFields
+      .map((e) => convertWebSocketFieldInfoToAction(wsi: e, type: type))
+      .join("\n");
 
   final formActions = formFields.map((ff) {
     return """
@@ -154,6 +165,7 @@ String _generateActionsCreators({
          ${httpActions}
          ${formActions}
          ${streamActions}
+         ${websocketActions}
      }
   """;
 }
@@ -161,11 +173,16 @@ String _generateActionsCreators({
 String _createPStateModel(
     {required List<Field> fields,
     required String name,
+    required List<String> annotations,
     required String typeParams,
     required String typaParamsWithBounds}) {
+  final isJson = annotations.singleWhereOrNull(
+          (element) => element.startsWith("@JsonSerializable")) !=
+      null;
   final result = """
       
       @immutable
+      ${annotations.join("\n")}
       class ${name} implements PStateModel {
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         ${ModelUtils.getCopyWithField(name)}
@@ -180,6 +197,10 @@ String _createPStateModel(
         ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
         ${ModelUtils.createToStringFromFieldsList(name, fields)}
+
+        ${isJson ? ModelUtils.createFromJson(name) : ""}
+
+        ${isJson ? ModelUtils.createToJson() : ""}
       }
 
       ${ModelUtils.createCopyWithClasses(name: name, typeParams: typeParams, typeParamsWithBounds: typaParamsWithBounds, fields: fields)}

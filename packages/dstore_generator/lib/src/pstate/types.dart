@@ -36,6 +36,7 @@ class HttpFieldInfo {
 
 class WebSocketFieldInfo {
   final String url;
+  final String name;
   final String? graphqlQuery;
   final String? inputSerializer;
   final String? responseDeserializer;
@@ -44,6 +45,7 @@ class WebSocketFieldInfo {
 
   WebSocketFieldInfo(
       {required this.url,
+      required this.name,
       this.graphqlQuery,
       this.transformer,
       required this.inputType,

@@ -2,7 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/src/builder/build_step.dart';
-import 'package:dstore_generator/src/pstate/generator.dart';
+import 'package:dstore_generator/src/pstate/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
