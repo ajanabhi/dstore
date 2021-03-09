@@ -6,8 +6,6 @@ part of 'sample.dart';
 // PStateGenerator
 // **************************************************************************
 
-// class Name : $Sample
-
 @immutable
 class Sample implements PStateModel {
   final int count;
@@ -28,10 +26,10 @@ class Sample implements PStateModel {
   const Sample(
       {this.count = 0,
       this.s = 0,
-      this.name = User(name: "first"),
-      this.sf = StreamField(),
-      this.wm = WsMessage(),
-      this.fint = AsyncActionField()});
+      this.name = const User(name: "first"),
+      this.sf = const StreamField(),
+      this.wm = const WsMessage(),
+      this.fint = const AsyncActionField()});
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
@@ -152,11 +150,11 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
 
 abstract class SampleActions {
   static Action increment() {
-    return Action(name: "increment", group: 240344394, isAsync: false);
+    return Action(name: "increment", type: Sample, isAsync: false);
   }
 
   static Action decrement() {
-    return Action(name: "decrement", group: 240344394, isAsync: false);
+    return Action(name: "decrement", type: Sample, isAsync: false);
   }
 
   static Action increment2(
@@ -167,7 +165,7 @@ abstract class SampleActions {
       dynamic y2}) {
     return Action(
         name: "increment2",
-        group: 240344394,
+        type: Sample,
         payload: {"x": x, "y": y, "sn": sn, "y1": y1, "y2": y2},
         isAsync: false);
   }
@@ -176,7 +174,7 @@ abstract class SampleActions {
       {required int x, required dynamic y, int si = 4, dynamic s2 = 3}) {
     return Action(
         name: "increment3",
-        group: 240344394,
+        type: Sample,
         payload: {"x": x, "y": y, "si": si, "s2": s2},
         isAsync: false);
   }
@@ -184,19 +182,38 @@ abstract class SampleActions {
   static Action changeUserName({required String name}) {
     return Action(
         name: "changeUserName",
-        group: 240344394,
+        type: Sample,
         payload: {"name": name},
         isAsync: false);
   }
 
   static Action changeS({required int s}) {
     return Action(
-        name: "changeS", group: 240344394, payload: {"s": s}, isAsync: false);
+        name: "changeS", type: Sample, payload: {"s": s}, isAsync: false);
   }
 
   static Action fint({Duration? debounce}) {
     return Action(
-        name: "fint", group: 240344394, isAsync: true, debounce: debounce);
+        name: "fint", type: Sample, isAsync: true, debounce: debounce);
+  }
+
+  static Action sf({required Stream<dynamic> stream}) {
+    return Action(name: "sf", type: Sample, stream: stream);
+  }
+
+  static Action wm(
+      {dynamic data, Map<String, dynamic>? headers, bool unsubscribe = false}) {
+    return Action(
+        name: "wm",
+        type: Sample,
+        ws: WebSocketPayload(
+            url: "ws23",
+            data: data,
+            responseDeserializer: s,
+            inputSerializer: null,
+            transformer: null,
+            headers: headers,
+            unsubscribe: unsubscribe));
   }
 }
 

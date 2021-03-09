@@ -15,7 +15,9 @@ String generatePStateForClassElement(ClassElement element) {
       element.typeParameters.map((e) => e.toString()).join(",");
   final typeParams = element.typeParameters.map((e) => e.name).join(",");
   final modelName = element.name.substring(1);
-  final visitor = PStateAstVisitor();
+  final pstate = element.getPState();
+  final isPerssit = isPersitable(pstate);
+  final visitor = PStateAstVisitor(isPerssit);
   final astNode = AstUtils.getAstNodeFromElement(element);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
@@ -30,8 +32,7 @@ String generatePStateForClassElement(ClassElement element) {
       _getActions(element: element, visitor: visitor, modelName: modelName);
   final pstateMeta =
       _getPStateMeta(modelName: modelName, fields: fields, methods: methods);
-  final pstate = element.getPState();
-  final isPerssit = isPersitable(pstate);
+
   final annotations = <String>[];
   if (isPerssit) {
     annotations.add("@JsonSerializable()");

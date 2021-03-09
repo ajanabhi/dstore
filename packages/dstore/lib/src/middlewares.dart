@@ -78,7 +78,7 @@ final Middleware streamMiddleware =
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(data: Nullable(event), error: Nullable(null)),
+          data: field.copyWith(data: Optional(event), error: Optional(null)),
           type: ActionInternalType.DATA,
         )));
       }, onError: (e) {
@@ -86,7 +86,7 @@ final Middleware streamMiddleware =
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(error: Nullable(e)),
+          data: field.copyWith(error: Optional(e)),
           type: ActionInternalType.DATA,
         )));
       }, onDone: () {
@@ -95,7 +95,7 @@ final Middleware streamMiddleware =
             internal: ActionInternal(
           processed: true,
           data: field.copyWith(
-              listening: false, error: Nullable(null), completed: true),
+              listening: false, error: Optional(null), completed: true),
           type: ActionInternalType.DATA,
         )));
       });

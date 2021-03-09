@@ -39,24 +39,24 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
 
   final reader = ConstantReader(wsrAnot.computeConstantValue());
   final url = reader.read("url").stringValue;
-  final inputSerializerField = reader.read("inputSerializer");
+  final inputSerializerField = reader.peek("inputSerializer");
   String? inputSerializer;
-  if (inputSerializerField != null && !inputSerializerField.isNull) {
+  if (inputSerializerField != null) {
     inputSerializer = inputSerializerField.objectValue.toFunctionValue()!.name;
   }
-  final responseDeserizerField = reader.read("responseDeserializer");
+  final responseDeserizerField = reader.peek("responseDeserializer");
   String? responseDeserializer;
-  if (responseDeserizerField != null && !responseDeserizerField.isNull) {
+  if (responseDeserizerField != null) {
     responseDeserializer =
         responseDeserizerField.objectValue.toFunctionValue()!.name;
   }
-  final graphqlQuery = reader.read("graphqlQuery")?.stringValue;
+  final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
   final wseAnnot = element.annotationFromType(WebSocketRequestExtension);
   String? transofrmer;
   if (wseAnnot != null) {
     final reader = ConstantReader(wseAnnot.computeConstantValue());
-    final transformerField = reader.read("transformer");
-    if (transformerField != null && !transformerField.isNull) {
+    final transformerField = reader.peek("transformer");
+    if (transformerField != null) {
       transofrmer = transformerField.objectValue.toFunctionValue()?.name;
     }
   }
@@ -75,7 +75,7 @@ String convertWebSocketFieldInfoToAction(
   final name = wsi.name;
   final params = <String>[];
   final payloadParams = <String>[];
-  payloadParams.add("url: ${wsi.url}");
+  payloadParams.add("url: \"${wsi.url}\"");
 
   if (wsi.inputType.startsWith("GraphqlRequestInput")) {
     final it = wsi.inputType;
@@ -105,7 +105,7 @@ String convertWebSocketFieldInfoToAction(
   payloadParams.add("unsubscribe: unsubscribe");
 
   return """
-    static Action ${wsi.name}(${params.join(", ")}) {
+    static Action ${wsi.name}({${params.join(", ")}}) {
       return Action(name: "$name", type: $type, ws: WebSocketPayload(${payloadParams.join(",")}));
     }
    """;

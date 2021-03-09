@@ -6,8 +6,6 @@ part of 'sample2.dart';
 // PStateGenerator
 // **************************************************************************
 
-// class Name : $Sample2
-
 @immutable
 class Sample2 implements PStateModel {
   final int count;
@@ -98,7 +96,7 @@ class __$Sample2CopyWithImpl<O> extends _$Sample2CopyWithImpl<O>
 
 abstract class Sample2Actions {
   static Action increment() {
-    return Action(name: "increment", group: 264296239, isAsync: false);
+    return Action(name: "increment", type: Sample2, isAsync: false);
   }
 }
 

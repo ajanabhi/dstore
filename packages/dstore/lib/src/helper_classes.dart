@@ -1,4 +1,8 @@
-class Nullable<T> {
+import 'package:dstore/dstore.dart';
+
+class Optional<T> {
   final T? value;
-  Nullable(this.value);
+  const Optional(this.value);
 }
+
+const optionalDefault = Optional(null);

@@ -7,6 +7,9 @@ import 'package:dstore_generator/src/utils/utils.dart';
 class PStateAstVisitor extends SimpleAstVisitor {
   List<Field> fields = [];
   List<PStateMethod> methods = [];
+  final bool isPersitable;
+
+  PStateAstVisitor(this.isPersitable);
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
@@ -67,17 +70,20 @@ class PStateAstVisitor extends SimpleAstVisitor {
 
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
-    final typeA = node.fields.type as TypeAnnotation?;
+    final typeA = node.fields.type;
     if (typeA == null) {
       throw Exception("Should provide type annotation for fields");
     }
     final type = typeA.toString();
     node.fields.variables.forEach((v) {
       final name = v.name.toString();
-      final valueE = v.initializer as Expression?;
+      final valueE = v.initializer;
       if (!type.endsWith("?") && valueE == null) {
-        throw Exception("Should provide initital value for fields");
+        throw ArgumentError.value("Should provide initital value for fields");
       }
+      var annotations = v.metadata.map((e) => e.toSource());
+      logger.shout(
+          "Variable Annotations $annotations element ${v.declaredElement}");
       // final value = type.endsWith("?") ? "null" : valueE.toString();
       fields.add(Field(name: name, type: type, value: valueE.toString()));
     });

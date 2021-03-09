@@ -30,8 +30,8 @@ String convertStreamFieldInfoToAction(
     {required StreamFieldInfo sfi, required String type}) {
   final name = sfi.name;
   return """
-   static Action $name(stream: Stream<${sfi.outputType}>) {
-     return Action(name:"$name",type:$type,stream:stream)
+   static Action $name({required Stream<${sfi.outputType}> stream }) {
+     return Action(name:"$name",type:$type,stream:stream);
    }
   """;
 }
