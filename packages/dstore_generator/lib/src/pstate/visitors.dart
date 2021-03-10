@@ -91,12 +91,11 @@ class PStateAstVisitor extends SimpleAstVisitor {
       // final value = type.endsWith("?") ? "null" : valueE.toString();
       var annotations = fe.metadata.map((e) => e.toSource()).toList();
       final noPersitAnnot = fe.annotationFromType(ExcludeThisKeyWhilePersit);
-      if (noPersitAnnot != null) {
+      if (isPersitable && noPersitAnnot != null) {
         if (fe.hasJsonKey) {
-          annotations = fe.mergeJsonKeyAndReturnAnnotations(
-              {"ignore": true, "defaultValue": value});
+          annotations = fe.mergeJsonKeyAndReturnAnnotations({"ignore": true});
         } else {
-          annotations.add("@JsonKey(ignore: true, defaultValue: $value)");
+          annotations.add("@JsonKey(ignore: true)");
         }
       }
       fields.add(Field(

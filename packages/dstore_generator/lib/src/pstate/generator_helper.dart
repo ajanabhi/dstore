@@ -30,8 +30,11 @@ String generatePStateForClassElement(ClassElement element) {
   fields = processFields(fields);
   final actions =
       _getActions(element: element, visitor: visitor, modelName: modelName);
-  final pstateMeta =
-      _getPStateMeta(modelName: modelName, fields: fields, methods: methods);
+  final pstateMeta = _getPStateMeta(
+      modelName: modelName,
+      fields: fields,
+      methods: methods,
+      isPersiable: isPerssit);
 
   final annotations = <String>[];
   if (isPerssit) {
@@ -48,6 +51,7 @@ String generatePStateForClassElement(ClassElement element) {
 String _getPStateMeta(
     {required String modelName,
     required List<Field> fields,
+    required bool isPersiable,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
       _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
@@ -57,15 +61,29 @@ String _getPStateMeta(
 
   final defaultState =
       "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
+
+  final params = <String>["type : $modelName"];
+  if (syncReducerFunctionStr.isNotEmpty) {
+    params.add("reducer: ${modelName}_SyncReducer");
+  }
+  if (asyncReducerFubctionStr.isNotEmpty) {
+    params.add("aReducer: ${modelName}_AsyncReducer");
+  }
+  params.add("ds: ${modelName}_DS");
+
+  if (isPersiable) {
+    final smParams = <String>[];
+    smParams.add("serializer: _\$${modelName}ToJson");
+    smParams.add("deserializer: _\$${modelName}FromJson");
+    params.add("sm: PStorageMeta<$modelName>(${smParams.join(", ")})");
+  }
+
   return """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
        $modelName ${modelName}_DS() => $defaultState;
        
-       const ${modelName}Meta = PStateMeta<${modelName}>(type:$modelName,
-        reducer: ${syncReducerFunctionStr.isNotEmpty ? "${modelName}_SyncReducer" : "null"} ,
-        aReducer: ${asyncReducerFubctionStr.isNotEmpty ? "${modelName}_AsyncReducer" : "null"} ,
-        ds: ${modelName}_DS);
+       const ${modelName}Meta = PStateMeta<${modelName}>(${params.join(", ")});
     """;
 }
 
@@ -201,7 +219,7 @@ String _createPStateModel(
 
         ${isJson ? ModelUtils.createFromJson(name) : ""}
 
-        ${isJson ? ModelUtils.createToJson() : ""}
+        ${isJson ? ModelUtils.createToJson(name) : ""}
       }
 
       ${ModelUtils.createCopyWithClasses(name: name, typeParams: typeParams, typeParamsWithBounds: typaParamsWithBounds, fields: fields)}

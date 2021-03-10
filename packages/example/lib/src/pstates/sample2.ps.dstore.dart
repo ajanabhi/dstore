@@ -7,6 +7,7 @@ part of 'sample2.dart';
 // **************************************************************************
 
 @immutable
+@JsonSerializable()
 class Sample2 implements PStateModel {
   final int count;
 
@@ -43,6 +44,11 @@ class Sample2 implements PStateModel {
   @override
   String toString() =>
       "Sample2(count: ${this.count}, name: ${this.name}, comment: ${this.comment})";
+
+  factory Sample2.fromJson(Map<String, dynamic> json) =>
+      _$Sample2FromJson(json);
+
+  Map<String, dynamic> toJson() => _$Sample2ToJson(this);
 }
 
 abstract class $Sample2CopyWith<O> {

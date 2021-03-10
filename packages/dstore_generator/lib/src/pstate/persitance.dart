@@ -15,9 +15,11 @@ bool isPersitable(PState pstate) {
     case PersistMode.ExplicitPersist:
       persist = pstate.persist == true;
       break;
-    case PersistMode.ExplicitNoPersist:
-      if (pstate.persist == null || pstate.persist == false) {
+    case PersistMode.ExplicitDontPersist:
+      if (pstate.persist == false) {
         persist = false;
+      } else {
+        persist = true;
       }
       break;
   }

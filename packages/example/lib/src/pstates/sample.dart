@@ -1,3 +1,4 @@
+import 'package:dstore_example/src/pstates/sample2.dart';
 import 'package:dstore_example/src/selectors/selector_sample.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -10,7 +11,10 @@ part "sample.g.dart";
 
 @DImmutable()
 abstract class User with _$User {
+  @JsonSerializable()
   const factory User({required String name}) = _User;
+
+  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 }
 
 dynamic s(dynamic a) => a;
@@ -21,14 +25,17 @@ class WsMessage = WebSocketField with EmptyMixin;
 @PState()
 class $Sample {
   int count = 0;
+  @excludeThisKeyWhilePersist
   int s = 0;
-  @JsonKey()
+  @JsonKey(ignore: true, defaultValue: "sample")
+  String n = "hello";
+  @excludeThisKeyWhilePersist
   User name = User(name: "first2");
   // GetTodos todos = GetTodos();
 
-  StreamField sf = StreamField();
+  // StreamField sf = StreamField();
 
-  WsMessage wm = WsMessage();
+  // WsMessage wm = WsMessage();
 
   void increment() {
     this.count = 6;

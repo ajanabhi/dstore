@@ -6,6 +6,20 @@ part of 'sample2.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Sample2 _$Sample2FromJson(Map<String, dynamic> json) {
+  return Sample2(
+    count: json['count'] as int,
+    name: json['name'] as String,
+    comment: json['comment'] as String?,
+  );
+}
+
+Map<String, dynamic> _$Sample2ToJson(Sample2 instance) => <String, dynamic>{
+      'count': instance.count,
+      'name': instance.name,
+      'comment': instance.comment,
+    };
+
 _TU _$_TUFromJson(Map<String, dynamic> json) {
   return _TU(
     s: json['s'] as String,

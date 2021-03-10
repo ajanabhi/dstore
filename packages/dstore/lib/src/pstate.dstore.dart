@@ -11,9 +11,12 @@ mixin _$AsyncActionField {
   bool get loading;
   dynamic get error;
 
+  @JsonKey(ignore: true)
   $AsyncActionFieldCopyWith<AsyncActionField> get copyWith;
+  Map<String, dynamic> toJson();
 }
 
+@JsonSerializable()
 class _AsyncActionField implements AsyncActionField {
   @override
   @Default(false)
@@ -25,10 +28,16 @@ class _AsyncActionField implements AsyncActionField {
   @JsonKey(defaultValue: null)
   final dynamic error;
 
+  @JsonKey(ignore: true)
   _$AsyncActionFieldCopyWith<AsyncActionField> get copyWith =>
       __$AsyncActionFieldCopyWithImpl<AsyncActionField>(this, IdentityFn);
 
   const _AsyncActionField({this.loading = false, this.error = null});
+
+  factory _AsyncActionField.fromJson(Map<String, dynamic> json) =>
+      _$_AsyncActionFieldFromJson(json);
+
+  Map<String, dynamic> toJson() => _$_AsyncActionFieldToJson(this);
 
   @override
   bool operator ==(Object o) {
@@ -43,6 +52,9 @@ class _AsyncActionField implements AsyncActionField {
   String toString() =>
       "AsyncActionField(loading: ${this.loading}, error: ${this.error})";
 }
+
+AsyncActionField _$AsyncActionFieldFromJson(Map<String, dynamic> json) =>
+    _AsyncActionField.fromJson(json);
 
 abstract class $AsyncActionFieldCopyWith<O> {
   factory $AsyncActionFieldCopyWith(
@@ -92,7 +104,7 @@ class __$AsyncActionFieldCopyWithImpl<O>
 }
 
 mixin _$StreamField<D> {
-  D? get d;
+  D? get data;
   StreamSubscription<dynamic>? get internalSubscription;
   dynamic get error;
   bool get listening;
@@ -103,7 +115,7 @@ mixin _$StreamField<D> {
 
 class _StreamField<D> implements StreamField<D> {
   @override
-  final D? d;
+  final D? data;
 
   @override
   final StreamSubscription<dynamic>? internalSubscription;
@@ -127,7 +139,7 @@ class _StreamField<D> implements StreamField<D> {
       __$StreamFieldCopyWithImpl<D, StreamField<D>>(this, IdentityFn);
 
   const _StreamField(
-      {this.d,
+      {this.data,
       this.internalSubscription,
       this.error = null,
       this.listening = false,
@@ -137,7 +149,7 @@ class _StreamField<D> implements StreamField<D> {
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
     return o is _StreamField &&
-        o.d == d &&
+        o.data == data &&
         o.internalSubscription == internalSubscription &&
         o.error == error &&
         o.listening == listening &&
@@ -146,7 +158,7 @@ class _StreamField<D> implements StreamField<D> {
 
   @override
   int get hashCode =>
-      d.hashCode ^
+      data.hashCode ^
       internalSubscription.hashCode ^
       error.hashCode ^
       listening.hashCode ^
@@ -154,7 +166,7 @@ class _StreamField<D> implements StreamField<D> {
 
   @override
   String toString() =>
-      "StreamField(d: ${this.d}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, completed: ${this.completed})";
+      "StreamField(data: ${this.data}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, completed: ${this.completed})";
 }
 
 abstract class $StreamFieldCopyWith<D, O> {
@@ -162,7 +174,7 @@ abstract class $StreamFieldCopyWith<D, O> {
           StreamField<D> value, O Function(StreamField<D>) then) =
       _$StreamFieldCopyWithImpl<D, O>;
   O call(
-      {D? d,
+      {D? data,
       StreamSubscription<dynamic>? internalSubscription,
       dynamic error,
       bool listening,
@@ -176,13 +188,13 @@ class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
 
   @override
   O call(
-      {Object? d = dimmutable,
+      {Object? data = dimmutable,
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
       Object? completed = dimmutable}) {
     return _then(_value.copyWith(
-        d: d == dimmutable ? _value.d : d as D?,
+        data: data == dimmutable ? _value.data : data as D?,
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,
@@ -200,7 +212,7 @@ abstract class _$StreamFieldCopyWith<D, O>
           StreamField<D> value, O Function(StreamField<D>) then) =
       __$StreamFieldCopyWithImpl<D, O>;
   O call(
-      {D? d,
+      {D? data,
       StreamSubscription<dynamic>? internalSubscription,
       dynamic error,
       bool listening,
@@ -218,13 +230,13 @@ class __$StreamFieldCopyWithImpl<D, O> extends _$StreamFieldCopyWithImpl<D, O>
 
   @override
   O call(
-      {Object? d = dimmutable,
+      {Object? data = dimmutable,
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
       Object? completed = dimmutable}) {
     return _then(StreamField(
-        d: d == dimmutable ? _value.d : d as D?,
+        data: data == dimmutable ? _value.data : data as D?,
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,

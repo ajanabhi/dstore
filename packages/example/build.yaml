@@ -6,4 +6,4 @@ targets:
           compact_query_methods: true
       dstore_generator:ps:
         options:
-          persistMode: ExplicitPersist     
+          persistMode: ExplicitDontPersist     

@@ -11,20 +11,9 @@ part of 'selector_sample.dart';
 class AppSelectors {
   static final hello = Selector<AppState, S1>(fn: _AppSelectors.hello, deps: {
     "sample": ["name", "s", "sf", "wm", "fint"]
-  }, wsDeps: {
-    "sample": ["wm"]
-  }, sfDeps: {
-    "sample": ["sf"]
   });
-  static final hello2 =
-      Selector<AppState, dynamic>(fn: _AppSelectors.hello2, deps: {
-    "sample2": [],
-    "sample": []
-  }, wsDeps: {
-    "sample": ["wm"]
-  }, sfDeps: {
-    "sample": ["sf"]
-  });
+  static final hello2 = Selector<AppState, dynamic>(
+      fn: _AppSelectors.hello2, deps: {"sample2": [], "sample": []});
 }
 
 // **************************************************************************

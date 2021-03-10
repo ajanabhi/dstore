@@ -1,6 +1,5 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/helper_classes.dart';
-import 'package:dstore/src/extensions.dart';
 
 part "websocket.dstore.dart";
 
@@ -19,22 +18,23 @@ class WebSocketField<I, R, E> {
       this.internalUnsubscribe});
 
   WebSocketField<I, R, E> copyWith({
-    bool? loading ,
+    bool? loading,
     Optional<R?> data = optionalDefault,
     Optional<E?> error = optionalDefault,
-    bool? completed ,
-    Optional<void Function()?> internalUnsubscribe = optionalDefault ,
+    bool? completed,
+    Optional<void Function()?> internalUnsubscribe = optionalDefault,
   }) {
     return WebSocketField<I, R, E>(
-      loading : loading ?? this.loading ,
+      loading: loading ?? this.loading,
       data: data == optionalDefault ? this.data : data.value,
-     error : error == optionalDefault ? this.error:error.value,
-      completed : completed ?? this.completed,
-     internalUnsubscribe : internalUnsubscribe == optionalDefault ? this.internalUnsubscribe ?? internalUnsubscribe.value,
+      error: error == optionalDefault ? this.error : error.value,
+      completed: completed ?? this.completed,
+      internalUnsubscribe: internalUnsubscribe == optionalDefault
+          ? this.internalUnsubscribe
+          : internalUnsubscribe.value,
     );
   }
 }
-
 
 class WebSocketPayload<I, R, E> {
   final String url;

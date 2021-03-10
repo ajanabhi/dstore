@@ -7,16 +7,20 @@ part of 'sample.dart';
 // **************************************************************************
 
 @immutable
+@JsonSerializable()
 class Sample implements PStateModel {
   final int count;
 
+  @excludeThisKeyWhilePersist
+  @JsonKey(ignore: true)
   final int s;
 
+  @JsonKey(ignore: true, defaultValue: "sample")
+  final String n;
+
+  @excludeThisKeyWhilePersist
+  @JsonKey(ignore: true)
   final User name;
-
-  final StreamField sf;
-
-  final WsMessage wm;
 
   final AsyncActionField fint;
 
@@ -26,26 +30,23 @@ class Sample implements PStateModel {
   const Sample(
       {this.count = 0,
       this.s = 0,
+      this.n = "hello",
       this.name = const User(name: "first2"),
-      this.sf = const StreamField(),
-      this.wm = const WsMessage(),
       this.fint = const AsyncActionField()});
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       count: map.containsKey("count") ? map["count"] : this.count,
       s: map.containsKey("s") ? map["s"] : this.s,
+      n: map.containsKey("n") ? map["n"] : this.n,
       name: map.containsKey("name") ? map["name"] : this.name,
-      sf: map.containsKey("sf") ? map["sf"] : this.sf,
-      wm: map.containsKey("wm") ? map["wm"] : this.wm,
       fint: map.containsKey("fint") ? map["fint"] : this.fint);
 
   Map<String, dynamic> toMap() => {
         "count": this.count,
         "s": this.s,
+        "n": this.n,
         "name": this.name,
-        "sf": this.sf,
-        "wm": this.wm,
         "fint": this.fint
       };
 
@@ -55,36 +56,28 @@ class Sample implements PStateModel {
     return o is Sample &&
         o.count == count &&
         o.s == s &&
+        o.n == n &&
         o.name == name &&
-        o.sf == sf &&
-        o.wm == wm &&
         o.fint == fint;
   }
 
   @override
   int get hashCode =>
-      count.hashCode ^
-      s.hashCode ^
-      name.hashCode ^
-      sf.hashCode ^
-      wm.hashCode ^
-      fint.hashCode;
+      count.hashCode ^ s.hashCode ^ n.hashCode ^ name.hashCode ^ fint.hashCode;
 
   @override
   String toString() =>
-      "Sample(count: ${this.count}, s: ${this.s}, name: ${this.name}, sf: ${this.sf}, wm: ${this.wm}, fint: ${this.fint})";
+      "Sample(count: ${this.count}, s: ${this.s}, n: ${this.n}, name: ${this.name}, fint: ${this.fint})";
+
+  factory Sample.fromJson(Map<String, dynamic> json) => _$SampleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SampleToJson(this);
 }
 
 abstract class $SampleCopyWith<O> {
   factory $SampleCopyWith(Sample value, O Function(Sample) then) =
       _$SampleCopyWithImpl<O>;
-  O call(
-      {int count,
-      int s,
-      User name,
-      StreamField sf,
-      WsMessage wm,
-      AsyncActionField fint});
+  O call({int count, int s, String n, User name, AsyncActionField fint});
 }
 
 class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
@@ -96,16 +89,14 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
   O call(
       {Object? count = dimmutable,
       Object? s = dimmutable,
+      Object? n = dimmutable,
       Object? name = dimmutable,
-      Object? sf = dimmutable,
-      Object? wm = dimmutable,
       Object? fint = dimmutable}) {
     return _then(_value.copyWith(
         count: count == dimmutable ? _value.count : count as int,
         s: s == dimmutable ? _value.s : s as int,
+        n: n == dimmutable ? _value.n : n as String,
         name: name == dimmutable ? _value.name : name as User,
-        sf: sf == dimmutable ? _value.sf : sf as StreamField,
-        wm: wm == dimmutable ? _value.wm : wm as WsMessage,
         fint: fint == dimmutable ? _value.fint : fint as AsyncActionField));
   }
 }
@@ -113,13 +104,7 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
 abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
   factory _$SampleCopyWith(Sample value, O Function(Sample) then) =
       __$SampleCopyWithImpl<O>;
-  O call(
-      {int count,
-      int s,
-      User name,
-      StreamField sf,
-      WsMessage wm,
-      AsyncActionField fint});
+  O call({int count, int s, String n, User name, AsyncActionField fint});
 }
 
 class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
@@ -134,16 +119,14 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   O call(
       {Object? count = dimmutable,
       Object? s = dimmutable,
+      Object? n = dimmutable,
       Object? name = dimmutable,
-      Object? sf = dimmutable,
-      Object? wm = dimmutable,
       Object? fint = dimmutable}) {
     return _then(Sample(
         count: count == dimmutable ? _value.count : count as int,
         s: s == dimmutable ? _value.s : s as int,
+        n: n == dimmutable ? _value.n : n as String,
         name: name == dimmutable ? _value.name : name as User,
-        sf: sf == dimmutable ? _value.sf : sf as StreamField,
-        wm: wm == dimmutable ? _value.wm : wm as WsMessage,
         fint: fint == dimmutable ? _value.fint : fint as AsyncActionField));
   }
 }
@@ -195,25 +178,6 @@ abstract class SampleActions {
   static Action fint({Duration? debounce}) {
     return Action(
         name: "fint", type: Sample, isAsync: true, debounce: debounce);
-  }
-
-  static Action sf({required Stream<dynamic> stream}) {
-    return Action(name: "sf", type: Sample, stream: stream);
-  }
-
-  static Action wm(
-      {dynamic data, Map<String, dynamic>? headers, bool unsubscribe = false}) {
-    return Action(
-        name: "wm",
-        type: Sample,
-        ws: WebSocketPayload(
-            url: "ws23",
-            data: data,
-            responseDeserializer: s,
-            inputSerializer: null,
-            transformer: null,
-            headers: headers,
-            unsubscribe: unsubscribe));
   }
 }
 
@@ -306,9 +270,8 @@ Future<dynamic> Sample_AsyncReducer(
 Sample Sample_DS() => Sample(
     count: 0,
     s: 0,
+    n: "hello",
     name: User(name: "first2"),
-    sf: StreamField(),
-    wm: WsMessage(),
     fint: AsyncActionField());
 
 const SampleMeta = PStateMeta<Sample>(

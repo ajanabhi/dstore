@@ -1,9 +1,9 @@
 abstract class PersitantStorage {
   Future<void> init();
-  bool get isInitialized;
-  Future<void> set({required String key, required Map<String, dynamic> json});
-  Future<Map<String, dynamic>?> get(String key);
-  Future<Map<String, Map<String, dynamic>>?> getState(Iterable<String> keys);
+  Future<void> set({required String key, required dynamic value});
+  Future<dynamic> get(String key);
+  Future<Map<String, dynamic>?> getKeys(Iterable<String> keys);
+  Future<void> clear();
 }
 
 enum StorageWriteMode { DISKFIRST, DISKLAST }

@@ -10,17 +10,25 @@ part of 'sample.dart';
 mixin _$User {
   String get name;
 
+  @JsonKey(ignore: true)
   $UserCopyWith<User> get copyWith;
+  Map<String, dynamic> toJson();
 }
 
+@JsonSerializable()
 class _User implements User {
   @override
   final String name;
 
+  @JsonKey(ignore: true)
   _$UserCopyWith<User> get copyWith =>
       __$UserCopyWithImpl<User>(this, IdentityFn);
 
   const _User({required this.name});
+
+  factory _User.fromJson(Map<String, dynamic> json) => _$_UserFromJson(json);
+
+  Map<String, dynamic> toJson() => _$_UserToJson(this);
 
   @override
   bool operator ==(Object o) {
@@ -34,6 +42,8 @@ class _User implements User {
   @override
   String toString() => "User(name: ${this.name})";
 }
+
+User _$UserFromJson(Map<String, dynamic> json) => _User.fromJson(json);
 
 abstract class $UserCopyWith<O> {
   factory $UserCopyWith(User value, O Function(User) then) =
