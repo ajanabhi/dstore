@@ -21,9 +21,9 @@ class Sample2 implements PStateModel {
 
   @override
   Sample2 copyWithMap(Map<String, dynamic> map) => Sample2(
-      count: map["count"] ?? this.count,
-      name: map["name"] ?? this.name,
-      comment: map["comment"] ?? this.comment);
+      count: map.containsKey("count") ? map["count"] : this.count,
+      name: map.containsKey("name") ? map["name"] : this.name,
+      comment: map.containsKey("comment") ? map["comment"] : this.comment);
 
   Map<String, dynamic> toMap() =>
       {"count": this.count, "name": this.name, "comment": this.comment};

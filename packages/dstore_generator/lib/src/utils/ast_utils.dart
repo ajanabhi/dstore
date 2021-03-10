@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
@@ -84,8 +85,8 @@ abstract class AstUtils {
             final jsonKeyAnnot = param.annotationFromType(JsonKey);
             if (!jsonKeyAnnot!.toSource().contains("defaultValue")) {
               // jsonKey doesnt have defaultValue but Default is specified as Default annotation so lets merge
-              annotations = param
-                  .addDefaultValueToJsonKeyAndReturnAnnotations(defaultValue);
+              annotations = param.mergeJsonKeyAndReturnAnnotations(
+                  {"defaultValue": defaultValue});
               logger.shout(
                   "Default value $defaultValue annotationation $annotations");
             }
@@ -137,23 +138,86 @@ abstract class AnnotationUtils {
     return AstUtils.addConstToDefaultValue(v);
   }
 
-  static List<String> addDefaultValueToJsonKeyAndReturnAnnotations(
-      Element element, Object? value) {
+  static List<String> mergeJsonKeyAndReturnAnnotations(
+      Element element, Map<String, dynamic> newFields) {
     final tc = TypeChecker.fromRuntime(JsonKey);
     return element.metadata.map((e) {
       final type = e.type;
       if (type != null && tc.isAssignableFromType(type)) {
-        var source = e.toSource().trim();
-        if (source.endsWith(")")) {
-          source = source.substring(0, source.length - 1);
-        } else if (source.endsWith(",)")) {
-          source = source.substring(0, source.length - 2);
-        }
-
-        return "${source},defaultValue : $value)";
+        final o = e.computeConstantValue();
+        final key = getJsonKeyFromDartObject(o!);
+        return key.copyWithMap(newFields).toSource();
       }
       return e.toSource();
     }).toList();
+  }
+
+  static JsonKey getJsonKeyFromDartObject(DartObject o) {
+    final reader = ConstantReader(o);
+    dynamic defaultValue;
+    final defaultValueField = reader.peek("defaultValue");
+    if (defaultValueField != null) {
+      defaultValue = defaultValueField.literalValue;
+    }
+
+    dynamic disallowNullValue;
+    final disallowNullValueField = reader.peek("disallowNullValue");
+    if (disallowNullValueField != null) {
+      disallowNullValue = disallowNullValueField.literalValue;
+    }
+
+    dynamic fromJson;
+    final fromJsonField = reader.peek("fromJson");
+    if (fromJsonField != null) {
+      fromJson = fromJsonField.literalValue;
+    }
+
+    dynamic ignore;
+    final ignoreField = reader.peek("ignore");
+    if (ignoreField != null) {
+      ignore = ignoreField.literalValue;
+    }
+
+    dynamic includeIfNull;
+    final includeIfNullField = reader.peek("includeIfNull");
+    if (includeIfNullField != null) {
+      includeIfNull = includeIfNullField.literalValue;
+    }
+
+    dynamic name;
+    final nameField = reader.peek("name");
+    if (nameField != null) {
+      name = nameField.literalValue;
+    }
+
+    dynamic required;
+    final requiredField = reader.peek("required");
+    if (requiredField != null) {
+      required = requiredField.literalValue;
+    }
+
+    dynamic toJson;
+    final toJsonField = reader.peek("toJson");
+    if (toJsonField != null) {
+      toJson = toJsonField.literalValue;
+    }
+
+    dynamic unknownEnumValue;
+    final unknownEnumValueField = reader.peek("unknownEnumValue");
+    if (unknownEnumValueField != null) {
+      unknownEnumValue = unknownEnumValueField.literalValue;
+    }
+
+    return JsonKey(
+        defaultValue: defaultValue,
+        disallowNullValue: disallowNullValue,
+        fromJson: fromJson,
+        ignore: ignore,
+        includeIfNull: includeIfNull,
+        name: name,
+        required: required,
+        toJson: toJson,
+        unknownEnumValue: unknownEnumValue);
   }
 }
 
@@ -167,6 +231,16 @@ extension ElementExt on Element {
   }
 }
 
+extension VariableDeclarationExt on VariableDeclaration {
+  Annotation? annotationFromType(Type type) {
+    final tc = TypeChecker.fromRuntime(type);
+    return this.metadata.singleWhereOrNull((e) {
+      final v = e.elementAnnotation?.computeConstantValue();
+      return v != null && v.type != null && tc.isAssignableFromType(v.type);
+    });
+  }
+}
+
 extension ElementAnnotationExt on ElementAnnotation {
   DartType? get type {
     final v = computeConstantValue();
@@ -174,12 +248,39 @@ extension ElementAnnotationExt on ElementAnnotation {
   }
 }
 
+extension JsonKeyExt on JsonKey {
+  JsonKey copyWithMap(Map<String, dynamic> map) {
+    return JsonKey(
+        defaultValue: map.containsKey("defaultValue")
+            ? map["defaultValue"]
+            : defaultValue,
+        disallowNullValue: map.containsKey("disallowNullValue")
+            ? map["disallowNullValue"]
+            : disallowNullValue,
+        fromJson: map.containsKey("fromJson") ? map["fromJson"] : fromJson,
+        ignore: map.containsKey("ignore") ? map["ignore"] : ignore,
+        includeIfNull: map.containsKey("includeIfNull")
+            ? map["includeIfNull"]
+            : includeIfNull,
+        name: map.containsKey("name") ? map["name"] : name,
+        required: map.containsKey("required") ? map["required"] : required,
+        toJson: map.containsKey("toJson") ? map["toJson"] : toJson,
+        unknownEnumValue: map.containsKey("unknownEnumValue")
+            ? map["unknownEnumValue"]
+            : unknownEnumValue);
+  }
+
+  String toSource() =>
+      "@JsonKey(defaultValue : $defaultValue, disallowNullValue : $disallowNullValue, fromJson : $fromJson, ignore : $ignore, includeIfNull : $includeIfNull, name : $name, required : $required, toJson : $toJson, unknownEnumValue : $unknownEnumValue)";
+}
+
 extension ParameterElementExt on ParameterElement {
   bool get hasJsonKey => AnnotationUtils.hasJsonKey(this);
   String? get defaultValue => AnnotationUtils.defaultValue(this);
 
-  List<String> addDefaultValueToJsonKeyAndReturnAnnotations(Object? value) =>
-      AnnotationUtils.addDefaultValueToJsonKeyAndReturnAnnotations(this, value);
+  List<String> mergeJsonKeyAndReturnAnnotations(
+          Map<String, dynamic> newFields) =>
+      AnnotationUtils.mergeJsonKeyAndReturnAnnotations(this, newFields);
 }
 
 extension ConstReadExt on ConstantReader {
@@ -192,6 +293,7 @@ extension ConstReadExt on ConstantReader {
 extension FieldElementExt on FieldElement {
   bool get hasJsonKey => AnnotationUtils.hasJsonKey(this);
 
-  List<String> addDefaultValueToJsonKeyAndReturnAnnotations(Object? value) =>
-      AnnotationUtils.addDefaultValueToJsonKeyAndReturnAnnotations(this, value);
+  List<String> mergeJsonKeyAndReturnAnnotations(
+          Map<String, dynamic> newFields) =>
+      AnnotationUtils.mergeJsonKeyAndReturnAnnotations(this, newFields);
 }

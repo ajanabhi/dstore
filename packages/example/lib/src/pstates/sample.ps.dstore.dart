@@ -26,19 +26,19 @@ class Sample implements PStateModel {
   const Sample(
       {this.count = 0,
       this.s = 0,
-      this.name = const User(name: "first"),
+      this.name = const User(name: "first2"),
       this.sf = const StreamField(),
       this.wm = const WsMessage(),
       this.fint = const AsyncActionField()});
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
-      count: map["count"] ?? this.count,
-      s: map["s"] ?? this.s,
-      name: map["name"] ?? this.name,
-      sf: map["sf"] ?? this.sf,
-      wm: map["wm"] ?? this.wm,
-      fint: map["fint"] ?? this.fint);
+      count: map.containsKey("count") ? map["count"] : this.count,
+      s: map.containsKey("s") ? map["s"] : this.s,
+      name: map.containsKey("name") ? map["name"] : this.name,
+      sf: map.containsKey("sf") ? map["sf"] : this.sf,
+      wm: map.containsKey("wm") ? map["wm"] : this.wm,
+      fint: map.containsKey("fint") ? map["fint"] : this.fint);
 
   Map<String, dynamic> toMap() => {
         "count": this.count,
@@ -306,7 +306,7 @@ Future<dynamic> Sample_AsyncReducer(
 Sample Sample_DS() => Sample(
     count: 0,
     s: 0,
-    name: User(name: "first"),
+    name: User(name: "first2"),
     sf: StreamField(),
     wm: WsMessage(),
     fint: AsyncActionField());

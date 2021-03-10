@@ -22,7 +22,8 @@ class WsMessage = WebSocketField with EmptyMixin;
 class $Sample {
   int count = 0;
   int s = 0;
-  User name = User(name: "first");
+  @JsonKey()
+  User name = User(name: "first2");
   // GetTodos todos = GetTodos();
 
   StreamField sf = StreamField();

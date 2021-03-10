@@ -1,5 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -8,8 +10,9 @@ class PStateAstVisitor extends SimpleAstVisitor {
   List<Field> fields = [];
   List<PStateMethod> methods = [];
   final bool isPersitable;
+  final ClassElement element;
 
-  PStateAstVisitor(this.isPersitable);
+  PStateAstVisitor(this.element, this.isPersitable);
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
@@ -81,11 +84,23 @@ class PStateAstVisitor extends SimpleAstVisitor {
       if (!type.endsWith("?") && valueE == null) {
         throw ArgumentError.value("Should provide initital value for fields");
       }
-      var annotations = v.metadata.map((e) => e.toSource());
+      final value = valueE.toString();
+      final fe = element.fields.singleWhere((f) => f.name == name);
       logger.shout(
-          "Variable Annotations $annotations element ${v.declaredElement}");
+          "Variable Annotations $fe ${fe.metadata} element ${v.declaredElement}");
       // final value = type.endsWith("?") ? "null" : valueE.toString();
-      fields.add(Field(name: name, type: type, value: valueE.toString()));
+      var annotations = fe.metadata.map((e) => e.toSource()).toList();
+      final noPersitAnnot = fe.annotationFromType(ExcludeThisKeyWhilePersit);
+      if (noPersitAnnot != null) {
+        if (fe.hasJsonKey) {
+          annotations = fe.mergeJsonKeyAndReturnAnnotations(
+              {"ignore": true, "defaultValue": value});
+        } else {
+          annotations.add("@JsonKey(ignore: true, defaultValue: $value)");
+        }
+      }
+      fields.add(Field(
+          name: name, annotations: annotations, type: type, value: value));
     });
     print(
         "declared element : ${node.fields.type} node : ${node.fields.variables[0]}");

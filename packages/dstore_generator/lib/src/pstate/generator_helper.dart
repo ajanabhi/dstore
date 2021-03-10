@@ -17,7 +17,7 @@ String generatePStateForClassElement(ClassElement element) {
   final modelName = element.name.substring(1);
   final pstate = element.getPState();
   final isPerssit = isPersitable(pstate);
-  final visitor = PStateAstVisitor(isPerssit);
+  final visitor = PStateAstVisitor(element, isPerssit);
   final astNode = AstUtils.getAstNodeFromElement(element);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;

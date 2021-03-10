@@ -127,12 +127,14 @@ abstract class ModelUtils {
     var cons = "";
     if (emptyConstructor) {
       final cfields = fields
-          .map((f) => "..${f.name} = map[\"${f.name}\"] ?? this.${f.name}")
+          .map((f) =>
+              "..${f.name} = map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] : this.${f.name}")
           .join("");
       cons = "${name}()$cfields;";
     } else {
       final cfields = fields
-          .map((f) => "${f.name} : map[\"${f.name}\"] ?? this.${f.name}")
+          .map((f) =>
+              "${f.name} : map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] : this.${f.name}")
           .join(", ");
       cons = "${name}($cfields);";
     }
