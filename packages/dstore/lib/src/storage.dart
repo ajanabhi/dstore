@@ -1,6 +1,7 @@
 abstract class PersitantStorage {
   Future<void> init();
   Future<void> set({required String key, required dynamic value});
+  Future<void> setAll(Map<String, dynamic> keyValues);
   Future<dynamic> get(String key);
   Future<Map<String, dynamic>?> getKeys(Iterable<String> keys);
   Future<void> clear();
