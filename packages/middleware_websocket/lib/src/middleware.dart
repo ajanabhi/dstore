@@ -28,7 +28,7 @@ GraphqlMessages _convertStringToGraphlMessage(String name) {
       orElse: () => GraphqlMessages.complete);
 }
 
-final _GLOBAL_GROUP = "DSTORE_WEBSOCKET_GLOBAL".hashCode;
+class _WebSocketGlobalGroup {}
 
 final _clients = <String, DWebSocket>{};
 
@@ -36,15 +36,15 @@ abstract class WebSocketGlobalActions {
   static Action close(String url) {
     return Action(
         name: "close",
-        group: _GLOBAL_GROUP,
-        ws: WebSocketPayload(url: url, responseDeserializer: IdentifyFn));
+        type: _WebSocketGlobalGroup,
+        ws: WebSocketPayload(url: url, responseDeserializer: IdentityFn));
   }
 
   static Action connect(String url) {
     return Action(
         name: "connect",
-        group: _GLOBAL_GROUP,
-        ws: WebSocketPayload(url: url, responseDeserializer: IdentifyFn));
+        type: _WebSocketGlobalGroup,
+        ws: WebSocketPayload(url: url, responseDeserializer: IdentityFn));
   }
 }
 
@@ -294,7 +294,7 @@ class DWebSocket {
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             data: data.copyWith(
-                internalUnsubscribe: Nullable(_getUnSunscribeFuntion(action))),
+                internalUnsubscribe: Optional(_getUnSunscribeFuntion(action))),
             processed: true,
             type: ActionInternalType.DATA)));
   }
@@ -302,7 +302,7 @@ class DWebSocket {
   bool removeFromSubscriptions(Action action) {
     final prevLength = subscriptions.length;
     subscriptions = subscriptions
-        .where((sa) => sa.name != action.name && sa.group != action.group)
+        .where((sa) => sa.name != action.name && sa.type != action.type)
         .toList();
     return prevLength != subscriptions.length;
   }
@@ -331,7 +331,7 @@ class DWebSocket {
   }
 
   String getId(Action a) {
-    return "${a.group}.${a.name}";
+    return "${a.type.hashCode}.${a.name}";
   }
 
   void handleUnsubscribe(Action action) {
@@ -348,14 +348,14 @@ class DWebSocket {
   void Function() _getUnSunscribeFuntion(Action action) {
     return () => store.dispatch(Action(
         name: action.name,
-        group: action.group,
+        type: action.type,
         ws: WebSocketPayload(
-            url: url, responseDeserializer: IdentifyFn, unsubscribe: true)));
+            url: url, responseDeserializer: IdentityFn, unsubscribe: true)));
   }
 
   void handleAction(Action action) {
     final wsp = action.ws!;
-    if (action.group == _GLOBAL_GROUP) {
+    if (action.type == _WebSocketGlobalGroup) {
       return handleGlobalAction(action);
     } else {
       if (wsp.unsubscribe) {
@@ -390,7 +390,7 @@ class DWebSocket {
       }
       if (sa == null) {
         // if already there is a subscription for that id dont add it again
-        subscriptions.add(Action(name: action.name, group: action.group));
+        subscriptions.add(Action(name: action.name, type: action.type));
       }
     }
   }
@@ -409,7 +409,7 @@ void _processWebsocketAction(
     {required WebsocketMiddlewareOptions? options,
     required Action action,
     required Store store}) {
-  final isGlobal = action.group == _GLOBAL_GROUP;
+  final isGlobal = action.type == _WebSocketGlobalGroup;
   final isGraphql = action.ws!.data is GraphqlRequestInput;
   final url = action.ws!.url;
   var client = _clients[url];

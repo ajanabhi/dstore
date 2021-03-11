@@ -54,7 +54,7 @@ class Store<S extends AppStateI> {
   void _prepareStoreFromStorage(S Function() stateCreator) async {
     try {
       final so = storageOptions!;
-      final sState = await so.storage.getState(meta.keys);
+      final sState = await so.storage.getKeys(meta.keys);
       if (sState == null) {
         // meaning running app first time or user deleted app data
         _prepareNormalStore(stateCreator);
@@ -229,9 +229,24 @@ class Store<S extends AppStateI> {
           // unsubscribe before reset
           _unsubscribeSFDeps(sk, selector.sfDeps?.getOrElse(sk, []) ?? []);
           _unsubscribeWsDeps(sk, selector.wsDeps?.getOrElse(sk, []) ?? []);
+          final listernsToFire = <Callback>[];
+          final lsk = selectorListeners[sk];
           if (value.isEmpty) {
+            listernsToFire.addAll(lsk
+                    ?.where((element) => element.selector != selector)
+                    .map((e) => e.listener) ??
+                []);
             sMap[sk] = meta[sk]!.ds();
           } else {
+            final valueSet = value.toSet();
+            lsk
+                ?.where((element) => element.selector != selector)
+                .forEach((sls) {
+              final lSet = sls.selector.deps[sk]?.toSet() ?? {};
+              if (valueSet.intersection(lSet).isNotEmpty) {
+                listernsToFire.add(sls.listener);
+              }
+            });
             final rm = sMap[sk]!;
             final rmMap = rm.toMap();
             final rmDSMap = meta[sk]!.ds().toMap();
@@ -241,6 +256,9 @@ class Store<S extends AppStateI> {
             sMap[sk] = rm.copyWithMap(rmMap);
           }
           _updatePersitance(selector.deps.keys);
+          listernsToFire.forEach((l) {
+            l();
+          });
         });
       } else {
         final keysToReset = <String>[];
@@ -254,7 +272,9 @@ class Store<S extends AppStateI> {
           final streamValues = selector.sfDeps?.getOrElse(sk, []) ?? [];
           if (slsa != null) {
             final existingStateKeyProps = <String>{};
-            slsa.forEach((sls) {
+            slsa
+                .where((element) => element.selector != selector)
+                .forEach((sls) {
               existingStateKeyProps.addAll(sls.selector.deps[sk]!);
             });
             propsOfKeysToReset[sk] = [];
