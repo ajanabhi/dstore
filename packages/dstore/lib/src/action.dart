@@ -24,6 +24,16 @@ abstract class Action with _$Action {
 
 extension ActionExt on Action {
   bool get isProcessed => internal?.processed ?? false;
+  Map<String, dynamic> toJson({Httpmeta? httpMeta}) {
+    final map = <String, dynamic>{};
+    if (http != null && httpMeta == null) {
+      throw ArgumentError.value(
+          "You should provide httpmeta if action has http field");
+    }
+
+    // return {};
+    return map;
+  }
 }
 
 @dimmutable

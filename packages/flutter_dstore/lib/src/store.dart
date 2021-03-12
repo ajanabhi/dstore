@@ -51,7 +51,8 @@ class _SelectorBuilderState extends State<SelectorBuilder> {
     final store = context.store();
     _lsitener = () {
       _state = widget.selector.fn(store.state);
-      setState(() {});
+      setState(
+          () {}); // we will call listener only when selectors deps changed, do we need another _state == prev_state check here ?
     };
     _state = widget.selector.fn(store.state);
     _unsubFn = store.subscribeSelector(widget.selector, _lsitener);

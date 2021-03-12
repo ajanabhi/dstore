@@ -24,18 +24,36 @@ abstract class AbortController {
   void abort();
 }
 
-// @HttpRequest(method: "GET", url: "")
-// class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
+@HttpRequest(method: "GET", url: "")
+class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
 
-@DImmutable()
-abstract class HttpField<QP, I, R, E> with _$HttpField {
-  const factory HttpField(
-      {@Default(false) bool loading,
-      R? data,
-      HttpError<E>? error,
-      @Default(false) bool completed,
-      @Default(false) bool optimistic,
-      AbortController? abortController}) = _HttpField;
+class HttpField<QP, I, R, E> {
+  final bool loading;
+  final R? data;
+  final HttpError<E>? error;
+  final bool completed;
+  final bool optimistic;
+
+  HttpField(
+      {this.loading = false,
+      this.data,
+      this.error,
+      this.completed = false,
+      this.optimistic = false});
+
+  HttpField<QP, I, R, E> copyWith(
+      {bool? loading,
+      Optional<R?> data = optionalDefault,
+      Optional<HttpError<E>?> error = optionalDefault,
+      bool? completed,
+      bool? optimistic}) {
+    return HttpField(
+        loading: loading ?? this.loading,
+        data: data == optionalDefault ? this.data : data.value,
+        error: error == optionalDefault ? this.error : error.value,
+        completed: completed ?? this.completed,
+        optimistic: optimistic ?? this.optimistic);
+  }
 }
 
 @DImmutable()

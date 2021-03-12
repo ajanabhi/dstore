@@ -46,7 +46,8 @@ class StorageSharedPrefs implements PersitantStorage {
   Future _removeNotUsedKeys(Set<String> allKeys, Set<String> newKeys) async {
     final keysToget = newKeys;
     for (final k in allKeys) {
-      if (!keysToget.contains(k.replaceAll(_prefix, ""))) {
+      if (k.startsWith(_prefix) &&
+          !keysToget.contains(k.substring(_prefix.length))) {
         await _prefs.remove("$_prefix$k");
       }
     }
@@ -72,5 +73,12 @@ class StorageSharedPrefs implements PersitantStorage {
   @override
   Future<void> clear() async {
     await _prefs.clear();
+  }
+
+  @override
+  Future<void> setAll(Map<String, dynamic> keyValues) async {
+    keyValues.forEach((key, value) async {
+      await set(key: key, value: value);
+    });
   }
 }
