@@ -27,6 +27,7 @@ class Store<S extends AppStateI> {
   var isReady = false;
   final StorageOptions? storageOptions;
   void Function()? _onReadyListener;
+  final bool useEqualsComparision;
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action>[];
@@ -34,6 +35,7 @@ class Store<S extends AppStateI> {
   Store(
       {required this.meta,
       this.storageOptions,
+      this.useEqualsComparision = false,
       NetworkOptions? networkOptions,
       required S Function() stateCreator,
       List<Middleware<S>>? middlewares,
@@ -273,7 +275,12 @@ class Store<S extends AppStateI> {
     selector.deps.forEach((key, value) {
       if (key == stateKey) {
         for (final prop in value) {
-          if (!identical(prevState[prop], currentState[prop])) {
+          if (!useEqualsComparision &&
+              !identical(prevState[prop], currentState[prop])) {
+            result = true;
+            break;
+          } else if (useEqualsComparision &&
+              prevState[prop] != currentState[prop]) {
             result = true;
             break;
           }
@@ -322,8 +329,10 @@ class Store<S extends AppStateI> {
         return result;
       }
 
-      Future<void> _updatePersitance(Iterable<String> keys) async {
+      Future<void> _updatePersitance(
+          Iterable<String> keys, List<Callback>? listenrsToFire) async {
         if (storageOptions != null) {
+          final so = storageOptions!;
           //TODO handle reveret back if store fails or inform user
           final result = <String, dynamic>{};
           keys.forEach((sk) {
@@ -334,7 +343,16 @@ class Store<S extends AppStateI> {
               result[sk] = psMeta.sm!.serializer(value);
             }
           });
-          await storageOptions!.storage.setAll(result);
+          if (result.isNotEmpty) {
+            try {
+              await storageOptions!.storage.setAll(result);
+            } on StorageError catch (e) {
+              final sa = await so.onWriteError(
+                  e, this, Action(name: "unsubscribe", type: "GeneralStore"));
+            } catch (e) {
+              rethrow;
+            }
+          }
         }
       }
 
@@ -372,6 +390,7 @@ class Store<S extends AppStateI> {
             sMap[sk] = rm.copyWithMap(rmMap);
           }
           _updatePersitance(selector.deps.keys);
+          _state = _state.copyWithMap(sMap);
           listernsToFire.forEach((l) {
             l();
           });
