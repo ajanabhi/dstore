@@ -54,7 +54,7 @@ class PStateMeta<S extends PStateModel> {
   final AReducerFn? aReducer;
   final S Function() ds;
 
-  final PStateStorageMeta<S>? sm;
+  final PStateStorageMeta<S, dynamic>? sm;
 
   const PStateMeta(
       {this.aReducer,

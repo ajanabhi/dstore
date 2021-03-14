@@ -83,6 +83,88 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       int? sendTimeout,
       int? receiveTieout,
       @Default(false) bool abortable}) = _HttpPayload<I, R, E, T>;
+
+  factory HttpPayload.fromJson(Map<String, dynamic> map, Httpmeta meta) {
+    final url = map["url"];
+    final method = map["method"];
+    final responseType = HttpResponseTypeExt.fromValue(map["responseType"])!;
+    var data = map["data"];
+    if (data != null) {
+      if (meta.inputDeserializer == null) {
+        throw ArgumentError.value(
+            "You should provide inputDeserializer for http field");
+      }
+      data = meta.inputDeserializer!(data);
+    }
+    var optimisticResponse = map["optimisticResponse"];
+    if (optimisticResponse != null) {
+      optimisticResponse = meta.responseDeserializer(optimisticResponse);
+    }
+
+    var inputType = map["inputType"];
+
+    if (inputType != null) {
+      inputType = HttpInputTypeExt.fromValue(inputType);
+    }
+    final headers = map["headers"];
+    final queryParams = map["queryParams"];
+    final sendTimeout = map["sendTimeout"];
+    final receiveTieout = map["receiveTieout"];
+    final abortable = map["abortable"];
+
+    return HttpPayload(
+        url: url,
+        method: method,
+        responseType: responseType,
+        data: data,
+        optimisticResponse: optimisticResponse,
+        inputType: inputType,
+        headers: headers,
+        queryParams: queryParams,
+        sendTimeout: sendTimeout,
+        receiveTieout: receiveTieout,
+        abortable: abortable);
+  }
+}
+
+extension HttpPayloadExt on HttpPayload {
+  Map<String, dynamic> toJson(Httpmeta meta) {
+    final map = <String, dynamic>{};
+    map["url"] = url;
+    map["method"] = method;
+    if (data != null) {
+      if (meta.inputSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide inputSerializer for http field");
+      }
+      map["data"] = meta.inputSerializer!(data);
+    }
+    map["responseType"] = responseType.value;
+    if (optimisticResponse != null) {
+      if (meta.responseSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide responseSerializer for http field");
+      }
+      map["optimisticResponse"] = meta.responseSerializer!(optimisticResponse);
+    }
+    if (inputType != null) {
+      map["inputType"] = inputType!.value;
+    }
+    if (headers != null) {
+      map["headers"] = headers;
+    }
+    if (headers != null) {
+      map["queryParams"] = queryParams;
+    }
+    if (sendTimeout != null) {
+      map["sendTimeout"] = sendTimeout;
+    }
+    if (receiveTieout != null) {
+      map["receiveTieout"] = receiveTieout;
+    }
+    map["abortable"] = abortable;
+    return map;
+  }
 }
 
 class GlobalHttpOptions {

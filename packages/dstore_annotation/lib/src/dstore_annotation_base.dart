@@ -1,3 +1,5 @@
+import "package:collection/collection.dart";
+
 class PState {
   final bool? persist;
   const PState({this.persist});
@@ -57,7 +59,23 @@ class HttpError<RE> {
 
 enum HttpResponseType { JSON, STRING, BYTES, STREAM }
 
+extension HttpResponseTypeExt on HttpResponseType {
+  String get value => toString().split(".").last;
+  static HttpResponseType? fromValue(String value) {
+    return HttpResponseType.values
+        .singleWhereOrNull((e) => e.toString().split(".")[1] == value);
+  }
+}
+
 enum HttpInputType { JSON, FORM, TEXT }
+
+extension HttpInputTypeExt on HttpInputType {
+  String get value => toString().split(".").last;
+  static HttpInputType? fromValue(String value) {
+    return HttpInputType.values
+        .singleWhereOrNull((e) => e.toString().split(".")[1] == value);
+  }
+}
 
 class HttpRequest<I, R, E> {
   final String method;
@@ -110,3 +128,7 @@ class ExcludeThisKeyWhilePersit {
 }
 
 const excludeThisKeyWhilePersist = ExcludeThisKeyWhilePersit();
+
+class DEnum {
+  const DEnum();
+}
