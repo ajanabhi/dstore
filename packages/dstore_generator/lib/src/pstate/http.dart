@@ -162,7 +162,7 @@ String convertHttpFieldInfoToAction(
   params.add("Duration? debounce");
   return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+        return Action(name:"${hf.name}",type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

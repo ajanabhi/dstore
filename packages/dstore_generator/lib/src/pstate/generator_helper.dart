@@ -28,14 +28,17 @@ String generatePStateForClassElement(ClassElement element) {
       value: "AsyncActionField()",
       param: null)));
   fields = processFields(fields);
-  final actions =
-      _getActions(element: element, visitor: visitor, modelName: modelName);
+
+  final type = _getTypeName(element);
   final pstateMeta = _getPStateMeta(
       modelName: modelName,
       fields: fields,
       methods: methods,
+      type: type,
       isPersiable: isPerssit);
 
+  final actions = _getActions(
+      element: element, visitor: visitor, modelName: modelName, type: type);
   final annotations = <String>[];
   if (isPerssit) {
     annotations.add("@JsonSerializable()");
@@ -48,9 +51,20 @@ String generatePStateForClassElement(ClassElement element) {
   return result;
 }
 
+String _getTypeName(ClassElement element) {
+  var path = element.source.fullName.replaceAll(".dart", "");
+  if (path.contains("/src/")) {
+    path = path.substring(path.indexOf("/src/") + 4);
+  } else if (path.contains("/lib/")) {
+    path = path.substring(path.indexOf("/lib/") + 4);
+  }
+  return "$path/${element.name.substring(1)}";
+}
+
 String _getPStateMeta(
     {required String modelName,
     required List<Field> fields,
+    required String type,
     required bool isPersiable,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
@@ -62,7 +76,7 @@ String _getPStateMeta(
   final defaultState =
       "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
 
-  final params = <String>["type : $modelName"];
+  final params = <String>["type : \"$type\""];
   if (syncReducerFunctionStr.isNotEmpty) {
     params.add("reducer: ${modelName}_SyncReducer");
   }
@@ -75,7 +89,8 @@ String _getPStateMeta(
     final smParams = <String>[];
     smParams.add("serializer: _\$${modelName}ToJson");
     smParams.add("deserializer: _\$${modelName}FromJson");
-    params.add("sm: PStorageMeta<$modelName>(${smParams.join(", ")})");
+    params.add(
+        "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
 
   return """
@@ -90,7 +105,8 @@ String _getPStateMeta(
 String _getActions(
     {required ClassElement element,
     required PStateAstVisitor visitor,
-    required String modelName}) {
+    required String modelName,
+    required String type}) {
   final httpFields = getHttpFields(element.fields);
   final streamFields = getStreamFields(element.fields);
   final websocketFields = getWebSocketFields(element.fields);
@@ -100,7 +116,7 @@ String _getActions(
   return _generateActionsCreators(
       methods: visitor.methods,
       modelName: modelName,
-      type: modelName,
+      type: type,
       streamFields: streamFields,
       websocketFields: websocketFields,
       formFields: formFields,
@@ -154,7 +170,7 @@ String _generateActionsCreators({
     }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action(name:"${m.name}",type:"${type}" ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");
@@ -173,7 +189,7 @@ String _generateActionsCreators({
   final formActions = formFields.map((ff) {
     return """
    static ${ff.name}(FormReq req) {
-     return Action(name:"$ff.name}",type:${type},form:req);
+     return Action(name:"$ff.name}",type:"${type}",form:req);
    }
    """;
   }).join("\n");

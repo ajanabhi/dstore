@@ -20,7 +20,7 @@ class Store<S extends AppStateI> {
   final Map<String, PStateMeta<PStateModel>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
-  final Map<int, String> _pStateGroupToStateKeyMap = {};
+  final Map<String, String> _pStateTypeToStateKeyMap = {};
   final Map<String, Timer> internalDebounceTimers = {};
   late S _state;
   var isReady = false;
@@ -62,11 +62,11 @@ class Store<S extends AppStateI> {
         final AppStateI s = stateCreator();
         final map = <String, dynamic>{};
         meta.forEach((key, rg) {
-          if (_pStateGroupToStateKeyMap[rg.type.hashCode] != null) {
+          if (_pStateTypeToStateKeyMap[rg.type] != null) {
             throw Exception(
-                "You already selected same PState before with key ${_pStateGroupToStateKeyMap[rg.type]}  ");
+                "You already selected same PState before with key ${_pStateTypeToStateKeyMap[rg.type]}  ");
           }
-          _pStateGroupToStateKeyMap[rg.type.hashCode] = key;
+          _pStateTypeToStateKeyMap[rg.type] = key;
           final ds = rg.ds();
           map[key] = sState[key] != null ? ds.copyWithMap(sState[key]!) : ds;
         });
@@ -82,11 +82,11 @@ class Store<S extends AppStateI> {
     final AppStateI s = stateCreator();
     final map = <String, dynamic>{};
     meta.forEach((key, rg) {
-      if (_pStateGroupToStateKeyMap[rg.type.hashCode] != null) {
+      if (_pStateTypeToStateKeyMap[rg.type] != null) {
         throw Exception(
-            "You already selected same PState before with key ${_pStateGroupToStateKeyMap[rg.type.hashCode]}  ");
+            "You already selected same PState before with key ${_pStateTypeToStateKeyMap[rg.type]}  ");
       }
-      _pStateGroupToStateKeyMap[rg.type.hashCode] = key;
+      _pStateTypeToStateKeyMap[rg.type] = key;
       map[key] = rg.ds();
     });
     _state = s.copyWithMap(map);
@@ -103,7 +103,7 @@ class Store<S extends AppStateI> {
   }
 
   dynamic _defaultDispatch(Action action) {
-    final sk = _pStateGroupToStateKeyMap[action.type.hashCode]!;
+    final sk = _pStateTypeToStateKeyMap[action.type]!;
     final psm = meta[sk]!;
     final gsMap = _state.toMap();
     final currentS = gsMap[sk]!;
@@ -369,19 +369,19 @@ class Store<S extends AppStateI> {
 
   /* public methods  */
 
-  String getStateKeyForReducerGroup(Type key) {
-    return _pStateGroupToStateKeyMap[key.hashCode]!;
+  String getStateKeyForReducerGroup(String key) {
+    return _pStateTypeToStateKeyMap[key]!;
   }
 
   dynamic getFieldFromAction(Action action) {
-    final sk = _pStateGroupToStateKeyMap[action.type.hashCode];
+    final sk = _pStateTypeToStateKeyMap[action.type];
     final gsMap = state.toMap();
     final currentS = gsMap[sk]!;
     return currentS.toMap()[action.name];
   }
 
   PStateMeta getPStateMetaFromAction(Action action) {
-    final sk = _pStateGroupToStateKeyMap[action.type.hashCode];
+    final sk = _pStateTypeToStateKeyMap[action.type];
     return meta[sk]!;
   }
 

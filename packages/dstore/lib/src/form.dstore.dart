@@ -18,7 +18,7 @@ mixin _$FormField<F extends FormFieldObject<dynamic>> {
   bool get validateOnChange;
   bool get validateOnBlur;
   String get internalAName;
-  Type get internalAType;
+  String get internalAType;
 
   $FormFieldCopyWith<F, FormField<F>> get copyWith;
 }
@@ -71,9 +71,9 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
   final String internalAName;
 
   @override
-  @Default(Object)
-  @JsonKey(defaultValue: Object)
-  final Type internalAType;
+  @Default("")
+  @JsonKey(defaultValue: "")
+  final String internalAType;
 
   _$FormFieldCopyWith<F, FormField<F>> get copyWith =>
       __$FormFieldCopyWithImpl<F, FormField<F>>(this, IdentityFn);
@@ -89,7 +89,7 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
       this.validateOnChange = false,
       this.validateOnBlur = false,
       this.internalAName = "",
-      this.internalAType = Object});
+      this.internalAType = ""});
 
   @override
   bool operator ==(Object o) {
@@ -142,7 +142,7 @@ abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
       bool validateOnChange,
       bool validateOnBlur,
       String internalAName,
-      Type internalAType});
+      String internalAType});
 }
 
 class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
@@ -193,7 +193,7 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
             : internalAName as String,
         internalAType: internalAType == dimmutable
             ? _value.internalAType
-            : internalAType as Type));
+            : internalAType as String));
   }
 }
 
@@ -213,7 +213,7 @@ abstract class _$FormFieldCopyWith<F extends FormFieldObject<dynamic>, O>
       bool validateOnChange,
       bool validateOnBlur,
       String internalAName,
-      Type internalAType});
+      String internalAType});
 }
 
 class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
@@ -266,6 +266,6 @@ class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
             : internalAName as String,
         internalAType: internalAType == dimmutable
             ? _value.internalAType
-            : internalAType as Type));
+            : internalAType as String));
   }
 }

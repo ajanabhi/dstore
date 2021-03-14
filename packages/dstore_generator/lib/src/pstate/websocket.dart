@@ -106,7 +106,7 @@ String convertWebSocketFieldInfoToAction(
 
   return """
     static Action ${wsi.name}({${params.join(", ")}}) {
-      return Action(name: "$name", type: $type, ws: WebSocketPayload(${payloadParams.join(",")}));
+      return Action(name: "$name", type: "$type", ws: WebSocketPayload(${payloadParams.join(",")}));
     }
    """;
 }

@@ -13,5 +13,7 @@ analyzer:
   errors:
     prefer_single_quotes: ignore
     unnecessary_this: ignore
-#   exclude:
+  exclude:
+    - lib/**/*.dstore.dart
+    - lib/**/*.g.dart
 #     - path/to/excluded/files/**

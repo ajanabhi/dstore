@@ -19,7 +19,7 @@ abstract class User with _$User {
 
 dynamic s(dynamic a) => a;
 
-@WebSocketRequest(url: "ws23", responseDeserializer: s)
+@WebSocketRequest(url: "ws2", responseDeserializer: s)
 class WsMessage = WebSocketField with EmptyMixin;
 
 @PState()

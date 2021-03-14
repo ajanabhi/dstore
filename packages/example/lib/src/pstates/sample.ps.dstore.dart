@@ -133,11 +133,13 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
 
 abstract class SampleActions {
   static Action increment() {
-    return Action(name: "increment", type: Sample, isAsync: false);
+    return Action(
+        name: "increment", type: "/pstates/sample/Sample", isAsync: false);
   }
 
   static Action decrement() {
-    return Action(name: "decrement", type: Sample, isAsync: false);
+    return Action(
+        name: "decrement", type: "/pstates/sample/Sample", isAsync: false);
   }
 
   static Action increment2(
@@ -148,7 +150,7 @@ abstract class SampleActions {
       dynamic y2}) {
     return Action(
         name: "increment2",
-        type: Sample,
+        type: "/pstates/sample/Sample",
         payload: {"x": x, "y": y, "sn": sn, "y1": y1, "y2": y2},
         isAsync: false);
   }
@@ -157,7 +159,7 @@ abstract class SampleActions {
       {required int x, required dynamic y, int si = 4, dynamic s2 = 3}) {
     return Action(
         name: "increment3",
-        type: Sample,
+        type: "/pstates/sample/Sample",
         payload: {"x": x, "y": y, "si": si, "s2": s2},
         isAsync: false);
   }
@@ -165,19 +167,25 @@ abstract class SampleActions {
   static Action changeUserName({required String name}) {
     return Action(
         name: "changeUserName",
-        type: Sample,
+        type: "/pstates/sample/Sample",
         payload: {"name": name},
         isAsync: false);
   }
 
   static Action changeS({required int s}) {
     return Action(
-        name: "changeS", type: Sample, payload: {"s": s}, isAsync: false);
+        name: "changeS",
+        type: "/pstates/sample/Sample",
+        payload: {"s": s},
+        isAsync: false);
   }
 
   static Action fint({Duration? debounce}) {
     return Action(
-        name: "fint", type: Sample, isAsync: true, debounce: debounce);
+        name: "fint",
+        type: "/pstates/sample/Sample",
+        isAsync: true,
+        debounce: debounce);
   }
 }
 
@@ -275,7 +283,9 @@ Sample Sample_DS() => Sample(
     fint: AsyncActionField());
 
 const SampleMeta = PStateMeta<Sample>(
-    type: Sample,
+    type: "/pstates/sample/Sample",
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
-    ds: Sample_DS);
+    ds: Sample_DS,
+    sm: PStateStorageMeta<Sample, Map<String, dynamic>>(
+        serializer: _$SampleToJson, deserializer: _$SampleFromJson));

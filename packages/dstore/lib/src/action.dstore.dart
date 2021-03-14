@@ -9,7 +9,7 @@ part of 'action.dart';
 
 mixin _$Action {
   String get name;
-  Type get type;
+  String get type;
   bool get isAsync;
   Map<String, dynamic>? get payload;
   HttpPayload<dynamic, dynamic, dynamic, dynamic>? get http;
@@ -28,7 +28,7 @@ class _Action implements Action {
   final String name;
 
   @override
-  final Type type;
+  final String type;
 
   @override
   @Default(false)
@@ -118,7 +118,7 @@ abstract class $ActionCopyWith<O> {
       _$ActionCopyWithImpl<O>;
   O call(
       {String name,
-      Type type,
+      String type,
       bool isAsync,
       Map<String, dynamic>? payload,
       HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
@@ -150,7 +150,7 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
       Object? form = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
-        type: type == dimmutable ? _value.type : type as Type,
+        type: type == dimmutable ? _value.type : type as String,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
         payload: payload == dimmutable
             ? _value.payload
@@ -178,7 +178,7 @@ abstract class _$ActionCopyWith<O> implements $ActionCopyWith<O> {
       __$ActionCopyWithImpl<O>;
   O call(
       {String name,
-      Type type,
+      String type,
       bool isAsync,
       Map<String, dynamic>? payload,
       HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
@@ -213,7 +213,7 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
       Object? form = dimmutable}) {
     return _then(Action(
         name: name == dimmutable ? _value.name : name as String,
-        type: type == dimmutable ? _value.type : type as Type,
+        type: type == dimmutable ? _value.type : type as String,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
         payload: payload == dimmutable
             ? _value.payload

@@ -23,7 +23,7 @@ abstract class FormField<F extends FormFieldObject> with _$FormField<F> {
       @Default(false) bool validateOnChange,
       @Default(false) bool validateOnBlur,
       @Default("") String internalAName,
-      @Default(Object) Type internalAType}) = _FormField<F>;
+      @Default("") String internalAType}) = _FormField<F>;
 }
 
 abstract class FormReq {}

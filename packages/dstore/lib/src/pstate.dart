@@ -37,19 +37,19 @@ abstract class PStateModel<M> {
   Map<String, dynamic> toMap();
 }
 
-class PStateStorageMeta<S extends PStateModel> {
+class PStateStorageMeta<S extends PStateModel, SM> {
   final dynamic Function(S) serializer;
-  final S Function(dynamic) deserializer;
+  final S Function(SM) deserializer;
   final bool encryptonRest;
 
-  PStateStorageMeta(
+  const PStateStorageMeta(
       {this.encryptonRest = false,
       required this.serializer,
       required this.deserializer});
 }
 
 class PStateMeta<S extends PStateModel> {
-  final Type type;
+  final String type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
   final S Function() ds;

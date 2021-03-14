@@ -102,7 +102,8 @@ class __$Sample2CopyWithImpl<O> extends _$Sample2CopyWithImpl<O>
 
 abstract class Sample2Actions {
   static Action increment() {
-    return Action(name: "increment", type: Sample2, isAsync: false);
+    return Action(
+        name: "increment", type: "/pstates/sample2/Sample2", isAsync: false);
   }
 }
 
@@ -141,7 +142,8 @@ dynamic Sample2_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 Sample2 Sample2_DS() => Sample2(count: 0, name: "hello2", comment: null);
 
 const Sample2Meta = PStateMeta<Sample2>(
-    type: Sample2,
+    type: "/pstates/sample2/Sample2",
     reducer: Sample2_SyncReducer,
-    aReducer: null,
-    ds: Sample2_DS);
+    ds: Sample2_DS,
+    sm: PStateStorageMeta<Sample2, Map<String, dynamic>>(
+        serializer: _$Sample2ToJson, deserializer: _$Sample2FromJson));

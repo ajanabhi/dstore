@@ -31,8 +31,8 @@ class _AppSelectors {
     // final c = state.sample;
     print("hello");
     final s = state.sample.s;
-    final sf = state.sample.sf;
-    final wf = state.sample.wm;
+    // final sf = state.sample.sf;
+    // final wf = state.sample.wm;
     // final s1 = state.sample;
     final s2 = state.sample.fint;
 

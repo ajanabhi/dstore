@@ -9,7 +9,7 @@ part "action.dstore.dart";
 abstract class Action with _$Action {
   const factory Action({
     required String name,
-    required Type type,
+    required String type,
     @Default(false) bool isAsync,
     Map<String, dynamic>? payload,
     HttpPayload? http,
@@ -31,7 +31,6 @@ extension ActionExt on Action {
           "You should provide httpmeta if action has http field");
     }
 
-    // return {};
     return map;
   }
 }
