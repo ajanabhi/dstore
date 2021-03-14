@@ -6,6 +6,7 @@ abstract class PersitantStorage {
   Future<Map<String, dynamic>?> getKeys(Iterable<String> keys);
   Future<void> clear();
   Future<void> saveOfflineActions(dynamic actions);
+  Future<dynamic> getOfflineActions();
 }
 
 enum StorageWriteMode { DISKFIRST, DISKLAST }

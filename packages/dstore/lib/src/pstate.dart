@@ -52,6 +52,7 @@ class PStateMeta<S extends PStateModel> {
   final String type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
+  final Map<String, Httpmeta>? httpMetaMap;
   final S Function() ds;
 
   final PStateStorageMeta<S, dynamic>? sm;
@@ -60,6 +61,7 @@ class PStateMeta<S extends PStateModel> {
       {this.aReducer,
       this.sm,
       required this.type,
+      this.httpMetaMap,
       this.reducer,
       required this.ds});
 }

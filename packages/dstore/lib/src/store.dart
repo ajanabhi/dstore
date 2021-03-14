@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:html';
 
 import 'package:dstore/dstore.dart';
 
@@ -26,22 +28,63 @@ class Store<S extends AppStateI> {
   var isReady = false;
   final StorageOptions? storageOptions;
   void Function()? _onReadyListener;
-  final NetworkOptions? networkOptions;
-
+  late final NetworkOptions? networkOptions;
+  late final VoidCallback? _unsubscribeNetworkStatusListener;
+  final _offlineActions = <Action>[];
+  PersitantStorage? get storage => storageOptions?.storage;
   Store(
       {required this.meta,
       this.storageOptions,
-      this.networkOptions,
+      NetworkOptions? networkOptions,
       required S Function() stateCreator,
       List<Middleware<S>>? middlewares,
       S? initialState}) {
     middlewares ??= [];
     middlewares.add(asyncMiddleware);
     _dispatchers = _createDispatchers(middlewares);
+    _setNetworkOptions(networkOptions);
     if (storageOptions != null) {
       _prepareStoreFromStorage(stateCreator);
     } else {
       _prepareNormalStore(stateCreator);
+    }
+  }
+
+  void _setNetworkOptions(NetworkOptions? op) {
+    networkOptions = op;
+    _unsubscribeNetworkStatusListener =
+        op?.statusListener.listen(_handleNetworkStatusChange);
+  }
+
+  void _handleNetworkStatusChange(bool status) {
+    if (status) {
+      _processOfflineActions();
+    }
+  }
+
+  void _processOfflineActions() {
+    if (_offlineActions.isNotEmpty) {
+      final ac = [..._offlineActions];
+      _offlineActions.clear();
+      if (storage != null) {
+        storage!.saveOfflineActions(null);
+      }
+      ac.forEach((action) {
+        dispatch(action);
+      });
+    }
+  }
+
+  void addOfflineAction(Action action) {
+    assert(networkOptions != null);
+    _offlineActions.add(action);
+    if (storage != null) {
+      final json = jsonEncode(_offlineActions.map((e) {
+        final psm = getPStateMetaFromAction(e);
+        final httpMeta = psm.httpMetaMap?[e.name];
+        return e.toJson(httpMeta: httpMeta);
+      }));
+      storage!.saveOfflineActions(json);
     }
   }
 
@@ -53,8 +96,8 @@ class Store<S extends AppStateI> {
 
   void _prepareStoreFromStorage(S Function() stateCreator) async {
     try {
-      final so = storageOptions!;
-      final sState = await so.storage.getKeys(meta.keys);
+      final storage = storageOptions!.storage;
+      final sState = await storage.getKeys(meta.keys);
       if (sState == null) {
         // meaning running app first time or user deleted app data
         _prepareNormalStore(stateCreator);
@@ -72,9 +115,20 @@ class Store<S extends AppStateI> {
         });
         _state = s.copyWithMap(map);
       }
-    } finally {
+      final offA = await storage.getOfflineActions();
+      if (offA != null) {
+        final actions = (jsonEncode(offA) as List<dynamic>).map((e) {
+          final psm = getPStateMetaFromAction(e);
+          final httpMeta = psm.httpMetaMap?[e.name];
+          return Action.fromJson(e, httpMeta);
+        });
+        _offlineActions.addAll(actions);
+      }
       isReady = true;
       _onReadyListener?.call();
+      _processOfflineActions();
+    } catch (e) {
+      rethrow;
     }
   }
 
@@ -423,6 +477,10 @@ class Store<S extends AppStateI> {
       _handleUnsubscribe(selector, options);
       isSubscribed = false;
     };
+  }
+
+  void cleanup() {
+    _unsubscribeNetworkStatusListener?.call();
   }
 }
 
