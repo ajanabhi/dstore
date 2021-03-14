@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 
+import "package:dstore/src/middlewares.dart";
 import 'package:dstore/dstore.dart';
-
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
 import 'package:dstore/src/selector.dart';
-import "package:dstore/src/middlewares.dart";
 
 typedef Dispatch = dynamic Function(Action action);
 
@@ -176,9 +175,72 @@ class Store<S extends AppStateI> {
     }
     if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
-      _state = _state.copyWithMap(gsMap);
+      _handleStateChange(
+          stateKey: sk,
+          previousState: currentS,
+          psm: psm,
+          action: action,
+          newGlobalStateMap: gsMap,
+          currentState: newS);
+    }
+  }
+
+  void _handleStateChange(
+      {required String stateKey,
+      required PStateModel previousState,
+      required PStateMeta psm,
+      required Action action,
+      required Map<String, dynamic> newGlobalStateMap,
+      required PStateModel currentState}) async {
+    if (psm.sm != null) {
+      assert(storageOptions != null);
+      final so = storageOptions!;
+      if (so.writeMode == StorageWriteMode.DISKFIRST) {
+        try {
+          final data = psm.sm!.serializer(currentState);
+          await storage!.set(key: psm.type, value: data);
+        } on StorageError catch (e) {
+          final sa = await so.onWriteError(e, this, action);
+          if (sa == StorageWriteErrorAction.ignore) {
+            _state = _state.copyWithMap(newGlobalStateMap);
+            _notifyListeners(
+                stateKey: stateKey,
+                previousState: previousState,
+                currentState: currentState);
+          }
+        } catch (e) {
+          rethrow;
+        }
+      } else {
+        _state = _state.copyWithMap(newGlobalStateMap);
+        _notifyListeners(
+            stateKey: stateKey,
+            previousState: previousState,
+            currentState: currentState);
+        try {
+          final data = psm.sm!.serializer(currentState);
+          await storage!.set(key: psm.type, value: data);
+        } on StorageError catch (e) {
+          final sa = await so.onWriteError(e, this, action);
+          if (sa == StorageWriteErrorAction.revert_state_changes) {
+            currentState = previousState;
+            previousState = currentState;
+            newGlobalStateMap[stateKey] = currentState;
+            _state = _state.copyWithMap(newGlobalStateMap);
+            _notifyListeners(
+                stateKey: stateKey,
+                previousState: previousState,
+                currentState: currentState);
+          }
+        } catch (e) {
+          rethrow;
+        }
+      }
+    } else {
       _notifyListeners(
-          stateKey: sk, previousState: currentS, currentState: newS);
+          stateKey: stateKey,
+          previousState: previousState,
+          currentState: currentState);
     }
   }
 
@@ -451,7 +513,9 @@ class Store<S extends AppStateI> {
       final v = _SelectorListener(selector: selector, listener: listener);
       print("sls $sls");
       if (sls != null) {
-        sls.add(v);
+        if (!sls.contains(v)) {
+          sls.add(v);
+        }
       } else {
         print("selector added $sk");
         selectorListeners[sk] = [v];
@@ -470,10 +534,6 @@ class Store<S extends AppStateI> {
           sla.removeAt(index);
         }
       });
-      // if (options != null && options.resetToDefault) {
-      //   _resetToDefaultStateIfNotUsedByOtherSelectors(
-      //       selector as Selector<S, dynamic>);
-      // } else {}
       _handleUnsubscribe(selector, options);
       isSubscribed = false;
     };
@@ -499,6 +559,17 @@ class _SelectorListener<S extends AppStateI> {
     required this.selector,
     required this.listener,
   });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    return other is _SelectorListener<S> &&
+        other.selector == selector &&
+        other.listener == listener;
+  }
+
+  @override
+  int get hashCode => selector.hashCode ^ listener.hashCode;
 }
 
 abstract class AppStateI<S> {
