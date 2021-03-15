@@ -284,9 +284,19 @@ extension ParameterElementExt on ParameterElement {
 }
 
 extension ConstReadExt on ConstantReader {
-  T? enumValue<T>(List<T> values) {
-    return values
-        .singleWhereOrNull((e) => read(e.toString().split(".")[1]) != null);
+  T? getEnumField<T>(String name, List<T> values) {
+    final field = peek(name);
+    if (field != null) {
+      final v = field.literalValue.toString();
+      return values.singleWhereOrNull((element) => element.toString() == v);
+    }
+  }
+
+  String? functionNameForField(String name) {
+    final functionField = peek(name);
+    if (functionField != null) {
+      return functionField.objectValue.getField(name)?.toFunctionValue()?.name;
+    }
   }
 }
 

@@ -10,6 +10,8 @@ class HttpFieldInfo {
   final HttpResponseType responseTypeEnum;
   final String responseDeserializer;
   final String? inputSerializer;
+  final String? responseSerializer;
+  final String? inputDeserializer;
   final String? transformer;
   final String errorDeserializer;
   final String method;
@@ -26,6 +28,8 @@ class HttpFieldInfo {
     required this.responseTypeEnum,
     required this.responseDeserializer,
     required this.errorDeserializer,
+    this.responseSerializer,
+    this.inputDeserializer,
     required this.method,
     this.inputSerializer,
     this.transformer,

@@ -30,15 +30,18 @@ String generatePStateForClassElement(ClassElement element) {
   fields = processFields(fields);
 
   final type = _getTypeName(element);
+  final actionsAndHttpMeta = _getActionsAndHtpMeta(
+      element: element, visitor: visitor, modelName: modelName, type: type);
+  final actions = actionsAndHttpMeta.first;
+  final httpMeta = actionsAndHttpMeta.last;
   final pstateMeta = _getPStateMeta(
       modelName: modelName,
       fields: fields,
       methods: methods,
+      httpMeta: httpMeta,
       type: type,
       isPersiable: isPerssit);
 
-  final actions = _getActions(
-      element: element, visitor: visitor, modelName: modelName, type: type);
   final annotations = <String>[];
   if (isPerssit) {
     annotations.add("@JsonSerializable()");
@@ -66,6 +69,7 @@ String _getPStateMeta(
     required List<Field> fields,
     required String type,
     required bool isPersiable,
+    required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
       _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
@@ -84,7 +88,9 @@ String _getPStateMeta(
     params.add("aReducer: ${modelName}_AsyncReducer");
   }
   params.add("ds: ${modelName}_DS");
-
+  if (httpMeta.isNotEmpty) {
+    params.add("httpMetaMap: $httpMeta");
+  }
   if (isPersiable) {
     final smParams = <String>[];
     smParams.add("serializer: _\$${modelName}ToJson");
@@ -102,7 +108,7 @@ String _getPStateMeta(
     """;
 }
 
-String _getActions(
+List<String> _getActionsAndHtpMeta(
     {required ClassElement element,
     required PStateAstVisitor visitor,
     required String modelName,
@@ -111,9 +117,9 @@ String _getActions(
   final streamFields = getStreamFields(element.fields);
   final websocketFields = getWebSocketFields(element.fields);
   final formFields = visitor.fields
-      .where((f) => f.type.toString().startsWith("FomField"))
+      .where((f) => f.type.toString().startsWith("FormField"))
       .toList();
-  return _generateActionsCreators(
+  final actions = _generateActionsCreators(
       methods: visitor.methods,
       modelName: modelName,
       type: type,
@@ -121,6 +127,31 @@ String _getActions(
       websocketFields: websocketFields,
       formFields: formFields,
       httpFields: httpFields);
+  var httpMeta = httpFields.map((h) {
+    final key = h.name;
+    final params = <String>[];
+    if (h.inputSerializer != null) {
+      params.add("inputSerializer: ${h.inputSerializer}");
+    }
+    if (h.inputDeserializer != null) {
+      params.add("inputDeserializer: ${h.inputDeserializer}");
+    }
+    if (h.responseSerializer != null) {
+      params.add("responseSerializer: ${h.responseSerializer}");
+    }
+    params.add("responseDeserializer: ${h.responseDeserializer}");
+    final value = "HttpMeta(${params.join(", ")})";
+
+    return """ "$key" : $value """;
+  }).join(", ");
+  if (httpMeta.isNotEmpty) {
+    httpMeta = "{$httpMeta}";
+  }
+
+  return [
+    actions,
+    httpMeta,
+  ];
 }
 
 extension PStateExtension on ClassElement {

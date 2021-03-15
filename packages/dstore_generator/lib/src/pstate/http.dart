@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
+import 'package:dstore_generator/src/pstate/extensions.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -49,57 +50,37 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final reader = ConstantReader(anot.computeConstantValue());
   final url = reader.read("url").stringValue;
   final method = reader.read("method").stringValue;
-  late HttpResponseType responseTypeEnum;
-  final responseTypeField = reader.read("responseType");
-  if (responseTypeField != null && !responseTypeField.isNull) {
-    responseTypeEnum = responseTypeField.enumValue(HttpResponseType.values)!;
-  } else {
+  var responseTypeEnum =
+      reader.getEnumField("responseType", HttpResponseType.values);
+  if (responseTypeEnum == null) {
     if (responseType == "String") {
       responseTypeEnum = HttpResponseType.STRING;
     } else if (responseType != "Null") {
       responseTypeEnum = HttpResponseType.JSON;
     }
   }
-
-  HttpInputType inputTypeEnum;
-  final inputTypeField = reader.read("inputType") as ConstantReader?;
-  if (inputTypeField != null && !inputTypeField.isNull) {
-    inputTypeEnum = inputTypeField.enumValue(HttpInputType.values)!;
-  } else {
+  var inputTypeEnum = reader.getEnumField("inputType", HttpInputType.values);
+  if (inputTypeEnum == null) {
     if (inputType == "String") {
       inputTypeEnum = HttpInputType.TEXT;
     } else {
       inputTypeEnum = HttpInputType.JSON;
     }
   }
-  var responseDeserializer = "(resp) => resp";
-  final responseDeserializerField = reader.read("responseDeserializer");
-  if (responseDeserializerField != null && !responseDeserializerField.isNull) {
-    responseDeserializer =
-        responseDeserializerField.objectValue.toFunctionValue()!.name;
-  }
-  var errorDeserializer = "(err) => err";
-  final errorDeserializerField = reader.read("errorDeserializer");
-  if (errorDeserializerField != null && !errorDeserializerField.isNull) {
-    errorDeserializer =
-        errorDeserializerField.objectValue.toFunctionValue()!.name;
-  }
-  final graphqlQuery = reader.read("graphqlQuery")?.stringValue;
-  String? inputSerializer;
-  final inputSerializerField = reader.read("inputSerializer");
-  if (inputSerializerField != null && !inputSerializerField.isNull) {
-    inputSerializer = inputSerializerField.objectValue.toFunctionValue()!.name;
-  }
-
+  var responseDeserializer =
+      reader.functionNameForField("responseDeserializer") ?? "IdentifyFn";
+  var errorDeserializer =
+      reader.functionNameForField("errorDeserializer") ?? "IdentifyFn";
+  final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
+  final inputSerializer = reader.functionNameForField("inputSerializer");
+  final responseSerializer = reader.functionNameForField("responseSerializer");
+  final inputDeserializer = reader.functionNameForField("inputDeserializer");
   final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
   String? transformer;
   if (reqExtAnnot != null) {
-    final reqE = reqExtAnnot.computeConstantValue();
-    final tf = reqE?.getField("transformer");
-    if (tf != null) {
-      transformer = tf.toFunctionValue()!.name;
-    }
+    final reqE = ConstantReader(reqExtAnnot.computeConstantValue());
+    transformer = reqE.functionNameForField("transformer");
   }
 
   return HttpFieldInfo(
@@ -107,7 +88,9 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       url: url,
       method: method,
       inputTypeEnum: inputTypeEnum,
-      responseTypeEnum: responseTypeEnum,
+      responseTypeEnum: responseTypeEnum!,
+      inputDeserializer: inputDeserializer,
+      responseSerializer: responseSerializer,
       inputType: inputType,
       responseDeserializer: responseDeserializer,
       errorDeserializer: errorDeserializer,
@@ -153,7 +136,6 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("optimisticResponse:optimisticResponse");
   payloadFields.add("""url:"${hf.url}" """);
   payloadFields.add("""method: "${hf.method}" """);
-  // payloadFields.add("isGraphql:${hf.isGraphql}");
   payloadFields.add("inputType:${hf.inputTypeEnum}");
   payloadFields.add("responseType:${hf.responseTypeEnum}");
   // payloadFields.add("responseDeserializer:${hf.responseDeserializer}");

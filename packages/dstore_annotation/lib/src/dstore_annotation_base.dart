@@ -82,6 +82,8 @@ class HttpRequest<I, R, E> {
   final String url;
   final R Function(dynamic)? responseDeserializer;
   final dynamic Function(I)? inputSerializer;
+  final dynamic Function(R)? responseSerializer;
+  final I Function(dynamic)? inputDeserializer;
   final E Function(dynamic)? errorDeserializer;
   final HttpResponseType? responseType;
   final HttpInputType? inputType;
@@ -90,9 +92,11 @@ class HttpRequest<I, R, E> {
   const HttpRequest(
       {required this.method,
       required this.url,
+      this.responseSerializer,
       this.responseDeserializer,
       this.inputSerializer,
       this.responseType,
+      this.inputDeserializer,
       this.errorDeserializer,
       this.graphqlQuery,
       this.inputType});
