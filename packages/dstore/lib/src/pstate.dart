@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
@@ -68,4 +69,50 @@ class PStateMeta<S extends PStateModel> {
       this.enableHistory = false,
       this.reducer,
       required this.ds});
+}
+
+class PStateHistory<S extends PStateModel> {
+  final Queue _history = ListQueue();
+  final Queue _redos = ListQueue();
+  final S model;
+
+  final int? limit;
+
+  PStateHistory({required this.model, this.limit});
+
+  bool get canRedo => _redos.isNotEmpty;
+  bool get canUndo => _history.isNotEmpty;
+
+  void add(Map<String, dynamic> patch) {
+    if (limit != null && limit == 0) {
+      return;
+    }
+    _history.addLast(patch);
+    _redos.clear();
+
+    if (limit != null && _history.length > limit!) {
+      if (limit! > 0) {
+        _history.removeFirst();
+      }
+    }
+  }
+
+  void clear() {
+    _history.clear();
+    _redos.clear();
+  }
+
+  void redo() {
+    if (canRedo) {
+      final change = _redos.removeFirst()..execute();
+      _history.addLast(change);
+    }
+  }
+
+  void undo() {
+    if (canUndo) {
+      final change = _history.removeLast()..undo();
+      _redos.addFirst(change);
+    }
+  }
 }
