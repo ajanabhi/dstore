@@ -53,15 +53,19 @@ class PStateMeta<S extends PStateModel> {
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
   final Map<String, Httpmeta>? httpMetaMap;
+  final Map<String, List<String>>? actionsMeta;
   final S Function() ds;
 
   final PStateStorageMeta<S, dynamic>? sm;
+  final bool enableHistory;
 
   const PStateMeta(
       {this.aReducer,
       this.sm,
       required this.type,
+      this.actionsMeta,
       this.httpMetaMap,
+      this.enableHistory = false,
       this.reducer,
       required this.ds});
 }

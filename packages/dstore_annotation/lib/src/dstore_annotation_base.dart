@@ -2,7 +2,8 @@ import "package:collection/collection.dart";
 
 class PState {
   final bool? persist;
-  const PState({this.persist});
+  final bool? enableHistory;
+  const PState({this.persist, this.enableHistory});
 }
 
 class Selectors {

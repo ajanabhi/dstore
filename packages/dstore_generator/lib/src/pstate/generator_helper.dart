@@ -9,6 +9,7 @@ import 'package:dstore_generator/src/pstate/visitors.dart';
 import 'package:dstore_generator/src/pstate/websocket.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
+import "dart:convert";
 
 String generatePStateForClassElement(ClassElement element) {
   final typeParamsWithBounds =
@@ -30,17 +31,20 @@ String generatePStateForClassElement(ClassElement element) {
   fields = processFields(fields);
 
   final type = _getTypeName(element);
-  final actionsAndHttpMeta = _getActionsAndHtpMeta(
+  final actionsInfo = _getActionsInfo(
       element: element, visitor: visitor, modelName: modelName, type: type);
-  final actions = actionsAndHttpMeta.first;
-  final httpMeta = actionsAndHttpMeta.last;
+  final actionsmeta =
+      _getActionsmeta(visitor.methods, actionsInfo.specialActions);
+  final actions = actionsInfo.actions;
   final pstateMeta = _getPStateMeta(
       modelName: modelName,
       fields: fields,
       methods: methods,
-      httpMeta: httpMeta,
+      actionsMeta: actionsmeta,
+      httpMeta: actionsInfo.httpMeta,
       type: type,
-      isPersiable: isPerssit);
+      isPersiable: isPerssit,
+      enableHistory: pstate.enableHistory ?? false);
 
   final annotations = <String>[];
   if (isPerssit) {
@@ -52,6 +56,14 @@ String generatePStateForClassElement(ClassElement element) {
         ${pstateMeta}
     """;
   return result;
+}
+
+Map<String, List<String>> _getActionsmeta(
+    List<PStateMethod> methods, List<String> specialActions) {
+  final map = <String, List<String>>{};
+  map.addEntries(methods.map((e) => MapEntry(e.name, e.keysModified)));
+  map.addEntries(specialActions.map((e) => MapEntry(e, [e])));
+  return map;
 }
 
 String _getTypeName(ClassElement element) {
@@ -68,6 +80,8 @@ String _getPStateMeta(
     {required String modelName,
     required List<Field> fields,
     required String type,
+    required bool enableHistory,
+    required Map<String, List<String>> actionsMeta,
     required bool isPersiable,
     required String httpMeta,
     required List<PStateMethod> methods}) {
@@ -98,6 +112,10 @@ String _getPStateMeta(
     params.add(
         "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
+  if (enableHistory) {
+    params.add("enableHistory: true");
+    params.add("actionsMeta: ${jsonEncode(actionsMeta)}");
+  }
 
   return """
        $syncReducerFunctionStr
@@ -108,14 +126,18 @@ String _getPStateMeta(
     """;
 }
 
-List<String> _getActionsAndHtpMeta(
+ActionsInfo _getActionsInfo(
     {required ClassElement element,
     required PStateAstVisitor visitor,
     required String modelName,
     required String type}) {
+  final specialActions = <String>[];
   final httpFields = getHttpFields(element.fields);
+  specialActions.addAll(httpFields.map((e) => e.name));
   final streamFields = getStreamFields(element.fields);
+  specialActions.addAll(streamFields.map((e) => e.name));
   final websocketFields = getWebSocketFields(element.fields);
+  specialActions.addAll(websocketFields.map((e) => e.name));
   final formFields = visitor.fields
       .where((f) => f.type.toString().startsWith("FormField"))
       .toList();
@@ -148,10 +170,8 @@ List<String> _getActionsAndHtpMeta(
     httpMeta = "{$httpMeta}";
   }
 
-  return [
-    actions,
-    httpMeta,
-  ];
+  return ActionsInfo(
+      actions: actions, httpMeta: httpMeta, specialActions: specialActions);
 }
 
 extension PStateExtension on ClassElement {
@@ -159,7 +179,8 @@ extension PStateExtension on ClassElement {
     final annot = annotationFromType(PState)!;
     final reader = ConstantReader(annot.computeConstantValue());
     final persit = reader.peek("persit")?.boolValue;
-    return PState(persist: persit);
+    final enableHistory = reader.peek("enableHistory")?.boolValue;
+    return PState(persist: persit, enableHistory: enableHistory);
   }
 }
 

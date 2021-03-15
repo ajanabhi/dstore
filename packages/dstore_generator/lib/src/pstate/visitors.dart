@@ -25,14 +25,16 @@ class PStateAstVisitor extends SimpleAstVisitor {
 
     final paramsStr = _convertMethodParamsToString(params);
     var mbody = "";
+    final keys = <String>[];
     if (body is ExpressionFunctionBody) {
       final e = body.expression;
       if (e is AssignmentExpression) {
         if (!_isThisPropertyAccessExpression(e.leftHandSide)) {
           throw Exception(
-              "Singleline body should assigment expression of class variable with this. prefix");
+              "Singleline body should be assigment expression of class variable with this. prefix");
         }
         final pa = e.leftHandSide as PropertyAccess;
+        keys.add(pa.propertyName.name);
         final fname = pa.toString().split(".")[1];
         mbody = """
            ${paramsStr}
@@ -43,30 +45,33 @@ class PStateAstVisitor extends SimpleAstVisitor {
             "Singleline body should assigment expression of class variable with this.prefix");
       }
     } else if (body is BlockFunctionBody) {
-      final s = processMethodStatements(body.block.statements);
+      final msr = processMethodStatements(body.block.statements);
+      final statements = msr.first;
+      keys.addAll(msr.last);
       mbody = """
            ${paramsStr}
-           ${s}
+           ${statements}
            """;
     }
-    if (node.body is BlockFunctionBody) {
-      final ex = node.body as BlockFunctionBody;
-      ex.block.statements.forEach((statement) {
-        print(
-            "************** Check ${statement.toString()} ${statement.runtimeType}");
-        // if(statement is TryStatement) {
-        //    statement.
-        // }
-        if (statement is ForStatement) {
-          print(
-              "forstatement lp ${statement.forLoopParts} body ${statement.body.runtimeType}");
-        }
-      });
-    }
+    // if (node.body is BlockFunctionBody) {
+    //   final ex = node.body as BlockFunctionBody;
+    //   ex.block.statements.forEach((statement) {
+    //     print(
+    //         "************** Check ${statement.toString()} ${statement.runtimeType}");
+    //     // if(statement is TryStatement) {
+    //     //    statement.
+    //     // }
+    //     if (statement is ForStatement) {
+    //       print(
+    //           "forstatement lp ${statement.forLoopParts} body ${statement.body.runtimeType}");
+    //     }
+    //   });
+    // }
     methods.add(PStateMethod(
         isAsync: node.body.isAsynchronous,
         name: name,
         params: params,
+        keysModified: keys,
         body: mbody));
     return super.visitMethodDeclaration(node);
   }
@@ -431,7 +436,7 @@ List<String> convertStatementResultsToString(
   return result;
 }
 
-String processMethodStatements(List<Statement> statements) {
+List<dynamic> processMethodStatements(List<Statement> statements) {
   final statementResults = processStatements(statements);
   print("statementResults ${statementResults}");
   List<MutationStatementResult> getMutationOnlyStatementResults(
@@ -488,9 +493,10 @@ String processMethodStatements(List<Statement> statements) {
   final statementsStr =
       convertStatementResultsToString(statementResults, keys).join("\n");
   print("hellokeys $keys");
-  return """
+  final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
     return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
   """;
+  return [stataments, keys];
 }

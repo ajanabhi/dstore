@@ -2,6 +2,17 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
+class ActionsInfo {
+  final String actions;
+  final String httpMeta;
+  final List<String> specialActions;
+
+  ActionsInfo(
+      {required this.actions,
+      required this.httpMeta,
+      required this.specialActions});
+}
+
 class HttpFieldInfo {
   final String name;
   final String url;
@@ -69,11 +80,13 @@ class PStateMethod {
   final List<Field> params;
   final String body;
   final bool isAsync;
+  final List<String> keysModified;
 
   PStateMethod(
       {required this.isAsync,
       required this.name,
       required this.params,
+      required this.keysModified,
       required this.body});
 }
 
