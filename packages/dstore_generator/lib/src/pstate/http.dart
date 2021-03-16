@@ -1,7 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
-import 'package:dstore_generator/src/pstate/extensions.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -138,8 +137,6 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("""method: "${hf.method}" """);
   payloadFields.add("inputType:${hf.inputTypeEnum}");
   payloadFields.add("responseType:${hf.responseTypeEnum}");
-  // payloadFields.add("responseDeserializer:${hf.responseDeserializer}");
-  // payloadFields.add("errorDeserializer:${hf.errorDeserializer}");
 
   params.add("Duration? debounce");
   return """

@@ -389,7 +389,7 @@ class Store<S extends AppStateI> {
             });
             sMap[sk] = rm.copyWithMap(rmMap);
           }
-          _updatePersitance(selector.deps.keys);
+          _updatePersitance(selector.deps.keys, []);
           _state = _state.copyWithMap(sMap);
           listernsToFire.forEach((l) {
             l();
@@ -496,7 +496,7 @@ class Store<S extends AppStateI> {
           }
         });
         // if persitance is enabled and following state keys are persitable then update values
-        await _updatePersitance(stateKeysModified);
+        await _updatePersitance(stateKeysModified, []);
         _state = _state.copyWithMap(sMap);
       }
     }

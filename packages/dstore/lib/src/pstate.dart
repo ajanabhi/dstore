@@ -130,7 +130,7 @@ class PStateHistory<S extends PStateModel> {
 
 mixin PStateHistoryMixin<S extends PStateModel> {
   PStateHistory<S>? _psHistory;
-  PStateHistory<S> get internalPsHistory => _psHistory!;
-  bool get canRedo => internalPsHistory.canRedo;
-  bool get canUndo => internalPsHistory.canUndo;
+  PStateHistory<S> get internalPSHistory => _psHistory!;
+  bool get canRedo => internalPSHistory.canRedo;
+  bool get canUndo => internalPSHistory.canUndo;
 }
