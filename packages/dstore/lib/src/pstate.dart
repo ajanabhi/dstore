@@ -100,7 +100,9 @@ class PStateHistory<S extends PStateModel> {
     if (canRedo) {
       final patch = _redos.removeFirst();
       _history.addLast(patch);
-      return currentState.copyWithMap(patch);
+      final newState = currentState.copyWithMap(patch);
+      newState._psHistory = this;
+      return newState;
     }
   }
 
@@ -115,7 +117,9 @@ class PStateHistory<S extends PStateModel> {
         _history.forEach((patch) {
           map.addAll(patch);
         });
-        return initialState.copyWithMap(map);
+        final newState = initialState.copyWithMap(patch);
+        newState._psHistory = this;
+        return newState;
       }
     }
   }

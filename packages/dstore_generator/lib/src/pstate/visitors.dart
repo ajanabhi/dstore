@@ -506,7 +506,7 @@ List<dynamic> processMethodStatements(
     ${statementsStr}
     ${historyEnabled ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
-    newState._psHistory = STATE_VARIABLE._psHistory;
+    newState.internalPSHistory = STATE_VARIABLE.internalPSHistory;
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
     

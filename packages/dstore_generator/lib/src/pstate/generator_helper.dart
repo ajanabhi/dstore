@@ -129,7 +129,7 @@ String _getPStateMeta(
     defaultStateFn = """
       $modelName ${modelName}_DS() {
         final state = $defaultState;
-        state._psHistory = PStateHistory($historyLimit);
+        state.internalPSHistory = PStateHistory<$modelName>($historyLimit);
         return history;
       }
     """;
@@ -293,8 +293,10 @@ String _createPStateModel(
       null;
   final historyField = enableHistory
       ? """
-      @override
-      PStateHistory<$name> _psHistory;"""
+      set internalPSHistory(PStateHistory<$name> value) {
+        _psHistory = value;
+      }
+     """
       : "";
   final mixins = <String>[];
   if (enableHistory) {
