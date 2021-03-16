@@ -11,8 +11,14 @@ class PStateAstVisitor extends SimpleAstVisitor {
   List<PStateMethod> methods = [];
   final bool isPersitable;
   final ClassElement element;
+  final bool historyEnabled;
+  final int? historyLimit;
 
-  PStateAstVisitor(this.element, this.isPersitable);
+  PStateAstVisitor(
+      {required this.element,
+      required this.isPersitable,
+      this.historyLimit,
+      required this.historyEnabled});
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
@@ -45,7 +51,8 @@ class PStateAstVisitor extends SimpleAstVisitor {
             "Singleline body should assigment expression of class variable with this.prefix");
       }
     } else if (body is BlockFunctionBody) {
-      final msr = processMethodStatements(body.block.statements);
+      final msr = processMethodStatements(
+          body.block.statements, historyEnabled, historyLimit);
       final statements = msr.first;
       keys.addAll(msr.last);
       mbody = """
@@ -436,7 +443,8 @@ List<String> convertStatementResultsToString(
   return result;
 }
 
-List<dynamic> processMethodStatements(List<Statement> statements) {
+List<dynamic> processMethodStatements(
+    List<Statement> statements, bool historyEnabled, int? limit) {
   final statementResults = processStatements(statements);
   print("statementResults ${statementResults}");
   List<MutationStatementResult> getMutationOnlyStatementResults(
@@ -487,7 +495,7 @@ List<dynamic> processMethodStatements(List<Statement> statements) {
   final mutationStatements = getMutationOnlyStatementResults(statementResults);
   if (mutationStatements.isEmpty) {
     throw Exception(
-        "There hsould be atleast one assignemtn operation for class fields");
+        "There should be atleast one assignemtn operation for class fields");
   }
   final keys = mutationStatements.map((e) => e.key).toSet();
   final statementsStr =
@@ -496,7 +504,12 @@ List<dynamic> processMethodStatements(List<Statement> statements) {
   final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
-    return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
+    ${historyEnabled ? """
+    final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
+    newState._psHistory = STATE_VARIABLE._psHistory;
+    return newState;
+    """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
+    
   """;
   return [stataments, keys];
 }

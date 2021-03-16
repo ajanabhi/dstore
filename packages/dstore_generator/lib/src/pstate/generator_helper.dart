@@ -18,7 +18,11 @@ String generatePStateForClassElement(ClassElement element) {
   final modelName = element.name.substring(1);
   final pstate = element.getPState();
   final isPerssit = isPersitable(pstate);
-  final visitor = PStateAstVisitor(element, isPerssit);
+  final visitor = PStateAstVisitor(
+      element: element,
+      isPersitable: isPerssit,
+      historyEnabled: pstate.enableHistory,
+      historyLimit: pstate.historyLimit);
   final astNode = AstUtils.getAstNodeFromElement(element);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
@@ -32,7 +36,12 @@ String generatePStateForClassElement(ClassElement element) {
 
   final type = _getTypeName(element);
   final actionsInfo = _getActionsInfo(
-      element: element, visitor: visitor, modelName: modelName, type: type);
+    element: element,
+    visitor: visitor,
+    modelName: modelName,
+    enableHistory: pstate.enableHistory,
+    type: type,
+  );
   final actionsmeta =
       _getActionsmeta(visitor.methods, actionsInfo.specialActions);
   final actions = actionsInfo.actions;
@@ -44,14 +53,15 @@ String generatePStateForClassElement(ClassElement element) {
       httpMeta: actionsInfo.httpMeta,
       type: type,
       isPersiable: isPerssit,
-      enableHistory: pstate.enableHistory ?? false);
+      historyLimit: pstate.historyLimit,
+      enableHistory: pstate.enableHistory);
 
   final annotations = <String>[];
   if (isPerssit) {
     annotations.add("@JsonSerializable()");
   }
   final result = """
-       ${_createPStateModel(fields: fields, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
+       ${_createPStateModel(fields: fields, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
        ${actions}
         ${pstateMeta}
     """;
@@ -83,6 +93,7 @@ String _getPStateMeta(
     required bool enableHistory,
     required Map<String, List<String>> actionsMeta,
     required bool isPersiable,
+    required int? historyLimit,
     required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
@@ -91,9 +102,9 @@ String _getPStateMeta(
       _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
   print(fields);
 
-  final defaultState =
+  var defaultState =
       "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
-
+  var defaultStateFn = "$modelName ${modelName}_DS() => $defaultState;";
   final params = <String>["type : \"$type\""];
   if (syncReducerFunctionStr.isNotEmpty) {
     params.add("reducer: ${modelName}_SyncReducer");
@@ -115,14 +126,22 @@ String _getPStateMeta(
   if (enableHistory) {
     params.add("enableHistory: true");
     params.add("actionsMeta: ${jsonEncode(actionsMeta)}");
+    defaultStateFn = """
+      $modelName ${modelName}_DS() {
+        final state = $defaultState;
+        state._psHistory = PStateHistory($historyLimit);
+        return history;
+      }
+    """;
   }
 
   return """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
-       $modelName ${modelName}_DS() => $defaultState;
        
-       const ${modelName}Meta = PStateMeta<${modelName}>(${params.join(", ")});
+       $defaultStateFn
+
+       final ${modelName}Meta = PStateMeta<${modelName}>(${params.join(", ")});
     """;
 }
 
@@ -130,6 +149,7 @@ ActionsInfo _getActionsInfo(
     {required ClassElement element,
     required PStateAstVisitor visitor,
     required String modelName,
+    required bool enableHistory,
     required String type}) {
   final specialActions = <String>[];
   final httpFields = getHttpFields(element.fields);
@@ -180,7 +200,11 @@ extension PStateExtension on ClassElement {
     final reader = ConstantReader(annot.computeConstantValue());
     final persit = reader.peek("persit")?.boolValue;
     final enableHistory = reader.peek("enableHistory")?.boolValue;
-    return PState(persist: persit, enableHistory: enableHistory);
+    final historyLimit = reader.peek("historyLimit")?.intValue;
+    return PState(
+        persist: persit,
+        enableHistory: enableHistory ?? false,
+        historyLimit: historyLimit);
   }
 }
 
@@ -262,15 +286,28 @@ String _createPStateModel(
     required String name,
     required List<String> annotations,
     required String typeParams,
+    required bool enableHistory,
     required String typaParamsWithBounds}) {
   final isJson = annotations.singleWhereOrNull(
           (element) => element.startsWith("@JsonSerializable")) !=
       null;
+  final historyField = enableHistory
+      ? """
+      @override
+      PStateHistory<$name> _psHistory;"""
+      : "";
+  final mixins = <String>[];
+  if (enableHistory) {
+    mixins.add("PStateHistoryMixin<$name>");
+  }
+  final m = mixins.isNotEmpty ? "with ${mixins.join(", ")}" : "";
+
   final result = """
       
       @immutable
       ${annotations.join("\n")}
-      class ${name} implements PStateModel {
+      class ${name} implements PStateModel<$name> $m {
+        $historyField
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields)}

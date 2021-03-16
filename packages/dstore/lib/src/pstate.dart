@@ -53,12 +53,14 @@ class PStateMeta<S extends PStateModel> {
   final String type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
+
   final Map<String, Httpmeta>? httpMetaMap;
   final Map<String, List<String>>? actionsMeta;
   final S Function() ds;
 
   final PStateStorageMeta<S, dynamic>? sm;
   final bool enableHistory;
+  // final int? historyLimit;
 
   const PStateMeta(
       {this.aReducer,
@@ -74,45 +76,57 @@ class PStateMeta<S extends PStateModel> {
 class PStateHistory<S extends PStateModel> {
   final Queue _history = ListQueue();
   final Queue _redos = ListQueue();
-  final S model;
-
   final int? limit;
+  PStateHistory(this.limit);
 
-  PStateHistory({required this.model, this.limit});
-
-  bool get canRedo => _redos.isNotEmpty;
-  bool get canUndo => _history.isNotEmpty;
-
-  void add(Map<String, dynamic> patch) {
-    if (limit != null && limit == 0) {
-      return;
+  void internalAdd(Map<String, dynamic> patch) {
+    if (limit != null && limit! <= 0) {
+      throw ArgumentError.value("limit should be more than 0");
     }
     _history.addLast(patch);
     _redos.clear();
 
     if (limit != null && _history.length > limit!) {
-      if (limit! > 0) {
-        _history.removeFirst();
-      }
+      _history.removeFirst();
     }
   }
 
-  void clear() {
+  void internalClear() {
     _history.clear();
     _redos.clear();
   }
 
-  void redo() {
+  S? internalRedo(S currentState) {
     if (canRedo) {
-      final change = _redos.removeFirst()..execute();
-      _history.addLast(change);
+      final patch = _redos.removeFirst();
+      _history.addLast(patch);
+      return currentState.copyWithMap(patch);
     }
   }
 
-  void undo() {
+  S? internalUndo(S initialState) {
     if (canUndo) {
-      final change = _history.removeLast()..undo();
-      _redos.addFirst(change);
+      final patch = _history.removeLast();
+      _redos.addFirst(patch);
+      if (_history.isEmpty) {
+        return initialState;
+      } else {
+        final map = <String, dynamic>{};
+        _history.forEach((patch) {
+          map.addAll(patch);
+        });
+        return initialState.copyWithMap(map);
+      }
     }
   }
+
+  bool get canRedo => _redos.isNotEmpty;
+  bool get canUndo => _history.isNotEmpty;
+}
+
+mixin PStateHistoryMixin<S extends PStateModel> {
+  PStateHistory<S>? _psHistory;
+  PStateHistory<S> get internalPsHistory => _psHistory!;
+  bool get canRedo => internalPsHistory.canRedo;
+  bool get canUndo => internalPsHistory.canUndo;
 }

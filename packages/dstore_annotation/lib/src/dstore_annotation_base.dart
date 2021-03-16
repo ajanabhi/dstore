@@ -2,8 +2,9 @@ import "package:collection/collection.dart";
 
 class PState {
   final bool? persist;
-  final bool? enableHistory;
-  const PState({this.persist, this.enableHistory});
+  final bool enableHistory;
+  final int? historyLimit;
+  const PState({this.persist, this.enableHistory = false, this.historyLimit});
 }
 
 class Selectors {
