@@ -129,6 +129,8 @@ String convertHttpFieldInfoToAction(
   }
   params.add("bool abortable = false");
   payloadFields.add("abortable: abortable");
+  params.add("bool offline = false");
+  payloadFields.add("offline: offline");
   params.add("Map<String,dynamic>? headers");
   payloadFields.add("headers:headers");
   params.add("${hf.responseType} optimisticResponse");

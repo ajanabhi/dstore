@@ -284,6 +284,7 @@ mixin _$HttpPayload<I, R, E, T> {
   String get method;
   HttpResponseType get responseType;
   R? get optimisticResponse;
+  bool get offline;
   HttpInputType? get inputType;
   Map<String, dynamic>? get headers;
   Map<String, dynamic>? get queryParams;
@@ -309,6 +310,11 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
 
   @override
   final R? optimisticResponse;
+
+  @override
+  @Default(false)
+  @JsonKey(defaultValue: false)
+  final bool offline;
 
   @override
   final HttpInputType? inputType;
@@ -340,6 +346,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       required this.method,
       required this.responseType,
       this.optimisticResponse,
+      this.offline = false,
       this.inputType,
       this.headers,
       this.queryParams,
@@ -356,6 +363,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
         o.method == method &&
         o.responseType == responseType &&
         o.optimisticResponse == optimisticResponse &&
+        o.offline == offline &&
         o.inputType == inputType &&
         o.headers == headers &&
         o.queryParams == queryParams &&
@@ -371,6 +379,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       method.hashCode ^
       responseType.hashCode ^
       optimisticResponse.hashCode ^
+      offline.hashCode ^
       inputType.hashCode ^
       headers.hashCode ^
       queryParams.hashCode ^
@@ -380,7 +389,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
 
   @override
   String toString() =>
-      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, inputType: ${this.inputType}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
+      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, offline: ${this.offline}, inputType: ${this.inputType}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
 }
 
 abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
@@ -393,6 +402,7 @@ abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
       String method,
       HttpResponseType responseType,
       R? optimisticResponse,
+      bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
@@ -414,6 +424,7 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? method = dimmutable,
       Object? responseType = dimmutable,
       Object? optimisticResponse = dimmutable,
+      Object? offline = dimmutable,
       Object? inputType = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
@@ -430,6 +441,7 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
         optimisticResponse: optimisticResponse == dimmutable
             ? _value.optimisticResponse
             : optimisticResponse as R?,
+        offline: offline == dimmutable ? _value.offline : offline as bool,
         inputType: inputType == dimmutable
             ? _value.inputType
             : inputType as HttpInputType?,
@@ -461,6 +473,7 @@ abstract class _$HttpPayloadCopyWith<I, R, E, T, O>
       String method,
       HttpResponseType responseType,
       R? optimisticResponse,
+      bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
@@ -486,6 +499,7 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? method = dimmutable,
       Object? responseType = dimmutable,
       Object? optimisticResponse = dimmutable,
+      Object? offline = dimmutable,
       Object? inputType = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
@@ -502,6 +516,7 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
         optimisticResponse: optimisticResponse == dimmutable
             ? _value.optimisticResponse
             : optimisticResponse as R?,
+        offline: offline == dimmutable ? _value.offline : offline as bool,
         inputType: inputType == dimmutable
             ? _value.inputType
             : inputType as HttpInputType?,

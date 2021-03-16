@@ -33,26 +33,36 @@ class HttpField<QP, I, R, E> {
   final HttpError<E>? error;
   final bool completed;
   final bool optimistic;
+  final bool offline;
+  final AbortController? abortController;
 
   HttpField(
       {this.loading = false,
       this.data,
       this.error,
+      this.offline = false,
+      this.abortController,
       this.completed = false,
       this.optimistic = false});
 
   HttpField<QP, I, R, E> copyWith(
       {bool? loading,
       Optional<R?> data = optionalDefault,
+      Optional<AbortController?> abortController = optionalDefault,
       Optional<HttpError<E>?> error = optionalDefault,
       bool? completed,
+      bool? offline,
       bool? optimistic}) {
     return HttpField(
         loading: loading ?? this.loading,
         data: data == optionalDefault ? this.data : data.value,
         error: error == optionalDefault ? this.error : error.value,
+        abortController: abortController == optionalDefault
+            ? this.abortController
+            : abortController.value,
         completed: completed ?? this.completed,
-        optimistic: optimistic ?? this.optimistic);
+        optimistic: optimistic ?? this.optimistic,
+        offline: offline ?? this.offline);
   }
 }
 
@@ -77,6 +87,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       required String method,
       required HttpResponseType responseType,
       R? optimisticResponse,
+      @Default(false) bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,

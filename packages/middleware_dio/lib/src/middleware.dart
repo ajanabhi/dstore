@@ -68,7 +68,9 @@ Options _getOptions(
 
 void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     Action action, Dio dio) async {
+  final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
+  final meta = psm.httpMetaMap?[action.name];
   final field = store.getFieldFromAction(action) as HttpField;
   CancelToken? cancelToken;
   AbortController? abortController;
@@ -96,8 +98,8 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   late final Response? response;
   try {
     var data = payload.data;
-    if (payload.inputSerializer != null) {
-      data = payload.inputSerializer!(data);
+    if (meta?.inputSerializer != null) {
+      data = meta?.inputSerializer!(data);
     }
     response = await dio.request(payload.url,
         data: data,
@@ -105,7 +107,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         cancelToken: cancelToken,
         options: options);
   } on DioError catch (e) {
-    HttpError? error;
+    late HttpError error;
     switch (e.type) {
       case DioErrorType.CONNECT_TIMEOUT:
         error =
@@ -120,8 +122,8 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         break;
       case DioErrorType.RESPONSE:
         var re = e.response;
-        if (payload.errorDeserializer != null) {
-          re = payload.errorDeserializer!(re);
+        if (meta?.errorDeserializer != null) {
+          re = meta?.errorDeserializer!(re);
         }
         error = HttpError(type: HttpErrorType.Response, error: re);
         break;
@@ -131,14 +133,28 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       case DioErrorType.DEFAULT:
         error = HttpError(type: HttpErrorType.Default, message: e.message);
         break;
+      default:
+        error = HttpError(type: HttpErrorType.Default, message: e.message);
+        break;
     }
-    var ef = HttpField(error: error);
-    if (payload.transformer != null) {
-      ef = payload.transformer!(field, ef);
+    if (payload.offline &&
+        (error.type == HttpErrorType.Default ||
+            error.type == HttpErrorType.ConnectTimeout)) {
+      store.addOfflineAction(action);
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true,
+              type: ActionInternalType.DATA,
+              data: field.copyWith(loading: false, offline: true))));
+    } else {
+      var ef = HttpField(error: error);
+      if (meta?.transformer != null) {
+        ef = meta?.transformer!(field, ef) as dynamic;
+      }
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, type: ActionInternalType.DATA, data: ef)));
     }
-    store.dispatch(action.copyWith(
-        internal: ActionInternal(
-            processed: true, type: ActionInternalType.DATA, data: ef)));
   }
   if (response != null) {
     late HttpField hf;
@@ -154,15 +170,15 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       }
       dynamic? rdata;
       if (response.data["data"] != null) {
-        rdata = payload.responseDeserializer(response.data["data"]);
+        rdata = meta!.responseDeserializer(response.data["data"]);
       }
       hf = HttpField(error: ge, data: rdata);
     } else {
-      var data = payload.responseDeserializer(response.data);
+      var data = meta!.responseDeserializer(response.data);
       hf = HttpField(data: data);
     }
-    if (payload.transformer != null) {
-      hf = payload.transformer!(field, hf);
+    if (meta?.transformer != null) {
+      hf = meta!.transformer!(field, hf);
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
