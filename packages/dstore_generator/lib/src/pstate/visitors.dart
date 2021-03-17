@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -26,6 +27,16 @@ class PStateAstVisitor extends SimpleAstVisitor {
     if (body is EmptyFunctionBody) {
       throw Exception("method should contain mutation to fields");
     }
+    if (node.body.isAsynchronous &&
+        node.returnType?.toString() != "Future<void>") {
+      throw InvalidSignatureError(
+          "You should annotate method  '${node.name.name}' return type with Future<void>  ");
+    } else if (!node.body.isAsynchronous &&
+        node.returnType?.toString() != "void") {
+      throw InvalidSignatureError(
+          "You should annotate method  '${node.name.name}' return type with void  ");
+    }
+
     final name = node.name.toString();
     final params = AstUtils.convertParamsToFields(node.parameters);
 

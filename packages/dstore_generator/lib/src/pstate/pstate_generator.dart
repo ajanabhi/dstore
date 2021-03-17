@@ -17,8 +17,8 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         throw ArgumentError.value("PState should be applied on class only");
       }
       final className = element.name;
-      if (!className.startsWith("\$")) {
-        throw ArgumentError.value("PState class should start with \$");
+      if (!className.startsWith("\_")) {
+        throw ArgumentError.value("PState class should start with _");
       }
       return generatePStateForClassElement(element);
     } catch (e, st) {

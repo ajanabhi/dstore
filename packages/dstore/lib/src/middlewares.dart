@@ -23,7 +23,7 @@ final Middleware asyncMiddleware =
     try {
       final s = await psm.aReducer!(currentS, action);
       final asm = s.toMap();
-      asm[action.name] = AsyncActionField();
+      asm[action.name] = AsyncActionField(completed: true);
       final newS = s.copyWithMap(asm);
       store.dispatch(action.copyWith(
           internal: ActionInternal(
@@ -33,7 +33,7 @@ final Middleware asyncMiddleware =
           internal: ActionInternal(
               processed: true,
               type: ActionInternalType.DATA,
-              data: AsyncActionField(error: e))));
+              data: AsyncActionField(error: e, completed: true))));
     }
   }
 };

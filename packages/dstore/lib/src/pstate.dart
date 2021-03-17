@@ -16,6 +16,7 @@ abstract class AsyncActionField with _$AsyncActionField {
   @JsonSerializable()
   const factory AsyncActionField(
       {@Default(false) bool loading,
+      @Default(false) bool completed,
       @Default(null) dynamic error}) = _AsyncActionField;
 
   factory AsyncActionField.fromJson(Map<String, dynamic> json) =>

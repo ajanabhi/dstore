@@ -1,7 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
-
 import "package:dstore/src/middlewares.dart";
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
@@ -14,6 +12,8 @@ typedef Middleware<State extends AppStateI> = dynamic Function(
     Store<State> store, Dispatch next, Action action);
 
 typedef Callback = dynamic Function();
+
+typedef VoidCallback = void Function();
 
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
 
@@ -239,6 +239,7 @@ class Store<S extends AppStateI> {
         }
       }
     } else {
+      _state = _state.copyWithMap(newGlobalStateMap);
       _notifyListeners(
           stateKey: stateKey,
           previousState: previousState,

@@ -9,6 +9,7 @@ part of 'pstate.dart';
 
 mixin _$AsyncActionField {
   bool get loading;
+  bool get completed;
   dynamic get error;
 
   @JsonKey(ignore: true)
@@ -24,6 +25,11 @@ class _AsyncActionField implements AsyncActionField {
   final bool loading;
 
   @override
+  @Default(false)
+  @JsonKey(defaultValue: false)
+  final bool completed;
+
+  @override
   @Default(null)
   @JsonKey(defaultValue: null)
   final dynamic error;
@@ -32,7 +38,8 @@ class _AsyncActionField implements AsyncActionField {
   _$AsyncActionFieldCopyWith<AsyncActionField> get copyWith =>
       __$AsyncActionFieldCopyWithImpl<AsyncActionField>(this, IdentityFn);
 
-  const _AsyncActionField({this.loading = false, this.error = null});
+  const _AsyncActionField(
+      {this.loading = false, this.completed = false, this.error = null});
 
   factory _AsyncActionField.fromJson(Map<String, dynamic> json) =>
       _$_AsyncActionFieldFromJson(json);
@@ -42,15 +49,18 @@ class _AsyncActionField implements AsyncActionField {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _AsyncActionField && o.loading == loading && o.error == error;
+    return o is _AsyncActionField &&
+        o.loading == loading &&
+        o.completed == completed &&
+        o.error == error;
   }
 
   @override
-  int get hashCode => loading.hashCode ^ error.hashCode;
+  int get hashCode => loading.hashCode ^ completed.hashCode ^ error.hashCode;
 
   @override
   String toString() =>
-      "AsyncActionField(loading: ${this.loading}, error: ${this.error})";
+      "AsyncActionField(loading: ${this.loading}, completed: ${this.completed}, error: ${this.error})";
 }
 
 AsyncActionField _$AsyncActionFieldFromJson(Map<String, dynamic> json) =>
@@ -60,7 +70,7 @@ abstract class $AsyncActionFieldCopyWith<O> {
   factory $AsyncActionFieldCopyWith(
           AsyncActionField value, O Function(AsyncActionField) then) =
       _$AsyncActionFieldCopyWithImpl<O>;
-  O call({bool loading, dynamic error});
+  O call({bool loading, bool completed, dynamic error});
 }
 
 class _$AsyncActionFieldCopyWithImpl<O>
@@ -70,9 +80,14 @@ class _$AsyncActionFieldCopyWithImpl<O>
   _$AsyncActionFieldCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? loading = dimmutable, Object? error = dimmutable}) {
+  O call(
+      {Object? loading = dimmutable,
+      Object? completed = dimmutable,
+      Object? error = dimmutable}) {
     return _then(_value.copyWith(
         loading: loading == dimmutable ? _value.loading : loading as bool,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool,
         error: error == dimmutable ? _value.error : error as dynamic));
   }
 }
@@ -82,7 +97,7 @@ abstract class _$AsyncActionFieldCopyWith<O>
   factory _$AsyncActionFieldCopyWith(
           AsyncActionField value, O Function(AsyncActionField) then) =
       __$AsyncActionFieldCopyWithImpl<O>;
-  O call({bool loading, dynamic error});
+  O call({bool loading, bool completed, dynamic error});
 }
 
 class __$AsyncActionFieldCopyWithImpl<O>
@@ -96,9 +111,14 @@ class __$AsyncActionFieldCopyWithImpl<O>
   AsyncActionField get _value => super._value;
 
   @override
-  O call({Object? loading = dimmutable, Object? error = dimmutable}) {
+  O call(
+      {Object? loading = dimmutable,
+      Object? completed = dimmutable,
+      Object? error = dimmutable}) {
     return _then(AsyncActionField(
         loading: loading == dimmutable ? _value.loading : loading as bool,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool,
         error: error == dimmutable ? _value.error : error as dynamic));
   }
 }
