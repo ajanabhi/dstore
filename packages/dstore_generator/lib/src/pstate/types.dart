@@ -80,7 +80,7 @@ class PStateMethod {
   final List<Field> params;
   final String body;
   final bool isAsync;
-  final List<String> keysModified;
+  final List<Field> keysModified;
 
   PStateMethod(
       {required this.isAsync,

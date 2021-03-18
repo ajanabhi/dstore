@@ -1,6 +1,7 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/store.dart';
 
+import '../store_tester.dart';
 import 'pstates/sample.dart';
 
 part "app_state.dstore.dart";

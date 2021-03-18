@@ -71,7 +71,8 @@ String generatePStateForClassElement(ClassElement element) {
 Map<String, List<String>> _getActionsmeta(
     List<PStateMethod> methods, List<String> specialActions) {
   final map = <String, List<String>>{};
-  map.addEntries(methods.map((e) => MapEntry(e.name, e.keysModified)));
+  map.addEntries(methods.map(
+      (e) => MapEntry(e.name, e.keysModified.map((e) => e.name).toList())));
   map.addEntries(specialActions.map((e) => MapEntry(e, [e])));
   return map;
 }

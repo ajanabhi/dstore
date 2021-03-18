@@ -1,3 +1,4 @@
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:test/test.dart';
 
 import 'store/app_state.dart';
@@ -20,6 +21,16 @@ void main() {
       store.dispatch(SampleActions.changeAge(newAge: 2));
       expect(_getAge(), 2);
       expect(_getName(), newName);
+    });
+
+    test("should add item to list", () {
+      List<String> _getList() => store.state.sample.list;
+      final prevState = store.state.sample;
+      expect(_getList(), [].lock);
+      store.dispatch(SampleActions.addToList(item: "hello"));
+      final newState = store.state.sample;
+      expect(identical(prevState, newState), false);
+      expect(prevState.copyWith(list: ["hello"]), newState);
     });
   });
 }

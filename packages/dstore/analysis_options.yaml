@@ -12,5 +12,6 @@ include: package:pedantic/analysis_options.yaml
 analyzer:
   errors:
     prefer_single_quotes: ignore
+    unnecessary_this: ignore
   exclude:
     - "**/*.dstore.dart"

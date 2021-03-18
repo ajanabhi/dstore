@@ -4,9 +4,13 @@ import "package:meta/meta.dart";
 part "sample.ps.dstore.dart";
 
 @PState()
+// ignore: unused_element
 class _Sample {
   String name = "hello";
   int age = 0;
+
+  List<String> list = [];
+
   void changeName(String newName) {
     this.name = newName;
   }
@@ -15,8 +19,7 @@ class _Sample {
     this.age = newAge;
   }
 
-  Future<void> changeNameAfterDelay(String newName) async {
-    await Future.delayed(Duration(seconds: 5));
-    this.name = newName;
+  void addToList(String item) {
+    this.list = [...this.list, item];
   }
 }

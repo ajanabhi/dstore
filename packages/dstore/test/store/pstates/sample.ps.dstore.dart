@@ -12,52 +12,40 @@ class Sample implements PStateModel<Sample> {
 
   final int age;
 
-  final AsyncActionField changeNameAfterDelay;
+  final List<String> list;
 
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
 
-  const Sample(
-      {this.name = "hello",
-      this.age = 0,
-      this.changeNameAfterDelay = const AsyncActionField()});
+  const Sample({this.name = "hello", this.age = 0, this.list = const []});
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       name: map.containsKey("name") ? map["name"] : this.name,
       age: map.containsKey("age") ? map["age"] : this.age,
-      changeNameAfterDelay: map.containsKey("changeNameAfterDelay")
-          ? map["changeNameAfterDelay"]
-          : this.changeNameAfterDelay);
+      list: map.containsKey("list") ? map["list"] : this.list);
 
-  Map<String, dynamic> toMap() => {
-        "name": this.name,
-        "age": this.age,
-        "changeNameAfterDelay": this.changeNameAfterDelay
-      };
+  Map<String, dynamic> toMap() =>
+      {"name": this.name, "age": this.age, "list": this.list};
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is Sample &&
-        o.name == name &&
-        o.age == age &&
-        o.changeNameAfterDelay == changeNameAfterDelay;
+    return o is Sample && o.name == name && o.age == age && o.list == list;
   }
 
   @override
-  int get hashCode =>
-      name.hashCode ^ age.hashCode ^ changeNameAfterDelay.hashCode;
+  int get hashCode => name.hashCode ^ age.hashCode ^ list.hashCode;
 
   @override
   String toString() =>
-      "Sample(name: ${this.name}, age: ${this.age}, changeNameAfterDelay: ${this.changeNameAfterDelay})";
+      "Sample(name: ${this.name}, age: ${this.age}, list: ${this.list})";
 }
 
 abstract class $SampleCopyWith<O> {
   factory $SampleCopyWith(Sample value, O Function(Sample) then) =
       _$SampleCopyWithImpl<O>;
-  O call({String name, int age, AsyncActionField changeNameAfterDelay});
+  O call({String name, int age, List<String> list});
 }
 
 class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
@@ -69,20 +57,18 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
-      Object? changeNameAfterDelay = dimmutable}) {
+      Object? list = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
-        changeNameAfterDelay: changeNameAfterDelay == dimmutable
-            ? _value.changeNameAfterDelay
-            : changeNameAfterDelay as AsyncActionField));
+        list: list == dimmutable ? _value.list : list as List<String>));
   }
 }
 
 abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
   factory _$SampleCopyWith(Sample value, O Function(Sample) then) =
       __$SampleCopyWithImpl<O>;
-  O call({String name, int age, AsyncActionField changeNameAfterDelay});
+  O call({String name, int age, List<String> list});
 }
 
 class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
@@ -97,13 +83,11 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
-      Object? changeNameAfterDelay = dimmutable}) {
+      Object? list = dimmutable}) {
     return _then(Sample(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
-        changeNameAfterDelay: changeNameAfterDelay == dimmutable
-            ? _value.changeNameAfterDelay
-            : changeNameAfterDelay as AsyncActionField));
+        list: list == dimmutable ? _value.list : list as List<String>));
   }
 }
 
@@ -124,14 +108,12 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action changeNameAfterDelay(
-      {required String newName, Duration? debounce}) {
+  static Action addToList({required String item}) {
     return Action(
-        name: "changeNameAfterDelay",
+        name: "addToList",
         type: "/dstore/test/store/pstates/sample/Sample",
-        payload: {"newName": newName},
-        isAsync: true,
-        debounce: debounce);
+        payload: {"item": item},
+        isAsync: false);
   }
 }
 
@@ -159,27 +141,14 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         return _DStoreState.copyWith(age: _DStore_age);
       }
 
-    default:
-      {
-        return _DStoreState;
-      }
-  }
-}
-
-Future<dynamic> Sample_AsyncReducer(
-    dynamic _DStoreState, Action _DstoreAction) async {
-  _DStoreState = _DStoreState as Sample;
-  final name = _DstoreAction.name;
-  switch (name) {
-    case "changeNameAfterDelay":
+    case "addToList":
       {
         final _DstoreActionPayload = _DstoreAction.payload!;
-        final newName = _DstoreActionPayload["newName"] as String;
+        final item = _DstoreActionPayload["item"] as String;
 
-        var _DStore_name = _DStoreState.name;
-        await Future.delayed(Duration(seconds: 5));
-        _DStore_name = newName;
-        return _DStoreState.copyWith(name: _DStore_name);
+        var _DStore_list = _DStoreState.list;
+        _DStore_list = [..._DStoreState.list, item];
+        return _DStoreState.copyWith(list: _DStore_list);
       }
 
     default:
@@ -189,11 +158,9 @@ Future<dynamic> Sample_AsyncReducer(
   }
 }
 
-Sample Sample_DS() =>
-    Sample(name: "hello", age: 0, changeNameAfterDelay: AsyncActionField());
+Sample Sample_DS() => Sample(name: "hello", age: 0, list: []);
 
 final SampleMeta = PStateMeta<Sample>(
     type: "/dstore/test/store/pstates/sample/Sample",
     reducer: Sample_SyncReducer,
-    aReducer: Sample_AsyncReducer,
     ds: Sample_DS);

@@ -7,8 +7,12 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 
 part "action.dstore.dart";
 
+abstract class ToMap {
+  Map<String, dynamic> toMap();
+}
+
 @dimmutable
-abstract class Action with _$Action {
+abstract class Action<M extends ToMap> with _$Action {
   const factory Action({
     required String name,
     required String type,
@@ -20,6 +24,7 @@ abstract class Action with _$Action {
     ActionInternal? internal,
     Stream? stream,
     Duration? debounce,
+    M? mock,
     FormReq? form,
   }) = _Action;
 

@@ -6,6 +6,7 @@ import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:tuple/tuple.dart';
 
 class PStateAstVisitor extends SimpleAstVisitor {
   List<Field> fields = [];
@@ -64,8 +65,8 @@ class PStateAstVisitor extends SimpleAstVisitor {
     } else if (body is BlockFunctionBody) {
       final msr = processMethodStatements(
           body.block.statements, historyEnabled, historyLimit);
-      final statements = msr.first;
-      keys.addAll(msr.last);
+      final statements = msr.item1;
+      keys.addAll(msr.item2);
       mbody = """
            ${paramsStr}
            ${statements}
@@ -89,7 +90,9 @@ class PStateAstVisitor extends SimpleAstVisitor {
         isAsync: node.body.isAsynchronous,
         name: name,
         params: params,
-        keysModified: keys,
+        keysModified: keys
+            .map((e) => fields.singleWhere((element) => element.name == e))
+            .toList(),
         body: mbody));
     return super.visitMethodDeclaration(node);
   }
@@ -454,7 +457,7 @@ List<String> convertStatementResultsToString(
   return result;
 }
 
-List<dynamic> processMethodStatements(
+Tuple2<String, Set<String>> processMethodStatements(
     List<Statement> statements, bool historyEnabled, int? limit) {
   final statementResults = processStatements(statements);
   print("statementResults ${statementResults}");
@@ -522,5 +525,5 @@ List<dynamic> processMethodStatements(
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
     
   """;
-  return [stataments, keys];
+  return Tuple2(stataments, keys);
 }

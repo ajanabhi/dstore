@@ -7,7 +7,7 @@ part of 'action.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$Action {
+mixin _$Action<M extends ToMap> {
   String get name;
   String get type;
   bool get isAsync;
@@ -18,12 +18,13 @@ mixin _$Action {
   ActionInternal? get internal;
   Stream<dynamic>? get stream;
   Duration? get debounce;
+  M? get mock;
   FormReq? get form;
 
-  $ActionCopyWith<Action> get copyWith;
+  $ActionCopyWith<M, Action<M>> get copyWith;
 }
 
-class _Action implements Action {
+class _Action<M extends ToMap> implements Action<M> {
   @override
   final String name;
 
@@ -59,10 +60,13 @@ class _Action implements Action {
   final Duration? debounce;
 
   @override
+  final M? mock;
+
+  @override
   final FormReq? form;
 
-  _$ActionCopyWith<Action> get copyWith =>
-      __$ActionCopyWithImpl<Action>(this, IdentityFn);
+  _$ActionCopyWith<M, Action<M>> get copyWith =>
+      __$ActionCopyWithImpl<M, Action<M>>(this, IdentityFn);
 
   const _Action(
       {required this.name,
@@ -75,6 +79,7 @@ class _Action implements Action {
       this.internal,
       this.stream,
       this.debounce,
+      this.mock,
       this.form});
 
   @override
@@ -91,6 +96,7 @@ class _Action implements Action {
         o.internal == internal &&
         o.stream == stream &&
         o.debounce == debounce &&
+        o.mock == mock &&
         o.form == form;
   }
 
@@ -106,16 +112,17 @@ class _Action implements Action {
       internal.hashCode ^
       stream.hashCode ^
       debounce.hashCode ^
+      mock.hashCode ^
       form.hashCode;
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, form: ${this.form})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, mock: ${this.mock}, form: ${this.form})";
 }
 
-abstract class $ActionCopyWith<O> {
-  factory $ActionCopyWith(Action value, O Function(Action) then) =
-      _$ActionCopyWithImpl<O>;
+abstract class $ActionCopyWith<M extends ToMap, O> {
+  factory $ActionCopyWith(Action<M> value, O Function(Action<M>) then) =
+      _$ActionCopyWithImpl<M, O>;
   O call(
       {String name,
       String type,
@@ -127,12 +134,14 @@ abstract class $ActionCopyWith<O> {
       ActionInternal? internal,
       Stream<dynamic>? stream,
       Duration? debounce,
+      M? mock,
       FormReq? form});
 }
 
-class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
-  final Action _value;
-  final O Function(Action) _then;
+class _$ActionCopyWithImpl<M extends ToMap, O>
+    implements $ActionCopyWith<M, O> {
+  final Action<M> _value;
+  final O Function(Action<M>) _then;
   _$ActionCopyWithImpl(this._value, this._then);
 
   @override
@@ -147,6 +156,7 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
       Object? internal = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
+      Object? mock = dimmutable,
       Object? form = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
@@ -169,13 +179,15 @@ class _$ActionCopyWithImpl<O> implements $ActionCopyWith<O> {
             stream == dimmutable ? _value.stream : stream as Stream<dynamic>?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
+        mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));
   }
 }
 
-abstract class _$ActionCopyWith<O> implements $ActionCopyWith<O> {
-  factory _$ActionCopyWith(Action value, O Function(Action) then) =
-      __$ActionCopyWithImpl<O>;
+abstract class _$ActionCopyWith<M extends ToMap, O>
+    implements $ActionCopyWith<M, O> {
+  factory _$ActionCopyWith(Action<M> value, O Function(Action<M>) then) =
+      __$ActionCopyWithImpl<M, O>;
   O call(
       {String name,
       String type,
@@ -187,16 +199,17 @@ abstract class _$ActionCopyWith<O> implements $ActionCopyWith<O> {
       ActionInternal? internal,
       Stream<dynamic>? stream,
       Duration? debounce,
+      M? mock,
       FormReq? form});
 }
 
-class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
-    implements _$ActionCopyWith<O> {
-  __$ActionCopyWithImpl(Action _value, O Function(Action) _then)
+class __$ActionCopyWithImpl<M extends ToMap, O>
+    extends _$ActionCopyWithImpl<M, O> implements _$ActionCopyWith<M, O> {
+  __$ActionCopyWithImpl(Action<M> _value, O Function(Action<M>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  Action get _value => super._value;
+  Action<M> get _value => super._value;
 
   @override
   O call(
@@ -210,6 +223,7 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
       Object? internal = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
+      Object? mock = dimmutable,
       Object? form = dimmutable}) {
     return _then(Action(
         name: name == dimmutable ? _value.name : name as String,
@@ -232,6 +246,7 @@ class __$ActionCopyWithImpl<O> extends _$ActionCopyWithImpl<O>
             stream == dimmutable ? _value.stream : stream as Stream<dynamic>?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
+        mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));
   }
 }
