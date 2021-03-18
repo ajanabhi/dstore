@@ -86,6 +86,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       name: element.name,
       url: url,
       method: method,
+      fieldType: element.type.toString(),
       inputTypeEnum: inputTypeEnum,
       responseTypeEnum: responseTypeEnum!,
       inputDeserializer: inputDeserializer,
@@ -101,7 +102,9 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
 }
 
 String convertHttpFieldInfoToAction(
-    {required HttpFieldInfo hf, required String type}) {
+    {required HttpFieldInfo hf,
+    required String type,
+    required String modelName}) {
   final params = <String>[];
   final payloadFields = <String>[];
   if (hf.queryParamsType != null) {
@@ -139,11 +142,11 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("""method: "${hf.method}" """);
   payloadFields.add("inputType:${hf.inputTypeEnum}");
   payloadFields.add("responseType:${hf.responseTypeEnum}");
-
+  params.add("${hf.fieldType} mock");
   params.add("Duration? debounce");
   return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+        return Action(name:"${hf.name}",mock:mock,type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

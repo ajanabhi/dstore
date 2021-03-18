@@ -509,10 +509,14 @@ class Store<S extends AppStateI> {
     return _pStateTypeToStateKeyMap[key]!;
   }
 
-  dynamic getFieldFromAction(Action action) {
-    final sk = _pStateTypeToStateKeyMap[action.type];
+  PStateModel getPStateModelFromAction(Action action) {
+    final sk = _pStateTypeToStateKeyMap[action.type]!;
     final gsMap = state.toMap();
-    final currentS = gsMap[sk]!;
+    return gsMap[sk]!;
+  }
+
+  dynamic getFieldFromAction(Action action) {
+    final currentS = getFieldFromAction(action);
     return currentS.toMap()[action.name];
   }
 

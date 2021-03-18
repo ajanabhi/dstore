@@ -223,6 +223,7 @@ String _generateActionsCreators({
   required String modelName,
   required String type,
 }) {
+  final mockModels = <String>[];
   final methodActions = methods.map((m) {
     final paramsList = m.params.map((p) {
       if (!p.isOptional) {
@@ -235,6 +236,9 @@ String _generateActionsCreators({
     if (m.isAsync) {
       paramsList.add("Duration? debounce");
     }
+    final mockName = getMockModelName(modelName: modelName, name: m.name);
+    mockModels.add(_createMockModel(name: mockName, fields: m.keysModified));
+    paramsList.add("$mockName? mock");
     final params = paramsList.join(", ");
 
     var payload = m.params.isNotEmpty
@@ -247,12 +251,13 @@ String _generateActionsCreators({
     }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",type:"${type}" ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action(name:"${m.name}",type:"${type}" ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");
   final httpActions = httpFields
-      .map((hf) => convertHttpFieldInfoToAction(hf: hf, type: type))
+      .map((hf) => convertHttpFieldInfoToAction(
+          hf: hf, type: type, modelName: modelName))
       .join("\n");
 
   final streamActions = streamFields
@@ -272,6 +277,8 @@ String _generateActionsCreators({
   }).join("\n");
 
   return """
+      ${mockModels.join("\n")}
+
      abstract class ${modelName}Actions {
          ${methodActions}
          ${httpActions}
@@ -279,6 +286,52 @@ String _generateActionsCreators({
          ${streamActions}
          ${websocketActions}
      }
+  """;
+}
+
+String getMockModelName({required String modelName, required String name}) {
+  return "$modelName${name.cpatialize}Mock";
+}
+
+String _createMockModel({required String name, required List<Field> fields}) {
+  final finalFields = fields.map((e) {
+    final type = e.type.endsWith("?") ? "Optional<${e.type}>" : "${e.type}?";
+    return "final $type ${e.name};";
+  }).join("\n ");
+  final ctorParams = fields.map((e) {
+    return e.type.endsWith("?")
+        ? "this.${e.name} = optionalDefault"
+        : "this.${e.name}";
+  }).join(", ");
+  final toMapStatements = fields.map((e) {
+    if (e.type.endsWith("?")) {
+      return """
+        if(${e.name} != optionalDefault) {
+          map["${e.name}"] = ${e.name}.value;
+        }
+      """;
+    } else {
+      return """
+        if(${e.name} != null) {
+          map["${e.name}"] = ${e.name};
+        }      
+      """;
+    }
+  }).join("\n");
+  return """
+    class $name implements ToMap {
+     
+     $finalFields
+
+     const ${name}({$ctorParams});
+
+     Map<String,dynamic> toMap() {
+       final map = <String,dynamic>{};
+        $toMapStatements
+       return map;
+     }
+    }
+  
   """;
 }
 

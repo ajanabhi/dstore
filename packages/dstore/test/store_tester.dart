@@ -4,11 +4,40 @@ import 'package:dstore/src/action.dart';
 import 'package:dstore/src/http.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
+import 'package:test/test.dart';
+
+extension on Map {
+  bool identicalMembers(Map other) {
+    return this.entries.every((me) => identical(me.value, other[me.key]));
+  }
+}
 
 class StoreTester<S extends AppStateI> {
   final Store<S> store;
 
   StoreTester(this.store);
+
+  Future<void> testAction<M extends ToMap>(Action<M> action, M result) async {
+    final before = store.getPStateModelFromAction(action);
+    store.dispatch(action);
+    if (action.isAsync || action.http != null) {
+      await waitForAction(action);
+    }
+    final after = store.getPStateModelFromAction(action);
+    expect(identical(before, after), false);
+    final mockMap = result.toMap();
+    if (mockMap.isEmpty) {
+      expect(before, after);
+    } else {
+      final afterMap = after.toMap();
+      final beforeMap = before.toMap();
+      mockMap.forEach((key, value) {
+        expect(value, afterMap[key]);
+        beforeMap.remove(key);
+      });
+      expect(beforeMap.identicalMembers(afterMap), true);
+    }
+  }
 
   Future<void> waitForAction(Action action,
       {Duration? timeout, int interval = 4}) {

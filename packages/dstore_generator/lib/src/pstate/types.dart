@@ -15,6 +15,7 @@ class ActionsInfo {
 
 class HttpFieldInfo {
   final String name;
+  final String fieldType;
   final String url;
   final String? inputType;
   final HttpInputType inputTypeEnum;
@@ -33,6 +34,7 @@ class HttpFieldInfo {
   HttpFieldInfo({
     required this.name,
     required this.url,
+    required this.fieldType,
     required this.inputType,
     required this.inputTypeEnum,
     required this.responseType,

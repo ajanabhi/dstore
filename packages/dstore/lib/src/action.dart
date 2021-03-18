@@ -12,7 +12,7 @@ abstract class ToMap {
 }
 
 @dimmutable
-abstract class Action<M extends ToMap> with _$Action {
+abstract class Action<M extends ToMap> with _$Action<M> {
   const factory Action({
     required String name,
     required String type,
@@ -26,7 +26,7 @@ abstract class Action<M extends ToMap> with _$Action {
     Duration? debounce,
     M? mock,
     FormReq? form,
-  }) = _Action;
+  }) = _Action<M>;
 
   factory Action.fromJson(Map<String, dynamic> map, Httpmeta? httpMeta) {
     final name = map["name"];

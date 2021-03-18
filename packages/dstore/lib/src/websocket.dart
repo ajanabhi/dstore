@@ -1,5 +1,5 @@
 import 'package:dstore/dstore.dart';
-import 'package:dstore/src/helper_classes.dart';
+import 'package:dstore/src/types.dart';
 
 class WebSocketField<I, R, E> {
   final bool loading;

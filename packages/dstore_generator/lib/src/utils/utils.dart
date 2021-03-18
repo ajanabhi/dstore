@@ -91,3 +91,7 @@ String? convertEnumOrNullToString(Object? enumEntry) {
 E? convertStringToEnum<E>(String s, List<E> values) {
   return values.firstWhereOrNull((v) => v.toString().split('.')[1] == s);
 }
+
+extension StringExt on String {
+  String get cpatialize => "${substring(0, 1).toUpperCase()}${substring(1)}";
+}

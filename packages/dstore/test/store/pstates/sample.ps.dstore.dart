@@ -91,28 +91,77 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   }
 }
 
+class SampleChangeNameMock implements ToMap {
+  final String? name;
+
+  const SampleChangeNameMock({this.name});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (name != null) {
+      map["name"] = name;
+    }
+
+    return map;
+  }
+}
+
+class SampleChangeAgeMock implements ToMap {
+  final int? age;
+
+  const SampleChangeAgeMock({this.age});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (age != null) {
+      map["age"] = age;
+    }
+
+    return map;
+  }
+}
+
+class SampleAddToListMock implements ToMap {
+  final List<String>? list;
+
+  const SampleAddToListMock({this.list});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (list != null) {
+      map["list"] = list;
+    }
+
+    return map;
+  }
+}
+
 abstract class SampleActions {
-  static Action changeName({required String newName}) {
+  static Action changeName(
+      {required String newName, SampleChangeNameMock? mock}) {
     return Action(
         name: "changeName",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"newName": newName},
+        mock: mock,
         isAsync: false);
   }
 
-  static Action changeAge({required int newAge}) {
+  static Action changeAge({required int newAge, SampleChangeAgeMock? mock}) {
     return Action(
         name: "changeAge",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"newAge": newAge},
+        mock: mock,
         isAsync: false);
   }
 
-  static Action addToList({required String item}) {
+  static Action addToList({required String item, SampleAddToListMock? mock}) {
     return Action(
         name: "addToList",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"item": item},
+        mock: mock,
         isAsync: false);
   }
 }

@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/form.dart';
-import 'package:dstore/src/helper_classes.dart';
+import 'package:dstore/src/types.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
