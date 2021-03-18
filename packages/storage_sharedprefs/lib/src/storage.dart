@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum StorageSharedPrefsValueType { json, bytearray }
 
-class StorageSharedPrefs implements PersitantStorage {
+class StorageSharedPrefs implements PersitantStorage<String> {
   final StorageSharedPrefsValueType valueType;
   late final SharedPreferences _prefs;
   static const _prefix = "_DSTORE_STORAGE_";
@@ -59,7 +59,7 @@ class StorageSharedPrefs implements PersitantStorage {
   }
 
   @override
-  Future<void> set({required String key, required value}) async {
+  Future<void> set({required String key, required dynamic value}) async {
     switch (valueType) {
       case StorageSharedPrefsValueType.json:
         await _prefs.setString("$_prefix$key", jsonEncode(value));
@@ -77,8 +77,20 @@ class StorageSharedPrefs implements PersitantStorage {
 
   @override
   Future<void> setAll(Map<String, dynamic> keyValues) async {
-    keyValues.forEach((key, value) async {
+    keyValues.forEach((key, dynamic value) async {
       await set(key: key, value: value);
     });
+  }
+
+  @override
+  Future<String?> getOfflineActions() {
+    // TODO: implement getOfflineActions
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> saveOfflineActions(String? actions) {
+    // TODO: implement saveOfflineActions
+    throw UnimplementedError();
   }
 }

@@ -113,11 +113,12 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
   late gschema.GraphQLSchema schema;
   try {
     final dio = Dio();
-    final resp = await dio.post(url, data: {"query": getIntrospectionQuery()});
+    final resp =
+        await dio.post<dynamic>(url, data: {"query": getIntrospectionQuery()});
     final respStr = jsonEncode(resp.data);
     // await File("schema.json").writeAsString(respStr);
     schema = buildSchemaFromIntrospection(
-        IntrospectionQuery.fromJson(resp.data["data"]));
+        IntrospectionQuery.fromJson(resp.data["data"] as Map<String, dynamic>));
   } catch (e) {
     if (schemaPath != null) {
       print(

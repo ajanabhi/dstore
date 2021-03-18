@@ -18,7 +18,7 @@ class PStateGeneratorBuildOptions {
   static void fromOptions(Map<String, dynamic> config) {
     try {
       PersistMode? persistMode;
-      final pms = config["persistMode"];
+      final pms = config["persistMode"] as String?;
       if (pms != null) {
         if (pms != "ExplicitPersist" && pms != "ExplicitDontPersist") {
           throw ArgumentError.value(

@@ -17,7 +17,7 @@ class DEnumGenerator extends GeneratorForAnnotation<DEnum> {
       }
       final name = element.name;
       logger.shout("Enum ${element.runtimeType} ${element.name} ${element}");
-      final List<FieldElement> fields = (element as dynamic).constants;
+      final fields = (element as dynamic).constants as List<FieldElement>;
       print(fields);
       fields.forEach((element) {
         print("Element ${element.name}");

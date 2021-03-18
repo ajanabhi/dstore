@@ -18,6 +18,8 @@ enum GraphqlMessages {
   complete
 }
 
+const _WebSocket_Global_Group = "_DSTORE_WEBSCOKET_GLOBAL_GROUP";
+
 extension GraphqlMessagesExt on GraphqlMessages {
   String get name => toString().split(".").last;
 }
@@ -28,23 +30,23 @@ GraphqlMessages _convertStringToGraphlMessage(String name) {
       orElse: () => GraphqlMessages.complete);
 }
 
-class _WebSocketGlobalGroup {}
-
 final _clients = <String, DWebSocket>{};
 
 abstract class WebSocketGlobalActions {
   static Action close(String url) {
     return Action(
         name: "close",
-        type: _WebSocketGlobalGroup,
-        ws: WebSocketPayload(url: url, responseDeserializer: IdentityFn));
+        type: _WebSocket_Global_Group,
+        ws: WebSocketPayload<dynamic, dynamic, dynamic>(
+            url: url, responseDeserializer: IdentityFn));
   }
 
   static Action connect(String url) {
     return Action(
         name: "connect",
-        type: _WebSocketGlobalGroup,
-        ws: WebSocketPayload(url: url, responseDeserializer: IdentityFn));
+        type: _WebSocket_Global_Group,
+        ws: WebSocketPayload<dynamic, dynamic, dynamic>(
+            url: url, responseDeserializer: IdentityFn));
   }
 }
 
@@ -76,7 +78,7 @@ class DWebSocket {
   final queue = <Action>[];
   bool isForceClose = false;
   late final WebSocketChannel ws;
-  late final isGraphql;
+  late final bool isGraphql;
   late final String url;
   Timer? _onOpenMinitorTimer;
   int delay = 0;
@@ -155,9 +157,12 @@ class DWebSocket {
     }
   }
 
-  void cleanup(error) {
+  void cleanup(dynamic error) {
     [...subscriptions, ...queue].forEach((a) {
-      _dispatchActionToStore(a, WebSocketField(error: error, completed: true));
+      _dispatchActionToStore(
+          a,
+          WebSocketField<dynamic, dynamic, dynamic>(
+              error: error, completed: true));
     });
     subscriptions.clear();
     queue.clear();
@@ -169,14 +174,14 @@ class DWebSocket {
     if (isGraphql) {
       _handleGraphqlMessage(message);
     } else {
-      final data = message["data"];
+      final dynamic data = message["data"];
       if (options.parseMessage == null) {
         throw Exception(
             "You should provide a parseMessage function which should return unique id that was passed as input to createMessage while sending");
       }
       final list = options.parseMessage!(data);
-      final rData = list.first;
-      final id = list.last;
+      final rData = list.first as WebSocketField;
+      final id = list.last as String;
       final a = _getActionFromId(id);
       if (a != null) {
         _dispatchActionToStore(a, rData);
@@ -185,7 +190,8 @@ class DWebSocket {
   }
 
   void _handleGraphqlMessage(dynamic message) {
-    final data = jsonDecode(message["data"]);
+    print("Message runtime type ${message.runtimeType}");
+    final data = jsonDecode(message["data"] as String) as Map<String, dynamic>;
     final type = data["type"] as String;
     final gmType = _convertStringToGraphlMessage(type);
     switch (gmType) {
@@ -214,12 +220,13 @@ class DWebSocket {
         break;
       case GraphqlMessages.data:
         // This message is sent after GQL.START to transfer the result of the GraphQL subscription.
-        final id = data["id"];
+        final id = data["id"] as String;
         final a = _getActionFromId(id);
 
         if (a != null) {
-          List<dynamic>? pError = data["payload"]["errors"];
-          final pData = data["payload"]["data"];
+          final pError =
+              data["payload"]["errors"] as List<Map<String, dynamic>>?;
+          final dynamic pData = data["payload"]["data"];
           dynamic error;
           if (pError != null) {
             error = pError.map((e) => GraphqlError.fromJson(e)).toList();
@@ -228,24 +235,31 @@ class DWebSocket {
           if (pData != null) {
             rData = a.ws!.responseDeserializer(pData);
           }
-          _dispatchActionToStore(a, WebSocketField(error: error, data: rData));
+          _dispatchActionToStore(
+              a,
+              WebSocketField<dynamic, dynamic, dynamic>(
+                  error: error, data: rData));
         }
         break;
       case GraphqlMessages.error:
         // This method is sent when a subscription fails. This is usually dues to validation errors
         // as resolver errors are returned in GQL.DATA messages.
-        final id = data["id"];
+        final id = data["id"] as String;
         final a = _getActionFromId(id);
         if (a != null) {
-          _dispatchActionToStore(a, WebSocketField(error: data["payload"]));
+          _dispatchActionToStore(
+              a,
+              WebSocketField<dynamic, dynamic, dynamic>(
+                  error: data["payload"]));
           //TODO do we need remove subscription from here ...
         }
         break;
       case GraphqlMessages.complete:
         // This is sent when the operation is done and no more dta will be sent.
-        final ac = _getActionFromId(data["id"]);
+        final ac = _getActionFromId(data["id"] as String);
         if (ac != null) {
-          _dispatchActionToStore(ac, WebSocketField(completed: true));
+          _dispatchActionToStore(
+              ac, WebSocketField<dynamic, dynamic, dynamic>(completed: true));
           removeFromSubscriptions(ac);
         }
         break;
@@ -267,7 +281,7 @@ class DWebSocket {
     }
   }
 
-  void onError(error) {
+  void onError(dynamic error) {
     // on done is called after onError so do clean up there
     _error = error;
   }
@@ -349,32 +363,33 @@ class DWebSocket {
     return () => store.dispatch(Action(
         name: action.name,
         type: action.type,
-        ws: WebSocketPayload(
+        ws: WebSocketPayload<dynamic, dynamic, dynamic>(
             url: url, responseDeserializer: IdentityFn, unsubscribe: true)));
   }
 
   void handleAction(Action action) {
     final wsp = action.ws!;
-    if (action.type == _WebSocketGlobalGroup) {
+    if (action.type == _WebSocket_Global_Group) {
       return handleGlobalAction(action);
     } else {
       if (wsp.unsubscribe) {
         handleUnsubscribe(action);
         return;
       }
-      _dispatchActionToStore(action, WebSocketField(loading: true));
+      _dispatchActionToStore(
+          action, WebSocketField<dynamic, dynamic, dynamic>(loading: true));
       if (!isReady) {
         queue.add(action);
         return;
       }
       final id = getId(action);
       final sa = _getActionFromId(id);
-      var payload = wsp.data;
+      dynamic payload = wsp.data;
       if (wsp.inputSerializer != null) {
         payload = wsp.inputSerializer!(payload);
       }
       if (isGraphql) {
-        ws.sink.add(jsonEncode({
+        ws.sink.add(jsonEncode(<String, dynamic>{
           "type": GraphqlMessages.start.name,
           "id": id,
           "payload": payload
@@ -396,8 +411,8 @@ class DWebSocket {
   }
 }
 
-final ds =
-    DWebSocket(url: "", options: null as dynamic, store: null as dynamic);
+// final ds =
+//     DWebSocket(url: "", options: null as dynamic, store: null as dynamic);
 
 class WebsocketMiddlewareOptions {
   final Map<String, DWebSocketOptions Function()> urlOptions;
@@ -409,7 +424,7 @@ void _processWebsocketAction(
     {required WebsocketMiddlewareOptions? options,
     required Action action,
     required Store store}) {
-  final isGlobal = action.type == _WebSocketGlobalGroup;
+  final isGlobal = action.type == _WebSocket_Global_Group;
   final isGraphql = action.ws!.data is GraphqlRequestInput;
   final url = action.ws!.url;
   var client = _clients[url];
@@ -435,9 +450,9 @@ void _processWebsocketAction(
   client.handleAction(action);
 }
 
-Middleware<S> createWebsocketMiddleware<S extends AppStateI>(
+Middleware<S> createWebsocketMiddleware<S extends AppStateI<S>>(
     [WebsocketMiddlewareOptions? options]) {
-  return (Store<S> store, Dispatch next, Action action) {
+  return (Store<S, dynamic> store, Dispatch next, Action action) {
     if (action.isProcessed || action.ws == null) {
       return next(action);
     }

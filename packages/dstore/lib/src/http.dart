@@ -183,5 +183,5 @@ extension HttpPayloadExt on HttpPayload {
 class GlobalHttpOptions {
   Map<String, dynamic> headers;
 
-  GlobalHttpOptions({this.headers = const {}});
+  GlobalHttpOptions({this.headers = const <String, dynamic>{}});
 }

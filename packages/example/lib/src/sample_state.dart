@@ -5,7 +5,7 @@ import 'package:meta/meta.dart';
 part 'sample_state.dstore.dart';
 
 @AppStateAnnotation()
-class AppState with _$AppState implements AppStateI {
+class AppState with _$AppState implements AppStateI<AppState> {
   late final Sample sample;
   late final Sample2 sample2;
 }

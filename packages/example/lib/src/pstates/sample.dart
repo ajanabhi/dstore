@@ -20,7 +20,7 @@ abstract class User with _$User {
 dynamic s(dynamic a) => a;
 
 @WebSocketRequest(url: "ws2", responseDeserializer: s)
-class WsMessage = WebSocketField with EmptyMixin;
+class WsMessage = WebSocketField<dynamic, dynamic, dynamic> with EmptyMixin;
 
 @PState()
 class $Sample {
@@ -56,8 +56,10 @@ class $Sample {
 
   void decrement() => this.count = 3;
 
-  void increment2(int x, y, {int sn = 4, y1, dynamic y2}) => this.count = x;
-  void increment3(int x, y, [int si = 4, s2 = 3]) => this.count = x;
+  void increment2(int x, dynamic y, {int sn = 4, dynamic y1, dynamic y2}) =>
+      this.count = x;
+  void increment3(int x, dynamic y, [int si = 4, dynamic s2 = 3]) =>
+      this.count = x;
   void changeUserName(String name) {
     this.name = this.name.copyWith(name: name);
   }
@@ -67,7 +69,7 @@ class $Sample {
   }
 
   void fint() async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Future<dynamic>.delayed(const Duration(seconds: 1));
     this.count = 5;
   }
 }

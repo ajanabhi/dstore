@@ -8,7 +8,7 @@ import 'package:dstore/src/selector.dart';
 
 typedef Dispatch = dynamic Function(Action action);
 
-typedef Middleware<State extends AppStateI> = dynamic Function(
+typedef Middleware<State extends AppStateI<State>> = dynamic Function(
     Store<State, dynamic> store, Dispatch next, Action action);
 
 typedef Callback = dynamic Function();
@@ -17,7 +17,7 @@ typedef VoidCallback = void Function();
 
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
 
-class Store<S extends AppStateI, AT> {
+class Store<S extends AppStateI<S>, AT> {
   final Map<String, PStateMeta<PStateModel>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
@@ -204,7 +204,7 @@ class Store<S extends AppStateI, AT> {
       final so = storageOptions!;
       if (so.writeMode == StorageWriteMode.DISKFIRST) {
         try {
-          final data = psm.sm!.serializer(currentState);
+          final dynamic data = psm.sm!.serializer(currentState);
           await storage!.set(key: psm.type, value: data);
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
@@ -225,7 +225,7 @@ class Store<S extends AppStateI, AT> {
             previousState: previousState,
             currentState: currentState);
         try {
-          final data = psm.sm!.serializer(currentState);
+          final dynamic data = psm.sm!.serializer(currentState);
           await storage!.set(key: psm.type, value: data);
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
@@ -492,9 +492,9 @@ class Store<S extends AppStateI, AT> {
               }
             });
             selector.deps.keys.forEach((sk) {
-              final newMap = {
-                ...wsFieldsMapForStateKey.getOrElse(sk, {}),
-                ...streamFieldsMapForStateKey.getOrElse(sk, {})
+              final newMap = <String, dynamic>{
+                ...wsFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{}),
+                ...streamFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{})
               };
               final ps = sMap[sk]!;
               sMap[sk] = ps.copyWithMap(newMap) as PStateModel;
@@ -503,7 +503,7 @@ class Store<S extends AppStateI, AT> {
         });
         // if persitance is enabled and following state keys are persitable then update values
         await _updatePersitance(stateKeysModified, []);
-        _state = _state.copyWithMap(sMap) as S;
+        _state = _state.copyWithMap(sMap);
       }
     }
   }
@@ -521,7 +521,7 @@ class Store<S extends AppStateI, AT> {
   }
 
   dynamic getFieldFromAction(Action action) {
-    final currentS = getFieldFromAction(action);
+    final currentS = getPStateModelFromAction(action);
     return currentS.toMap()[action.name];
   }
 
@@ -581,7 +581,7 @@ class UnSubscribeOptions {
   UnSubscribeOptions({this.resetToDefault});
 }
 
-class _SelectorListener<S extends AppStateI> {
+class _SelectorListener {
   final Selector selector;
   final Callback listener;
   _SelectorListener({
@@ -592,7 +592,7 @@ class _SelectorListener<S extends AppStateI> {
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
-    return other is _SelectorListener<S> &&
+    return other is _SelectorListener &&
         other.selector == selector &&
         other.listener == listener;
   }

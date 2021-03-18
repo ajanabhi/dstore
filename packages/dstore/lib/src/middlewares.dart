@@ -6,8 +6,8 @@ import 'package:dstore/src/types.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
-final Middleware asyncMiddleware =
-    (Store store, Dispatch next, Action action) async {
+dynamic asyncMiddleware<S extends AppStateI<S>>(
+    Store<S, dynamic> store, Dispatch next, Action action) async {
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
@@ -21,10 +21,10 @@ final Middleware asyncMiddleware =
             type: ActionInternalType.DATA,
             data: AsyncActionField(loading: true))));
     try {
-      final s = await psm.aReducer!(currentS, action);
+      final s = await psm.aReducer!(currentS, action) as PStateModel;
       final asm = s.toMap();
       asm[action.name] = AsyncActionField(completed: true);
-      final newS = s.copyWithMap(asm);
+      final newS = s.copyWithMap(asm) as PStateModel;
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true, data: newS, type: ActionInternalType.STATE)));
@@ -36,10 +36,10 @@ final Middleware asyncMiddleware =
               data: AsyncActionField(error: e, completed: true))));
     }
   }
-};
+}
 
-final Middleware debounceMiddleware =
-    (Store store, Dispatch next, Action action) async {
+dynamic debounceMiddleware<S extends AppStateI<S>>(
+    Store store, Dispatch next, Action action) async {
   if (action.isProcessed || action.debounce == null) {
     next(action);
   } else {
@@ -59,10 +59,10 @@ final Middleware debounceMiddleware =
       });
     }
   }
-};
+}
 
-final Middleware streamMiddleware =
-    (Store store, Dispatch next, Action action) async {
+dynamic streamMiddleware<S extends AppStateI<S>>(
+    Store store, Dispatch next, Action action) async {
   if (action.isProcessed || action.stream == null) {
     next(action);
   } else {
@@ -73,20 +73,21 @@ final Middleware streamMiddleware =
           internal: ActionInternal(
               processed: true, type: ActionInternalType.DATA, data: field)));
     } else {
-      final sub = action.stream?.listen((event) {
+      final sub = action.stream?.listen((dynamic event) {
         final field = store.getFieldFromAction(action) as StreamField;
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(data: Optional(event), error: Optional(null)),
+          data: field.copyWith(
+              data: Optional<dynamic>(event), error: Optional(null)),
           type: ActionInternalType.DATA,
         )));
-      }, onError: (e) {
+      }, onError: (dynamic e) {
         final field = store.getFieldFromAction(action) as StreamField;
         store.dispatch(action.copyWith(
             internal: ActionInternal(
           processed: true,
-          data: field.copyWith(error: Optional(e)),
+          data: field.copyWith(error: Optional<dynamic>(e)),
           type: ActionInternalType.DATA,
         )));
       }, onDone: () {
@@ -103,10 +104,12 @@ final Middleware streamMiddleware =
           internal: ActionInternal(
               processed: true,
               type: ActionInternalType.DATA,
-              data: StreamField(internalSubscription: sub, listening: true))));
+              data: StreamField<dynamic>(
+                  internalSubscription: sub, listening: true))));
     }
   }
-};
+}
+
 dynamic formMiddleware<S extends AppStateI<S>>(
     Store<S, dynamic> store, Dispatch next, Action action) async {
   if (action.isProcessed || action.form == null) {
@@ -124,9 +127,10 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       }
       final validator = ff.validators[req.key];
       final errors = {...ff.errors};
-      final value = ff.value.copyWithMap({req.key: req.value});
+      final value = ff.value.copyWithMap(<String, dynamic>{req.key: req.value})
+          as FormFieldObject;
       if (validate && validator != null) {
-        final newE = await validator(req.value);
+        final newE = await validator(req.value) as String?;
         if (newE != null) {
           errors[req.key] = newE as String;
         }
@@ -144,9 +148,9 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       final validator = ff.validators[req.key];
       final touched = {...ff.touched, req.key: true};
       if (validate && validator != null) {
-        final newE = await validator(ff.value.toMap()[req.key]);
+        final newE = await validator(ff.value.toMap()[req.key]) as String?;
         if (newE != null) {
-          errors[req.key] = newE as String;
+          errors[req.key] = newE;
         }
       }
       nff = ff.copyWith(

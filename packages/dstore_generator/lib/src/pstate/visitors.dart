@@ -8,7 +8,7 @@ import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 
-class PStateAstVisitor extends SimpleAstVisitor {
+class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   List<Field> fields = [];
   List<PStateMethod> methods = [];
   final bool isPersitable;
@@ -119,7 +119,8 @@ class PStateAstVisitor extends SimpleAstVisitor {
       final noPersitAnnot = fe.annotationFromType(ExcludeThisKeyWhilePersit);
       if (isPersitable && noPersitAnnot != null) {
         if (fe.hasJsonKey) {
-          annotations = fe.mergeJsonKeyAndReturnAnnotations({"ignore": true});
+          annotations = fe.mergeJsonKeyAndReturnAnnotations(
+              <String, dynamic>{"ignore": true});
         } else {
           annotations.add("@JsonKey(ignore: true)");
         }

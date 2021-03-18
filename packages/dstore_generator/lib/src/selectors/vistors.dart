@@ -7,7 +7,7 @@ import 'package:dstore_generator/src/selectors/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import "dart:convert";
 
-class SelectorsVisitor extends SimpleAstVisitor {
+class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
   final String modelName;
   final Element element;
   final selectors = <String>[];
@@ -248,7 +248,7 @@ class SelectorsVisitor extends SimpleAstVisitor {
   }
 }
 
-class SelectorBodyVisitor extends RecursiveAstVisitor {
+class SelectorBodyVisitor extends RecursiveAstVisitor<dynamic> {
   final Identifier identifier;
 
   final List<List<MapEntry<String, DartType>>> depsList = [];

@@ -17,8 +17,8 @@ abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
-      @Default({}) Map<String, String> errors,
-      @Default({}) Map<String, bool> touched,
+      @Default(<String, String>{}) Map<String, String> errors,
+      @Default(<String, bool>{}) Map<String, bool> touched,
       @Default(false) bool isValid,
       @Default(false) bool isSubmitting,
       @Default(false) bool isValidating,
@@ -135,9 +135,9 @@ abstract class MiddlewareFormUtils {
       final values = ff.value.toMap();
 
       for (final e in ff.validators.entries) {
-        final r = await e.value(values[e.key]);
+        final r = await e.value(values[e.key]) as String?;
         if (r != null) {
-          errors[e.key] = r as String;
+          errors[e.key] = r;
         }
       }
     } catch (e) {

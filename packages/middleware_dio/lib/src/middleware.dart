@@ -192,10 +192,10 @@ class DioMiddlewareOptions {
   DioMiddlewareOptions({required this.urlOptions});
 }
 
-Middleware<S> createDioMiddleware<S extends AppStateI>(
+dynamic createDioMiddleware<S extends AppStateI<S>>(
     [DioMiddlewareOptions? options]) {
   final dio = Dio();
-  return (Store<S> store, Dispatch next, Action action) {
+  return (Store<S, dynamic> store, Dispatch next, Action action) {
     if (action.isProcessed || action.http == null) {
       return next(action);
     }

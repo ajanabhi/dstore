@@ -3,8 +3,6 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
-import 'package:dstore_generator/src/pstate/pstate_generator.dart';
-import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 import './utils.dart';
@@ -86,7 +84,7 @@ abstract class AstUtils {
             if (!jsonKeyAnnot!.toSource().contains("defaultValue")) {
               // jsonKey doesnt have defaultValue but Default is specified as Default annotation so lets merge
               annotations = param.mergeJsonKeyAndReturnAnnotations(
-                  {"defaultValue": defaultValue});
+                  <String, dynamic>{"defaultValue": defaultValue});
               logger.shout(
                   "Default value $defaultValue annotationation $annotations");
             }
@@ -160,46 +158,46 @@ abstract class AnnotationUtils {
       defaultValue = defaultValueField.literalValue;
     }
 
-    dynamic disallowNullValue;
+    bool? disallowNullValue;
     final disallowNullValueField = reader.peek("disallowNullValue");
     if (disallowNullValueField != null) {
-      disallowNullValue = disallowNullValueField.literalValue;
+      disallowNullValue = disallowNullValueField.boolValue;
     }
 
-    dynamic fromJson;
+    Function? fromJson;
     final fromJsonField = reader.peek("fromJson");
     if (fromJsonField != null) {
-      fromJson = fromJsonField.literalValue;
+      fromJson = fromJsonField.literalValue as Function;
     }
 
-    dynamic ignore;
+    bool? ignore;
     final ignoreField = reader.peek("ignore");
     if (ignoreField != null) {
-      ignore = ignoreField.literalValue;
+      ignore = ignoreField.boolValue;
     }
 
-    dynamic includeIfNull;
+    bool? includeIfNull;
     final includeIfNullField = reader.peek("includeIfNull");
     if (includeIfNullField != null) {
-      includeIfNull = includeIfNullField.literalValue;
+      includeIfNull = includeIfNullField.boolValue;
     }
 
-    dynamic name;
+    String? name;
     final nameField = reader.peek("name");
     if (nameField != null) {
-      name = nameField.literalValue;
+      name = nameField.stringValue;
     }
 
-    dynamic required;
+    bool? required;
     final requiredField = reader.peek("required");
     if (requiredField != null) {
-      required = requiredField.literalValue;
+      required = requiredField.boolValue;
     }
 
-    dynamic toJson;
+    Function? toJson;
     final toJsonField = reader.peek("toJson");
     if (toJsonField != null) {
-      toJson = toJsonField.literalValue;
+      toJson = toJsonField.literalValue as Function;
     }
 
     dynamic unknownEnumValue;
@@ -255,16 +253,19 @@ extension JsonKeyExt on JsonKey {
             ? map["defaultValue"]
             : defaultValue,
         disallowNullValue: map.containsKey("disallowNullValue")
-            ? map["disallowNullValue"]
+            ? map["disallowNullValue"] as bool?
             : disallowNullValue,
-        fromJson: map.containsKey("fromJson") ? map["fromJson"] : fromJson,
-        ignore: map.containsKey("ignore") ? map["ignore"] : ignore,
+        fromJson: map.containsKey("fromJson")
+            ? map["fromJson"] as Function?
+            : fromJson,
+        ignore: map.containsKey("ignore") ? map["ignore"] as bool? : ignore,
         includeIfNull: map.containsKey("includeIfNull")
-            ? map["includeIfNull"]
+            ? map["includeIfNull"] as bool?
             : includeIfNull,
-        name: map.containsKey("name") ? map["name"] : name,
-        required: map.containsKey("required") ? map["required"] : required,
-        toJson: map.containsKey("toJson") ? map["toJson"] : toJson,
+        name: map.containsKey("name") ? map["name"] as String? : name,
+        required:
+            map.containsKey("required") ? map["required"] as bool? : required,
+        toJson: map.containsKey("toJson") ? map["toJson"] as Function? : toJson,
         unknownEnumValue: map.containsKey("unknownEnumValue")
             ? map["unknownEnumValue"]
             : unknownEnumValue);

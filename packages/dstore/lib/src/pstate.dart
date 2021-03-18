@@ -39,7 +39,7 @@ abstract class PStateModel<M> {
   Map<String, dynamic> toMap();
 }
 
-class PStateStorageMeta<S extends PStateModel, SM> {
+class PStateStorageMeta<S extends PStateModel<S>, SM> {
   final dynamic Function(S) serializer;
   final S Function(SM) deserializer;
   final bool encryptonRest;
@@ -50,7 +50,7 @@ class PStateStorageMeta<S extends PStateModel, SM> {
       required this.deserializer});
 }
 
-class PStateMeta<S extends PStateModel> {
+class PStateMeta<S extends PStateModel<S>> {
   final String type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
@@ -74,7 +74,7 @@ class PStateMeta<S extends PStateModel> {
       required this.ds});
 }
 
-class PStateHistory<S extends PStateModel> {
+class PStateHistory<S extends PStateModel<S>> {
   final Queue<Map<String, dynamic>> _history = ListQueue();
   final Queue<Map<String, dynamic>> _redos = ListQueue();
   final int? limit;
@@ -101,7 +101,7 @@ class PStateHistory<S extends PStateModel> {
     if (canRedo) {
       final patch = _redos.removeFirst();
       _history.addLast(patch);
-      final newState = currentState.copyWithMap(patch);
+      final newState = currentState.copyWithMap(patch) as PStateHistoryMixin;
       newState._psHistory = this;
       return newState as S;
     }
@@ -118,7 +118,7 @@ class PStateHistory<S extends PStateModel> {
         _history.forEach((patch) {
           map.addAll(patch);
         });
-        final newState = initialState.copyWithMap(patch);
+        final newState = initialState.copyWithMap(patch) as PStateHistoryMixin;
         newState._psHistory = this;
         return newState as S;
       }

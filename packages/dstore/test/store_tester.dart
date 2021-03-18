@@ -12,7 +12,7 @@ extension on Map {
   }
 }
 
-class StoreTester<S extends AppStateI> {
+class StoreTester<S extends AppStateI<S>> {
   final Store<S, dynamic> store;
 
   StoreTester(this.store);
@@ -31,7 +31,7 @@ class StoreTester<S extends AppStateI> {
     } else {
       final afterMap = after.toMap();
       final beforeMap = before.toMap();
-      mockMap.forEach((key, value) {
+      mockMap.forEach((key, dynamic value) {
         expect(value, afterMap[key]);
         beforeMap.remove(key);
       });
@@ -55,7 +55,7 @@ class StoreTester<S extends AppStateI> {
     Timer? timeoutTimer;
     final periodicTimer =
         Timer.periodic(Duration(milliseconds: interval), (timer) {
-      final field = store.getFieldFromAction(action);
+      final dynamic field = store.getFieldFromAction(action);
       if (field is AsyncActionField) {
         print("its async");
         print(field);

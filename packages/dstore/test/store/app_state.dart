@@ -11,6 +11,6 @@ class AppState with _$AppState implements AppStateI<AppState> {
   late final Sample sample;
 }
 
-final storeTester = StoreTester(Store(
+final storeTester = StoreTester(Store<AppState, dynamic>(
     meta: createAppStateMeta(sample: SampleMeta),
     stateCreator: () => AppState()));
