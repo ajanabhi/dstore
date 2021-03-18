@@ -3,7 +3,7 @@ import 'package:grinder/grinder.dart';
 void main(List<String> args) => grind(args);
 
 @Task()
-void test() => new TestRunner().testAsync();
+void test() => TestRunner().testAsync();
 
 @DefaultTask()
 @Depends(test)

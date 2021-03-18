@@ -1,6 +1,6 @@
 import 'package:dstore/dstore.dart';
 import "package:meta/meta.dart";
-
+import "package:time/time.dart";
 part "sample.ps.dstore.dart";
 
 @PState()
@@ -10,6 +10,7 @@ class _Sample {
   int age = 0;
 
   List<String> list = [];
+  bool isDark = false;
 
   void changeName(String newName) {
     this.name = newName;
@@ -21,5 +22,10 @@ class _Sample {
 
   void addToList(String item) {
     this.list = [...this.list, item];
+  }
+
+  Future<void> changeTheme(bool value) async {
+    await 5.seconds.delay;
+    this.isDark = value;
   }
 }

@@ -17,11 +17,31 @@ class StoreTester<S extends AppStateI<S>> {
 
   StoreTester(this.store);
 
-  Future<void> testAction<M extends ToMap>(Action<M> action, M result) async {
+  void testAction<M extends ToMap>(Action<M> action, M result) {
+    final before = store.getPStateModelFromAction(action);
+    store.dispatch(action);
+    final after = store.getPStateModelFromAction(action);
+    expect(identical(before, after), false);
+    final mockMap = result.toMap();
+    if (mockMap.isEmpty) {
+      expect(before, after);
+    } else {
+      final afterMap = after.toMap();
+      final beforeMap = before.toMap();
+      mockMap.forEach((key, dynamic value) {
+        expect(value, afterMap[key]);
+        beforeMap.remove(key);
+      });
+      expect(beforeMap.identicalMembers(afterMap), true);
+    }
+  }
+
+  Future<void> testAsyncAction<M extends ToMap>(Action<M> action, M result,
+      {Duration? timeout, int interval = 4}) async {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     if (action.isAsync || action.http != null) {
-      await waitForAction(action);
+      await waitForAction(action, timeout: timeout, interval: interval);
     }
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
@@ -35,6 +55,9 @@ class StoreTester<S extends AppStateI<S>> {
         expect(value, afterMap[key]);
         beforeMap.remove(key);
       });
+      if (action.isAsync) {
+        beforeMap.remove(action.name);
+      }
       expect(beforeMap.identicalMembers(afterMap), true);
     }
   }

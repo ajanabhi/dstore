@@ -21,4 +21,11 @@ void main() {
           SampleAddToListMock(list: ["hello"]));
     });
   });
+
+  group("Async Actions", () {
+    test("should set dark mode", () async {
+      await storeTester.testAsyncAction(SampleActions.changeTheme(value: true),
+          SampleChangeThemeMock(isDark: true));
+    });
+  });
 }

@@ -31,13 +31,13 @@ class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
   final Map<String, dynamic Function(dynamic)> validators;
 
   @override
-  @Default({})
-  @JsonKey(defaultValue: const {})
+  @Default(<String, String>{})
+  @JsonKey(defaultValue: const <String, String>{})
   final Map<String, String> errors;
 
   @override
-  @Default({})
-  @JsonKey(defaultValue: const {})
+  @Default(<String, bool>{})
+  @JsonKey(defaultValue: const <String, bool>{})
   final Map<String, bool> touched;
 
   @override
@@ -81,8 +81,8 @@ class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
   const _FormField(
       {required this.value,
       required this.validators,
-      this.errors = const {},
-      this.touched = const {},
+      this.errors = const <String, String>{},
+      this.touched = const <String, bool>{},
       this.isValid = false,
       this.isSubmitting = false,
       this.isValidating = false,

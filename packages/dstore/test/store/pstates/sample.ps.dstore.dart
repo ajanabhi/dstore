@@ -14,38 +14,71 @@ class Sample implements PStateModel<Sample> {
 
   final List<String> list;
 
+  final bool isDark;
+
+  final AsyncActionField changeTheme;
+
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
 
-  const Sample({this.name = "hello", this.age = 0, this.list = const []});
+  const Sample(
+      {this.name = "hello",
+      this.age = 0,
+      this.list = const [],
+      this.isDark = false,
+      this.changeTheme = const AsyncActionField()});
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       name: map.containsKey("name") ? map["name"] : this.name,
       age: map.containsKey("age") ? map["age"] : this.age,
-      list: map.containsKey("list") ? map["list"] : this.list);
+      list: map.containsKey("list") ? map["list"] : this.list,
+      isDark: map.containsKey("isDark") ? map["isDark"] : this.isDark,
+      changeTheme: map.containsKey("changeTheme")
+          ? map["changeTheme"]
+          : this.changeTheme);
 
-  Map<String, dynamic> toMap() =>
-      {"name": this.name, "age": this.age, "list": this.list};
+  Map<String, dynamic> toMap() => {
+        "name": this.name,
+        "age": this.age,
+        "list": this.list,
+        "isDark": this.isDark,
+        "changeTheme": this.changeTheme
+      };
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is Sample && o.name == name && o.age == age && o.list == list;
+    return o is Sample &&
+        o.name == name &&
+        o.age == age &&
+        o.list == list &&
+        o.isDark == isDark &&
+        o.changeTheme == changeTheme;
   }
 
   @override
-  int get hashCode => name.hashCode ^ age.hashCode ^ list.hashCode;
+  int get hashCode =>
+      name.hashCode ^
+      age.hashCode ^
+      list.hashCode ^
+      isDark.hashCode ^
+      changeTheme.hashCode;
 
   @override
   String toString() =>
-      "Sample(name: ${this.name}, age: ${this.age}, list: ${this.list})";
+      "Sample(name: ${this.name}, age: ${this.age}, list: ${this.list}, isDark: ${this.isDark}, changeTheme: ${this.changeTheme})";
 }
 
 abstract class $SampleCopyWith<O> {
   factory $SampleCopyWith(Sample value, O Function(Sample) then) =
       _$SampleCopyWithImpl<O>;
-  O call({String name, int age, List<String> list});
+  O call(
+      {String name,
+      int age,
+      List<String> list,
+      bool isDark,
+      AsyncActionField changeTheme});
 }
 
 class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
@@ -57,18 +90,29 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
-      Object? list = dimmutable}) {
+      Object? list = dimmutable,
+      Object? isDark = dimmutable,
+      Object? changeTheme = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
-        list: list == dimmutable ? _value.list : list as List<String>));
+        list: list == dimmutable ? _value.list : list as List<String>,
+        isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
+        changeTheme: changeTheme == dimmutable
+            ? _value.changeTheme
+            : changeTheme as AsyncActionField));
   }
 }
 
 abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
   factory _$SampleCopyWith(Sample value, O Function(Sample) then) =
       __$SampleCopyWithImpl<O>;
-  O call({String name, int age, List<String> list});
+  O call(
+      {String name,
+      int age,
+      List<String> list,
+      bool isDark,
+      AsyncActionField changeTheme});
 }
 
 class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
@@ -83,11 +127,17 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
-      Object? list = dimmutable}) {
+      Object? list = dimmutable,
+      Object? isDark = dimmutable,
+      Object? changeTheme = dimmutable}) {
     return _then(Sample(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
-        list: list == dimmutable ? _value.list : list as List<String>));
+        list: list == dimmutable ? _value.list : list as List<String>,
+        isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
+        changeTheme: changeTheme == dimmutable
+            ? _value.changeTheme
+            : changeTheme as AsyncActionField));
   }
 }
 
@@ -136,6 +186,21 @@ class SampleAddToListMock implements ToMap {
   }
 }
 
+class SampleChangeThemeMock implements ToMap {
+  final bool? isDark;
+
+  const SampleChangeThemeMock({this.isDark});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (isDark != null) {
+      map["isDark"] = isDark;
+    }
+
+    return map;
+  }
+}
+
 abstract class SampleActions {
   static Action changeName(
       {required String newName, SampleChangeNameMock? mock}) {
@@ -163,6 +228,17 @@ abstract class SampleActions {
         payload: {"item": item},
         mock: mock,
         isAsync: false);
+  }
+
+  static Action changeTheme(
+      {required bool value, Duration? debounce, SampleChangeThemeMock? mock}) {
+    return Action(
+        name: "changeTheme",
+        type: "/dstore/test/store/pstates/sample/Sample",
+        payload: {"value": value},
+        mock: mock,
+        isAsync: true,
+        debounce: debounce);
   }
 }
 
@@ -207,9 +283,38 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
   }
 }
 
-Sample Sample_DS() => Sample(name: "hello", age: 0, list: []);
+Future<dynamic> Sample_AsyncReducer(
+    dynamic _DStoreState, Action _DstoreAction) async {
+  _DStoreState = _DStoreState as Sample;
+  final name = _DstoreAction.name;
+  switch (name) {
+    case "changeTheme":
+      {
+        final _DstoreActionPayload = _DstoreAction.payload!;
+        final value = _DstoreActionPayload["value"] as bool;
+
+        var _DStore_isDark = _DStoreState.isDark;
+        await 5.seconds.delay;
+        _DStore_isDark = value;
+        return _DStoreState.copyWith(isDark: _DStore_isDark);
+      }
+
+    default:
+      {
+        return _DStoreState;
+      }
+  }
+}
+
+Sample Sample_DS() => Sample(
+    name: "hello",
+    age: 0,
+    list: [],
+    isDark: false,
+    changeTheme: AsyncActionField());
 
 final SampleMeta = PStateMeta<Sample>(
     type: "/dstore/test/store/pstates/sample/Sample",
     reducer: Sample_SyncReducer,
+    aReducer: Sample_AsyncReducer,
     ds: Sample_DS);
