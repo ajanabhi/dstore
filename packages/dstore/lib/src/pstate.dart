@@ -75,8 +75,8 @@ class PStateMeta<S extends PStateModel> {
 }
 
 class PStateHistory<S extends PStateModel> {
-  final Queue _history = ListQueue();
-  final Queue _redos = ListQueue();
+  final Queue<Map<String, dynamic>> _history = ListQueue();
+  final Queue<Map<String, dynamic>> _redos = ListQueue();
   final int? limit;
   PStateHistory(this.limit);
 
@@ -103,7 +103,7 @@ class PStateHistory<S extends PStateModel> {
       _history.addLast(patch);
       final newState = currentState.copyWithMap(patch);
       newState._psHistory = this;
-      return newState;
+      return newState as S;
     }
   }
 
@@ -120,7 +120,7 @@ class PStateHistory<S extends PStateModel> {
         });
         final newState = initialState.copyWithMap(patch);
         newState._psHistory = this;
-        return newState;
+        return newState as S;
       }
     }
   }
@@ -129,7 +129,7 @@ class PStateHistory<S extends PStateModel> {
   bool get canUndo => _history.isNotEmpty;
 }
 
-mixin PStateHistoryMixin<S extends PStateModel> {
+mixin PStateHistoryMixin<S extends PStateModel<S>> {
   PStateHistory<S>? _psHistory;
   PStateHistory<S> get internalPSHistory => _psHistory!;
   bool get canRedo => internalPSHistory.canRedo;

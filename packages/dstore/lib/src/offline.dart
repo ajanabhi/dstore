@@ -7,5 +7,5 @@ class NetworkOptions {
 }
 
 abstract class NetworkStatusListener {
-  Function() listen(Function(bool status) cb);
+  void Function() listen(void Function(bool status) cb);
 }

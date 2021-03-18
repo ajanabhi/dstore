@@ -13,7 +13,7 @@ abstract class FormFieldObject<M> {
 }
 
 @DImmutable()
-abstract class FormField<F extends FormFieldObject> with _$FormField<F> {
+abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
@@ -137,7 +137,7 @@ abstract class MiddlewareFormUtils {
       for (final e in ff.validators.entries) {
         final r = await e.value(values[e.key]);
         if (r != null) {
-          errors[e.key] = r;
+          errors[e.key] = r as String;
         }
       }
     } catch (e) {

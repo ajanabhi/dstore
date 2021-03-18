@@ -10,8 +10,15 @@ include: package:pedantic/analysis_options.yaml
     
 
 analyzer:
+  language:
+    strict-inference: true
+    strict-raw-types: true
   errors:
     prefer_single_quotes: ignore
     unnecessary_this: ignore
+  strong-mode:
+    # never implicitly cast types down, on by default with null safety
+    implicit-casts: false
+    # implicit-dynamic: false
   exclude:
     - "**/*.dstore.dart"

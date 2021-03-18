@@ -13,7 +13,7 @@ extension on Map {
 }
 
 class StoreTester<S extends AppStateI> {
-  final Store<S> store;
+  final Store<S, dynamic> store;
 
   StoreTester(this.store);
 
@@ -49,7 +49,7 @@ class StoreTester<S extends AppStateI> {
     int interval, {
     Duration? timeout,
   }) async {
-    final c = Completer();
+    final c = Completer<void>();
 
     var done = false;
     Timer? timeoutTimer;

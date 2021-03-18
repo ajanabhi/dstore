@@ -7,7 +7,7 @@ part of 'form.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$FormField<F extends FormFieldObject<dynamic>> {
+mixin _$FormField<F extends FormFieldObject<F>> {
   F get value;
   Map<String, dynamic Function(dynamic)> get validators;
   Map<String, String> get errors;
@@ -23,7 +23,7 @@ mixin _$FormField<F extends FormFieldObject<dynamic>> {
   $FormFieldCopyWith<F, FormField<F>> get copyWith;
 }
 
-class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
+class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
   @override
   final F value;
 
@@ -127,7 +127,7 @@ class _FormField<F extends FormFieldObject<dynamic>> implements FormField<F> {
       "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
 }
 
-abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
+abstract class $FormFieldCopyWith<F extends FormFieldObject<F>, O> {
   factory $FormFieldCopyWith(
           FormField<F> value, O Function(FormField<F>) then) =
       _$FormFieldCopyWithImpl<F, O>;
@@ -145,7 +145,7 @@ abstract class $FormFieldCopyWith<F extends FormFieldObject<dynamic>, O> {
       String internalAType});
 }
 
-class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
+class _$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
     implements $FormFieldCopyWith<F, O> {
   final FormField<F> _value;
   final O Function(FormField<F>) _then;
@@ -197,7 +197,7 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
   }
 }
 
-abstract class _$FormFieldCopyWith<F extends FormFieldObject<dynamic>, O>
+abstract class _$FormFieldCopyWith<F extends FormFieldObject<F>, O>
     implements $FormFieldCopyWith<F, O> {
   factory _$FormFieldCopyWith(
           FormField<F> value, O Function(FormField<F>) then) =
@@ -216,7 +216,7 @@ abstract class _$FormFieldCopyWith<F extends FormFieldObject<dynamic>, O>
       String internalAType});
 }
 
-class __$FormFieldCopyWithImpl<F extends FormFieldObject<dynamic>, O>
+class __$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
     extends _$FormFieldCopyWithImpl<F, O> implements _$FormFieldCopyWith<F, O> {
   __$FormFieldCopyWithImpl(FormField<F> _value, O Function(FormField<F>) _then)
       : super(_value, (v) => _then(v));

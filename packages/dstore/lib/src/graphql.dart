@@ -4,7 +4,7 @@ class GraphqlRequestInput<V> {
 
   GraphqlRequestInput(this.query, this.variables);
 
-  static Map<String, dynamic> toJson(GraphqlRequestInput req) {
+  static Map<String, dynamic> toJson<V>(GraphqlRequestInput<V> req) {
     return {
       "query": req.query,
       "variables":
@@ -43,12 +43,12 @@ class GraphqlError {
 
   factory GraphqlError.fromJson(Map<String, dynamic> json) {
     return GraphqlError(
-      message: json['message'],
+      message: json['message'] as String,
       locations: (json["locations"] as List<dynamic>?)
-          ?.map((e) => SourceLocation.fromJson(e))
+          ?.map((e) => SourceLocation.fromJson(e as Map<String, dynamic>))
           .toList(),
       originalError: json["originalError"],
-      extensions: json["extensions"],
+      extensions: json["extensions"] as Map<String, dynamic>?,
       source: json["source"],
       positions:
           (json["positions"] as List<dynamic>?)?.map((e) => e as int).toList(),

@@ -1,6 +1,6 @@
 import 'package:grinder/grinder.dart';
 
-void main(args) => grind(args);
+void main(List<String> args) => grind(args);
 
 @Task()
 dynamic test() => TestRunner().testAsync();

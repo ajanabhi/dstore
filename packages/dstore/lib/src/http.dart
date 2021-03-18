@@ -74,7 +74,7 @@ abstract class Httpmeta<I, R, E, T> with _$Httpmeta<I, R, E, T> {
     HttpField Function(HttpField currentField, HttpField newField)? transformer,
     dynamic Function(I)? inputSerializer,
     Future<dynamic> Function(I)? inputStorageSerializer,
-    Future<I> Function(dynamic)? inputDeserializer,
+    I Function(dynamic)? inputDeserializer,
     E Function(dynamic)? errorDeserializer,
   }) = _Httpmeta<I, R, E, T>;
 }
@@ -95,11 +95,13 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       int? receiveTieout,
       @Default(false) bool abortable}) = _HttpPayload<I, R, E, T>;
 
-  factory HttpPayload.fromJson(Map<String, dynamic> map, Httpmeta meta) {
-    final url = map["url"];
-    final method = map["method"];
-    final responseType = HttpResponseTypeExt.fromValue(map["responseType"])!;
-    var data = map["data"];
+  factory HttpPayload.fromJson(
+      Map<String, dynamic> map, Httpmeta<I, R, E, T> meta) {
+    final url = map["url"] as String;
+    final method = map["method"] as String;
+    final responseType =
+        HttpResponseTypeExt.fromValue(map["responseType"] as String)!;
+    var data = map["data"] as I?;
     if (data != null) {
       if (meta.inputDeserializer == null) {
         throw ArgumentError.value(
@@ -107,21 +109,21 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       }
       data = meta.inputDeserializer!(data);
     }
-    var optimisticResponse = map["optimisticResponse"];
+    var optimisticResponse = map["optimisticResponse"] as R?;
     if (optimisticResponse != null) {
       optimisticResponse = meta.responseDeserializer(optimisticResponse);
     }
 
-    var inputType = map["inputType"];
-
-    if (inputType != null) {
-      inputType = HttpInputTypeExt.fromValue(inputType);
+    final inputTypeS = map["inputType"] as String?;
+    HttpInputType? inputType;
+    if (inputTypeS != null) {
+      inputType = HttpInputTypeExt.fromValue(inputTypeS);
     }
-    final headers = map["headers"];
-    final queryParams = map["queryParams"];
-    final sendTimeout = map["sendTimeout"];
-    final receiveTieout = map["receiveTieout"];
-    final abortable = map["abortable"];
+    final headers = map["headers"] as Map<String, dynamic>?;
+    final queryParams = map["queryParams"] as Map<String, dynamic>?;
+    final sendTimeout = map["sendTimeout"] as int?;
+    final receiveTieout = map["receiveTieout"] as int?;
+    final abortable = map["abortable"] as bool;
 
     return HttpPayload(
         url: url,

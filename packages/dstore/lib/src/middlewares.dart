@@ -11,7 +11,7 @@ final Middleware asyncMiddleware =
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
-    final sk = store.getStateKeyForReducerGroup(action.type);
+    final sk = store.getStateKeyForPstateType(action.type);
     final psm = store.meta[sk]!;
     final gsMap = store.state.toMap();
     final currentS = gsMap[sk]!;
@@ -107,8 +107,8 @@ final Middleware streamMiddleware =
     }
   }
 };
-dynamic formMiddleware<S extends AppStateI>(
-    Store<S> store, Dispatch next, Action action) async {
+dynamic formMiddleware<S extends AppStateI<S>>(
+    Store<S, dynamic> store, Dispatch next, Action action) async {
   if (action.isProcessed || action.form == null) {
     next(action);
   } else {
@@ -128,10 +128,13 @@ dynamic formMiddleware<S extends AppStateI>(
       if (validate && validator != null) {
         final newE = await validator(req.value);
         if (newE != null) {
-          errors[req.key] = newE;
+          errors[req.key] = newE as String;
         }
       }
-      nff = ff.copyWith(value: value, errors: errors, isValid: errors.isEmpty);
+      nff = ff.copyWith(
+          value: value as FormFieldObject,
+          errors: errors,
+          isValid: errors.isEmpty);
     } else if (req is FormSetFieldTouched) {
       var validate = ff.validateOnBlur;
       if (req.validate) {
@@ -143,7 +146,7 @@ dynamic formMiddleware<S extends AppStateI>(
       if (validate && validator != null) {
         final newE = await validator(ff.value.toMap()[req.key]);
         if (newE != null) {
-          errors[req.key] = newE;
+          errors[req.key] = newE as String;
         }
       }
       nff = ff.copyWith(
@@ -159,7 +162,7 @@ dynamic formMiddleware<S extends AppStateI>(
     } else if (req is FormSetErrors) {
       nff = ff.copyWith(errors: req.errors, isValid: req.errors.isEmpty);
     } else if (req is FormReset) {
-      nff = pm.ds().toMap()[action.name];
+      nff = pm.ds().toMap()[action.name] as FormField;
     } else if (req is FormSetSubmitting) {
       nff = ff.copyWith(isSubmitting: req.isSubmitting);
     } else if (req is FormValidate) {

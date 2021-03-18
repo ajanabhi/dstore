@@ -82,7 +82,7 @@ mixin _$Httpmeta<I, R, E, T> {
       HttpField<dynamic, dynamic, dynamic, dynamic>)? get transformer;
   dynamic Function(I)? get inputSerializer;
   Future<dynamic> Function(I)? get inputStorageSerializer;
-  Future<I> Function(dynamic)? get inputDeserializer;
+  I Function(dynamic)? get inputDeserializer;
   E Function(dynamic)? get errorDeserializer;
 
   $HttpmetaCopyWith<I, R, E, T, Httpmeta<I, R, E, T>> get copyWith;
@@ -107,7 +107,7 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   final Future<dynamic> Function(I)? inputStorageSerializer;
 
   @override
-  final Future<I> Function(dynamic)? inputDeserializer;
+  final I Function(dynamic)? inputDeserializer;
 
   @override
   final E Function(dynamic)? errorDeserializer;
@@ -166,7 +166,7 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
-      Future<I> Function(dynamic)? inputDeserializer,
+      I Function(dynamic)? inputDeserializer,
       E Function(dynamic)? errorDeserializer});
 }
 
@@ -206,7 +206,7 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
             : inputStorageSerializer as Future<dynamic> Function(I)?,
         inputDeserializer: inputDeserializer == dimmutable
             ? _value.inputDeserializer
-            : inputDeserializer as Future<I> Function(dynamic)?,
+            : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
             : errorDeserializer as E Function(dynamic)?));
@@ -227,7 +227,7 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
-      Future<I> Function(dynamic)? inputDeserializer,
+      I Function(dynamic)? inputDeserializer,
       E Function(dynamic)? errorDeserializer});
 }
 
@@ -271,7 +271,7 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
             : inputStorageSerializer as Future<dynamic> Function(I)?,
         inputDeserializer: inputDeserializer == dimmutable
             ? _value.inputDeserializer
-            : inputDeserializer as Future<I> Function(dynamic)?,
+            : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
             : errorDeserializer as E Function(dynamic)?));

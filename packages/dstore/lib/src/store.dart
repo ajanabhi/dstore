@@ -9,7 +9,7 @@ import 'package:dstore/src/selector.dart';
 typedef Dispatch = dynamic Function(Action action);
 
 typedef Middleware<State extends AppStateI> = dynamic Function(
-    Store<State> store, Dispatch next, Action action);
+    Store<State, dynamic> store, Dispatch next, Action action);
 
 typedef Callback = dynamic Function();
 
@@ -17,7 +17,7 @@ typedef VoidCallback = void Function();
 
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
 
-class Store<S extends AppStateI> {
+class Store<S extends AppStateI, AT> {
   final Map<String, PStateMeta<PStateModel>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
@@ -25,13 +25,13 @@ class Store<S extends AppStateI> {
   final Map<String, Timer> internalDebounceTimers = {};
   late S _state;
   var isReady = false;
-  final StorageOptions? storageOptions;
+  final StorageOptions<AT>? storageOptions;
   void Function()? _onReadyListener;
   final bool useEqualsComparision;
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action>[];
-  PersitantStorage? get storage => storageOptions?.storage;
+  PersitantStorage<AT>? get storage => storageOptions?.storage;
   Store(
       {required this.meta,
       this.storageOptions,
@@ -85,11 +85,11 @@ class Store<S extends AppStateI> {
         final httpMeta = psm.httpMetaMap?[e.name];
         return e.toJson(httpMeta: httpMeta);
       }));
-      storage!.saveOfflineActions(json);
+      storage!.saveOfflineActions(json as AT);
     }
   }
 
-  void listenForReadyState(Function() fn) {
+  void listenForReadyState(void Function() fn) {
     _onReadyListener = fn;
   }
 
@@ -112,15 +112,20 @@ class Store<S extends AppStateI> {
           }
           _pStateTypeToStateKeyMap[rg.type] = key;
           final ds = rg.ds();
-          map[key] = sState[key] != null ? ds.copyWithMap(sState[key]!) : ds;
+          map[key] = sState[key] != null
+              ? ds.copyWithMap(sState[key]! as Map<String, dynamic>)
+              : ds;
         });
-        _state = s.copyWithMap(map);
+        _state = s.copyWithMap(map) as S;
       }
       final offA = await storage.getOfflineActions();
       if (offA != null) {
-        final actions = (jsonEncode(offA) as List<dynamic>).map((e) {
-          final psm = getPStateMetaFromAction(e);
-          final httpMeta = psm.httpMetaMap?[e.name];
+        final actions =
+            (jsonDecode(offA as String) as List<Map<String, dynamic>>).map((e) {
+          // final psm = getPStateMetaFromAction(e);
+          final sk = _pStateTypeToStateKeyMap[e["type"]]!;
+          final psm = meta[sk]!;
+          final httpMeta = psm.httpMetaMap?[e["name"]];
           return Action.fromJson(e, httpMeta);
         });
         _offlineActions.addAll(actions);
@@ -134,7 +139,7 @@ class Store<S extends AppStateI> {
   }
 
   void _prepareNormalStore(S Function() stateCreator) {
-    final AppStateI s = stateCreator();
+    final s = stateCreator();
     final map = <String, dynamic>{};
     meta.forEach((key, rg) {
       if (_pStateTypeToStateKeyMap[rg.type] != null) {
@@ -144,7 +149,7 @@ class Store<S extends AppStateI> {
       _pStateTypeToStateKeyMap[rg.type] = key;
       map[key] = rg.ds();
     });
-    _state = s.copyWithMap(map);
+    _state = s.copyWithMap(map) as S;
     isReady = true;
   }
 
@@ -168,12 +173,12 @@ class Store<S extends AppStateI> {
       if (action.internal?.type == ActionInternalType.DATA) {
         final csMap = currentS.toMap();
         csMap[action.name] = action.internal!.data;
-        newS = currentS.copyWithMap(csMap);
+        newS = currentS.copyWithMap(csMap) as PStateModel;
       } else if (action.internal!.type == ActionInternalType.STATE) {
-        newS = action.internal!.data;
+        newS = action.internal!.data as PStateModel;
       }
     } else {
-      newS = psm.reducer!(currentS, action);
+      newS = psm.reducer!(currentS, action) as PStateModel;
     }
     if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
@@ -204,7 +209,7 @@ class Store<S extends AppStateI> {
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.ignore) {
-            _state = _state.copyWithMap(newGlobalStateMap);
+            _state = _state.copyWithMap(newGlobalStateMap) as S;
             _notifyListeners(
                 stateKey: stateKey,
                 previousState: previousState,
@@ -214,7 +219,7 @@ class Store<S extends AppStateI> {
           rethrow;
         }
       } else {
-        _state = _state.copyWithMap(newGlobalStateMap);
+        _state = _state.copyWithMap(newGlobalStateMap) as S;
         _notifyListeners(
             stateKey: stateKey,
             previousState: previousState,
@@ -228,7 +233,7 @@ class Store<S extends AppStateI> {
             currentState = previousState;
             previousState = currentState;
             newGlobalStateMap[stateKey] = currentState;
-            _state = _state.copyWithMap(newGlobalStateMap);
+            _state = _state.copyWithMap(newGlobalStateMap) as S;
             _notifyListeners(
                 stateKey: stateKey,
                 previousState: previousState,
@@ -239,7 +244,7 @@ class Store<S extends AppStateI> {
         }
       }
     } else {
-      _state = _state.copyWithMap(newGlobalStateMap);
+      _state = _state.copyWithMap(newGlobalStateMap) as S;
       _notifyListeners(
           stateKey: stateKey,
           previousState: previousState,
@@ -388,10 +393,10 @@ class Store<S extends AppStateI> {
             value.forEach((prop) {
               rmMap[prop] = rmDSMap[prop];
             });
-            sMap[sk] = rm.copyWithMap(rmMap);
+            sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
           }
           _updatePersitance(selector.deps.keys, []);
-          _state = _state.copyWithMap(sMap);
+          _state = _state.copyWithMap(sMap) as S;
           listernsToFire.forEach((l) {
             l();
           });
@@ -465,7 +470,7 @@ class Store<S extends AppStateI> {
                 props.forEach((prop) {
                   rmMap[prop] = rmDSMap[prop];
                 });
-                sMap[sk] = rm.copyWithMap(rmMap);
+                sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
               }
             });
           } else {
@@ -492,20 +497,20 @@ class Store<S extends AppStateI> {
                 ...streamFieldsMapForStateKey.getOrElse(sk, {})
               };
               final ps = sMap[sk]!;
-              sMap[sk] = ps.copyWithMap(newMap);
+              sMap[sk] = ps.copyWithMap(newMap) as PStateModel;
             });
           }
         });
         // if persitance is enabled and following state keys are persitable then update values
         await _updatePersitance(stateKeysModified, []);
-        _state = _state.copyWithMap(sMap);
+        _state = _state.copyWithMap(sMap) as S;
       }
     }
   }
 
   /* public methods  */
 
-  String getStateKeyForReducerGroup(String key) {
+  String getStateKeyForPstateType(String key) {
     return _pStateTypeToStateKeyMap[key]!;
   }
 

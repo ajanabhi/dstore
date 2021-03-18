@@ -18,26 +18,29 @@ abstract class Action<M extends ToMap> with _$Action<M> {
     required String type,
     @Default(false) bool isAsync,
     Map<String, dynamic>? payload,
-    HttpPayload? http,
-    WebSocketPayload? ws,
+    HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
+    WebSocketPayload<dynamic, dynamic, dynamic>? ws,
     @Default(null) dynamic? extra,
     ActionInternal? internal,
-    Stream? stream,
+    Stream<dynamic>? stream,
     Duration? debounce,
     M? mock,
     FormReq? form,
   }) = _Action<M>;
 
-  factory Action.fromJson(Map<String, dynamic> map, Httpmeta? httpMeta) {
-    final name = map["name"];
-    final type = map["type"];
-    var http = map["http"];
-    if (http != null) {
+  factory Action.fromJson(Map<String, dynamic> map,
+      Httpmeta<dynamic, dynamic, dynamic, dynamic>? httpMeta) {
+    final name = map["name"] as String;
+    final type = map["type"] as String;
+    final httpMap = map["http"] as Map<String, dynamic>?;
+    HttpPayload<dynamic, dynamic, dynamic, dynamic>? http;
+    if (httpMap != null) {
       if (httpMeta == null) {
         throw ArgumentError.value(
             "You should provide httpMeta for http actions");
       }
-      http = HttpPayload.fromJson(http, httpMeta);
+      http = HttpPayload<dynamic, dynamic, dynamic, dynamic>.fromJson(
+          httpMap, httpMeta);
     }
     return Action(name: name, type: type, http: http);
   }
@@ -46,7 +49,8 @@ abstract class Action<M extends ToMap> with _$Action<M> {
 extension ActionExt on Action {
   bool get isProcessed => internal?.processed ?? false;
   // currently only http actions support offline functionality
-  Map<String, dynamic> toJson({Httpmeta? httpMeta}) {
+  Map<String, dynamic> toJson(
+      {Httpmeta<dynamic, dynamic, dynamic, dynamic>? httpMeta}) {
     final map = <String, dynamic>{};
     if (http != null && httpMeta == null) {
       throw ArgumentError.value(
