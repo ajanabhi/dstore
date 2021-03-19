@@ -9,7 +9,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 part "action.dstore.dart";
 
 @dimmutable
-abstract class Action<M extends ToMap> with _$Action<M> {
+abstract class Action<M> with _$Action<M> {
   const factory Action({
     required String name,
     required String type,

@@ -7,7 +7,7 @@ part of 'action.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$Action<M extends ToMap> {
+mixin _$Action<M> {
   String get name;
   String get type;
   bool get isAsync;
@@ -25,7 +25,7 @@ mixin _$Action<M extends ToMap> {
   $ActionCopyWith<M, Action<M>> get copyWith;
 }
 
-class _Action<M extends ToMap> implements Action<M> {
+class _Action<M> implements Action<M> {
   @override
   final String name;
 
@@ -129,7 +129,7 @@ class _Action<M extends ToMap> implements Action<M> {
       "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, mock: ${this.mock}, fieldMock: ${this.fieldMock}, form: ${this.form})";
 }
 
-abstract class $ActionCopyWith<M extends ToMap, O> {
+abstract class $ActionCopyWith<M, O> {
   factory $ActionCopyWith(Action<M> value, O Function(Action<M>) then) =
       _$ActionCopyWithImpl<M, O>;
   O call(
@@ -148,8 +148,7 @@ abstract class $ActionCopyWith<M extends ToMap, O> {
       FormReq? form});
 }
 
-class _$ActionCopyWithImpl<M extends ToMap, O>
-    implements $ActionCopyWith<M, O> {
+class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
   final Action<M> _value;
   final O Function(Action<M>) _then;
   _$ActionCopyWithImpl(this._value, this._then);
@@ -196,8 +195,7 @@ class _$ActionCopyWithImpl<M extends ToMap, O>
   }
 }
 
-abstract class _$ActionCopyWith<M extends ToMap, O>
-    implements $ActionCopyWith<M, O> {
+abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
   factory _$ActionCopyWith(Action<M> value, O Function(Action<M>) then) =
       __$ActionCopyWithImpl<M, O>;
   O call(
@@ -216,8 +214,8 @@ abstract class _$ActionCopyWith<M extends ToMap, O>
       FormReq? form});
 }
 
-class __$ActionCopyWithImpl<M extends ToMap, O>
-    extends _$ActionCopyWithImpl<M, O> implements _$ActionCopyWith<M, O> {
+class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
+    implements _$ActionCopyWith<M, O> {
   __$ActionCopyWithImpl(Action<M> _value, O Function(Action<M>) _then)
       : super(_value, (v) => _then(v));
 

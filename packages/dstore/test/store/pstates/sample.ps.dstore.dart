@@ -220,9 +220,9 @@ class SampleChangeThemeResult implements ToMap {
 }
 
 abstract class SampleActions {
-  static Action changeName(
+  static Action<SampleChangeNameResult> changeName(
       {required String newName, SampleChangeNameResult? mock}) {
-    return Action(
+    return Action<SampleChangeNameResult>(
         name: "changeName",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"newName": newName},
@@ -230,8 +230,9 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action changeAge({required int newAge, SampleChangeAgeResult? mock}) {
-    return Action(
+  static Action<SampleChangeAgeResult> changeAge(
+      {required int newAge, SampleChangeAgeResult? mock}) {
+    return Action<SampleChangeAgeResult>(
         name: "changeAge",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"newAge": newAge},
@@ -239,8 +240,9 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action addToList({required String item, SampleAddToListResult? mock}) {
-    return Action(
+  static Action<SampleAddToListResult> addToList(
+      {required String item, SampleAddToListResult? mock}) {
+    return Action<SampleAddToListResult>(
         name: "addToList",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"item": item},
@@ -248,11 +250,11 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action changeTheme(
+  static Action<SampleChangeThemeResult> changeTheme(
       {required bool value,
       Duration? debounce,
       SampleChangeThemeResult? mock}) {
-    return Action(
+    return Action<SampleChangeThemeResult>(
         name: "changeTheme",
         type: "/dstore/test/store/pstates/sample/Sample",
         payload: {"value": value},
@@ -261,11 +263,11 @@ abstract class SampleActions {
         debounce: debounce);
   }
 
-  static Action intStream(
+  static Action<Stream<int>> intStream(
       {required Stream<int> stream,
       bool cancelOnError = false,
       Stream<int>? mock}) {
-    return Action(
+    return Action<Stream<int>>(
         name: "intStream",
         type: "/dstore/test/store/pstates/sample/Sample",
         fieldMock: mock,

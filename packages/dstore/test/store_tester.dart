@@ -19,12 +19,12 @@ class StoreTester<S extends AppStateI<S>> {
 
   StoreTester(this.store);
 
-  void testAction<M extends ToMap>(Action<M> action, M result) {
+  void testAction<M>(Action<M> action, M result) {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
-    final mockMap = result.toMap();
+    final mockMap = (result as ToMap).toMap();
     if (mockMap.isEmpty) {
       expect(before, after);
     } else {

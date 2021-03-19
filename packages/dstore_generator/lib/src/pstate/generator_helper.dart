@@ -250,8 +250,8 @@ String _generateActionsCreators({
       payload = ", payload: ${payload}";
     }
     return """
-      static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",type:"${type}" ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+      static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
+         return Action<$mockName>(name:"${m.name}",type:"${type}" ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");

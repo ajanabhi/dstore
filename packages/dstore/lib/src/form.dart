@@ -94,38 +94,38 @@ abstract class MiddlewareFormUtils {
   static FormOps getFormOps(FormField ff, Dispatch dispatch) {
     return FormOps(
       setFieldValue: (FormSetFieldError req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setFieldTouched: (FormSetFieldTouched req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setFieldError: (FormSetFieldError req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setErrors: (FormSetErrors req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       setSubmitting: (FormSetSubmitting req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       resetForm: (FormReset req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
       validateForm: (FormValidate req) {
-        final a =
-            Action(name: ff.internalAName, type: ff.internalAType, form: req);
+        final a = Action<dynamic>(
+            name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);
       },
     );

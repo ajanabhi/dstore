@@ -126,7 +126,7 @@ class Store<S extends AppStateI<S>, AT> {
           final sk = _pStateTypeToStateKeyMap[e["type"]]!;
           final psm = meta[sk]!;
           final httpMeta = psm.httpMetaMap?[e["name"]];
-          return Action.fromJson(e, httpMeta);
+          return Action<dynamic>.fromJson(e, httpMeta);
         });
         _offlineActions.addAll(actions);
       }
@@ -353,8 +353,8 @@ class Store<S extends AppStateI<S>, AT> {
             try {
               await storageOptions!.storage.setAll(result);
             } on StorageError catch (e) {
-              final sa = await so.onWriteError(
-                  e, this, Action(name: "unsubscribe", type: "GeneralStore"));
+              final sa = await so.onWriteError(e, this,
+                  Action<dynamic>(name: "unsubscribe", type: "GeneralStore"));
             } catch (e) {
               rethrow;
             }
