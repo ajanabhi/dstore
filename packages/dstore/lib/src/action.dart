@@ -22,7 +22,6 @@ abstract class Action<M> with _$Action<M> {
     StreamPayload? stream,
     Duration? debounce,
     M? mock,
-    @Default(null) dynamic? fieldMock,
     FormReq? form,
   }) = _Action<M>;
 

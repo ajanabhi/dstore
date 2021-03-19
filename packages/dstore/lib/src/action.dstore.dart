@@ -19,7 +19,6 @@ mixin _$Action<M> {
   StreamPayload? get stream;
   Duration? get debounce;
   M? get mock;
-  dynamic get fieldMock;
   FormReq? get form;
 
   $ActionCopyWith<M, Action<M>> get copyWith;
@@ -64,11 +63,6 @@ class _Action<M> implements Action<M> {
   final M? mock;
 
   @override
-  @Default(null)
-  @JsonKey(defaultValue: null)
-  final dynamic fieldMock;
-
-  @override
   final FormReq? form;
 
   _$ActionCopyWith<M, Action<M>> get copyWith =>
@@ -86,7 +80,6 @@ class _Action<M> implements Action<M> {
       this.stream,
       this.debounce,
       this.mock,
-      this.fieldMock = null,
       this.form});
 
   @override
@@ -104,7 +97,6 @@ class _Action<M> implements Action<M> {
         o.stream == stream &&
         o.debounce == debounce &&
         o.mock == mock &&
-        o.fieldMock == fieldMock &&
         o.form == form;
   }
 
@@ -121,12 +113,11 @@ class _Action<M> implements Action<M> {
       stream.hashCode ^
       debounce.hashCode ^
       mock.hashCode ^
-      fieldMock.hashCode ^
       form.hashCode;
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, mock: ${this.mock}, fieldMock: ${this.fieldMock}, form: ${this.form})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, mock: ${this.mock}, form: ${this.form})";
 }
 
 abstract class $ActionCopyWith<M, O> {
@@ -144,7 +135,6 @@ abstract class $ActionCopyWith<M, O> {
       StreamPayload? stream,
       Duration? debounce,
       M? mock,
-      dynamic fieldMock,
       FormReq? form});
 }
 
@@ -166,7 +156,6 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
       Object? mock = dimmutable,
-      Object? fieldMock = dimmutable,
       Object? form = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
@@ -189,8 +178,6 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         mock: mock == dimmutable ? _value.mock : mock as M?,
-        fieldMock:
-            fieldMock == dimmutable ? _value.fieldMock : fieldMock as dynamic,
         form: form == dimmutable ? _value.form : form as FormReq?));
   }
 }
@@ -210,7 +197,6 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       StreamPayload? stream,
       Duration? debounce,
       M? mock,
-      dynamic fieldMock,
       FormReq? form});
 }
 
@@ -235,7 +221,6 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
       Object? mock = dimmutable,
-      Object? fieldMock = dimmutable,
       Object? form = dimmutable}) {
     return _then(Action(
         name: name == dimmutable ? _value.name : name as String,
@@ -258,8 +243,6 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         mock: mock == dimmutable ? _value.mock : mock as M?,
-        fieldMock:
-            fieldMock == dimmutable ? _value.fieldMock : fieldMock as dynamic,
         form: form == dimmutable ? _value.form : form as FormReq?));
   }
 }

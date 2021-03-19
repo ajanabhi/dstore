@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 
 List<StreamFieldInfo> getStreamFields(List<FieldElement> fields) {
   final result = <StreamFieldInfo>[];
@@ -29,10 +30,10 @@ StreamFieldInfo? _getStreamFieldInfoForElement(FieldElement element) {
 String convertStreamFieldInfoToAction(
     {required StreamFieldInfo sfi, required String type}) {
   final name = sfi.name;
-  final mockType = "Stream<${sfi.outputType}>";
+  final mockType = "Iterable<${sfi.outputType}>";
   return """
    static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType? mock}) {
-     return Action<$mockType>(name:"$name",type:"$type",fieldMock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
+     return Action<$mockType>(name:"$name",type:"$type",mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
    }
   """;
 }

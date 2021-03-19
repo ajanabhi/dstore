@@ -263,14 +263,14 @@ abstract class SampleActions {
         debounce: debounce);
   }
 
-  static Action<Stream<int>> intStream(
+  static Action<Iterable<int>> intStream(
       {required Stream<int> stream,
       bool cancelOnError = false,
-      Stream<int>? mock}) {
-    return Action<Stream<int>>(
+      Iterable<int>? mock}) {
+    return Action<Iterable<int>>(
         name: "intStream",
         type: "/dstore/test/store/pstates/sample/Sample",
-        fieldMock: mock,
+        mock: mock,
         stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }
 }

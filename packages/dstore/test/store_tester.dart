@@ -19,12 +19,12 @@ class StoreTester<S extends AppStateI<S>> {
 
   StoreTester(this.store);
 
-  void testAction<M>(Action<M> action, M result) {
+  void testAction<M extends ToMap>(Action<M> action, M result) {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
-    final mockMap = (result as ToMap).toMap();
+    final mockMap = result.toMap();
     if (mockMap.isEmpty) {
       expect(before, after);
     } else {
@@ -65,13 +65,23 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  Future<void> testStreamAction<M>(Action<M> action, M result) async {
+  Future<void> testStreamAction<M extends Iterable<dynamic>>(
+      Action<M> action, M result) async {
+    assert(action.stream != null);
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
+    final resultA = await _waitForStreamAction(action);
+    print("resultA $resultA");
+    expect(resultA, result);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
-    final dynamic field = store.getFieldFromAction(action);
-    if (field is StreamField) {}
+    final afterMap = after.toMap();
+    final beforeMap = before.toMap();
+    beforeMap.remove(action.name);
+    if (action.isAsync) {
+      beforeMap.remove(action.name);
+    }
+    expect(beforeMap.identicalMembers(afterMap), true);
   }
 
   Future<void> waitForAction(Action<dynamic> action,
@@ -92,18 +102,52 @@ class StoreTester<S extends AppStateI<S>> {
         Timer.periodic(Duration(milliseconds: interval), (timer) {
       final dynamic field = store.getFieldFromAction(action);
       if (field is AsyncActionField) {
-        print("its async");
-        print(field);
+        // print("its async");
         done = field.completed;
       }
       if (field is HttpField) {
         done = field.completed;
       }
-      print("checking for done : $done");
+      // print("checking for done : $done");
       if (done) {
+        print("adync done");
         timer.cancel();
         timeoutTimer?.cancel();
         c.complete(null);
+      }
+    });
+    if (timeout != null) {
+      timeoutTimer = Timer(timeout, () {
+        periodicTimer.cancel();
+        c.completeError(
+            TimeoutException("$action exceed specified timeout $timeout"));
+      });
+    }
+    return c.future;
+  }
+
+  Future<List<dynamic>> _waitForStreamAction(
+    Action action, {
+    int interval = 4,
+    Duration? timeout,
+  }) async {
+    final c = Completer<List<dynamic>>();
+    final items = <dynamic>[];
+    var done = false;
+    Timer? timeoutTimer;
+    final periodicTimer =
+        Timer.periodic(Duration(milliseconds: interval), (timer) {
+      final field = store.getFieldFromAction(action) as StreamField;
+      print(field);
+      if (field.data != null) {
+        items.add(field.data);
+      }
+      done = field.completed;
+      if (done) {
+        field.internalSubscription?.cancel();
+        timer.cancel();
+        timeoutTimer?.cancel();
+        c.complete(items);
       }
     });
     if (timeout != null) {
