@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/http.dart';
 import 'package:dstore/src/pstate.dart';
@@ -69,7 +70,6 @@ class StoreTester<S extends AppStateI<S>> {
       Action<M> action, M result) async {
     assert(action.stream != null);
     final before = store.getPStateModelFromAction(action);
-    store.dispatch(action);
     final resultA = await _waitForStreamAction(action);
     print("resultA $resultA");
     expect(resultA, result);
@@ -130,21 +130,27 @@ class StoreTester<S extends AppStateI<S>> {
     Action action, {
     int interval = 4,
     Duration? timeout,
-  }) async {
+  }) {
     final c = Completer<List<dynamic>>();
     final items = <dynamic>[];
-    var done = false;
+    final wrapper = _StreamWrapper(action.stream!.stream);
+    store.dispatch(
+        action.copyWith(stream: StreamPayload(stream: wrapper.stream)));
+
     Timer? timeoutTimer;
+    wrapper.sendNext();
+    dynamic prevData;
     final periodicTimer =
         Timer.periodic(Duration(milliseconds: interval), (timer) {
       final field = store.getFieldFromAction(action) as StreamField;
-      print(field);
-      if (field.data != null) {
-        items.add(field.data);
+      final dynamic data = field.data;
+      if (data != null && !identical(prevData, data)) {
+        prevData = data;
+        items.add(data);
+        wrapper.sendNext();
       }
-      done = field.completed;
-      if (done) {
-        field.internalSubscription?.cancel();
+      if (wrapper.done) {
+        print("adync done");
         timer.cancel();
         timeoutTimer?.cancel();
         c.complete(items);
@@ -158,5 +164,25 @@ class StoreTester<S extends AppStateI<S>> {
       });
     }
     return c.future;
+  }
+}
+
+class _StreamWrapper {
+  final StreamQueue<dynamic> sourceStream;
+  final _controller = StreamController<dynamic>();
+  var _done = false;
+  _StreamWrapper(Stream<dynamic> sourceStream)
+      : sourceStream = StreamQueue<dynamic>(sourceStream);
+
+  Stream<dynamic> get stream => _controller.stream;
+  bool get done => _done;
+  void sendNext() async {
+    final hasNext = await sourceStream.hasNext;
+    if (hasNext) {
+      final dynamic next = await sourceStream.next;
+      _controller.sink.add(next);
+    } else {
+      _done = true;
+    }
   }
 }
