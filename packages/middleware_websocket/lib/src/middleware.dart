@@ -33,16 +33,16 @@ GraphqlMessages _convertStringToGraphlMessage(String name) {
 final _clients = <String, DWebSocket>{};
 
 abstract class WebSocketGlobalActions {
-  static Action close(String url) {
-    return Action(
+  static Action<dynamic> close(String url) {
+    return Action<dynamic>(
         name: "close",
         type: _WebSocket_Global_Group,
         ws: WebSocketPayload<dynamic, dynamic, dynamic>(
             url: url, responseDeserializer: IdentityFn));
   }
 
-  static Action connect(String url) {
-    return Action(
+  static Action<dynamic> connect(String url) {
+    return Action<dynamic>(
         name: "connect",
         type: _WebSocket_Global_Group,
         ws: WebSocketPayload<dynamic, dynamic, dynamic>(
@@ -360,14 +360,14 @@ class DWebSocket {
   }
 
   void Function() _getUnSunscribeFuntion(Action action) {
-    return () => store.dispatch(Action(
+    return () => store.dispatch(Action<dynamic>(
         name: action.name,
         type: action.type,
         ws: WebSocketPayload<dynamic, dynamic, dynamic>(
             url: url, responseDeserializer: IdentityFn, unsubscribe: true)));
   }
 
-  void handleAction(Action action) {
+  void handleAction(Action<dynamic> action) {
     final wsp = action.ws!;
     if (action.type == _WebSocket_Global_Group) {
       return handleGlobalAction(action);
@@ -405,7 +405,8 @@ class DWebSocket {
       }
       if (sa == null) {
         // if already there is a subscription for that id dont add it again
-        subscriptions.add(Action(name: action.name, type: action.type));
+        subscriptions
+            .add(Action<dynamic>(name: action.name, type: action.type));
       }
     }
   }
