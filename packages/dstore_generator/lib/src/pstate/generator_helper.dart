@@ -290,7 +290,7 @@ String _generateActionsCreators({
 }
 
 String getMockModelName({required String modelName, required String name}) {
-  return "$modelName${name.cpatialize}Mock";
+  return "$modelName${name.cpatialize}Result";
 }
 
 String _createMockModel({required String name, required List<Field> fields}) {

@@ -29,9 +29,10 @@ StreamFieldInfo? _getStreamFieldInfoForElement(FieldElement element) {
 String convertStreamFieldInfoToAction(
     {required StreamFieldInfo sfi, required String type}) {
   final name = sfi.name;
+  final mockType = "Stream<${sfi.outputType}>?";
   return """
-   static Action $name({required Stream<${sfi.outputType}> stream }) {
-     return Action(name:"$name",type:"$type",stream:stream);
+   static Action $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType mock}) {
+     return Action(name:"$name",type:"$type",fieldMock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
    }
   """;
 }

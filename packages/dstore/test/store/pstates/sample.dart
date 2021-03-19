@@ -8,7 +8,7 @@ part "sample.ps.dstore.dart";
 class _Sample {
   String name = "hello";
   int age = 0;
-
+  StreamField<int> intStream = StreamField();
   List<String> list = [];
   bool isDark = false;
 

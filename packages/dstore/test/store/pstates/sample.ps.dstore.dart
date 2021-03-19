@@ -12,6 +12,8 @@ class Sample implements PStateModel<Sample> {
 
   final int age;
 
+  final StreamField<int> intStream;
+
   final List<String> list;
 
   final bool isDark;
@@ -24,6 +26,7 @@ class Sample implements PStateModel<Sample> {
   const Sample(
       {this.name = "hello",
       this.age = 0,
+      this.intStream = const StreamField(),
       this.list = const [],
       this.isDark = false,
       this.changeTheme = const AsyncActionField()});
@@ -32,6 +35,8 @@ class Sample implements PStateModel<Sample> {
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
       name: map.containsKey("name") ? map["name"] : this.name,
       age: map.containsKey("age") ? map["age"] : this.age,
+      intStream:
+          map.containsKey("intStream") ? map["intStream"] : this.intStream,
       list: map.containsKey("list") ? map["list"] : this.list,
       isDark: map.containsKey("isDark") ? map["isDark"] : this.isDark,
       changeTheme: map.containsKey("changeTheme")
@@ -41,6 +46,7 @@ class Sample implements PStateModel<Sample> {
   Map<String, dynamic> toMap() => {
         "name": this.name,
         "age": this.age,
+        "intStream": this.intStream,
         "list": this.list,
         "isDark": this.isDark,
         "changeTheme": this.changeTheme
@@ -52,6 +58,7 @@ class Sample implements PStateModel<Sample> {
     return o is Sample &&
         o.name == name &&
         o.age == age &&
+        o.intStream == intStream &&
         o.list == list &&
         o.isDark == isDark &&
         o.changeTheme == changeTheme;
@@ -61,13 +68,14 @@ class Sample implements PStateModel<Sample> {
   int get hashCode =>
       name.hashCode ^
       age.hashCode ^
+      intStream.hashCode ^
       list.hashCode ^
       isDark.hashCode ^
       changeTheme.hashCode;
 
   @override
   String toString() =>
-      "Sample(name: ${this.name}, age: ${this.age}, list: ${this.list}, isDark: ${this.isDark}, changeTheme: ${this.changeTheme})";
+      "Sample(name: ${this.name}, age: ${this.age}, intStream: ${this.intStream}, list: ${this.list}, isDark: ${this.isDark}, changeTheme: ${this.changeTheme})";
 }
 
 abstract class $SampleCopyWith<O> {
@@ -76,6 +84,7 @@ abstract class $SampleCopyWith<O> {
   O call(
       {String name,
       int age,
+      StreamField<int> intStream,
       List<String> list,
       bool isDark,
       AsyncActionField changeTheme});
@@ -90,12 +99,16 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
+      Object? intStream = dimmutable,
       Object? list = dimmutable,
       Object? isDark = dimmutable,
       Object? changeTheme = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
+        intStream: intStream == dimmutable
+            ? _value.intStream
+            : intStream as StreamField<int>,
         list: list == dimmutable ? _value.list : list as List<String>,
         isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
         changeTheme: changeTheme == dimmutable
@@ -110,6 +123,7 @@ abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
   O call(
       {String name,
       int age,
+      StreamField<int> intStream,
       List<String> list,
       bool isDark,
       AsyncActionField changeTheme});
@@ -127,12 +141,16 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   O call(
       {Object? name = dimmutable,
       Object? age = dimmutable,
+      Object? intStream = dimmutable,
       Object? list = dimmutable,
       Object? isDark = dimmutable,
       Object? changeTheme = dimmutable}) {
     return _then(Sample(
         name: name == dimmutable ? _value.name : name as String,
         age: age == dimmutable ? _value.age : age as int,
+        intStream: intStream == dimmutable
+            ? _value.intStream
+            : intStream as StreamField<int>,
         list: list == dimmutable ? _value.list : list as List<String>,
         isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
         changeTheme: changeTheme == dimmutable
@@ -141,10 +159,10 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   }
 }
 
-class SampleChangeNameMock implements ToMap {
+class SampleChangeNameResult implements ToMap {
   final String? name;
 
-  const SampleChangeNameMock({this.name});
+  const SampleChangeNameResult({this.name});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -156,10 +174,10 @@ class SampleChangeNameMock implements ToMap {
   }
 }
 
-class SampleChangeAgeMock implements ToMap {
+class SampleChangeAgeResult implements ToMap {
   final int? age;
 
-  const SampleChangeAgeMock({this.age});
+  const SampleChangeAgeResult({this.age});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -171,10 +189,10 @@ class SampleChangeAgeMock implements ToMap {
   }
 }
 
-class SampleAddToListMock implements ToMap {
+class SampleAddToListResult implements ToMap {
   final List<String>? list;
 
-  const SampleAddToListMock({this.list});
+  const SampleAddToListResult({this.list});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -186,10 +204,10 @@ class SampleAddToListMock implements ToMap {
   }
 }
 
-class SampleChangeThemeMock implements ToMap {
+class SampleChangeThemeResult implements ToMap {
   final bool? isDark;
 
-  const SampleChangeThemeMock({this.isDark});
+  const SampleChangeThemeResult({this.isDark});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
@@ -203,7 +221,7 @@ class SampleChangeThemeMock implements ToMap {
 
 abstract class SampleActions {
   static Action changeName(
-      {required String newName, SampleChangeNameMock? mock}) {
+      {required String newName, SampleChangeNameResult? mock}) {
     return Action(
         name: "changeName",
         type: "/dstore/test/store/pstates/sample/Sample",
@@ -212,7 +230,7 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action changeAge({required int newAge, SampleChangeAgeMock? mock}) {
+  static Action changeAge({required int newAge, SampleChangeAgeResult? mock}) {
     return Action(
         name: "changeAge",
         type: "/dstore/test/store/pstates/sample/Sample",
@@ -221,7 +239,7 @@ abstract class SampleActions {
         isAsync: false);
   }
 
-  static Action addToList({required String item, SampleAddToListMock? mock}) {
+  static Action addToList({required String item, SampleAddToListResult? mock}) {
     return Action(
         name: "addToList",
         type: "/dstore/test/store/pstates/sample/Sample",
@@ -231,7 +249,9 @@ abstract class SampleActions {
   }
 
   static Action changeTheme(
-      {required bool value, Duration? debounce, SampleChangeThemeMock? mock}) {
+      {required bool value,
+      Duration? debounce,
+      SampleChangeThemeResult? mock}) {
     return Action(
         name: "changeTheme",
         type: "/dstore/test/store/pstates/sample/Sample",
@@ -239,6 +259,17 @@ abstract class SampleActions {
         mock: mock,
         isAsync: true,
         debounce: debounce);
+  }
+
+  static Action intStream(
+      {required Stream<int> stream,
+      bool cancelOnError = false,
+      Stream<int>? mock}) {
+    return Action(
+        name: "intStream",
+        type: "/dstore/test/store/pstates/sample/Sample",
+        fieldMock: mock,
+        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }
 }
 
@@ -309,6 +340,7 @@ Future<dynamic> Sample_AsyncReducer(
 Sample Sample_DS() => Sample(
     name: "hello",
     age: 0,
+    intStream: StreamField(),
     list: [],
     isDark: false,
     changeTheme: AsyncActionField());

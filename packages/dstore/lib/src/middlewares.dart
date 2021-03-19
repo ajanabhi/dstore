@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dstore/src/action.dart';
-import 'package:dstore/src/form.dart';
+import 'package:dstore/src/stream.dart';
 import 'package:dstore/src/types.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
@@ -62,7 +62,7 @@ dynamic debounceMiddleware<S extends AppStateI<S>>(
 }
 
 dynamic streamMiddleware<S extends AppStateI<S>>(
-    Store store, Dispatch next, Action action) async {
+    Store<S, dynamic> store, Dispatch next, Action action) async {
   if (action.isProcessed || action.stream == null) {
     next(action);
   } else {
@@ -73,33 +73,41 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
           internal: ActionInternal(
               processed: true, type: ActionInternalType.DATA, data: field)));
     } else {
-      final sub = action.stream?.listen((dynamic event) {
-        final field = store.getFieldFromAction(action) as StreamField;
-        store.dispatch(action.copyWith(
-            internal: ActionInternal(
-          processed: true,
-          data: field.copyWith(
-              data: Optional<dynamic>(event), error: Optional(null)),
-          type: ActionInternalType.DATA,
-        )));
-      }, onError: (dynamic e) {
-        final field = store.getFieldFromAction(action) as StreamField;
-        store.dispatch(action.copyWith(
-            internal: ActionInternal(
-          processed: true,
-          data: field.copyWith(error: Optional<dynamic>(e)),
-          type: ActionInternalType.DATA,
-        )));
-      }, onDone: () {
-        final field = store.getFieldFromAction(action) as StreamField;
-        store.dispatch(action.copyWith(
-            internal: ActionInternal(
-          processed: true,
-          data: field.copyWith(
-              listening: false, error: Optional(null), completed: true),
-          type: ActionInternalType.DATA,
-        )));
-      });
+      final stream = action.stream!.stream;
+      final cancelOnError = action.stream!.cancelOnError;
+      final sub = stream.listen(
+          (dynamic event) {
+            final field = store.getFieldFromAction(action) as StreamField;
+            store.dispatch(action.copyWith(
+                internal: ActionInternal(
+              processed: true,
+              data: field.copyWith(
+                  data: Optional<dynamic>(event), error: Optional(null)),
+              type: ActionInternalType.DATA,
+            )));
+          },
+          cancelOnError: cancelOnError,
+          onError: (dynamic e) {
+            final field = store.getFieldFromAction(action) as StreamField;
+            store.dispatch(action.copyWith(
+                internal: ActionInternal(
+              processed: true,
+              data: field.copyWith(
+                  error: Optional<dynamic>(e),
+                  completed: cancelOnError ? true : false),
+              type: ActionInternalType.DATA,
+            )));
+          },
+          onDone: () {
+            final field = store.getFieldFromAction(action) as StreamField;
+            store.dispatch(action.copyWith(
+                internal: ActionInternal(
+              processed: true,
+              data: field.copyWith(
+                  listening: false, error: Optional(null), completed: true),
+              type: ActionInternalType.DATA,
+            )));
+          });
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true,

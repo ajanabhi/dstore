@@ -4,6 +4,8 @@ import 'package:dstore/src/action.dart';
 import 'package:dstore/src/http.dart';
 import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
+import 'package:dstore/src/types.dart';
+import 'package:dstore/src/stream.dart';
 import 'package:test/test.dart';
 
 extension on Map {
@@ -38,9 +40,10 @@ class StoreTester<S extends AppStateI<S>> {
 
   Future<void> testAsyncAction<M extends ToMap>(Action<M> action, M result,
       {Duration? timeout, int interval = 4}) async {
+    assert(action.isAsync == true);
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
-    if (action.isAsync || action.http != null) {
+    if (action.isAsync) {
       await waitForAction(action, timeout: timeout, interval: interval);
     }
     final after = store.getPStateModelFromAction(action);
@@ -60,6 +63,15 @@ class StoreTester<S extends AppStateI<S>> {
       }
       expect(beforeMap.identicalMembers(afterMap), true);
     }
+  }
+
+  Future<void> testStreamAction(Action action) async {
+    final before = store.getPStateModelFromAction(action);
+    store.dispatch(action);
+    final after = store.getPStateModelFromAction(action);
+    expect(identical(before, after), false);
+    final dynamic field = store.getFieldFromAction(action);
+    if (field is StreamField) {}
   }
 
   Future<void> waitForAction(Action action,

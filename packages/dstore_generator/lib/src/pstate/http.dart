@@ -142,11 +142,13 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("""method: "${hf.method}" """);
   payloadFields.add("inputType:${hf.inputTypeEnum}");
   payloadFields.add("responseType:${hf.responseTypeEnum}");
-  params.add("${hf.fieldType} mock");
+  final mockType =
+      hf.fieldType.endsWith("?") ? hf.fieldType : "${hf.fieldType}?";
+  params.add("$mockType mock");
   params.add("Duration? debounce");
   return """
       static ${hf.name}({${params.join(", ")}}) {
-        return Action(name:"${hf.name}",mock:mock,type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+        return Action(name:"${hf.name}",fieldMock:mock,type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

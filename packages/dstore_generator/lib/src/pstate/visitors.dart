@@ -28,12 +28,12 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     if (body is EmptyFunctionBody) {
       throw Exception("method should contain mutation to fields");
     }
-    if (node.body.isAsynchronous &&
-        node.returnType?.toString() != "Future<void>") {
+    final rt = node.returnType?.toString();
+    logger.shout("RT : $rt");
+    if (node.body.isAsynchronous && (rt != "Future<void>" && rt != "void")) {
       throw InvalidSignatureError(
           "You should annotate method  '${node.name.name}' return type with Future<void>  ");
-    } else if (!node.body.isAsynchronous &&
-        node.returnType?.toString() != "void") {
+    } else if (!node.body.isAsynchronous && rt != "void") {
       throw InvalidSignatureError(
           "You should annotate method  '${node.name.name}' return type with void  ");
     }

@@ -28,3 +28,7 @@ extension DoubleOptionalExt on double? {
 extension NullOptionalExt on Null? {
   dynamic get optional => Optional(this);
 }
+
+abstract class ToMap {
+  Map<String, dynamic> toMap();
+}

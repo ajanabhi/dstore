@@ -23,17 +23,6 @@ abstract class AsyncActionField with _$AsyncActionField {
       _$AsyncActionFieldFromJson(json);
 }
 
-@dimmutable
-abstract class StreamField<D> with _$StreamField<D> {
-  const factory StreamField({
-    D? data,
-    StreamSubscription? internalSubscription,
-    @Default(null) dynamic? error,
-    @Default(false) bool listening,
-    @Default(false) bool completed,
-  }) = _StreamField<D>;
-}
-
 abstract class PStateModel<M> {
   M copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();

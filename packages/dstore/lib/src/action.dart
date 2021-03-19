@@ -1,15 +1,12 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
+import 'package:dstore/src/stream.dart';
 import 'package:dstore/src/utils.dart';
 import 'package:dstore/src/websocket.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 
 part "action.dstore.dart";
-
-abstract class ToMap {
-  Map<String, dynamic> toMap();
-}
 
 @dimmutable
 abstract class Action<M extends ToMap> with _$Action<M> {
@@ -22,9 +19,10 @@ abstract class Action<M extends ToMap> with _$Action<M> {
     WebSocketPayload<dynamic, dynamic, dynamic>? ws,
     @Default(null) dynamic? extra,
     ActionInternal? internal,
-    Stream<dynamic>? stream,
+    StreamPayload? stream,
     Duration? debounce,
     M? mock,
+    @Default(null) dynamic? fieldMock,
     FormReq? form,
   }) = _Action<M>;
 
@@ -42,7 +40,7 @@ abstract class Action<M extends ToMap> with _$Action<M> {
       http = HttpPayload<dynamic, dynamic, dynamic, dynamic>.fromJson(
           httpMap, httpMeta);
     }
-    return Action(name: name, type: type, http: http);
+    return Action<M>(name: name, type: type, http: http);
   }
 }
 
