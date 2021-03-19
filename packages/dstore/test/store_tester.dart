@@ -8,8 +8,8 @@ import 'package:dstore/src/types.dart';
 import 'package:dstore/src/stream.dart';
 import 'package:test/test.dart';
 
-extension on Map {
-  bool identicalMembers(Map other) {
+extension on Map<dynamic, dynamic> {
+  bool identicalMembers(Map<dynamic, dynamic> other) {
     return this.entries.every((me) => identical(me.value, other[me.key]));
   }
 }
@@ -65,7 +65,7 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  Future<void> testStreamAction(Action action) async {
+  Future<void> testStreamAction<M>(Action<M> action, M result) async {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     final after = store.getPStateModelFromAction(action);
@@ -74,13 +74,13 @@ class StoreTester<S extends AppStateI<S>> {
     if (field is StreamField) {}
   }
 
-  Future<void> waitForAction(Action action,
+  Future<void> waitForAction(Action<dynamic> action,
       {Duration? timeout, int interval = 4}) {
     return _createWaitFuture(action, interval, timeout: timeout);
   }
 
   Future<void> _createWaitFuture(
-    Action action,
+    Action<dynamic> action,
     int interval, {
     Duration? timeout,
   }) async {

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dstore/dstore.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 part "stream.dstore.dart";
 
