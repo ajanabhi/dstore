@@ -149,7 +149,7 @@ String convertHttpFieldInfoToAction(
   params.add("Duration? debounce");
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
-        return Action<$mockType>(name:"${hf.name}",mock:mock,type:"${type}",http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+        return Action<$mockType>(name:"${hf.name}",mock:mock,type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

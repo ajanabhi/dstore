@@ -10,17 +10,18 @@ import 'package:dstore_generator/src/utils/utils.dart';
 
 class PStateGenerator extends GeneratorForAnnotation<PState> {
   @override
-  String generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) {
+  Future<String> generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) async {
     try {
       if (!(element is ClassElement)) {
         throw ArgumentError.value("PState should be applied on class only");
       }
       final className = element.name;
-      if (!className.startsWith("\_")) {
-        throw ArgumentError.value("PState class should start with _");
+      if (!className.startsWith("\$_")) {
+        throw ArgumentError.value(
+            "PState class should start with \$_ , example : class \$_Auth");
       }
-      return generatePStateForClassElement(element);
+      return await generatePStateForClassElement(element);
     } catch (e, st) {
       logger.error("Error in generate PState for ${element.name}", e, st);
       rethrow;

@@ -6,3 +6,12 @@ class InvalidSignatureError extends Error {
   @override
   String toString() => 'InvalidSignatureError(message: $message)';
 }
+
+class NotAllowedError extends Error {
+  final String message;
+
+  NotAllowedError(this.message);
+
+  @override
+  String toString() => 'NotAllowedError(message: $message)';
+}

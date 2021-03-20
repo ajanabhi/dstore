@@ -4,6 +4,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
+import 'package:dstore_generator/src/pstate/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
@@ -11,6 +12,7 @@ import 'package:tuple/tuple.dart';
 class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   List<Field> fields = [];
   List<PStateMethod> methods = [];
+  List<Field> psDeps = [];
   final bool isPersitable;
   final ClassElement element;
   final bool historyEnabled;
@@ -24,6 +26,10 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
+    if (node.isGetter || node.isSetter) {
+      throw NotAllowedError(
+          "getters and setters are not allowed in pstates , remove '${node.name}' from PStste");
+    }
     final body = node.body;
     if (body is EmptyFunctionBody) {
       throw Exception("method should contain mutation to fields");
@@ -107,30 +113,58 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     node.fields.variables.forEach((v) {
       final name = v.name.toString();
       final valueE = v.initializer;
-      if (!type.endsWith("?") && valueE == null) {
-        throw ArgumentError.value("Should provide initital value for fields");
-      }
-      final value = valueE.toString();
-      final fe = element.fields.singleWhere((f) => f.name == name);
-      logger.shout(
-          "Variable Annotations $fe ${fe.metadata} element ${v.declaredElement}");
-      // final value = type.endsWith("?") ? "null" : valueE.toString();
-      var annotations = fe.metadata.map((e) => e.toSource()).toList();
-      final noPersitAnnot = fe.annotationFromType(ExcludeThisKeyWhilePersit);
-      if (isPersitable && noPersitAnnot != null) {
-        if (fe.hasJsonKey) {
-          annotations = fe.mergeJsonKeyAndReturnAnnotations(
-              <String, dynamic>{"ignore": true});
-        } else {
-          annotations.add("@JsonKey(ignore: true)");
+      if (v.isLate) {
+        // check for psdeps
+        // logger.shout(
+        //     "VE ${v.runtimeType} ${v.declaredElement?.name} ${typeA.runtimeType}");
+        // final fe = v.declaredElement as FieldElement;
+        // logger.shout(
+        //     "Meta data ${fe.type.element?.metadata.map((e) => e.toSource())}");
+        // final typeN = typeA as TypeName;
+        // logger.shout("typeN ${typeN.type} ${typeN}");
+        // // typeN.
+        if (!type.startsWith("\$_") || !_isPStateModel(v)) {
+          throw NotAllowedError(
+              "Only PState models are allowed as late variables");
         }
+        final dt = getFullTypeName(
+            (v.declaredElement as FieldElement).type.element as ClassElement);
+        psDeps.add(Field(name: name, type: type.substring(2), value: dt));
+      } else {
+        if (!type.endsWith("?") && valueE == null) {
+          logger.shout("Special Field ${node.runtimeType} $node  ");
+          throw ArgumentError.value("Should provide initital value for fields");
+        }
+        final value = valueE.toString();
+        final fe = element.fields.singleWhere((f) => f.name == name);
+        logger.shout(
+            "Variable Annotations $fe ${fe.metadata} element ${v.declaredElement}");
+
+        var annotations = fe.metadata.map((e) => e.toSource()).toList();
+        final noPersitAnnot = fe.annotationFromType(ExcludeThisKeyWhilePersit);
+        if (isPersitable && noPersitAnnot != null) {
+          if (fe.hasJsonKey) {
+            annotations = fe.mergeJsonKeyAndReturnAnnotations(
+                <String, dynamic>{"ignore": true});
+          } else {
+            annotations.add("@JsonKey(ignore: true)");
+          }
+        }
+        fields.add(Field(
+            name: name, annotations: annotations, type: type, value: value));
       }
-      fields.add(Field(
-          name: name, annotations: annotations, type: type, value: value));
     });
     print(
         "declared element : ${node.fields.type} node : ${node.fields.variables[0]}");
     return super.visitFieldDeclaration(node);
+  }
+
+  bool _isPStateModel(VariableDeclaration v) {
+    return (v.declaredElement as FieldElement)
+            .type
+            .element
+            ?.annotationFromType(PState) !=
+        null;
   }
 }
 

@@ -1,16 +1,18 @@
 import 'package:dstore/dstore.dart';
 import "package:meta/meta.dart";
 import "package:time/time.dart";
+
+import 'sample2/sample2.dart';
 part "sample.ps.dstore.dart";
 
 @PState()
-// ignore: unused_element
-class _Sample {
+class $_Sample {
   String name = "hello";
   int age = 0;
   StreamField<int> intStream = StreamField();
   List<String> list = [];
   bool isDark = false;
+  late final $_Sample2 s;
 
   void changeName(String newName) {
     this.name = newName;

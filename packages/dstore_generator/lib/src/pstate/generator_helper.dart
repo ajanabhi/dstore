@@ -11,11 +11,14 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 import "dart:convert";
 
-String generatePStateForClassElement(ClassElement element) {
+import 'package:timing/timing.dart';
+
+Future<String> generatePStateForClassElement(ClassElement element) async {
   final typeParamsWithBounds =
       element.typeParameters.map((e) => e.toString()).join(",");
   final typeParams = element.typeParameters.map((e) => e.name).join(",");
-  final modelName = element.name.substring(1);
+  final modelName = element.name.substring(2);
+
   final pstate = element.getPState();
   final isPerssit = isPersitable(pstate);
   final visitor = PStateAstVisitor(
@@ -23,24 +26,34 @@ String generatePStateForClassElement(ClassElement element) {
       isPersitable: isPerssit,
       historyEnabled: pstate.enableHistory,
       historyLimit: pstate.historyLimit);
-  final astNode = AstUtils.getAstNodeFromElement(element);
+  //TODO we dont getResolvedAstNodeFromElement all the time , may be add a flag to pstate based on that swith between normal/resolved ast , revisit this if build_runner taking so much time.
+  // final tracker = AsyncTimeTracker();
+  // // final astNode = tracker.track(() => AstUtils.getAstNodeFromElement(element));
+
+  // final astNode = await tracker.track(() async {
+  //   return await AstUtils.getResolvedAstNodeFromElement(element);
+  // });
+  // logger.shout("TimeTracker ${tracker.duration.inMilliseconds}  $tracker");
+  final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
   final methods = visitor.methods;
+  print("psdeps ${visitor.psDeps}");
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
       name: m.name,
       type: "AsyncActionField",
       value: "AsyncActionField()",
       param: null)));
   fields = processFields(fields);
-
-  final type = _getTypeName(element);
+  logger.shout("Fields $fields Methods $methods");
+  final typePath = getFullTypeName(element);
+  final typeVariable = "_${modelName}_FullPath";
   final actionsInfo = _getActionsInfo(
     element: element,
     visitor: visitor,
     modelName: modelName,
     enableHistory: pstate.enableHistory,
-    type: type,
+    type: typeVariable,
   );
   final actionsmeta =
       _getActionsmeta(visitor.methods, actionsInfo.specialActions);
@@ -51,7 +64,7 @@ String generatePStateForClassElement(ClassElement element) {
       methods: methods,
       actionsMeta: actionsmeta,
       httpMeta: actionsInfo.httpMeta,
-      type: type,
+      type: typeVariable,
       isPersiable: isPerssit,
       historyLimit: pstate.historyLimit,
       enableHistory: pstate.enableHistory);
@@ -62,6 +75,7 @@ String generatePStateForClassElement(ClassElement element) {
   }
   final result = """
        ${_createPStateModel(fields: fields, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
+       const $typeVariable = "$typePath";
        ${actions}
         ${pstateMeta}
     """;
@@ -77,14 +91,14 @@ Map<String, List<String>> _getActionsmeta(
   return map;
 }
 
-String _getTypeName(ClassElement element) {
+String getFullTypeName(ClassElement element) {
   var path = element.source.fullName.replaceAll(".dart", "");
   if (path.contains("/src/")) {
     path = path.substring(path.indexOf("/src/") + 4);
   } else if (path.contains("/lib/")) {
     path = path.substring(path.indexOf("/lib/") + 4);
   }
-  return "$path/${element.name.substring(1)}";
+  return "$path/${element.name.substring(2)}";
 }
 
 String _getPStateMeta(
@@ -106,7 +120,7 @@ String _getPStateMeta(
   var defaultState =
       "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
   var defaultStateFn = "$modelName ${modelName}_DS() => $defaultState;";
-  final params = <String>["type : \"$type\""];
+  final params = <String>["type : $type"];
   if (syncReducerFunctionStr.isNotEmpty) {
     params.add("reducer: ${modelName}_SyncReducer");
   }
@@ -251,7 +265,7 @@ String _generateActionsCreators({
     }
     return """
       static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action<$mockName>(name:"${m.name}",type:"${type}" ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action<$mockName>(name:"${m.name}",type:${type} ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");
@@ -271,7 +285,7 @@ String _generateActionsCreators({
   final formActions = formFields.map((ff) {
     return """
    static ${ff.name}(FormReq req) {
-     return Action(name:"$ff.name}",type:"${type}",form:req);
+     return Action(name:"$ff.name}",type:${type},form:req);
    }
    """;
   }).join("\n");
