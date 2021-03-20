@@ -4,15 +4,17 @@ import 'package:dstore/src/store.dart';
 
 import '../store_tester.dart';
 import 'pstates/sample.dart';
+import 'pstates/sample2/sample2.dart';
 
 part "app_state.dstore.dart";
 
 @AppStateAnnotation()
 class AppState with _$AppState implements AppStateI<AppState> {
   late final Sample sample;
+  late final Sample2 sample2;
 }
 
 final storeTester = StoreTester(Store<AppState, dynamic>(
-    meta: createAppStateMeta(sample: SampleMeta),
+    meta: createAppStateMeta(sample: SampleMeta, sample2: Sample2Meta),
     middlewares: [streamMiddleware],
     stateCreator: () => AppState()));

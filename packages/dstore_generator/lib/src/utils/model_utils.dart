@@ -15,11 +15,11 @@ abstract class ModelUtils {
   }
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
-      {bool assignDefaults = true}) {
+      {bool assignDefaults = true, bool addConst = true}) {
     final cf = fields.map((f) {
       return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${AstUtils.addConstToDefaultValue(f.value!)}" : ""}";
     }).join(", ");
-    return "const ${name}({$cf});";
+    return "${addConst ? "const" : ""} ${name}({$cf});";
   }
 
   static String createHashcodeFromFieldsList(List<Field> fields) {

@@ -26,7 +26,7 @@ abstract class AsyncActionField with _$AsyncActionField {
 abstract class PStateModel<M> {
   M copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();
-  void internalSetPSDeps(List<PStateModel<dynamic>> psDeps) {
+  void internalSetPSDeps(List<dynamic> psDeps) {
     throw UnimplementedError();
   }
 }

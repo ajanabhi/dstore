@@ -384,7 +384,7 @@ String _createPStateModel(
       ? ""
       : """
     @override
-    internalSetPSDeps(List<PStateModel<dynamic>> psDeps){
+    internalSetPSDeps(List<dynamic> psDeps){
        ${psDeps.mapIndexed((index, t) => "this.${t.name} = psDeps[$index];").join("\n")}
     }
   """;
@@ -393,13 +393,13 @@ String _createPStateModel(
       
       @immutable
       ${annotations.join("\n")}
-      class ${name} $m implements PStateModel<$name> {
+      class ${name} $m extends PStateModel<$name> {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
         $setPSFields
         ${ModelUtils.getCopyWithField(name)}
-        ${ModelUtils.createConstructorFromFieldsList(name, fields)}
+        ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}
 
         ${ModelUtils.createCopyWithMapFromFieldsList(name, fields)}
 

@@ -5,6 +5,7 @@ import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
 import 'package:dstore/src/selector.dart';
+import 'package:collection/collection.dart';
 
 typedef Dispatch = dynamic Function(Action<dynamic> action);
 
@@ -205,7 +206,14 @@ class Store<S extends AppStateI<S>, AT> {
   }
 
   MapEntry<String, PStateMeta> _getPStateMetaFromType(String type) {
-    return meta.entries.singleWhere((me) => me.value.type == type);
+    print("Getting for type $type meta: $meta");
+
+    final value = meta.entries.singleWhereOrNull((me) => me.value.type == type);
+    if (value == null) {
+      throw ArgumentError.value(
+          "Looks like you diidnt added $type to AppState");
+    }
+    return value;
   }
 
   List<Dispatch> _createDispatchers(List<Middleware<S>> middlewares) {

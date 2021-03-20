@@ -7,7 +7,7 @@ part of 'sample.dart';
 // **************************************************************************
 
 @immutable
-class Sample implements PStateModel<Sample> {
+class Sample extends PStateModel<Sample> {
   final String name;
 
   final int age;
@@ -22,14 +22,14 @@ class Sample implements PStateModel<Sample> {
 
   late final Sample2 s;
   @override
-  internalSetPSDeps(List<PStateModel<dynamic>> psDeps) {
+  internalSetPSDeps(List<dynamic> psDeps) {
     this.s = psDeps[0];
   }
 
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
 
-  const Sample(
+  Sample(
       {this.name = "hello",
       this.age = 0,
       this.intStream = const StreamField(),
@@ -277,7 +277,7 @@ abstract class SampleActions {
       Iterable<int>? mock}) {
     return Action<Iterable<int>>(
         name: "intStream",
-        type: "_Sample_FullPath",
+        type: _Sample_FullPath,
         mock: mock,
         stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }

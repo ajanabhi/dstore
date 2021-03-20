@@ -33,7 +33,7 @@ String convertStreamFieldInfoToAction(
   final mockType = "Iterable<${sfi.outputType}>";
   return """
    static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType? mock}) {
-     return Action<$mockType>(name:"$name",type:"$type",mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
+     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
    }
   """;
 }

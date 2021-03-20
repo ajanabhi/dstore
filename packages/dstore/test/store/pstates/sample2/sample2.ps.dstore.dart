@@ -7,13 +7,13 @@ part of 'sample2.dart';
 // **************************************************************************
 
 @immutable
-class Sample2 implements PStateModel<Sample2> {
+class Sample2 extends PStateModel<Sample2> {
   final String name;
 
   _$Sample2CopyWith<Sample2> get copyWith =>
       __$Sample2CopyWithImpl<Sample2>(this, IdentityFn);
 
-  const Sample2({this.name = "name2"});
+  Sample2({this.name = "name2"});
 
   @override
   Sample2 copyWithMap(Map<String, dynamic> map) =>
