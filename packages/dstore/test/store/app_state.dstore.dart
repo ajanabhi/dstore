@@ -16,8 +16,6 @@ mixin _$AppState {
   Map<String, PStateModel> toMap() =>
       {"sample": this.sample, "sample2": this.sample2};
 }
-Map<String, PStateMeta> createAppStateMeta(
-    {required PStateMeta<Sample> sample,
-    required PStateMeta<Sample2> sample2}) {
-  return {"sample": sample, "sample2": sample2};
+Map<String, PStateMeta> createAppStateMeta() {
+  return {"sample": SampleMeta, "sample2": Sample2Meta};
 }

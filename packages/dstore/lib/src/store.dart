@@ -206,8 +206,6 @@ class Store<S extends AppStateI<S>, AT> {
   }
 
   MapEntry<String, PStateMeta> _getPStateMetaFromType(String type) {
-    print("Getting for type $type meta: $meta");
-
     final value = meta.entries.singleWhereOrNull((me) => me.value.type == type);
     if (value == null) {
       throw ArgumentError.value(
