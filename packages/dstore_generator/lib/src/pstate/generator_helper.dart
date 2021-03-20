@@ -11,8 +11,6 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 import "dart:convert";
 
-import 'package:timing/timing.dart';
-
 Future<String> generatePStateForClassElement(ClassElement element) async {
   final typeParamsWithBounds =
       element.typeParameters.map((e) => e.toString()).join(",");
@@ -38,6 +36,7 @@ Future<String> generatePStateForClassElement(ClassElement element) async {
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
   final methods = visitor.methods;
+  final psDeps = visitor.psDeps;
   print("psdeps ${visitor.psDeps}");
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
       name: m.name,
@@ -61,6 +60,7 @@ Future<String> generatePStateForClassElement(ClassElement element) async {
   final pstateMeta = _getPStateMeta(
       modelName: modelName,
       fields: fields,
+      psDeps: psDeps,
       methods: methods,
       actionsMeta: actionsmeta,
       httpMeta: actionsInfo.httpMeta,
@@ -74,7 +74,7 @@ Future<String> generatePStateForClassElement(ClassElement element) async {
     annotations.add("@JsonSerializable()");
   }
   final result = """
-       ${_createPStateModel(fields: fields, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
+       ${_createPStateModel(fields: fields, psDeps: psDeps, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
        const $typeVariable = "$typePath";
        ${actions}
         ${pstateMeta}
@@ -104,6 +104,7 @@ String getFullTypeName(ClassElement element) {
 String _getPStateMeta(
     {required String modelName,
     required List<Field> fields,
+    required List<Field> psDeps,
     required String type,
     required bool enableHistory,
     required Map<String, List<String>> actionsMeta,
@@ -130,6 +131,9 @@ String _getPStateMeta(
   params.add("ds: ${modelName}_DS");
   if (httpMeta.isNotEmpty) {
     params.add("httpMetaMap: $httpMeta");
+  }
+  if (psDeps.isNotEmpty) {
+    params.add('psDeps: [${psDeps.map((e) => '"${e.value}"').join(", ")}]');
   }
   if (isPersiable) {
     final smParams = <String>[];
@@ -351,6 +355,7 @@ String _createMockModel({required String name, required List<Field> fields}) {
 
 String _createPStateModel(
     {required List<Field> fields,
+    required List<Field> psDeps,
     required String name,
     required List<String> annotations,
     required String typeParams,
@@ -359,26 +364,40 @@ String _createPStateModel(
   final isJson = annotations.singleWhereOrNull(
           (element) => element.startsWith("@JsonSerializable")) !=
       null;
-  final historyField = enableHistory
-      ? """
-      set internalPSHistory(PStateHistory<$name> value) {
-        _psHistory = value;
-      }
-     """
-      : "";
+  // final historyField = enableHistory
+  //     ? """
+  //     set internalPSHistory(PStateHistory<$name> value) {
+  //       _psHistory = value;
+  //     }
+  //    """
+  //     : "";
   final mixins = <String>[];
   if (enableHistory) {
     mixins.add("PStateHistoryMixin<$name>");
   }
   final m = mixins.isNotEmpty ? "with ${mixins.join(", ")}" : "";
 
+  final psFeilds =
+      psDeps.map((e) => "late final ${e.type} ${e.name};").join("\n");
+
+  final setPSFields = psFeilds.isEmpty
+      ? ""
+      : """
+    @override
+    internalSetPSDeps(List<PStateModel<dynamic>> psDeps){
+       ${psDeps.mapIndexed((index, t) => "this.${t.name} = psDeps[$index];").join("\n")}
+    }
+  """;
+
   final result = """
       
       @immutable
       ${annotations.join("\n")}
-      class ${name} implements PStateModel<$name> $m {
-        $historyField
+      class ${name} $m implements PStateModel<$name> {
+  
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
+        $psFeilds
+        $setPSFields
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields)}
 

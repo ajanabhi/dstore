@@ -95,3 +95,10 @@ E? convertStringToEnum<E>(String s, List<E> values) {
 extension StringExt on String {
   String get cpatialize => "${substring(0, 1).toUpperCase()}${substring(1)}";
 }
+
+extension IterableMapIndex<T> on Iterable<T> {
+  Iterable<E> mapIndexed<E>(E Function(int index, T t) f) {
+    return Iterable.generate(
+        this.length, (index) => f(index, elementAt(index)));
+  }
+}

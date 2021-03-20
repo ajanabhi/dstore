@@ -73,9 +73,11 @@ class __$Sample2CopyWithImpl<O> extends _$Sample2CopyWithImpl<O>
   }
 }
 
+const _Sample2_FullPath = "/dstore/test/store/pstates/sample2/sample2/Sample2";
+
 abstract class Sample2Actions {}
 
 Sample2 Sample2_DS() => Sample2(name: "name2");
 
-final Sample2Meta = PStateMeta<Sample2>(
-    type: "/dstore/test/store/pstates/sample2/sample2/Sample2", ds: Sample2_DS);
+final Sample2Meta =
+    PStateMeta<Sample2>(type: _Sample2_FullPath, ds: Sample2_DS);

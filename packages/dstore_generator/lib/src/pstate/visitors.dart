@@ -70,7 +70,10 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       }
     } else if (body is BlockFunctionBody) {
       final msr = processMethodStatements(
-          body.block.statements, historyEnabled, historyLimit);
+          statements: body.block.statements,
+          psDeps: psDeps,
+          historyEnabled: historyEnabled,
+          limit: historyLimit);
       final statements = msr.item1;
       keys.addAll(msr.item2);
       mbody = """
@@ -493,7 +496,10 @@ List<String> convertStatementResultsToString(
 }
 
 Tuple2<String, Set<String>> processMethodStatements(
-    List<Statement> statements, bool historyEnabled, int? limit) {
+    {required List<Statement> statements,
+    required bool historyEnabled,
+    required List<Field> psDeps,
+    int? limit}) {
   final statementResults = processStatements(statements);
   print("statementResults ${statementResults}");
   List<MutationStatementResult> getMutationOnlyStatementResults(
@@ -553,9 +559,12 @@ Tuple2<String, Set<String>> processMethodStatements(
   final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
-    ${historyEnabled ? """
+    ${(historyEnabled || psDeps.isNotEmpty) ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
-    newState.internalPSHistory = STATE_VARIABLE.internalPSHistory;
+    ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
+    ${psDeps.isNotEmpty ? """
+      ${psDeps.map((e) => "newState.${e.name} = ${STATE_VARIABLE}.${e.name};").join("\n")}  
+    """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
     

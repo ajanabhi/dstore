@@ -26,6 +26,9 @@ abstract class AsyncActionField with _$AsyncActionField {
 abstract class PStateModel<M> {
   M copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();
+  void internalSetPSDeps(List<PStateModel<dynamic>> psDeps) {
+    throw UnimplementedError();
+  }
 }
 
 class PStateStorageMeta<S extends PStateModel<S>, SM> {
@@ -43,6 +46,7 @@ class PStateMeta<S extends PStateModel<S>> {
   final String type;
   final ReducerFn? reducer;
   final AReducerFn? aReducer;
+  final List<String>? psDeps;
 
   final Map<String, Httpmeta>? httpMetaMap;
   final Map<String, List<String>>? actionsMeta;
@@ -55,6 +59,7 @@ class PStateMeta<S extends PStateModel<S>> {
   const PStateMeta(
       {this.aReducer,
       this.sm,
+      this.psDeps,
       required this.type,
       this.actionsMeta,
       this.httpMetaMap,
@@ -121,6 +126,10 @@ class PStateHistory<S extends PStateModel<S>> {
 mixin PStateHistoryMixin<S extends PStateModel<S>> {
   PStateHistory<S>? _psHistory;
   PStateHistory<S> get internalPSHistory => _psHistory!;
+  set internalPSHistory(PStateHistory<S> value) {
+    _psHistory = value;
+  }
+
   bool get canRedo => internalPSHistory.canRedo;
   bool get canUndo => internalPSHistory.canUndo;
 }

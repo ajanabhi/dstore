@@ -7,7 +7,7 @@ part of 'sample.dart';
 // **************************************************************************
 
 @immutable
-class Sample implements PStateModel<Sample> {
+class Sample with PStateHistoryMixin<Sample> implements PStateModel<Sample> {
   final String name;
 
   final int age;
@@ -19,6 +19,12 @@ class Sample implements PStateModel<Sample> {
   final bool isDark;
 
   final AsyncActionField changeTheme;
+
+  late final Sample2 s;
+  @override
+  internalSetPSDeps(List<PStateModel<dynamic>> psDeps) {
+    this.s = psDeps[0];
+  }
 
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
@@ -159,6 +165,8 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
   }
 }
 
+const _Sample_FullPath = "/dstore/test/store/pstates/sample/Sample";
+
 class SampleChangeNameResult implements ToMap {
   final String? name;
 
@@ -224,7 +232,7 @@ abstract class SampleActions {
       {required String newName, SampleChangeNameResult? mock}) {
     return Action<SampleChangeNameResult>(
         name: "changeName",
-        type: "/dstore/test/store/pstates/sample/Sample",
+        type: _Sample_FullPath,
         payload: {"newName": newName},
         mock: mock,
         isAsync: false);
@@ -234,7 +242,7 @@ abstract class SampleActions {
       {required int newAge, SampleChangeAgeResult? mock}) {
     return Action<SampleChangeAgeResult>(
         name: "changeAge",
-        type: "/dstore/test/store/pstates/sample/Sample",
+        type: _Sample_FullPath,
         payload: {"newAge": newAge},
         mock: mock,
         isAsync: false);
@@ -244,7 +252,7 @@ abstract class SampleActions {
       {required String item, SampleAddToListResult? mock}) {
     return Action<SampleAddToListResult>(
         name: "addToList",
-        type: "/dstore/test/store/pstates/sample/Sample",
+        type: _Sample_FullPath,
         payload: {"item": item},
         mock: mock,
         isAsync: false);
@@ -256,7 +264,7 @@ abstract class SampleActions {
       SampleChangeThemeResult? mock}) {
     return Action<SampleChangeThemeResult>(
         name: "changeTheme",
-        type: "/dstore/test/store/pstates/sample/Sample",
+        type: _Sample_FullPath,
         payload: {"value": value},
         mock: mock,
         isAsync: true,
@@ -269,7 +277,7 @@ abstract class SampleActions {
       Iterable<int>? mock}) {
     return Action<Iterable<int>>(
         name: "intStream",
-        type: "/dstore/test/store/pstates/sample/Sample",
+        type: "_Sample_FullPath",
         mock: mock,
         stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }
@@ -286,7 +294,11 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_name = _DStoreState.name;
         _DStore_name = newName;
-        return _DStoreState.copyWith(name: _DStore_name);
+        final newState = _DStoreState.copyWith(name: _DStore_name);
+        newState.internalPSHistory = _DStoreState.internalPSHistory;
+        newState.s = _DStoreState.s;
+
+        return newState;
       }
 
     case "changeAge":
@@ -296,7 +308,11 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_age = _DStoreState.age;
         _DStore_age = newAge;
-        return _DStoreState.copyWith(age: _DStore_age);
+        final newState = _DStoreState.copyWith(age: _DStore_age);
+        newState.internalPSHistory = _DStoreState.internalPSHistory;
+        newState.s = _DStoreState.s;
+
+        return newState;
       }
 
     case "addToList":
@@ -306,7 +322,11 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_list = _DStoreState.list;
         _DStore_list = [..._DStoreState.list, item];
-        return _DStoreState.copyWith(list: _DStore_list);
+        final newState = _DStoreState.copyWith(list: _DStore_list);
+        newState.internalPSHistory = _DStoreState.internalPSHistory;
+        newState.s = _DStoreState.s;
+
+        return newState;
       }
 
     default:
@@ -329,7 +349,11 @@ Future<dynamic> Sample_AsyncReducer(
         var _DStore_isDark = _DStoreState.isDark;
         await 5.seconds.delay;
         _DStore_isDark = value;
-        return _DStoreState.copyWith(isDark: _DStore_isDark);
+        final newState = _DStoreState.copyWith(isDark: _DStore_isDark);
+        newState.internalPSHistory = _DStoreState.internalPSHistory;
+        newState.s = _DStoreState.s;
+
+        return newState;
       }
 
     default:
@@ -339,16 +363,29 @@ Future<dynamic> Sample_AsyncReducer(
   }
 }
 
-Sample Sample_DS() => Sample(
-    name: "hello",
-    age: 0,
-    intStream: StreamField(),
-    list: [],
-    isDark: false,
-    changeTheme: AsyncActionField());
+Sample Sample_DS() {
+  final state = Sample(
+      name: "hello",
+      age: 0,
+      intStream: StreamField(),
+      list: [],
+      isDark: false,
+      changeTheme: AsyncActionField());
+  state.internalPSHistory = PStateHistory<Sample>(null);
+  return history;
+}
 
 final SampleMeta = PStateMeta<Sample>(
-    type: "/dstore/test/store/pstates/sample/Sample",
+    type: _Sample_FullPath,
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
-    ds: Sample_DS);
+    ds: Sample_DS,
+    psDeps: ["/dstore/test/store/pstates/sample2/sample2/Sample2"],
+    enableHistory: true,
+    actionsMeta: {
+      "changeName": ["name"],
+      "changeAge": ["age"],
+      "addToList": ["list"],
+      "changeTheme": ["isDark"],
+      "intStream": ["intStream"]
+    });
