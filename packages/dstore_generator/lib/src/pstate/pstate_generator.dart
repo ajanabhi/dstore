@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/src/builder/build_step.dart';
+import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:source_gen/source_gen.dart';
@@ -16,6 +17,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
       if (!(element is ClassElement)) {
         throw ArgumentError.value("PState should be applied on class only");
       }
+
       final className = element.name;
       if (!className.startsWith("\$_")) {
         throw ArgumentError.value(

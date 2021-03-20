@@ -6,10 +6,10 @@ import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
 import 'package:dstore/src/selector.dart';
 
-typedef Dispatch = dynamic Function(Action action);
+typedef Dispatch = dynamic Function(Action<dynamic> action);
 
 typedef Middleware<State extends AppStateI<State>> = dynamic Function(
-    Store<State, dynamic> store, Dispatch next, Action action);
+    Store<State, dynamic> store, Dispatch next, Action<dynamic> action);
 
 typedef Callback = dynamic Function();
 
@@ -18,7 +18,7 @@ typedef VoidCallback = void Function();
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
 
 class Store<S extends AppStateI<S>, AT> {
-  final Map<String, PStateMeta<PStateModel>> meta;
+  final Map<String, PStateMeta<PStateModel<dynamic>>> meta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
   final Map<String, String> _pStateTypeToStateKeyMap = {};
@@ -30,7 +30,7 @@ class Store<S extends AppStateI<S>, AT> {
   final bool useEqualsComparision;
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
-  final _offlineActions = <Action>[];
+  final _offlineActions = <Action<dynamic>>[];
   PersitantStorage<AT>? get storage => storageOptions?.storage;
   Store(
       {required this.meta,
@@ -76,7 +76,7 @@ class Store<S extends AppStateI<S>, AT> {
     }
   }
 
-  void addOfflineAction(Action action) {
+  void addOfflineAction(Action<dynamic> action) {
     assert(networkOptions != null);
     _offlineActions.add(action);
     if (storage != null) {
@@ -103,20 +103,53 @@ class Store<S extends AppStateI<S>, AT> {
         // meaning running app first time or user deleted app data
         _prepareNormalStore(stateCreator);
       } else {
-        final AppStateI s = stateCreator();
-        final map = <String, dynamic>{};
-        meta.forEach((key, rg) {
-          if (_pStateTypeToStateKeyMap[rg.type] != null) {
-            throw Exception(
-                "You already selected same PState before with key ${_pStateTypeToStateKeyMap[rg.type]}  ");
+        final AppStateI<S> s = stateCreator();
+        final map = <String, PStateModel<dynamic>>{};
+        final psDepsMap = <String, PStateModel<dynamic>>{};
+        meta.forEach((key, psm) {
+          if (_pStateTypeToStateKeyMap[psm.type] != null) {
+            throw ArgumentError.value(
+                "You already selected same PState before with key ${_pStateTypeToStateKeyMap[psm.type]}  ");
           }
-          _pStateTypeToStateKeyMap[rg.type] = key;
-          final ds = rg.ds();
+          _pStateTypeToStateKeyMap[psm.type] = key;
+          PStateModel<dynamic> ps;
+          if (psDepsMap.containsKey(key)) {
+            ps = psDepsMap[key]!;
+          } else {
+            ps = psm.ds();
+            final sps = sState[key] as Map<String, dynamic>?;
+            if (sps != null) {
+              ps = ps.copyWithMap(sps) as PStateModel;
+            }
+          }
+
+          if (psm.psDeps != null) {
+            final psDeps = <PStateModel<dynamic>>[];
+            psm.psDeps!.forEach((type) {
+              final ek = _pStateTypeToStateKeyMap[type];
+              if (ek != null) {
+                psDeps.add(map[ek]!);
+              } else {
+                // default state not calculated before so calculate it now and store it in map and use it later
+                final psmI = _getPStateMetaFromType(type);
+                var psI = psmI.value.ds();
+                final sps = sState[psmI.key] as Map<String, dynamic>?;
+                if (sps != null) {
+                  psI = psI.copyWithMap(sps) as PStateModel;
+                }
+                psDepsMap[key] = psI;
+                psDeps.add(psI);
+              }
+            });
+            ps.internalSetPSDeps(psDeps);
+          }
+          final ds = psm.ds();
           map[key] = sState[key] != null
               ? ds.copyWithMap(sState[key]! as Map<String, dynamic>)
+                  as PStateModel
               : ds;
         });
-        _state = s.copyWithMap(map) as S;
+        _state = s.copyWithMap(map);
       }
       final offA = await storage.getOfflineActions();
       if (offA != null) {
@@ -140,29 +173,51 @@ class Store<S extends AppStateI<S>, AT> {
 
   void _prepareNormalStore(S Function() stateCreator) {
     final s = stateCreator();
-    final map = <String, dynamic>{};
-    meta.forEach((key, rg) {
-      if (_pStateTypeToStateKeyMap[rg.type] != null) {
-        throw Exception(
-            "You already selected same PState before with key ${_pStateTypeToStateKeyMap[rg.type]}  ");
+    final map = <String, PStateModel<dynamic>>{};
+    final psDepsMap = <String, PStateModel<dynamic>>{};
+    meta.forEach((key, psm) {
+      if (_pStateTypeToStateKeyMap[psm.type] != null) {
+        throw ArgumentError.value(
+            "You already selected same PState before with key ${_pStateTypeToStateKeyMap[psm.type]}  ");
       }
-      _pStateTypeToStateKeyMap[rg.type] = key;
-      map[key] = rg.ds();
+      _pStateTypeToStateKeyMap[psm.type] = key;
+      final ps = psDepsMap[key] ?? psm.ds();
+      if (psm.psDeps != null) {
+        final psDeps = <PStateModel<dynamic>>[];
+        psm.psDeps!.forEach((type) {
+          final ek = _pStateTypeToStateKeyMap[type];
+          if (ek != null) {
+            psDeps.add(map[ek]!);
+          } else {
+            // default state not calculated before so calculate it now and store it in map and use it later
+            final psmI = _getPStateMetaFromType(type);
+            final psI = psmI.value.ds();
+            psDepsMap[psmI.key] = psI;
+            psDeps.add(psI);
+          }
+        });
+        ps.internalSetPSDeps(psDeps);
+      }
+      map[key] = ps;
     });
-    _state = s.copyWithMap(map) as S;
+    _state = s.copyWithMap(map);
     isReady = true;
+  }
+
+  MapEntry<String, PStateMeta> _getPStateMetaFromType(String type) {
+    return meta.entries.singleWhere((me) => me.value.type == type);
   }
 
   List<Dispatch> _createDispatchers(List<Middleware<S>> middlewares) {
     final dispatchers = <Dispatch>[]..add(_defaultDispatch);
     middlewares.reversed.forEach((m) {
       final next = dispatchers.last;
-      dispatchers.add((Action action) => m(this, next, action));
+      dispatchers.add((Action<dynamic> action) => m(this, next, action));
     });
     return dispatchers.reversed.toList();
   }
 
-  dynamic _defaultDispatch(Action action) {
+  dynamic _defaultDispatch(Action<dynamic> action) {
     final sk = _pStateTypeToStateKeyMap[action.type]!;
     final psm = meta[sk]!;
     final gsMap = _state.toMap();
@@ -194,11 +249,11 @@ class Store<S extends AppStateI<S>, AT> {
 
   void _handleStateChange(
       {required String stateKey,
-      required PStateModel previousState,
+      required PStateModel<dynamic> previousState,
       required PStateMeta psm,
-      required Action action,
+      required Action<dynamic> action,
       required Map<String, dynamic> newGlobalStateMap,
-      required PStateModel currentState}) async {
+      required PStateModel<dynamic> currentState}) async {
     if (psm.sm != null) {
       assert(storageOptions != null);
       final so = storageOptions!;
@@ -209,7 +264,7 @@ class Store<S extends AppStateI<S>, AT> {
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.ignore) {
-            _state = _state.copyWithMap(newGlobalStateMap) as S;
+            _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
                 previousState: previousState,
@@ -219,7 +274,7 @@ class Store<S extends AppStateI<S>, AT> {
           rethrow;
         }
       } else {
-        _state = _state.copyWithMap(newGlobalStateMap) as S;
+        _state = _state.copyWithMap(newGlobalStateMap);
         _notifyListeners(
             stateKey: stateKey,
             previousState: previousState,
@@ -233,7 +288,7 @@ class Store<S extends AppStateI<S>, AT> {
             currentState = previousState;
             previousState = currentState;
             newGlobalStateMap[stateKey] = currentState;
-            _state = _state.copyWithMap(newGlobalStateMap) as S;
+            _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
                 previousState: previousState,
@@ -244,7 +299,7 @@ class Store<S extends AppStateI<S>, AT> {
         }
       }
     } else {
-      _state = _state.copyWithMap(newGlobalStateMap) as S;
+      _state = _state.copyWithMap(newGlobalStateMap);
       _notifyListeners(
           stateKey: stateKey,
           previousState: previousState,
@@ -254,8 +309,8 @@ class Store<S extends AppStateI<S>, AT> {
 
   void _notifyListeners(
       {required String stateKey,
-      required PStateModel previousState,
-      required PStateModel currentState}) {
+      required PStateModel<dynamic> previousState,
+      required PStateModel<dynamic> currentState}) {
     final ls = selectorListeners[stateKey];
     final psMap = previousState.toMap();
     final csMap = currentState.toMap();
@@ -302,7 +357,7 @@ class Store<S extends AppStateI<S>, AT> {
   }
 
   void _handleUnsubscribe(
-      Selector selector, UnSubscribeOptions? options) async {
+      Selector<S, dynamic> selector, UnSubscribeOptions? options) async {
     final process = selector.wsDeps != null ||
         selector.sfDeps != null ||
         (options != null && options.resetToDefault != null);
@@ -396,7 +451,7 @@ class Store<S extends AppStateI<S>, AT> {
             sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
           }
           _updatePersitance(selector.deps.keys, []);
-          _state = _state.copyWithMap(sMap) as S;
+          _state = _state.copyWithMap(sMap);
           listernsToFire.forEach((l) {
             l();
           });
@@ -514,28 +569,28 @@ class Store<S extends AppStateI<S>, AT> {
     return _pStateTypeToStateKeyMap[key]!;
   }
 
-  PStateModel getPStateModelFromAction(Action action) {
+  PStateModel<dynamic> getPStateModelFromAction(Action<dynamic> action) {
     final sk = _pStateTypeToStateKeyMap[action.type]!;
     final gsMap = state.toMap();
     return gsMap[sk]!;
   }
 
-  dynamic getFieldFromAction(Action action) {
+  dynamic getFieldFromAction(Action<dynamic> action) {
     final currentS = getPStateModelFromAction(action);
     return currentS.toMap()[action.name];
   }
 
-  PStateMeta getPStateMetaFromAction(Action action) {
+  PStateMeta getPStateMetaFromAction(Action<dynamic> action) {
     final sk = _pStateTypeToStateKeyMap[action.type];
     return meta[sk]!;
   }
 
-  dynamic dispatch(Action action) {
+  dynamic dispatch(Action<dynamic> action) {
     _dispatchers[0](action);
   }
 
   SelectorUnSubscribeFn subscribeSelector(
-      Selector<dynamic, dynamic> selector, Callback listener) {
+      Selector<S, dynamic> selector, Callback listener) {
     final keys = selector.deps.keys;
     keys.forEach((sk) {
       final sls = selectorListeners[sk];
@@ -582,7 +637,7 @@ class UnSubscribeOptions {
 }
 
 class _SelectorListener {
-  final Selector selector;
+  final Selector<dynamic, dynamic> selector;
   final Callback listener;
   _SelectorListener({
     required this.selector,
@@ -603,5 +658,5 @@ class _SelectorListener {
 
 abstract class AppStateI<S> {
   S copyWithMap(Map<String, dynamic> map);
-  Map<String, PStateModel> toMap();
+  Map<String, PStateModel<dynamic>> toMap();
 }

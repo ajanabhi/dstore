@@ -5,7 +5,7 @@ import "package:time/time.dart";
 import 'sample2/sample2.dart';
 part "sample.ps.dstore.dart";
 
-@PState(enableHistory: true)
+@PState()
 class $_Sample {
   String name = "hello";
   int age = 0;

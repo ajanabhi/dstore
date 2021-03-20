@@ -7,7 +7,7 @@ part of 'sample.dart';
 // **************************************************************************
 
 @immutable
-class Sample with PStateHistoryMixin<Sample> implements PStateModel<Sample> {
+class Sample implements PStateModel<Sample> {
   final String name;
 
   final int age;
@@ -295,7 +295,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         var _DStore_name = _DStoreState.name;
         _DStore_name = newName;
         final newState = _DStoreState.copyWith(name: _DStore_name);
-        newState.internalPSHistory = _DStoreState.internalPSHistory;
+
         newState.s = _DStoreState.s;
 
         return newState;
@@ -309,7 +309,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         var _DStore_age = _DStoreState.age;
         _DStore_age = newAge;
         final newState = _DStoreState.copyWith(age: _DStore_age);
-        newState.internalPSHistory = _DStoreState.internalPSHistory;
+
         newState.s = _DStoreState.s;
 
         return newState;
@@ -323,7 +323,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         var _DStore_list = _DStoreState.list;
         _DStore_list = [..._DStoreState.list, item];
         final newState = _DStoreState.copyWith(list: _DStore_list);
-        newState.internalPSHistory = _DStoreState.internalPSHistory;
+
         newState.s = _DStoreState.s;
 
         return newState;
@@ -350,7 +350,7 @@ Future<dynamic> Sample_AsyncReducer(
         await 5.seconds.delay;
         _DStore_isDark = value;
         final newState = _DStoreState.copyWith(isDark: _DStore_isDark);
-        newState.internalPSHistory = _DStoreState.internalPSHistory;
+
         newState.s = _DStoreState.s;
 
         return newState;
@@ -363,29 +363,17 @@ Future<dynamic> Sample_AsyncReducer(
   }
 }
 
-Sample Sample_DS() {
-  final state = Sample(
-      name: "hello",
-      age: 0,
-      intStream: StreamField(),
-      list: [],
-      isDark: false,
-      changeTheme: AsyncActionField());
-  state.internalPSHistory = PStateHistory<Sample>(null);
-  return history;
-}
+Sample Sample_DS() => Sample(
+    name: "hello",
+    age: 0,
+    intStream: StreamField(),
+    list: [],
+    isDark: false,
+    changeTheme: AsyncActionField());
 
 final SampleMeta = PStateMeta<Sample>(
     type: _Sample_FullPath,
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
     ds: Sample_DS,
-    psDeps: ["/dstore/test/store/pstates/sample2/sample2/Sample2"],
-    enableHistory: true,
-    actionsMeta: {
-      "changeName": ["name"],
-      "changeAge": ["age"],
-      "addToList": ["list"],
-      "changeTheme": ["isDark"],
-      "intStream": ["intStream"]
-    });
+    psDeps: ["/dstore/test/store/pstates/sample2/sample2/Sample2"]);
