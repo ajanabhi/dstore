@@ -1,3 +1,4 @@
+import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/store.dart';
 import 'package:dstore/src/types.dart';
@@ -28,6 +29,27 @@ abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
       @Default(false) bool validateOnBlur,
       @Default("") String internalAName,
       @Default("") String internalAType}) = _FormField<F>;
+}
+
+class FromFieldPropInfo {
+  final String name;
+  final dynamic value;
+  final FormFieldValidator? validator;
+  final String? error;
+  final bool touched;
+  final void Function(dynamic value) setValue;
+  final void Function(String? value) setError;
+  final void Function(bool value) setTouched;
+
+  FromFieldPropInfo(
+      {required this.name,
+      required this.value,
+      required this.validator,
+      required this.error,
+      required this.setError,
+      required this.setValue,
+      required this.setTouched,
+      required this.touched});
 }
 
 abstract class FormReq {}
@@ -72,7 +94,7 @@ class FormReset extends FormReq {}
 class FormValidate extends FormReq {}
 
 class FormOps {
-  final void Function(FormSetFieldError req) setFieldValue;
+  final void Function(FormSetFieldValue req) setFieldValue;
   final void Function(FormSetFieldTouched req) setFieldTouched;
   final void Function(FormSetFieldError req) setFieldError;
   final void Function(FormSetErrors req) setErrors;
@@ -90,10 +112,10 @@ class FormOps {
       required this.validateForm});
 }
 
-abstract class MiddlewareFormUtils {
+abstract class FormUtils {
   static FormOps getFormOps(FormField ff, Dispatch dispatch) {
     return FormOps(
-      setFieldValue: (FormSetFieldError req) {
+      setFieldValue: (FormSetFieldValue req) {
         final a = Action<dynamic>(
             name: ff.internalAName, type: ff.internalAType, form: req);
         dispatch(a);

@@ -1,12 +1,12 @@
 import 'package:dstore/dstore.dart';
 
 dynamic formMiddleware<S extends AppStateI<S>>(
-    Store<S, dynamic> store, Dispatch next, Action action) async {
+    Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
   if (action.isProcessed || action.form == null) {
     next(action);
   } else {
     // form action
-    final req = action.form!;
+    final req = action.form as FormReq;
     final ff = store.getFieldFromAction(action) as FormField;
     final pm = store.getPStateMetaFromAction(action);
     late FormField nff;
@@ -22,13 +22,10 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       if (validate && validator != null) {
         final newE = await validator(req.value) as String?;
         if (newE != null) {
-          errors[req.key] = newE as String;
+          errors[req.key] = newE;
         }
       }
-      nff = ff.copyWith(
-          value: value as FormFieldObject,
-          errors: errors,
-          isValid: errors.isEmpty);
+      nff = ff.copyWith(value: value, errors: errors, isValid: errors.isEmpty);
     } else if (req is FormSetFieldTouched) {
       var validate = ff.validateOnBlur;
       if (req.validate) {
@@ -60,7 +57,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
     } else if (req is FormSetSubmitting) {
       nff = ff.copyWith(isSubmitting: req.isSubmitting);
     } else if (req is FormValidate) {
-      final errors = await MiddlewareFormUtils.isFormValid(ff);
+      final errors = await FormUtils.isFormValid(ff);
       nff = ff.copyWith(errors: errors, isValid: errors.isEmpty);
     }
     store.dispatch(action.copyWith(
