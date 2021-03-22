@@ -1,14 +1,13 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/store.dart';
-import 'package:dstore/src/types.dart';
 import 'package:dstore/src/utils.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part "form.dstore.dart";
 
-typedef FormFieldValidator = dynamic Function(dynamic value);
+typedef FormFieldValidator = String? Function(dynamic value);
 
 abstract class FormFieldObject<M> {
   M copyWithMap(Map<String, dynamic> map);
@@ -16,12 +15,13 @@ abstract class FormFieldObject<M> {
 }
 
 @DImmutable()
-abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
+abstract class FormField<Key, F extends FormFieldObject<F>>
+    with _$FormField<F> {
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
-      @Default(<String, String>{}) Map<String, String> errors,
-      @Default(<String, bool>{}) Map<String, bool> touched,
+      @Default(<dynamic, String>{}) Map<Key, String> errors,
+      @Default(<dynamic, bool>{}) Map<Key, bool> touched,
       @Default(false) bool isValid,
       @Default(false) bool isSubmitting,
       @Default(false) bool isValidating,
@@ -156,10 +156,10 @@ abstract class FormUtils {
   static Future<Map<String, String>> isFormValid(FormField ff) async {
     final errors = <String, String>{};
     try {
-      final values = ff.value.toMap();
+      final values = ff.value.toMap() as Map<String, dynamic>;
 
       for (final e in ff.validators.entries) {
-        final r = await e.value(values[e.key]) as String?;
+        final r = await e.value(values[e.key]);
         if (r != null) {
           errors[e.key] = r;
         }

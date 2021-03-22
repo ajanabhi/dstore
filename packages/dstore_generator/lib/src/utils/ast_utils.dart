@@ -224,7 +224,7 @@ extension ElementExt on Element {
     final tc = TypeChecker.fromRuntime(type);
     return metadata.singleWhereOrNull((e) {
       final v = e.computeConstantValue();
-      return v != null && v.type != null && tc.isAssignableFromType(v.type);
+      return v != null && v.type != null && tc.isAssignableFromType(v.type!);
     });
   }
 }
@@ -234,7 +234,7 @@ extension VariableDeclarationExt on VariableDeclaration {
     final tc = TypeChecker.fromRuntime(type);
     return this.metadata.singleWhereOrNull((e) {
       final v = e.elementAnnotation?.computeConstantValue();
-      return v != null && v.type != null && tc.isAssignableFromType(v.type);
+      return v != null && v.type != null && tc.isAssignableFromType(v.type!);
     });
   }
 }

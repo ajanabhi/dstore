@@ -7,11 +7,11 @@ part of 'form.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$FormField<F extends FormFieldObject<F>> {
+mixin _$FormField<Key, F extends FormFieldObject<F>> {
   F get value;
-  Map<String, dynamic Function(dynamic)> get validators;
-  Map<String, String> get errors;
-  Map<String, bool> get touched;
+  Map<String, String? Function(dynamic)> get validators;
+  Map<Key, String> get errors;
+  Map<Key, bool> get touched;
   bool get isValid;
   bool get isSubmitting;
   bool get isValidating;
@@ -20,25 +20,26 @@ mixin _$FormField<F extends FormFieldObject<F>> {
   String get internalAName;
   String get internalAType;
 
-  $FormFieldCopyWith<F, FormField<F>> get copyWith;
+  $FormFieldCopyWith<Key, F, FormField<Key, F>> get copyWith;
 }
 
-class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
+class _FormField<Key, F extends FormFieldObject<F>>
+    implements FormField<Key, F> {
   @override
   final F value;
 
   @override
-  final Map<String, dynamic Function(dynamic)> validators;
+  final Map<String, String? Function(dynamic)> validators;
 
   @override
-  @Default(<String, String>{})
-  @JsonKey(defaultValue: const <String, String>{})
-  final Map<String, String> errors;
+  @Default(<dynamic, String>{})
+  @JsonKey(defaultValue: const <dynamic, String>{})
+  final Map<Key, String> errors;
 
   @override
-  @Default(<String, bool>{})
-  @JsonKey(defaultValue: const <String, bool>{})
-  final Map<String, bool> touched;
+  @Default(<dynamic, bool>{})
+  @JsonKey(defaultValue: const <dynamic, bool>{})
+  final Map<Key, bool> touched;
 
   @override
   @Default(false)
@@ -75,14 +76,14 @@ class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
   @JsonKey(defaultValue: "")
   final String internalAType;
 
-  _$FormFieldCopyWith<F, FormField<F>> get copyWith =>
-      __$FormFieldCopyWithImpl<F, FormField<F>>(this, IdentityFn);
+  _$FormFieldCopyWith<Key, F, FormField<Key, F>> get copyWith =>
+      __$FormFieldCopyWithImpl<Key, F, FormField<Key, F>>(this, IdentityFn);
 
   const _FormField(
       {required this.value,
       required this.validators,
-      this.errors = const <String, String>{},
-      this.touched = const <String, bool>{},
+      this.errors = const <dynamic, String>{},
+      this.touched = const <dynamic, bool>{},
       this.isValid = false,
       this.isSubmitting = false,
       this.isValidating = false,
@@ -127,15 +128,15 @@ class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
       "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
 }
 
-abstract class $FormFieldCopyWith<F extends FormFieldObject<F>, O> {
+abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
   factory $FormFieldCopyWith(
-          FormField<F> value, O Function(FormField<F>) then) =
-      _$FormFieldCopyWithImpl<F, O>;
+          FormField<Key, F> value, O Function(FormField<Key, F>) then) =
+      _$FormFieldCopyWithImpl<Key, F, O>;
   O call(
       {F value,
-      Map<String, dynamic Function(dynamic)> validators,
-      Map<String, String> errors,
-      Map<String, bool> touched,
+      Map<String, String? Function(dynamic)> validators,
+      Map<Key, String> errors,
+      Map<Key, bool> touched,
       bool isValid,
       bool isSubmitting,
       bool isValidating,
@@ -145,10 +146,10 @@ abstract class $FormFieldCopyWith<F extends FormFieldObject<F>, O> {
       String internalAType});
 }
 
-class _$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
-    implements $FormFieldCopyWith<F, O> {
-  final FormField<F> _value;
-  final O Function(FormField<F>) _then;
+class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
+    implements $FormFieldCopyWith<Key, F, O> {
+  final FormField<Key, F> _value;
+  final O Function(FormField<Key, F>) _then;
   _$FormFieldCopyWithImpl(this._value, this._then);
 
   @override
@@ -168,13 +169,11 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, dynamic Function(dynamic)>,
-        errors: errors == dimmutable
-            ? _value.errors
-            : errors as Map<String, String>,
-        touched: touched == dimmutable
-            ? _value.touched
-            : touched as Map<String, bool>,
+            : validators as Map<String, String? Function(dynamic)>,
+        errors:
+            errors == dimmutable ? _value.errors : errors as Map<Key, String>,
+        touched:
+            touched == dimmutable ? _value.touched : touched as Map<Key, bool>,
         isValid: isValid == dimmutable ? _value.isValid : isValid as bool,
         isSubmitting: isSubmitting == dimmutable
             ? _value.isSubmitting
@@ -197,16 +196,16 @@ class _$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
   }
 }
 
-abstract class _$FormFieldCopyWith<F extends FormFieldObject<F>, O>
-    implements $FormFieldCopyWith<F, O> {
+abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
+    implements $FormFieldCopyWith<Key, F, O> {
   factory _$FormFieldCopyWith(
-          FormField<F> value, O Function(FormField<F>) then) =
-      __$FormFieldCopyWithImpl<F, O>;
+          FormField<Key, F> value, O Function(FormField<Key, F>) then) =
+      __$FormFieldCopyWithImpl<Key, F, O>;
   O call(
       {F value,
-      Map<String, dynamic Function(dynamic)> validators,
-      Map<String, String> errors,
-      Map<String, bool> touched,
+      Map<String, String? Function(dynamic)> validators,
+      Map<Key, String> errors,
+      Map<Key, bool> touched,
       bool isValid,
       bool isSubmitting,
       bool isValidating,
@@ -216,13 +215,15 @@ abstract class _$FormFieldCopyWith<F extends FormFieldObject<F>, O>
       String internalAType});
 }
 
-class __$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
-    extends _$FormFieldCopyWithImpl<F, O> implements _$FormFieldCopyWith<F, O> {
-  __$FormFieldCopyWithImpl(FormField<F> _value, O Function(FormField<F>) _then)
+class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
+    extends _$FormFieldCopyWithImpl<Key, F, O>
+    implements _$FormFieldCopyWith<Key, F, O> {
+  __$FormFieldCopyWithImpl(
+      FormField<Key, F> _value, O Function(FormField<Key, F>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  FormField<F> get _value => super._value;
+  FormField<Key, F> get _value => super._value;
 
   @override
   O call(
@@ -241,13 +242,11 @@ class __$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, dynamic Function(dynamic)>,
-        errors: errors == dimmutable
-            ? _value.errors
-            : errors as Map<String, String>,
-        touched: touched == dimmutable
-            ? _value.touched
-            : touched as Map<String, bool>,
+            : validators as Map<String, String? Function(dynamic)>,
+        errors:
+            errors == dimmutable ? _value.errors : errors as Map<Key, String>,
+        touched:
+            touched == dimmutable ? _value.touched : touched as Map<Key, bool>,
         isValid: isValid == dimmutable ? _value.isValid : isValid as bool,
         isSubmitting: isSubmitting == dimmutable
             ? _value.isSubmitting

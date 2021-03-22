@@ -7,10 +7,10 @@ environment:
   sdk: ">=2.12.0 <3.0.0"
 dependencies:
   analyzer: ^1.1.0
-  build: ^1.6.3
+  build: ^2.0.0
   build_config: ^0.4.6 
   meta: ^1.3.0 
-  source_gen: ^0.9.10+3
+  source_gen: ^1.0.0
   gql:
   dio: 4.0.0-beta1
   collection:
@@ -18,15 +18,15 @@ dependencies:
   ansicolor: 2.0.0-nullsafety.0
   logging: 1.0.0
   tuple: 
-  json_annotation: 4.0.0
+  json_annotation: ^4.0.1
   dstore_annotation:
     path: ../dstore_annotation
 
 dev_dependencies:
   pedantic: 1.10.0
-  build_runner: 1.11.5 
+  build_runner: ^1.12.2
   grinder: 0.9.0-nullsafety.0
-  json_serializable: 4.0.1
+  json_serializable: ^4.1.0
   test: 
   
     

@@ -138,3 +138,12 @@ const excludeThisKeyWhilePersist = ExcludeThisKeyWhilePersit();
 class DEnum {
   const DEnum();
 }
+
+class FormModel {
+  const FormModel();
+}
+
+class Validator {
+  final String? Function(dynamic) fn;
+  const Validator(this.fn);
+}

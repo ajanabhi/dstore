@@ -69,6 +69,6 @@ class _DTextFieldState extends State<DTextField> {
   Widget build(BuildContext context) {
     final dform = DForm.of(context);
     final pinfo = dform.getInfo(widget.name);
-    return TextField();
+    return Text("");
   }
 }

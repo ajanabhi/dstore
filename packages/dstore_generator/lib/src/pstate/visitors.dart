@@ -110,7 +110,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   dynamic visitFieldDeclaration(FieldDeclaration node) {
     final typeA = node.fields.type;
     if (typeA == null) {
-      throw Exception("Should provide type annotation for fields");
+      throw InvalidSignatureError(
+          "Should provide type annotation for fields , specify type for field '${node.fields.variables.first.name}'");
     }
     final type = typeA.toString();
     node.fields.variables.forEach((v) {
@@ -136,7 +137,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       } else {
         if (!type.endsWith("?") && valueE == null) {
           logger.shout("Special Field ${node.runtimeType} $node  ");
-          throw ArgumentError.value("Should provide initital value for fields");
+          throw InvalidSignatureError(
+              "Should provide initital value for fields");
         }
         final value = valueE.toString();
         final fe = element.fields.singleWhere((f) => f.name == name);
