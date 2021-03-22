@@ -1,5 +1,5 @@
 import 'package:dstore/dstore.dart';
-import 'package:dstore/src/middlewares.dart';
+import 'package:dstore/src/middlewares/stream_middleware.dart';
 import 'package:dstore/src/store.dart';
 
 import '../store_tester.dart';

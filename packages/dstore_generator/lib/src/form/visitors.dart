@@ -14,7 +14,7 @@ class FormModelVisitor extends SimpleAstVisitor<dynamic> {
   late final String enumName;
 
   FormModelVisitor(this.fieldElements, this.modelName) {
-    this.enumName = "${modelName}Keys";
+    this.enumName = "${modelName}Key";
   }
   @override
   void visitFieldDeclaration(FieldDeclaration fd) {

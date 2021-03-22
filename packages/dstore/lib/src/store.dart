@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import "package:dstore/src/middlewares.dart";
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
+import 'package:dstore/src/middlewares/async_middleware.dart';
 import 'package:dstore/src/selector.dart';
 import 'package:collection/collection.dart';
 

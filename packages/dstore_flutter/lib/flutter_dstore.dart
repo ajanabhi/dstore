@@ -1,2 +1,2 @@
-export 'src/store.dart';
-export 'src/form.dart';
+export 'src/store/store.dart';
+export 'src/form/form.dart';

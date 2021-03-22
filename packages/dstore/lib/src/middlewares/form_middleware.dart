@@ -1,4 +1,6 @@
-import 'package:dstore/dstore.dart';
+import 'package:dstore/src/action.dart';
+import 'package:dstore/src/form.dart';
+import 'package:dstore/src/store.dart';
 
 dynamic formMiddleware<S extends AppStateI<S>>(
     Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
@@ -9,18 +11,19 @@ dynamic formMiddleware<S extends AppStateI<S>>(
     final req = action.form as FormReq;
     final ff = store.getFieldFromAction(action) as FormField;
     final pm = store.getPStateMetaFromAction(action);
-    late FormField nff;
+    late FormField<dynamic, FormFieldObject<dynamic>> nff;
     if (req is FormSetFieldValue) {
       var validate = ff.validateOnChange;
       if (req.validate) {
         validate = req.validate;
       }
       final validator = ff.validators[req.key];
-      final errors = {...ff.errors};
-      final value = ff.value.copyWithMap(<String, dynamic>{req.key: req.value})
+      final errors = <dynamic, String>{...ff.errors};
+      final name = req.key.value as String;
+      final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
           as FormFieldObject;
       if (validate && validator != null) {
-        final newE = await validator(req.value) as String?;
+        final newE = await validator(req.value);
         if (newE != null) {
           errors[req.key] = newE;
         }
@@ -31,11 +34,11 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       if (req.validate) {
         validate = validate;
       }
-      final errors = {...ff.errors};
+      final errors = <dynamic, String>{...ff.errors};
       final validator = ff.validators[req.key];
-      final touched = {...ff.touched, req.key: true};
+      final touched = <dynamic, bool>{...ff.touched, req.key: true};
       if (validate && validator != null) {
-        final newE = await validator(ff.value.toMap()[req.key]) as String?;
+        final newE = await validator(ff.value.toMap()[req.key.value]);
         if (newE != null) {
           errors[req.key] = newE;
         }
@@ -43,7 +46,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       nff = ff.copyWith(
           touched: touched, errors: errors, isValid: errors.isEmpty);
     } else if (req is FormSetFieldError) {
-      final errors = {...ff.errors};
+      final errors = <dynamic, String>{...ff.errors};
       if (req.value == null) {
         errors.remove(req.key);
       } else {

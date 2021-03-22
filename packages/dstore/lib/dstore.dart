@@ -8,6 +8,7 @@ export "src/websocket.dart";
 export "src/graphql.dart";
 export 'src/storage.dart';
 export 'src/stream.dart';
+export "src/middlewares/middlewares.dart";
 export 'src/form.dart';
 export 'src/utils.dart';
 export 'src/offline.dart';

@@ -1,6 +1,7 @@
 import 'package:build/build.dart';
 import 'package:dstore_generator/src/appstate/app_state_generator.dart';
 import 'package:dstore_generator/src/denum/denum_generator.dart';
+import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema_generator.dart';
 import 'package:dstore_generator/src/dimmutable/immutable_generator.dart';
@@ -35,7 +36,7 @@ Builder dstoreGqlGen(BuilderOptions options) {
 Builder dstoreGen(BuilderOptions options) {
   return PartBuilder(
       [
-        // PStateGenerator(),
+        FormModelGenerator(),
         AppStateGenerator(),
         SelectorsGenerator(),
         DEnumGenerator(),

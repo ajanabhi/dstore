@@ -20,9 +20,9 @@ String generateFormModel(ClassElement element) {
 
    ${_createModel(name: modelName, fields: visitor.fields, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, annotations: annotations)}
 
-   ${_createEnum(element.fields, modelName)}
+   ${_createEnum(element.fields, visitor.enumName)}
 
-   ${_createValidator(validators: visitor.validators, enumName: visitor.enumName, modelName: modelName)}
+   ${visitor.validators.isNotEmpty ? _createValidator(validators: visitor.validators, enumName: visitor.enumName, modelName: modelName) : ""}
      
      """;
 }
@@ -34,7 +34,7 @@ String _createValidator(
   final mapType = "<$enumName,FormFieldValidator>";
   return """
     Map$mapType create${modelName}Validators() {
-      return ${mapType}{${validators.entries.map((e) => "${e.key}: ${e.value}").join(", ")}}
+      return ${mapType}{${validators.entries.map((e) => "${e.key}: ${e.value}").join(", ")}};
     }
   """;
 }
@@ -76,9 +76,9 @@ String _createModel(
   ;
 }
 
-String _createEnum(List<FieldElement> fields, String modelName) {
+String _createEnum(List<FieldElement> fields, String name) {
   final keys = fields.map((e) => e.name).join(", ");
-  final name = "${modelName}Keys";
+  // final name = "${modelName}Keys";
   return """
      enum $name {
        $keys

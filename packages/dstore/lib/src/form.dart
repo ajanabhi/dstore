@@ -16,7 +16,7 @@ abstract class FormFieldObject<M> {
 
 @DImmutable()
 abstract class FormField<Key, F extends FormFieldObject<F>>
-    with _$FormField<F> {
+    with _$FormField<Key, F> {
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
@@ -28,11 +28,11 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
       @Default(false) bool validateOnChange,
       @Default(false) bool validateOnBlur,
       @Default("") String internalAName,
-      @Default("") String internalAType}) = _FormField<F>;
+      @Default("") String internalAType}) = _FormField<Key, F>;
 }
 
 class FromFieldPropInfo {
-  final String name;
+  final dynamic name;
   final dynamic value;
   final FormFieldValidator? validator;
   final String? error;
@@ -55,7 +55,7 @@ class FromFieldPropInfo {
 abstract class FormReq {}
 
 class FormSetFieldValue extends FormReq {
-  final String key;
+  final dynamic key;
   final dynamic value;
   final bool validate;
 
@@ -64,21 +64,21 @@ class FormSetFieldValue extends FormReq {
 }
 
 class FormSetFieldTouched extends FormReq {
-  final String key;
+  final dynamic key;
   final bool validate;
 
   FormSetFieldTouched({required this.key, this.validate = false});
 }
 
 class FormSetFieldError extends FormReq {
-  final String key;
+  final dynamic key;
   final String? value;
 
   FormSetFieldError({required this.key, this.value});
 }
 
 class FormSetErrors extends FormReq {
-  final Map<String, String> errors;
+  final Map<dynamic, String> errors;
 
   FormSetErrors(this.errors);
 }
@@ -156,7 +156,7 @@ abstract class FormUtils {
   static Future<Map<String, String>> isFormValid(FormField ff) async {
     final errors = <String, String>{};
     try {
-      final values = ff.value.toMap() as Map<String, dynamic>;
+      final values = ff.value.toMap();
 
       for (final e in ff.validators.entries) {
         final r = await e.value(values[e.key]);
