@@ -28,7 +28,11 @@ dynamic formMiddleware<S extends AppStateI<S>>(
           errors[req.key] = newE;
         }
       }
-      nff = ff.copyWith(value: value, errors: errors, isValid: errors.isEmpty);
+      nff = ff.copyWith(
+          value: value,
+          errors: errors,
+          internalKeysChanged: <dynamic>[req.key],
+          isValid: errors.isEmpty);
     } else if (req is FormSetFieldTouched) {
       var validate = ff.validateOnBlur;
       if (req.validate) {
@@ -44,7 +48,10 @@ dynamic formMiddleware<S extends AppStateI<S>>(
         }
       }
       nff = ff.copyWith(
-          touched: touched, errors: errors, isValid: errors.isEmpty);
+          touched: touched,
+          errors: errors,
+          internalKeysChanged: <dynamic>[req.key],
+          isValid: errors.isEmpty);
     } else if (req is FormSetFieldError) {
       final errors = <dynamic, String>{...ff.errors};
       if (req.value == null) {
@@ -52,16 +59,24 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       } else {
         errors[req.key] = req.value!;
       }
-      nff = ff.copyWith(errors: errors, isValid: errors.isEmpty);
+      nff = ff.copyWith(
+          errors: errors,
+          internalKeysChanged: <dynamic>[req.key],
+          isValid: errors.isEmpty);
     } else if (req is FormSetErrors) {
       nff = ff.copyWith(errors: req.errors, isValid: req.errors.isEmpty);
     } else if (req is FormReset) {
-      nff = pm.ds().toMap()[action.name] as FormField;
+      final df = pm.ds().toMap()[action.name] as FormField;
+      nff = df.copyWith(internalKeysChanged: <dynamic>[]);
     } else if (req is FormSetSubmitting) {
-      nff = ff.copyWith(isSubmitting: req.isSubmitting);
+      nff = ff.copyWith(
+          isSubmitting: req.isSubmitting, internalKeysChanged: null);
     } else if (req is FormValidate) {
       final errors = await FormUtils.isFormValid(ff);
-      nff = ff.copyWith(errors: errors, isValid: errors.isEmpty);
+      nff = ff.copyWith(
+          errors: errors,
+          isValid: errors.isEmpty,
+          internalKeysChanged: errors.keys.toList());
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(

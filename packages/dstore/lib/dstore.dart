@@ -11,6 +11,7 @@ export 'src/stream.dart';
 export "src/middlewares/middlewares.dart";
 export 'src/form.dart';
 export 'src/utils.dart';
+export 'src/errors.dart';
 export 'src/offline.dart';
 export 'src/types.dart';
 export "package:dstore_annotation/dstore_annotation.dart";

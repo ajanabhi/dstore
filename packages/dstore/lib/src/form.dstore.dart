@@ -17,6 +17,7 @@ mixin _$FormField<Key, F extends FormFieldObject<F>> {
   bool get isValidating;
   bool get validateOnChange;
   bool get validateOnBlur;
+  List<Key>? get internalKeysChanged;
   String get internalAName;
   String get internalAType;
 
@@ -67,6 +68,9 @@ class _FormField<Key, F extends FormFieldObject<F>>
   final bool validateOnBlur;
 
   @override
+  final List<Key>? internalKeysChanged;
+
+  @override
   @Default("")
   @JsonKey(defaultValue: "")
   final String internalAName;
@@ -89,6 +93,7 @@ class _FormField<Key, F extends FormFieldObject<F>>
       this.isValidating = false,
       this.validateOnChange = false,
       this.validateOnBlur = false,
+      this.internalKeysChanged,
       this.internalAName = "",
       this.internalAType = ""});
 
@@ -105,6 +110,7 @@ class _FormField<Key, F extends FormFieldObject<F>>
         o.isValidating == isValidating &&
         o.validateOnChange == validateOnChange &&
         o.validateOnBlur == validateOnBlur &&
+        o.internalKeysChanged == internalKeysChanged &&
         o.internalAName == internalAName &&
         o.internalAType == internalAType;
   }
@@ -120,12 +126,13 @@ class _FormField<Key, F extends FormFieldObject<F>>
       isValidating.hashCode ^
       validateOnChange.hashCode ^
       validateOnBlur.hashCode ^
+      internalKeysChanged.hashCode ^
       internalAName.hashCode ^
       internalAType.hashCode;
 
   @override
   String toString() =>
-      "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
+      "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalKeysChanged: ${this.internalKeysChanged}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
 }
 
 abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
@@ -142,6 +149,7 @@ abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
       bool isValidating,
       bool validateOnChange,
       bool validateOnBlur,
+      List<Key>? internalKeysChanged,
       String internalAName,
       String internalAType});
 }
@@ -163,6 +171,7 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
       Object? isValidating = dimmutable,
       Object? validateOnChange = dimmutable,
       Object? validateOnBlur = dimmutable,
+      Object? internalKeysChanged = dimmutable,
       Object? internalAName = dimmutable,
       Object? internalAType = dimmutable}) {
     return _then(_value.copyWith(
@@ -187,6 +196,9 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         validateOnBlur: validateOnBlur == dimmutable
             ? _value.validateOnBlur
             : validateOnBlur as bool,
+        internalKeysChanged: internalKeysChanged == dimmutable
+            ? _value.internalKeysChanged
+            : internalKeysChanged as List<Key>?,
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,
@@ -211,6 +223,7 @@ abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
       bool isValidating,
       bool validateOnChange,
       bool validateOnBlur,
+      List<Key>? internalKeysChanged,
       String internalAName,
       String internalAType});
 }
@@ -236,6 +249,7 @@ class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
       Object? isValidating = dimmutable,
       Object? validateOnChange = dimmutable,
       Object? validateOnBlur = dimmutable,
+      Object? internalKeysChanged = dimmutable,
       Object? internalAName = dimmutable,
       Object? internalAType = dimmutable}) {
     return _then(FormField(
@@ -260,6 +274,9 @@ class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         validateOnBlur: validateOnBlur == dimmutable
             ? _value.validateOnBlur
             : validateOnBlur as bool,
+        internalKeysChanged: internalKeysChanged == dimmutable
+            ? _value.internalKeysChanged
+            : internalKeysChanged as List<Key>?,
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,

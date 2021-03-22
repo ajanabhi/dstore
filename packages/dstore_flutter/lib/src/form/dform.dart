@@ -21,35 +21,39 @@ class DForm<F extends FormFieldObject<F>> extends InheritedWidget {
 
   FromFieldPropInfo getInfo(dynamic key) {
     final value = ff.value.toMap();
-    final dynamic kv = value[key];
+    final dynamic kv = value[key.toString().split(".").last];
     if (kv == null) {
       throw ArgumentError.value("$key not found in this from ${value}");
     }
     final validator = ff.validators[key];
     final error = ff.errors[key];
     final touched = ff.touched[key] ?? false;
-    final name = key.value as String;
     return FromFieldPropInfo(
         name: key,
         value: kv,
         validator: validator,
         error: error,
         setValue: (dynamic value) =>
-            ops.setFieldValue(FormSetFieldValue(key: name, value: value)),
+            ops.setFieldValue(FormSetFieldValue(key: key, value: value)),
         setError: (String? error) =>
-            ops.setFieldError(FormSetFieldError(key: name, value: error)),
-        setTouched: (bool validate) => ops.setFieldTouched(
-            FormSetFieldTouched(key: name, validate: validate)),
+            ops.setFieldError(FormSetFieldError(key: key, value: error)),
+        setTouched: (bool validate) => ops
+            .setFieldTouched(FormSetFieldTouched(key: key, validate: validate)),
         touched: touched);
+  }
+
+  void validate() {
+    _formState.ops!.validateForm(FormValidate());
   }
 
   @override
   bool updateShouldNotify(DForm oldWidget) {
-    final result = oldWidget.ff != this.ff;
-    if (result) {
+    final off = oldWidget.ff;
+    if (off.internalAName != ff.internalAName ||
+        off.internalAType != ff.internalAType) {
       this._formState.ops = null;
     }
-    return result;
+    return oldWidget.ff != this.ff;
   }
 }
 

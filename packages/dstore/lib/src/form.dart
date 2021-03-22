@@ -27,6 +27,7 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
       @Default(false) bool isValidating,
       @Default(false) bool validateOnChange,
       @Default(false) bool validateOnBlur,
+      List<Key>? internalKeysChanged,
       @Default("") String internalAName,
       @Default("") String internalAType}) = _FormField<Key, F>;
 }
@@ -153,19 +154,20 @@ abstract class FormUtils {
     );
   }
 
-  static Future<Map<String, String>> isFormValid(FormField ff) async {
+  static Future<Map<dynamic, String>> isFormValid(FormField ff) async {
     final errors = <String, String>{};
-    try {
-      final values = ff.value.toMap();
 
-      for (final e in ff.validators.entries) {
-        final r = await e.value(values[e.key]);
+    final values = ff.value.toMap();
+
+    for (final e in ff.validators.entries) {
+      try {
+        final r = await e.value(values[e.key.toString().split(".").last]);
         if (r != null) {
           errors[e.key] = r;
         }
+      } catch (er) {
+        errors[e.key] = "$er";
       }
-    } catch (e) {
-      errors["VALIDATION_EXCEPTION"] = "$e";
     }
     return errors;
   }
