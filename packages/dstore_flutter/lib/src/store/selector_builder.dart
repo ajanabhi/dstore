@@ -9,12 +9,19 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
   final UnSubscribeOptions? options;
   final SelectorBuilderFn<I> builder;
   final void Function(BuildContext context, I state)? onInitState;
+  final void Function(BuildContext context, I state)? onInitialBuild;
+  final void Function(BuildContext context, I state)? onDispose;
+  final void Function(BuildContext context, I prevState, I newState)?
+      onStateChange;
 
   const SelectorBuilder(
       {Key? key,
       required this.selector,
       required this.builder,
       this.onInitState,
+      this.onInitialBuild,
+      this.onDispose,
+      this.onStateChange,
       this.options})
       : super(key: key);
 
@@ -42,15 +49,22 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
         _unSubscribe(widget.options);
       }
       _lsitener = () {
+        final prevState = _state;
         _state = widget.selector.fn(store.state);
+        widget.onStateChange?.call(context, prevState, _state);
         setState(() {});
       };
       _state = widget.selector.fn(store.state);
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       if (storeRef == null) {
+        storeRef = store;
         widget.onInitState?.call(context, _state);
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          widget.onInitialBuild?.call(context, _state);
+        });
+      } else {
+        storeRef = store;
       }
-      storeRef = store;
     }
   }
 
@@ -71,6 +85,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
 
   @override
   void dispose() async {
+    widget.onDispose?.call(context, _state);
     _unSubscribe(widget.options);
     super.dispose();
   }

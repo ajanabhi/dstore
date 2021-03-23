@@ -23,6 +23,7 @@ class _AppState extends State<App> {
             if (auth.loggedout) {
               // redirect to login screen
             }
+            print("auth changed $auth");
           },
           onInitState: (context, state) {
             context.dispatch(

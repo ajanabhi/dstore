@@ -16,6 +16,7 @@ class CheckStatusScreen extends StatelessWidget {
           if (auth.user.firstEventArrived && auth.user.data == null) {
             // not logged in
             // context.rou
+            print("Replacing");
             context.router.replace(LoginScreenRoute());
           }
         },

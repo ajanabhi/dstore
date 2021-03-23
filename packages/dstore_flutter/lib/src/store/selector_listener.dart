@@ -8,6 +8,8 @@ class SelectorListener<S extends AppStateI<S>, I> extends StatefulWidget {
   final void Function(BuildContext, I) listener;
   final Widget? child;
   final void Function(BuildContext context, I state)? onInitState;
+  final void Function(BuildContext context, I state)? onInitialBuild;
+  final void Function(BuildContext context, I state)? onDispose;
 
   const SelectorListener(
       {Key? key,
@@ -15,6 +17,8 @@ class SelectorListener<S extends AppStateI<S>, I> extends StatefulWidget {
       required this.listener,
       this.child,
       this.onInitState,
+      this.onDispose,
+      this.onInitialBuild,
       this.options})
       : super(key: key);
 
@@ -48,9 +52,14 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
       _state = widget.selector.fn(store.state);
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       if (storeRef == null) {
+        storeRef = store;
         widget.onInitState?.call(context, _state);
+        WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+          widget.onInitialBuild?.call(context, _state);
+        });
+      } else {
+        storeRef = store;
       }
-      storeRef = store;
     }
   }
 
@@ -71,12 +80,15 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
 
   @override
   void dispose() async {
+    print("Calling dispose");
+    widget.onDispose?.call(context, _state);
     _unSubscribe(widget.options);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("Selector Listener build ${widget.child?.runtimeType}");
     return widget.child == null ? SizedBox.shrink() : widget.child!;
   }
 }
