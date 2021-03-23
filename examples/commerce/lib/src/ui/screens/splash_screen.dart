@@ -1,6 +1,9 @@
+import 'dart:async';
+
+import "package:auto_route/auto_route.dart";
+import 'package:commerce/src/routes/routes.gr.dart';
 import 'package:commerce/src/utils/app_assets.dart';
 import 'package:flutter/material.dart';
-import "package:auto_route/auto_route.dart";
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -11,7 +14,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // context.router.replace(route)
+    redirectToCheckStatus();
   }
 
   @override
@@ -25,5 +28,11 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  void redirectToCheckStatus() {
+    Timer(const Duration(seconds: 2), () {
+      context.router.replace(CheckStatusScreenRoute());
+    });
   }
 }

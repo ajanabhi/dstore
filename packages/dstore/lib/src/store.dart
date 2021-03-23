@@ -339,9 +339,12 @@ class Store<S extends AppStateI<S>, AT> {
       required Map<String, dynamic> currentState,
       required String stateKey}) {
     var result = false;
-    selector.deps.forEach((key, value) {
-      if (key == stateKey) {
-        for (final prop in value) {
+    final deps = selector.deps[stateKey];
+    if (deps != null) {
+      if (deps.isEmpty) {
+        result = true;
+      } else {
+        for (final prop in deps) {
           if (!useEqualsComparision &&
               !identical(prevState[prop], currentState[prop])) {
             result = true;
@@ -353,7 +356,7 @@ class Store<S extends AppStateI<S>, AT> {
           }
         }
       }
-    });
+    }
     return result;
   }
 
@@ -593,9 +596,9 @@ class Store<S extends AppStateI<S>, AT> {
 // enum ResetToDefault { FORCE, IF_NOT_USED_BY_OTHER_WIDGETS }
 
 class UnSubscribeOptions {
-  final bool? resetToDefault;
+  final bool resetToDefault;
 
-  UnSubscribeOptions({this.resetToDefault});
+  UnSubscribeOptions({this.resetToDefault = false});
 }
 
 class _SelectorListener {

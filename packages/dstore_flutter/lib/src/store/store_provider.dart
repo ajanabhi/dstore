@@ -1,28 +1,28 @@
 import 'package:dstore/dstore.dart';
 import 'package:flutter/material.dart' hide Action;
 
-class StoreProvider<S extends AppStateI<S>> extends InheritedWidget {
-  final Store<S, dynamic> _store;
+class StoreProvider extends InheritedWidget {
+  final Store<AppStateI<dynamic>, dynamic> _store;
 
   const StoreProvider({
     Key? key,
-    required Store<S, dynamic> store,
+    required Store<AppStateI<dynamic>, dynamic> store,
     required Widget child,
   })   : _store = store,
         super(key: key, child: child);
 
   @override
-  bool updateShouldNotify(StoreProvider<S> oldWidget) {
+  bool updateShouldNotify(StoreProvider oldWidget) {
     return oldWidget._store != this._store;
   }
 
-  static Store<S, dynamic> of<S extends AppStateI<S>>(BuildContext context) =>
-      context.dependOnInheritedWidgetOfExactType<StoreProvider<S>>()!._store;
+  static Store<AppStateI<dynamic>, dynamic> of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<StoreProvider>()!._store;
 }
 
 extension DStoreContextExtensionMethods on BuildContext {
-  Store<S, dynamic> store<S extends AppStateI<S>>() =>
-      StoreProvider.of<S>(this);
-  dynamic dispatch<S extends AppStateI<S>>(Action<dynamic> action) =>
-      this.store<S>().dispatch(action);
+  Store<AppStateI<dynamic>, dynamic> get store => StoreProvider.of(this);
+  dynamic dispatch(Action<dynamic> action) => store.dispatch(action);
+  Store<S, dynamic> storeTyped<S extends AppStateI<S>>() =>
+      store as Store<S, dynamic>;
 }

@@ -7,7 +7,7 @@ class SelectorListener<S extends AppStateI<S>, I> extends StatefulWidget {
   final UnSubscribeOptions? options;
   final void Function(BuildContext, I) listener;
   final Widget? child;
-  final void Function(BuildContext context)? onInitState;
+  final void Function(BuildContext context, I state)? onInitState;
 
   const SelectorListener(
       {Key? key,
@@ -27,17 +27,31 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
   late SelectorUnSubscribeFn _unsubFn;
   late I _state;
   void Function()? _lsitener;
+  Store<S, dynamic>? storeRef;
   @override
   void initState() {
     super.initState();
-    final store = context.store<S>();
-    _lsitener = () {
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final store = context.storeTyped<S>();
+    if (storeRef != store) {
+      if (storeRef != null) {
+        _unSubscribe(widget.options);
+      }
+      _lsitener = () {
+        _state = widget.selector.fn(store.state);
+        widget.listener(context, _state);
+      };
       _state = widget.selector.fn(store.state);
-      widget.listener(context, _state);
-    };
-    _state = widget.selector.fn(store.state);
-    _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
-    widget.onInitState?.call(context);
+      _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
+      if (storeRef == null) {
+        widget.onInitState?.call(context, _state);
+      }
+      storeRef = store;
+    }
   }
 
   @override
@@ -45,7 +59,7 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selector != widget.selector) {
       _unSubscribe(oldWidget.options);
-      final store = context.store<S>();
+      final store = context.storeTyped<S>();
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       _state = widget.selector.fn(store.state);
     }

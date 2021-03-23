@@ -20,8 +20,9 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
-      @Default(<dynamic, String>{}) Map<Key, String> errors,
-      @Default(<dynamic, bool>{}) Map<Key, bool> touched,
+      // ignore: inference_failure_on_collection_literal
+      @Default({}) Map<Key, String> errors,
+      @Default({}) Map<Key, bool> touched,
       @Default(false) bool isValid,
       @Default(false) bool isSubmitting,
       @Default(false) bool isValidating,

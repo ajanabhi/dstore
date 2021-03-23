@@ -12,6 +12,7 @@ mixin _$StreamField<D> {
   StreamSubscription<dynamic>? get internalSubscription;
   dynamic get error;
   bool get listening;
+  bool get firstEventArrived;
   bool get completed;
 
   $StreamFieldCopyWith<D, StreamField<D>> get copyWith;
@@ -37,6 +38,11 @@ class _StreamField<D> implements StreamField<D> {
   @override
   @Default(false)
   @JsonKey(defaultValue: false)
+  final bool firstEventArrived;
+
+  @override
+  @Default(false)
+  @JsonKey(defaultValue: false)
   final bool completed;
 
   _$StreamFieldCopyWith<D, StreamField<D>> get copyWith =>
@@ -47,6 +53,7 @@ class _StreamField<D> implements StreamField<D> {
       this.internalSubscription,
       this.error = null,
       this.listening = false,
+      this.firstEventArrived = false,
       this.completed = false});
 
   @override
@@ -57,6 +64,7 @@ class _StreamField<D> implements StreamField<D> {
         o.internalSubscription == internalSubscription &&
         o.error == error &&
         o.listening == listening &&
+        o.firstEventArrived == firstEventArrived &&
         o.completed == completed;
   }
 
@@ -66,11 +74,12 @@ class _StreamField<D> implements StreamField<D> {
       internalSubscription.hashCode ^
       error.hashCode ^
       listening.hashCode ^
+      firstEventArrived.hashCode ^
       completed.hashCode;
 
   @override
   String toString() =>
-      "StreamField(data: ${this.data}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, completed: ${this.completed})";
+      "StreamField(data: ${this.data}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, firstEventArrived: ${this.firstEventArrived}, completed: ${this.completed})";
 }
 
 abstract class $StreamFieldCopyWith<D, O> {
@@ -82,6 +91,7 @@ abstract class $StreamFieldCopyWith<D, O> {
       StreamSubscription<dynamic>? internalSubscription,
       dynamic error,
       bool listening,
+      bool firstEventArrived,
       bool completed});
 }
 
@@ -96,6 +106,7 @@ class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
+      Object? firstEventArrived = dimmutable,
       Object? completed = dimmutable}) {
     return _then(_value.copyWith(
         data: data == dimmutable ? _value.data : data as D?,
@@ -105,6 +116,9 @@ class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
         error: error == dimmutable ? _value.error : error as dynamic,
         listening:
             listening == dimmutable ? _value.listening : listening as bool,
+        firstEventArrived: firstEventArrived == dimmutable
+            ? _value.firstEventArrived
+            : firstEventArrived as bool,
         completed:
             completed == dimmutable ? _value.completed : completed as bool));
   }
@@ -120,6 +134,7 @@ abstract class _$StreamFieldCopyWith<D, O>
       StreamSubscription<dynamic>? internalSubscription,
       dynamic error,
       bool listening,
+      bool firstEventArrived,
       bool completed});
 }
 
@@ -138,6 +153,7 @@ class __$StreamFieldCopyWithImpl<D, O> extends _$StreamFieldCopyWithImpl<D, O>
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
+      Object? firstEventArrived = dimmutable,
       Object? completed = dimmutable}) {
     return _then(StreamField(
         data: data == dimmutable ? _value.data : data as D?,
@@ -147,6 +163,9 @@ class __$StreamFieldCopyWithImpl<D, O> extends _$StreamFieldCopyWithImpl<D, O>
         error: error == dimmutable ? _value.error : error as dynamic,
         listening:
             listening == dimmutable ? _value.listening : listening as bool,
+        firstEventArrived: firstEventArrived == dimmutable
+            ? _value.firstEventArrived
+            : firstEventArrived as bool,
         completed:
             completed == dimmutable ? _value.completed : completed as bool));
   }

@@ -19,6 +19,7 @@ abstract class StreamField<D> with _$StreamField<D> {
     StreamSubscription<dynamic>? internalSubscription,
     @Default(null) dynamic? error,
     @Default(false) bool listening,
+    @Default(false) bool firstEventArrived,
     @Default(false) bool completed,
   }) = _StreamField<D>;
 }

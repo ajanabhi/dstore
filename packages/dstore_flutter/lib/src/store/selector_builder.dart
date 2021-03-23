@@ -8,7 +8,7 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
   final Selector<S, I> selector;
   final UnSubscribeOptions? options;
   final SelectorBuilderFn<I> builder;
-  final void Function(BuildContext context)? onInitState;
+  final void Function(BuildContext context, I state)? onInitState;
 
   const SelectorBuilder(
       {Key? key,
@@ -27,18 +27,31 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   late SelectorUnSubscribeFn _unsubFn;
   late I _state;
   void Function()? _lsitener;
+  Store<S, dynamic>? storeRef;
   @override
   void initState() {
     super.initState();
-    final store = context.store<S>();
-    _lsitener = () {
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final store = context.storeTyped<S>();
+    if (storeRef != store) {
+      if (storeRef != null) {
+        _unSubscribe(widget.options);
+      }
+      _lsitener = () {
+        _state = widget.selector.fn(store.state);
+        setState(() {});
+      };
       _state = widget.selector.fn(store.state);
-      setState(
-          () {}); // we will call listener only when selectors deps changed, do we need another _state == prev_state check here ?
-    };
-    _state = widget.selector.fn(store.state);
-    _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
-    widget.onInitState?.call(context);
+      _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
+      if (storeRef == null) {
+        widget.onInitState?.call(context, _state);
+      }
+      storeRef = store;
+    }
   }
 
   @override
@@ -46,7 +59,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selector != widget.selector) {
       _unSubscribe(oldWidget.options);
-      final store = context.store<S>();
+      final store = context.storeTyped<S>();
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       _state = widget.selector.fn(store.state);
     }
