@@ -2,14 +2,16 @@ import 'package:dstore/dstore.dart';
 import 'package:flutter/material.dart' hide FormField;
 import 'package:dstore_flutter/src/store/store_provider.dart';
 
-class DForm<F extends FormFieldObject<F>> extends InheritedWidget {
-  final FormField<dynamic, F> ff;
+class DForm<FieldKey, F extends FormFieldObject<F>> extends InheritedWidget {
+  final FormField<FieldKey, F> ff;
   final _FormState _formState = _FormState();
   DForm({Key? key, required this.ff, required Widget child})
       : super(key: key, child: child);
 
-  static DForm of(BuildContext context) {
-    final dform = context.dependOnInheritedWidgetOfExactType<DForm>()!;
+  static DForm<FieldKey, F> of<FieldKey, F extends FormFieldObject<F>>(
+      BuildContext context) {
+    final dform =
+        context.dependOnInheritedWidgetOfExactType<DForm<FieldKey, F>>()!;
     if (dform._formState.ops == null) {
       final d = context.dispatch as Dispatch;
       dform._formState.ops = FormUtils.getFormOps(dform.ff, d);
@@ -19,7 +21,7 @@ class DForm<F extends FormFieldObject<F>> extends InheritedWidget {
 
   FormOps get ops => _formState.ops!;
 
-  FromFieldPropInfo getInfo(dynamic key) {
+  FromFieldPropInfo getInfo(FieldKey key) {
     final value = ff.value.toMap();
     final dynamic kv = value[key.toString().split(".").last];
     if (kv == null) {
@@ -47,7 +49,7 @@ class DForm<F extends FormFieldObject<F>> extends InheritedWidget {
   }
 
   @override
-  bool updateShouldNotify(DForm oldWidget) {
+  bool updateShouldNotify(DForm<FieldKey, F> oldWidget) {
     final off = oldWidget.ff;
     if (off.internalAName != ff.internalAName ||
         off.internalAType != ff.internalAType) {

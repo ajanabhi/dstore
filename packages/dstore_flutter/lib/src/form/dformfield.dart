@@ -2,7 +2,8 @@ import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/src/form/dform.dart';
 import 'package:flutter/material.dart';
 
-class DFormField<FieldKey> extends StatefulWidget {
+class DFormField<FieldKey, F extends FormFieldObject<F>>
+    extends StatefulWidget {
   final FieldKey name;
   final Widget Function(FromFieldPropInfo) builder;
 
@@ -12,10 +13,12 @@ class DFormField<FieldKey> extends StatefulWidget {
     required this.builder,
   }) : super(key: key);
   @override
-  _DFormFieldState<FieldKey> createState() => _DFormFieldState<FieldKey>();
+  _DFormFieldState<FieldKey, F> createState() =>
+      _DFormFieldState<FieldKey, F>();
 }
 
-class _DFormFieldState<FieldKey> extends State<DFormField<FieldKey>> {
+class _DFormFieldState<FieldKey, F extends FormFieldObject<F>>
+    extends State<DFormField<FieldKey, F>> {
   Widget? _w;
   FromFieldPropInfo? _info;
   @override
@@ -26,7 +29,7 @@ class _DFormFieldState<FieldKey> extends State<DFormField<FieldKey>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final dform = DForm.of(context);
+    final dform = DForm.of<FieldKey, F>(context);
     _info ??= dform.getInfo(widget.name);
     if (dform.ff.internalKeysChanged != null &&
         dform.ff.internalKeysChanged!.contains(widget.name)) {
@@ -43,7 +46,7 @@ class _DFormFieldState<FieldKey> extends State<DFormField<FieldKey>> {
   }
 
   @override
-  void didUpdateWidget(covariant DFormField<FieldKey> oldWidget) {
+  void didUpdateWidget(covariant DFormField<FieldKey, F> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.name != widget.name) {
       throw NotSUpportedError(
