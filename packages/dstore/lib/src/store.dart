@@ -366,7 +366,7 @@ class Store<S extends AppStateI<S>, AT> {
       Selector<S, dynamic> selector, UnSubscribeOptions? options) async {
     final process = selector.wsDeps != null ||
         selector.sfDeps != null ||
-        (options != null && options.resetToDefault != null);
+        (options != null && options.resetToDefault == true);
     if (process) {
       final sMap = _state.toMap();
       dynamic _getFieldFromStateKey(String stateKey, String prop) {
@@ -423,149 +423,105 @@ class Store<S extends AppStateI<S>, AT> {
         }
       }
 
-      final isForceReset = options?.resetToDefault == ResetToDefault.FORCE;
-
-      if (isForceReset) {
-        selector.deps.forEach((sk, value) {
-          // unsubscribe before reset
-          _unsubscribeSFDeps(sk, selector.sfDeps?.getOrElse(sk, []) ?? []);
-          _unsubscribeWsDeps(sk, selector.wsDeps?.getOrElse(sk, []) ?? []);
-          final listernsToFire = <Callback>[];
-          final lsk = selectorListeners[sk];
-          if (value.isEmpty) {
-            listernsToFire.addAll(lsk
-                    ?.where((element) => element.selector != selector)
-                    .map((e) => e.listener) ??
-                []);
-            sMap[sk] = meta[sk]!.ds();
-          } else {
-            final valueSet = value.toSet();
-            lsk
-                ?.where((element) => element.selector != selector)
-                .forEach((sls) {
-              final lSet = sls.selector.deps[sk]?.toSet() ?? {};
-              if (valueSet.intersection(lSet).isNotEmpty) {
-                listernsToFire.add(sls.listener);
-              }
-            });
-            final rm = sMap[sk]!;
-            final rmMap = rm.toMap();
-            final rmDSMap = meta[sk]!.ds().toMap();
-            value.forEach((prop) {
-              rmMap[prop] = rmDSMap[prop];
-            });
-            sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
-          }
-          _updatePersitance(selector.deps.keys, []);
-          _state = _state.copyWithMap(sMap);
-          listernsToFire.forEach((l) {
-            l();
+      final keysToReset = <String>[];
+      final propsOfKeysToReset = <String, List<String>>{};
+      final websocketPropsOfKeysToUnsubscribe = <String, List<String>>{};
+      final streamPropsOfKeysToUnsubscribe = <String, List<String>>{};
+      final stateKeysModified = <String>[];
+      selector.deps.forEach((sk, values) {
+        final slsa = selectorListeners[sk];
+        final webSocketValues = selector.wsDeps?.getOrElse(sk, []) ?? [];
+        final streamValues = selector.sfDeps?.getOrElse(sk, []) ?? [];
+        if (slsa != null) {
+          final existingStateKeyProps = <String>{};
+          slsa.where((element) => element.selector != selector).forEach((sls) {
+            existingStateKeyProps.addAll(sls.selector.deps[sk]!);
           });
-        });
-      } else {
-        final keysToReset = <String>[];
-        final propsOfKeysToReset = <String, List<String>>{};
-        final websocketPropsOfKeysToUnsubscribe = <String, List<String>>{};
-        final streamPropsOfKeysToUnsubscribe = <String, List<String>>{};
-        final stateKeysModified = <String>[];
-        selector.deps.forEach((sk, values) {
-          final slsa = selectorListeners[sk];
-          final webSocketValues = selector.wsDeps?.getOrElse(sk, []) ?? [];
-          final streamValues = selector.sfDeps?.getOrElse(sk, []) ?? [];
-          if (slsa != null) {
-            final existingStateKeyProps = <String>{};
-            slsa
-                .where((element) => element.selector != selector)
-                .forEach((sls) {
-              existingStateKeyProps.addAll(sls.selector.deps[sk]!);
-            });
-            propsOfKeysToReset[sk] = [];
+          propsOfKeysToReset[sk] = [];
 
-            websocketPropsOfKeysToUnsubscribe[sk] = [];
-            streamPropsOfKeysToUnsubscribe[sk] = [];
-            if (values.isEmpty) {
-              // depnds on all fields
-              values = _getAllPropertyNamesOfStateKey(sk);
-            }
-            values.forEach((skp) {
-              if (!existingStateKeyProps.contains(skp)) {
-                propsOfKeysToReset[sk]!.add(skp);
-                if (webSocketValues.contains(skp)) {
-                  websocketPropsOfKeysToUnsubscribe[sk]!.add(skp);
-                }
-                if (streamValues.contains(skp)) {
-                  streamPropsOfKeysToUnsubscribe[sk]!.add(skp);
-                }
-              }
-            });
-            if (propsOfKeysToReset[sk]!.isNotEmpty) {
-              stateKeysModified.add(sk);
-            }
-          } else {
-            // no listeners
-            keysToReset.add(sk);
-            stateKeysModified.add(sk);
-            websocketPropsOfKeysToUnsubscribe[sk] = webSocketValues;
-            streamPropsOfKeysToUnsubscribe[sk] = streamValues;
+          websocketPropsOfKeysToUnsubscribe[sk] = [];
+          streamPropsOfKeysToUnsubscribe[sk] = [];
+          if (values.isEmpty) {
+            // depnds on all fields
+            values = _getAllPropertyNamesOfStateKey(sk);
           }
+          values.forEach((skp) {
+            if (!existingStateKeyProps.contains(skp)) {
+              propsOfKeysToReset[sk]!.add(skp);
+              if (webSocketValues.contains(skp)) {
+                websocketPropsOfKeysToUnsubscribe[sk]!.add(skp);
+              }
+              if (streamValues.contains(skp)) {
+                streamPropsOfKeysToUnsubscribe[sk]!.add(skp);
+              }
+            }
+          });
+          if (propsOfKeysToReset[sk]!.isNotEmpty) {
+            stateKeysModified.add(sk);
+          }
+        } else {
+          // no listeners
+          keysToReset.add(sk);
+          stateKeysModified.add(sk);
+          websocketPropsOfKeysToUnsubscribe[sk] = webSocketValues;
+          streamPropsOfKeysToUnsubscribe[sk] = streamValues;
+        }
 
-          if (options?.resetToDefault ==
-              ResetToDefault.IF_NOT_USED_BY_OTHER_WIDGETS) {
-            // reset close websocket abd stream connections
-            keysToReset.forEach((sk) {
+        if (options?.resetToDefault == true) {
+          // reset close websocket abd stream connections
+          keysToReset.forEach((sk) {
+            final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
+            _unsubscribeWsDeps(sk, wsDeps);
+            final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
+            _unsubscribeSFDeps(sk, sfDeps);
+            sMap[sk] = meta[sk]!.ds();
+          });
+          propsOfKeysToReset.forEach((sk, props) {
+            if (props.isNotEmpty) {
               final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
               _unsubscribeWsDeps(sk, wsDeps);
               final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
               _unsubscribeSFDeps(sk, sfDeps);
-              sMap[sk] = meta[sk]!.ds();
-            });
-            propsOfKeysToReset.forEach((sk, props) {
-              if (props.isNotEmpty) {
-                final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
-                _unsubscribeWsDeps(sk, wsDeps);
-                final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
-                _unsubscribeSFDeps(sk, sfDeps);
-                final rm = sMap[sk]!;
-                final rmMap = rm.toMap();
-                final rmDSMap = meta[sk]!.ds().toMap();
-                props.forEach((prop) {
-                  rmMap[prop] = rmDSMap[prop];
-                });
-                sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
-              }
-            });
-          } else {
-            // close websocket and stream subscriptions
-            final wsFieldsMapForStateKey = <String, Map<String, dynamic>>{};
-            final streamFieldsMapForStateKey = <String, Map<String, dynamic>>{};
-            keysToReset.forEach((sk) {
+              final rm = sMap[sk]!;
+              final rmMap = rm.toMap();
+              final rmDSMap = meta[sk]!.ds().toMap();
+              props.forEach((prop) {
+                rmMap[prop] = rmDSMap[prop];
+              });
+              sMap[sk] = rm.copyWithMap(rmMap) as PStateModel;
+            }
+          });
+        } else {
+          // close websocket and stream subscriptions
+          final wsFieldsMapForStateKey = <String, Map<String, dynamic>>{};
+          final streamFieldsMapForStateKey = <String, Map<String, dynamic>>{};
+          keysToReset.forEach((sk) {
+            final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
+            wsFieldsMapForStateKey[sk] = _unsubscribeWsDeps(sk, wsDeps);
+            final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
+            streamFieldsMapForStateKey[sk] = _unsubscribeSFDeps(sk, sfDeps);
+          });
+          propsOfKeysToReset.forEach((sk, props) {
+            if (props.isNotEmpty) {
               final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
               wsFieldsMapForStateKey[sk] = _unsubscribeWsDeps(sk, wsDeps);
               final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
               streamFieldsMapForStateKey[sk] = _unsubscribeSFDeps(sk, sfDeps);
-            });
-            propsOfKeysToReset.forEach((sk, props) {
-              if (props.isNotEmpty) {
-                final wsDeps = websocketPropsOfKeysToUnsubscribe[sk]!;
-                wsFieldsMapForStateKey[sk] = _unsubscribeWsDeps(sk, wsDeps);
-                final sfDeps = streamPropsOfKeysToUnsubscribe[sk]!;
-                streamFieldsMapForStateKey[sk] = _unsubscribeSFDeps(sk, sfDeps);
-              }
-            });
-            selector.deps.keys.forEach((sk) {
-              final newMap = <String, dynamic>{
-                ...wsFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{}),
-                ...streamFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{})
-              };
-              final ps = sMap[sk]!;
-              sMap[sk] = ps.copyWithMap(newMap) as PStateModel;
-            });
-          }
-        });
-        // if persitance is enabled and following state keys are persitable then update values
-        await _updatePersitance(stateKeysModified, []);
-        _state = _state.copyWithMap(sMap);
-      }
+            }
+          });
+          selector.deps.keys.forEach((sk) {
+            final newMap = <String, dynamic>{
+              ...wsFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{}),
+              ...streamFieldsMapForStateKey.getOrElse(sk, <String, dynamic>{})
+            };
+            final ps = sMap[sk]!;
+            sMap[sk] = ps.copyWithMap(newMap) as PStateModel;
+          });
+        }
+      });
+      // if persitance is enabled and following state keys are persitable then update values
+      await _updatePersitance(stateKeysModified, []);
+      _state = _state.copyWithMap(sMap);
     }
   }
 
@@ -634,10 +590,10 @@ class Store<S extends AppStateI<S>, AT> {
   }
 }
 
-enum ResetToDefault { FORCE, IF_NOT_USED_BY_OTHER_WIDGETS }
+// enum ResetToDefault { FORCE, IF_NOT_USED_BY_OTHER_WIDGETS }
 
 class UnSubscribeOptions {
-  final ResetToDefault? resetToDefault;
+  final bool? resetToDefault;
 
   UnSubscribeOptions({this.resetToDefault});
 }
