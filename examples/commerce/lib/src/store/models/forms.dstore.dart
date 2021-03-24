@@ -15,7 +15,7 @@ class LoginForm implements FormFieldObject<LoginForm> {
   _$LoginFormCopyWith<LoginForm> get copyWith =>
       __$LoginFormCopyWithImpl<LoginForm>(this, IdentityFn);
 
-  const LoginForm({this.phonenUmber = ""});
+  const LoginForm({this.phonenUmber = "2"});
 
   @override
   LoginForm copyWithMap(Map<String, dynamic> map) => LoginForm(

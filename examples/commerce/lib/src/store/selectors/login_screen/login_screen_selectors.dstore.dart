@@ -9,6 +9,10 @@ part of 'login_screen_selectors.dart';
 
 // Selector
 class LoginScreenSelectors {
-  static final state = Selector<AppState, LoginScreenState>(
-      fn: $_LoginScreenSelectors.state, deps: {"loginScreen": []});
+  static final loginForm =
+      Selector<AppState, FormField<LoginFormKey, LoginForm>>(
+          fn: $_LoginScreenSelectors.loginForm,
+          deps: {
+        "loginScreen": ["loginForm"]
+      });
 }
