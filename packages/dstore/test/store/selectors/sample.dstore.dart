@@ -10,7 +10,7 @@ part of 'sample.dart';
 // Selector
 class SampleSelectors {
   static final sampleName =
-      Selector<AppState, String>(fn: _SampleSelectors.sampleName, deps: {
+      Selector<AppState, String>(fn: $_SampleSelectors.sampleName, deps: {
     "sample": ["name"]
   });
 }

@@ -9,10 +9,13 @@ part of 'app_state.dart';
 
 mixin _$AppState {
   Auth get auth;
-  AppState copyWithMap(Map<String, dynamic> map) =>
-      AppState()..auth = map["auth"] ?? this.auth;
-  Map<String, PStateModel> toMap() => {"auth": this.auth};
+  LoginScreenState get loginScreen;
+  AppState copyWithMap(Map<String, dynamic> map) => AppState()
+    ..auth = map["auth"] ?? this.auth
+    ..loginScreen = map["loginScreen"] ?? this.loginScreen;
+  Map<String, PStateModel> toMap() =>
+      {"auth": this.auth, "loginScreen": this.loginScreen};
 }
 Map<String, PStateMeta> createAppStateMeta() {
-  return {"auth": AuthMeta};
+  return {"auth": AuthMeta, "loginScreen": LoginScreenStateMeta};
 }

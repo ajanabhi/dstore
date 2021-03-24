@@ -7,12 +7,14 @@ class DTextField<FieldKey> extends StatefulWidget {
   final String Function(dynamic value)? toText;
   final dynamic Function(String value)? fromText;
   final InputDecoration? decoration;
+  final TextInputType? keyboardType;
 
   const DTextField(
       {Key? key,
       required this.name,
       this.decoration,
       this.toText,
+      this.keyboardType,
       this.fromText})
       : super(key: key);
   @override
@@ -33,10 +35,11 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     final dform = DForm.of(context);
-    _info ??= dform.getInfo(widget.name);
+    final key = FormUtils.getNameFromKey(widget.name);
+    _info ??= dform.getInfo(key);
     if (dform.ff.internalKeysChanged != null &&
-        dform.ff.internalKeysChanged!.contains(widget.name)) {
-      _info = dform.getInfo(widget.name);
+        dform.ff.internalKeysChanged!.contains(key)) {
+      _info = dform.getInfo(key);
       _setText();
       _w = _getWidget();
     } else {
@@ -61,6 +64,7 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
     return TextField(
       controller: _controller,
       onChanged: _handleOnChange,
+      keyboardType: widget.keyboardType,
       decoration: widget.decoration != null
           ? widget.decoration!.copyWith(errorText: _info!.error)
           : InputDecoration(errorText: _info!.error),

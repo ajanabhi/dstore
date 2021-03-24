@@ -15,11 +15,12 @@ class SelectorsGenerator extends GeneratorForAnnotation<Selectors> {
       }
       final className = element.name;
 
-      if (!className.startsWith("_")) {
-        throw Exception("Selectors functions class should start with _");
+      if (!className.startsWith("\$_")) {
+        throw Exception("Selectors functions class should start with \$_");
       }
-      final modelName = className.substring(1);
-      return await generateSelectors(modelName: modelName, element: element);
+      final modelName = className.substring(2);
+      return await generateSelectors(
+          modelName: modelName, element: element, buildStep: buildStep);
     } catch (e, st) {
       logger.error("Failed generating selectors for ${element.name}", e, st);
       rethrow;

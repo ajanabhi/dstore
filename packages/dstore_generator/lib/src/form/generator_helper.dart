@@ -1,14 +1,15 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
 import 'package:dstore_generator/src/form/visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
-String generateFormModel(ClassElement element) {
+Future<String> generateFormModel(ClassElement element, BuildStep step) async {
   final typeParamsWithBounds =
       element.typeParameters.map((e) => e.toString()).join(",");
   final typeParams = element.typeParameters.map((e) => e.name).join(",");
   final modelName = element.name.substring(2);
   final visitor = FormModelVisitor(element.fields, modelName);
-  final astNode = AstUtils.getAstNodeFromElement(element);
+  final astNode = await AstUtils.getAstNodeFromElement(element, step);
   astNode.visitChildren(visitor);
 
   final annotations = element.metadata
@@ -31,11 +32,10 @@ String _createValidator(
     {required Map<String, String> validators,
     required String modelName,
     required String enumName}) {
-  final mapType = "<$enumName,FormFieldValidator>";
+  final mapType = "<String,FormFieldValidator>";
   return """
-    Map$mapType create${modelName}Validators() {
-      return ${mapType}{${validators.entries.map((e) => "${e.key}: ${e.value}").join(", ")}};
-    }
+   const ${modelName}Validators = ${mapType}{${validators.entries.map((e) => "\"${e.key}\": ${e.value}").join(", ")}};
+ 
   """;
 }
 
@@ -54,7 +54,7 @@ String _createModel(
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         ${ModelUtils.getCopyWithField(name)}
-        ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}
+        ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: true)}
 
         ${ModelUtils.createCopyWithMapFromFieldsList(name, fields)}
 
@@ -82,13 +82,6 @@ String _createEnum(List<FieldElement> fields, String name) {
   return """
      enum $name {
        $keys
-     }
-     extension  ${name}Ext on $name {
-        String get value => toString().split(".").last;
-          static $name? fromValue(String value) {
-            return ${name}.values
-               .singleWhereOrNull((e) => e.toString().split(".")[1] == value);
-          }
      }
   """;
 }

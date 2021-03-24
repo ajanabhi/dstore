@@ -14,7 +14,7 @@ class SimpleForm implements FormFieldObject<SimpleForm> {
   _$SimpleFormCopyWith<SimpleForm> get copyWith =>
       __$SimpleFormCopyWithImpl<SimpleForm>(this, IdentityFn);
 
-  SimpleForm({this.name = ""});
+  const SimpleForm({this.name = ""});
 
   @override
   SimpleForm copyWithMap(Map<String, dynamic> map) =>
@@ -75,11 +75,3 @@ class __$SimpleFormCopyWithImpl<O> extends _$SimpleFormCopyWithImpl<O>
 }
 
 enum SimpleFormKey { name }
-
-extension SimpleFormKeyExt on SimpleFormKey {
-  String get value => toString().split(".").last;
-  static SimpleFormKey? fromValue(String value) {
-    return SimpleFormKey.values
-        .singleWhereOrNull((e) => e.toString().split(".")[1] == value);
-  }
-}

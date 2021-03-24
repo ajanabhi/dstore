@@ -1,7 +1,10 @@
+import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -9,19 +12,38 @@ import './utils.dart';
 import "package:collection/collection.dart";
 
 abstract class AstUtils {
-  static AstNode getAstNodeFromElement(Element element) {
-    final session = element.session!;
-    final parsedLibResult = session.getParsedLibraryByElement(element.library!);
-    final elDeclarationResult = parsedLibResult.getElementDeclaration(element)!;
-    return elDeclarationResult.node;
+  static Future<AstNode> getAstNodeFromElement(
+      Element element, BuildStep buildStep,
+      {bool resolve = false}) async {
+    var library = element.library!;
+    while (true) {
+      try {
+        final session = library.session;
+        AstNode node;
+        if (resolve) {
+          final le = await session.getResolvedLibraryByElement(library);
+          node = le.getElementDeclaration(element)!.node;
+        } else {
+          node = session
+              .getParsedLibraryByElement(library)
+              .getElementDeclaration(element)!
+              .node;
+        }
+        return node;
+      } on InconsistentAnalysisException {
+        library = await buildStep.resolver.libraryFor(
+          await buildStep.resolver.assetIdForElement(element.library!),
+        );
+      }
+    }
   }
 
-  static Future<AstNode> getResolvedAstNodeFromElement(Element element) async {
-    final session = element.session!;
-    final s = await session.getResolvedLibraryByElement(element.library!);
-    final s2 = s.getElementDeclaration(element)!;
-    return s2.node;
-  }
+  // static Future<AstNode> getResolvedAstNodeFromElement(Element element) async {
+  //   final session = element.session!;
+  //   final s = await session.getResolvedLibraryByElement(element.library!);
+  //   final s2 = s.getElementDeclaration(element)!;
+  //   return s2.node;
+  // }
 
   static String addConstToDefaultValue(String value) {
     return !value.trimLeft().startsWith("const") &&
@@ -284,6 +306,17 @@ extension ParameterElementExt on ParameterElement {
       AnnotationUtils.mergeJsonKeyAndReturnAnnotations(this, newFields);
 }
 
+extension DartObjectExt on DartObject {
+  String? functionNameForField(String name) {
+    final fn = getField(name)?.toFunctionValue();
+    if (fn != null) {
+      final name = fn.name;
+      final enclosingName = fn.enclosingElement.name;
+      return enclosingName != null ? "${enclosingName}.$name" : name;
+    }
+  }
+}
+
 extension ConstReadExt on ConstantReader {
   T? getEnumField<T>(String name, List<T> values) {
     final field = peek(name);
@@ -294,10 +327,7 @@ extension ConstReadExt on ConstantReader {
   }
 
   String? functionNameForField(String name) {
-    final functionField = peek(name);
-    if (functionField != null) {
-      return functionField.objectValue.getField(name)?.toFunctionValue()?.name;
-    }
+    return objectValue.functionNameForField(name);
   }
 }
 

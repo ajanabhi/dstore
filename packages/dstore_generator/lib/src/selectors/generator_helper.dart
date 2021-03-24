@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
 import 'package:dstore_generator/src/selectors/types.dart';
 import 'package:dstore_generator/src/selectors/vistors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -21,9 +22,12 @@ void addSelectorCacheDeps(Element element, String name, SelectorDeps sdeps) {
 }
 
 Future<String> generateSelectors(
-    {required String modelName, required ClassElement element}) async {
-  final visitor = SelectorsVisitor(modelName, element);
-  final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
+    {required String modelName,
+    required ClassElement element,
+    required BuildStep buildStep}) async {
+  final visitor = SelectorsVisitor(modelName, element, buildStep);
+  final astNode =
+      await AstUtils.getAstNodeFromElement(element, buildStep, resolve: true);
 
   astNode.visitChildren(visitor);
 

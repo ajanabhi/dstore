@@ -7,8 +7,8 @@ import 'package:source_gen/source_gen.dart';
 
 class FormModelGenerator extends GeneratorForAnnotation<FormModel> {
   @override
-  String generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) {
+  Future<String> generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) async {
     try {
       if (!(element is ClassElement)) {
         throw UnsupportedError("FormModel should only used on classes");
@@ -17,7 +17,8 @@ class FormModelGenerator extends GeneratorForAnnotation<FormModel> {
         throw UnsupportedError(
             "All FormModel class names should start with \$_");
       }
-      return generateFormModel(element);
+      final result = await generateFormModel(element, buildStep);
+      return result;
     } catch (e, st) {
       logger.error(
           "Error while generating FormModel for ${element.name}", e, st);

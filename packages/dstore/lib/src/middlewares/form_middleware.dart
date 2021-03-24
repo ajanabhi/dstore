@@ -4,9 +4,11 @@ import 'package:dstore/src/store.dart';
 
 dynamic formMiddleware<S extends AppStateI<S>>(
     Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
+  print("In from middleare");
   if (action.isProcessed || action.form == null) {
     next(action);
   } else {
+    print("Processing form");
     // form action
     final req = action.form as FormReq;
     final ff = store.getFieldFromAction(action) as FormField;
@@ -18,42 +20,47 @@ dynamic formMiddleware<S extends AppStateI<S>>(
         validate = req.validate;
       }
       final validator = ff.validators[req.key];
-      final errors = <dynamic, String>{...ff.errors};
-      final name = req.key.value as String;
+      final errors = {...ff.errors};
+      final name = FormUtils.getNameFromKey(req.key);
       final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
           as FormFieldObject;
       if (validate && validator != null) {
         final newE = await validator(req.value);
         if (newE != null) {
           errors[req.key] = newE;
+        } else {
+          errors.remove(req.key);
         }
       }
       nff = ff.copyWith(
           value: value,
           errors: errors,
-          internalKeysChanged: <dynamic>[req.key],
+          internalKeysChanged: [req.key],
           isValid: errors.isEmpty);
     } else if (req is FormSetFieldTouched) {
       var validate = ff.validateOnBlur;
       if (req.validate) {
         validate = validate;
       }
-      final errors = <dynamic, String>{...ff.errors};
+      final errors = {...ff.errors};
       final validator = ff.validators[req.key];
-      final touched = <dynamic, bool>{...ff.touched, req.key: true};
+      final touched = <String, bool>{...ff.touched, req.key: true};
       if (validate && validator != null) {
-        final newE = await validator(ff.value.toMap()[req.key.value]);
+        final newE = await validator(
+            ff.value.toMap()[FormUtils.getNameFromKey(req.key)]);
         if (newE != null) {
           errors[req.key] = newE;
+        } else {
+          errors.remove(req.key);
         }
       }
       nff = ff.copyWith(
           touched: touched,
           errors: errors,
-          internalKeysChanged: <dynamic>[req.key],
+          internalKeysChanged: [req.key],
           isValid: errors.isEmpty);
     } else if (req is FormSetFieldError) {
-      final errors = <dynamic, String>{...ff.errors};
+      final errors = {...ff.errors};
       if (req.value == null) {
         errors.remove(req.key);
       } else {
@@ -61,13 +68,13 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       }
       nff = ff.copyWith(
           errors: errors,
-          internalKeysChanged: <dynamic>[req.key],
+          internalKeysChanged: [req.key],
           isValid: errors.isEmpty);
     } else if (req is FormSetErrors) {
       nff = ff.copyWith(errors: req.errors, isValid: req.errors.isEmpty);
     } else if (req is FormReset) {
       final df = pm.ds().toMap()[action.name] as FormField;
-      nff = df.copyWith(internalKeysChanged: <dynamic>[]);
+      nff = df.copyWith(internalKeysChanged: <String>[]);
     } else if (req is FormSetSubmitting) {
       nff = ff.copyWith(
           isSubmitting: req.isSubmitting, internalKeysChanged: null);

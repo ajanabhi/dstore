@@ -23,7 +23,7 @@ class PStateGenerator extends GeneratorForAnnotation<PState> {
         throw ArgumentError.value(
             "PState class should start with \$_ , example : class \$_Auth");
       }
-      return await generatePStateForClassElement(element);
+      return await generatePStateForClassElement(element, buildStep);
     } catch (e, st) {
       logger.error("Error in generate PState for ${element.name}", e, st);
       rethrow;

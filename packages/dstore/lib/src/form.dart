@@ -20,15 +20,14 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
   const factory FormField(
       {required F value,
       required Map<String, FormFieldValidator> validators,
-      // ignore: inference_failure_on_collection_literal
-      @Default({}) Map<Key, String> errors,
-      @Default({}) Map<Key, bool> touched,
+      @Default(<String, String>{}) Map<String, String> errors,
+      @Default(<String, bool>{}) Map<String, bool> touched,
       @Default(false) bool isValid,
       @Default(false) bool isSubmitting,
       @Default(false) bool isValidating,
       @Default(false) bool validateOnChange,
       @Default(false) bool validateOnBlur,
-      List<Key>? internalKeysChanged,
+      List<String>? internalKeysChanged,
       @Default("") String internalAName,
       @Default("") String internalAType}) = _FormField<Key, F>;
 }
@@ -52,43 +51,64 @@ class FromFieldPropInfo {
       required this.setValue,
       required this.setTouched,
       required this.touched});
+
+  @override
+  String toString() {
+    return 'FromFieldPropInfo(name: $name, value: $value, validator: $validator, error: $error, touched: $touched, setValue: $setValue, setError: $setError, setTouched: $setTouched)';
+  }
 }
 
 abstract class FormReq {}
 
 class FormSetFieldValue extends FormReq {
-  final dynamic key;
+  final String key;
   final dynamic value;
   final bool validate;
 
   FormSetFieldValue(
       {required this.key, required this.value, this.validate = false});
+
+  @override
+  String toString() =>
+      'FormSetFieldValue(key: $key, value: $value, validate: $validate)';
 }
 
 class FormSetFieldTouched extends FormReq {
-  final dynamic key;
+  final String key;
   final bool validate;
 
   FormSetFieldTouched({required this.key, this.validate = false});
+
+  @override
+  String toString() => 'FormSetFieldTouched(key: $key, validate: $validate)';
 }
 
 class FormSetFieldError extends FormReq {
-  final dynamic key;
+  final String key;
   final String? value;
 
   FormSetFieldError({required this.key, this.value});
+
+  @override
+  String toString() => 'FormSetFieldError(key: $key, value: $value)';
 }
 
 class FormSetErrors extends FormReq {
-  final Map<dynamic, String> errors;
+  final Map<String, String> errors;
 
   FormSetErrors(this.errors);
+
+  @override
+  String toString() => 'FormSetErrors(errors: $errors)';
 }
 
 class FormSetSubmitting extends FormReq {
   final bool isSubmitting;
 
   FormSetSubmitting(this.isSubmitting);
+
+  @override
+  String toString() => 'FormSetSubmitting(isSubmitting: $isSubmitting)';
 }
 
 class FormReset extends FormReq {}
@@ -115,6 +135,8 @@ class FormOps {
 }
 
 abstract class FormUtils {
+  static String getNameFromKey(dynamic key) => key.toString().split(".").last;
+
   static FormOps getFormOps(FormField ff, Dispatch dispatch) {
     return FormOps(
       setFieldValue: (FormSetFieldValue req) {
@@ -155,14 +177,14 @@ abstract class FormUtils {
     );
   }
 
-  static Future<Map<dynamic, String>> isFormValid(FormField ff) async {
+  static Future<Map<String, String>> isFormValid(FormField ff) async {
     final errors = <String, String>{};
 
     final values = ff.value.toMap();
 
     for (final e in ff.validators.entries) {
       try {
-        final r = await e.value(values[e.key.toString().split(".").last]);
+        final r = await e.value(values[e.key]);
         if (r != null) {
           errors[e.key] = r;
         }

@@ -44,9 +44,8 @@ class FormModelVisitor extends SimpleAstVisitor<dynamic> {
       final va = fe.annotationFromType(Validator);
       if (va != null) {
         final vao = va.computeConstantValue();
-        final reader = ConstantReader(vao);
-        final fn = reader.functionNameForField("fn");
-        validators["${enumName}.${name}"] = fn!;
+        final fn = vao?.functionNameForField("fn");
+        validators["${name}"] = fn!;
       }
       fields.add(Field(
           name: name,

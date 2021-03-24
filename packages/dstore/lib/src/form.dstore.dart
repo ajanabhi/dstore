@@ -10,14 +10,14 @@ part of 'form.dart';
 mixin _$FormField<Key, F extends FormFieldObject<F>> {
   F get value;
   Map<String, String? Function(dynamic)> get validators;
-  Map<Key, String> get errors;
-  Map<Key, bool> get touched;
+  Map<String, String> get errors;
+  Map<String, bool> get touched;
   bool get isValid;
   bool get isSubmitting;
   bool get isValidating;
   bool get validateOnChange;
   bool get validateOnBlur;
-  List<Key>? get internalKeysChanged;
+  List<String>? get internalKeysChanged;
   String get internalAName;
   String get internalAType;
 
@@ -33,14 +33,14 @@ class _FormField<Key, F extends FormFieldObject<F>>
   final Map<String, String? Function(dynamic)> validators;
 
   @override
-  @Default({})
-  @JsonKey(defaultValue: const {})
-  final Map<Key, String> errors;
+  @Default(<String, String>{})
+  @JsonKey(defaultValue: const <String, String>{})
+  final Map<String, String> errors;
 
   @override
-  @Default({})
-  @JsonKey(defaultValue: const {})
-  final Map<Key, bool> touched;
+  @Default(<String, bool>{})
+  @JsonKey(defaultValue: const <String, bool>{})
+  final Map<String, bool> touched;
 
   @override
   @Default(false)
@@ -68,7 +68,7 @@ class _FormField<Key, F extends FormFieldObject<F>>
   final bool validateOnBlur;
 
   @override
-  final List<Key>? internalKeysChanged;
+  final List<String>? internalKeysChanged;
 
   @override
   @Default("")
@@ -86,8 +86,8 @@ class _FormField<Key, F extends FormFieldObject<F>>
   const _FormField(
       {required this.value,
       required this.validators,
-      this.errors = const {},
-      this.touched = const {},
+      this.errors = const <String, String>{},
+      this.touched = const <String, bool>{},
       this.isValid = false,
       this.isSubmitting = false,
       this.isValidating = false,
@@ -142,14 +142,14 @@ abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
   O call(
       {F value,
       Map<String, String? Function(dynamic)> validators,
-      Map<Key, String> errors,
-      Map<Key, bool> touched,
+      Map<String, String> errors,
+      Map<String, bool> touched,
       bool isValid,
       bool isSubmitting,
       bool isValidating,
       bool validateOnChange,
       bool validateOnBlur,
-      List<Key>? internalKeysChanged,
+      List<String>? internalKeysChanged,
       String internalAName,
       String internalAType});
 }
@@ -179,10 +179,12 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         validators: validators == dimmutable
             ? _value.validators
             : validators as Map<String, String? Function(dynamic)>,
-        errors:
-            errors == dimmutable ? _value.errors : errors as Map<Key, String>,
-        touched:
-            touched == dimmutable ? _value.touched : touched as Map<Key, bool>,
+        errors: errors == dimmutable
+            ? _value.errors
+            : errors as Map<String, String>,
+        touched: touched == dimmutable
+            ? _value.touched
+            : touched as Map<String, bool>,
         isValid: isValid == dimmutable ? _value.isValid : isValid as bool,
         isSubmitting: isSubmitting == dimmutable
             ? _value.isSubmitting
@@ -198,7 +200,7 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
             : validateOnBlur as bool,
         internalKeysChanged: internalKeysChanged == dimmutable
             ? _value.internalKeysChanged
-            : internalKeysChanged as List<Key>?,
+            : internalKeysChanged as List<String>?,
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,
@@ -216,14 +218,14 @@ abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
   O call(
       {F value,
       Map<String, String? Function(dynamic)> validators,
-      Map<Key, String> errors,
-      Map<Key, bool> touched,
+      Map<String, String> errors,
+      Map<String, bool> touched,
       bool isValid,
       bool isSubmitting,
       bool isValidating,
       bool validateOnChange,
       bool validateOnBlur,
-      List<Key>? internalKeysChanged,
+      List<String>? internalKeysChanged,
       String internalAName,
       String internalAType});
 }
@@ -257,10 +259,12 @@ class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         validators: validators == dimmutable
             ? _value.validators
             : validators as Map<String, String? Function(dynamic)>,
-        errors:
-            errors == dimmutable ? _value.errors : errors as Map<Key, String>,
-        touched:
-            touched == dimmutable ? _value.touched : touched as Map<Key, bool>,
+        errors: errors == dimmutable
+            ? _value.errors
+            : errors as Map<String, String>,
+        touched: touched == dimmutable
+            ? _value.touched
+            : touched as Map<String, bool>,
         isValid: isValid == dimmutable ? _value.isValid : isValid as bool,
         isSubmitting: isSubmitting == dimmutable
             ? _value.isSubmitting
@@ -276,7 +280,7 @@ class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
             : validateOnBlur as bool,
         internalKeysChanged: internalKeysChanged == dimmutable
             ? _value.internalKeysChanged
-            : internalKeysChanged as List<Key>?,
+            : internalKeysChanged as List<String>?,
         internalAName: internalAName == dimmutable
             ? _value.internalAName
             : internalAName as String,

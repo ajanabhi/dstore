@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
@@ -11,7 +12,8 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 import "dart:convert";
 
-Future<String> generatePStateForClassElement(ClassElement element) async {
+Future<String> generatePStateForClassElement(
+    ClassElement element, BuildStep buildStep) async {
   final typeParamsWithBounds =
       element.typeParameters.map((e) => e.toString()).join(",");
   final typeParams = element.typeParameters.map((e) => e.name).join(",");
@@ -32,7 +34,8 @@ Future<String> generatePStateForClassElement(ClassElement element) async {
   //   return await AstUtils.getResolvedAstNodeFromElement(element);
   // });
   // logger.shout("TimeTracker ${tracker.duration.inMilliseconds}  $tracker");
-  final astNode = await AstUtils.getResolvedAstNodeFromElement(element);
+  final astNode =
+      await AstUtils.getAstNodeFromElement(element, buildStep, resolve: true);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
   final methods = visitor.methods;
@@ -119,7 +122,7 @@ String _getPStateMeta(
   print(fields);
 
   var defaultState =
-      "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: modelName) : f.value}").join(", ")})";
+      "${modelName}(${fields.map((f) => "${f.name}:${f.type.startsWith("FormField") ? _addActionNameAndGroupNameToFormField(value: f.value!, actionName: f.name, type: type) : f.value}").join(", ")})";
   var defaultStateFn = "$modelName ${modelName}_DS() => $defaultState;";
   final params = <String>["type : $type"];
   if (syncReducerFunctionStr.isNotEmpty) {

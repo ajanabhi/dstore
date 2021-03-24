@@ -2,6 +2,7 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:build/build.dart';
 import 'package:dstore_generator/src/selectors/generator_helper.dart';
 import 'package:dstore_generator/src/selectors/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -10,9 +11,10 @@ import "dart:convert";
 class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
   final String modelName;
   final Element element;
+  final BuildStep buildStep;
   final selectors = <String>[];
 
-  SelectorsVisitor(this.modelName, this.element);
+  SelectorsVisitor(this.modelName, this.element, this.buildStep);
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
@@ -28,7 +30,7 @@ class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
     }
     final rType = node.returnType.toString();
     final sType = field.type;
-    final bvs = SelectorBodyVisitor(field.param!.identifier!);
+    final bvs = SelectorBodyVisitor(field.param!.identifier!, buildStep);
     node.body.visitChildren(bvs);
 
     print("%%%%% deps : ${bvs.depsList}");
@@ -55,7 +57,7 @@ class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
         ? ""
         : ", sfDeps: ${jsonEncode(streamFieldsMap)}";
     final result =
-        """static final ${name} = Selector<${sType},${rType}>(fn:_${modelName}.${name},deps:${jsonEncode(depsMap)}$wsDeps ${sfDeps});""";
+        """static final ${name} = Selector<${sType},${rType}>(fn:\$_${modelName}.${name},deps:${jsonEncode(depsMap)}$wsDeps ${sfDeps});""";
     print("Resuult :${result}");
     addSelectorCacheDeps(
         element,
@@ -250,11 +252,12 @@ class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
 
 class SelectorBodyVisitor extends RecursiveAstVisitor<dynamic> {
   final Identifier identifier;
+  final BuildStep buildStep;
 
   final List<List<MapEntry<String, DartType>>> depsList = [];
   final List<SelectorDeps> subSelectorDeps = [];
 
-  SelectorBodyVisitor(this.identifier);
+  SelectorBodyVisitor(this.identifier, this.buildStep);
   List<MapEntry<String, DartType>> getPropNamesAndTheirTypes(
       PropertyAccess node) {
     final result = <MapEntry<String, DartType>>[];
@@ -339,9 +342,9 @@ class SelectorBodyVisitor extends RecursiveAstVisitor<dynamic> {
               logger
                   .shout("Subselector deps Not found in cache so fetching now");
               final astNode =
-                  await AstUtils.getResolvedAstNodeFromElement(element);
-              astNode.visitChildren(
-                  SelectorsVisitor(element.name!.substring(1), element));
+                  await AstUtils.getAstNodeFromElement(element, buildStep);
+              astNode.visitChildren(SelectorsVisitor(
+                  element.name!.substring(1), element, buildStep));
               scd = getSelectorCachedDeps(element, node.methodName.name);
             }
             logger.shout("Cached Deps $scd");

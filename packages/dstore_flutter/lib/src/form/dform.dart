@@ -19,7 +19,7 @@ class DForm extends InheritedWidget {
 
   FormOps get ops => _formState.ops!;
 
-  FromFieldPropInfo getInfo(dynamic key) {
+  FromFieldPropInfo getInfo(String key) {
     final value = ff.value.toMap();
     final dynamic kv = value[key.toString().split(".").last];
     if (kv == null) {

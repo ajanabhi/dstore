@@ -26,11 +26,12 @@ class _DFormFieldState<FieldKey> extends State<DFormField<FieldKey>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    final key = FormUtils.getNameFromKey(widget.name);
     final dform = DForm.of(context);
-    _info ??= dform.getInfo(widget.name);
+    _info ??= dform.getInfo(key);
     if (dform.ff.internalKeysChanged != null &&
-        dform.ff.internalKeysChanged!.contains(widget.name)) {
-      _info = dform.getInfo(widget.name);
+        dform.ff.internalKeysChanged!.contains(key)) {
+      _info = dform.getInfo(key);
       _w = widget.builder(_info!);
     } else {
       _w ??= widget.builder(_info!);
