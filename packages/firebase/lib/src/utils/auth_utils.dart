@@ -1,6 +1,19 @@
+import 'package:firebase_auth/firebase_auth.dart';
+
 abstract class AuthUtils {
-  String name = "";
-  Stream<void> hello() async* {
-    yield this.name = "hello";
+  void loginWithPhone(String number) {
+    //  FirebaseAuth.instance.verifyPhoneNumber(phoneNumber: phoneNumber, verificationCompleted: verificationCompleted, verificationFailed: verificationFailed, codeSent: codeSent, codeAutoRetrievalTimeout: codeAutoRetrievalTimeout)
   }
 }
+
+// class PhoneAuthStatus {
+
+//  final
+
+// }
+
+typedef Hello = Function();
+
+void hello(
+  String s,
+) {}

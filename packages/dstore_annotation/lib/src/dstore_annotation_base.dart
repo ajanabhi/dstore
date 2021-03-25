@@ -147,3 +147,7 @@ class Validator {
   final String? Function(dynamic) fn;
   const Validator(this.fn);
 }
+
+class DUnion {
+  const DUnion();
+}

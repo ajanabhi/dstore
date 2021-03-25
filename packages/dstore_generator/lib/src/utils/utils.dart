@@ -13,17 +13,19 @@ class Field {
   List<String>? annotations;
   bool isOptional;
   FormalParameter? param;
+  bool isNamed;
   Field(
       {required this.name,
       required this.type,
       this.value,
       this.annotations,
+      this.isNamed = false,
       this.param,
       this.isOptional = false});
 
   @override
   String toString() {
-    return "Field(Name : ${name} Type : ${type} Value : ${value} isOptional : $isOptional annotations : $annotations)";
+    return "Field(Name : ${name} Type : ${type} Value : ${value} isOptional : $isOptional annotations : $annotations isNamed: $isNamed)";
   }
 
   Field copyWith({
@@ -32,16 +34,17 @@ class Field {
     String? value,
     List<String>? annotations,
     bool? isOptional,
+    bool? isNamed,
     FormalParameter? param,
   }) {
     return Field(
-      name: name ?? this.name,
-      type: type ?? this.type,
-      value: value ?? this.value,
-      annotations: annotations ?? this.annotations,
-      isOptional: isOptional ?? this.isOptional,
-      param: param ?? this.param,
-    );
+        name: name ?? this.name,
+        type: type ?? this.type,
+        value: value ?? this.value,
+        annotations: annotations ?? this.annotations,
+        isOptional: isOptional ?? this.isOptional,
+        param: param ?? this.param,
+        isNamed: isNamed ?? this.isNamed);
   }
 }
 
