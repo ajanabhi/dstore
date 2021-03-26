@@ -16,7 +16,7 @@ extension on Map<dynamic, dynamic> {
 }
 
 class StoreTester<S extends AppStateI<S>> {
-  final Store<S, dynamic> store;
+  final Store<S> store;
 
   StoreTester(this.store);
 

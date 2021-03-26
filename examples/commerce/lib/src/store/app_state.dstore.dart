@@ -7,20 +7,35 @@ part of 'app_state.dart';
 // AppStateGenerator
 // **************************************************************************
 
-mixin _$AppState {
-  Auth get auth;
-  LoginScreenState get loginScreen;
+class AppState implements AppStateI<AppState> {
+  late final Auth auth;
+  late final LoginScreenState loginScreen;
+  @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..auth = map.containsKey('auth') ? map['auth'] as Auth : this.auth
     ..loginScreen = map.containsKey('loginScreen')
         ? map['loginScreen'] as LoginScreenState
         : this.loginScreen;
-  Map<String, PStateModel> toMap() =>
-      <String, PStateModel>{"auth": this.auth, "loginScreen": this.loginScreen};
+  @override
+  Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
+        "auth": this.auth,
+        "loginScreen": this.loginScreen
+      };
 }
-Map<String, PStateMeta> createAppStateMeta() {
-  return <String, PStateMeta>{
-    "auth": AuthMeta,
-    "loginScreen": LoginScreenStateMeta
-  };
+
+Store<AppState> createStore(
+    {List<Middleware<AppState>>? middlewares,
+    StorageOptions<dynamic>? storageOptions,
+    NetworkOptions? networkOptions,
+    bool useEqualsComparision = false}) {
+  return Store<AppState>(
+      internalMeta: <String, PStateMeta>{
+        "auth": AuthMeta,
+        "loginScreen": LoginScreenStateMeta
+      },
+      stateCreator: () => AppState(),
+      networkOptions: networkOptions,
+      middlewares: middlewares,
+      storageOptions: storageOptions,
+      useEqualsComparision: useEqualsComparision);
 }

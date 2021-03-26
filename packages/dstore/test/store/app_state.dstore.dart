@@ -7,16 +7,34 @@ part of 'app_state.dart';
 // AppStateGenerator
 // **************************************************************************
 
-mixin _$AppState {
-  Sample get sample;
-  Sample2 get sample2;
+class AppState implements AppStateI<AppState> {
+  late final Sample sample;
+  late final Sample2 sample2;
+  @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..sample = map.containsKey('sample') ? map['sample'] as Sample : this.sample
     ..sample2 =
         map.containsKey('sample2') ? map['sample2'] as Sample2 : this.sample2;
-  Map<String, PStateModel> toMap() =>
-      <String, PStateModel>{"sample": this.sample, "sample2": this.sample2};
+  @override
+  Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
+        "sample": this.sample,
+        "sample2": this.sample2
+      };
 }
-Map<String, PStateMeta> createAppStateMeta() {
-  return <String, PStateMeta>{"sample": SampleMeta, "sample2": Sample2Meta};
+
+Store<AppState> createStore(
+    {List<Middleware<AppState>>? middlewares,
+    StorageOptions<dynamic>? storageOptions,
+    NetworkOptions? networkOptions,
+    bool useEqualsComparision = false}) {
+  return Store<AppState>(
+      internalMeta: <String, PStateMeta>{
+        "sample": SampleMeta,
+        "sample2": Sample2Meta
+      },
+      stateCreator: () => AppState(),
+      networkOptions: networkOptions,
+      middlewares: middlewares,
+      storageOptions: storageOptions,
+      useEqualsComparision: useEqualsComparision);
 }

@@ -31,7 +31,7 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
   late SelectorUnSubscribeFn _unsubFn;
   late I _state;
   void Function()? _lsitener;
-  Store<S, dynamic>? storeRef;
+  Store<S>? storeRef;
   @override
   void initState() {
     super.initState();

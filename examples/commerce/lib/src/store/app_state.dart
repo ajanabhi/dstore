@@ -5,12 +5,7 @@ import 'package:dstore/dstore.dart';
 part "app_state.dstore.dart";
 
 @AppStateAnnotation()
-class AppState extends AppStateI<AppState> with _$AppState {
-  late final Auth auth;
-  late final LoginScreenState loginScreen;
-}
+void $_AppState(Auth auth, LoginScreenState loginScreen) {}
 
-final store = Store<AppState, dynamic>(
-    inernalMeta: createAppStateMeta(),
-    stateCreator: () => AppState(),
+final store = createStore(
     middlewares: [loggingMiddleware, formMiddleware, streamMiddleware]);

@@ -21,6 +21,6 @@ analyzer:
     implicit-casts: false
     implicit-dynamic: false
   exclude:
-    - "**/*.dstore.dart"
+    # - "**/*.dstore.dart"
     - "**/*.g.dart"
     - "**/*.gr.dart"

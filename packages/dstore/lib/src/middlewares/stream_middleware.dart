@@ -4,7 +4,7 @@ import 'package:dstore/src/stream.dart';
 import 'package:dstore/src/types.dart';
 
 dynamic streamMiddleware<S extends AppStateI<S>>(
-    Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
+    Store<S> store, Dispatch next, Action<dynamic> action) async {
   if (action.isProcessed || action.stream == null) {
     next(action);
   } else {

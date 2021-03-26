@@ -4,7 +4,7 @@ import 'package:dstore/src/action.dart';
 import 'package:dstore/src/store.dart';
 
 dynamic debounceMiddleware<S extends AppStateI<S>>(
-    Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
+    Store<S> store, Dispatch next, Action<dynamic> action) async {
   if (action.isProcessed || action.debounce == null) {
     next(action);
   } else {

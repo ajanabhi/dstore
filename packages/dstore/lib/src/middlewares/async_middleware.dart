@@ -3,12 +3,12 @@ import 'package:dstore/src/pstate.dart';
 import 'package:dstore/src/store.dart';
 
 dynamic asyncMiddleware<S extends AppStateI<S>>(
-    Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
+    Store<S> store, Dispatch next, Action<dynamic> action) async {
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {
     final sk = store.getStateKeyForPstateType(action.type);
-    final psm = store.inernalMeta[sk]!;
+    final psm = store.internalMeta[sk]!;
     final gsMap = store.state.toMap();
     final currentS = gsMap[sk]!;
     store.dispatch(action.copyWith(

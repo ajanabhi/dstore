@@ -26,9 +26,9 @@ abstract class AsyncActionField with _$AsyncActionField {
 abstract class PStateModel<M> {
   M copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();
-  Store<dynamic, dynamic>? _dont_touch_me_store;
-  Store<dynamic, dynamic> get dont_touch_me_store => _dont_touch_me_store!;
-  void setDontTouchMeStore(Store<dynamic, dynamic>? s) {
+  Store<dynamic>? _dont_touch_me_store;
+  Store<dynamic> get dont_touch_me_store => _dont_touch_me_store!;
+  void setDontTouchMeStore(Store<dynamic>? s) {
     _dont_touch_me_store = s;
   }
 }

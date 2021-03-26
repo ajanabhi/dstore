@@ -3,7 +3,7 @@ import 'package:dstore/src/form.dart';
 import 'package:dstore/src/store.dart';
 
 dynamic formMiddleware<S extends AppStateI<S>>(
-    Store<S, dynamic> store, Dispatch next, Action<dynamic> action) async {
+    Store<S> store, Dispatch next, Action<dynamic> action) async {
   print("In from middleare");
   if (action.isProcessed || action.form == null) {
     next(action);

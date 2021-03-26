@@ -1,6 +1,7 @@
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/appstate/generator_helper.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
@@ -10,44 +11,15 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
   String generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
     try {
-      if (!(element is ClassElement)) {
+      if (!(element is FunctionElement)) {
         throw NotAllowedError("AppStateAnnotation can only be used on classes");
       }
-      if (element.constructors.length != 1 ||
-          !element.constructors.first.isDefaultConstructor) {
-        throw NotAllowedError("only default constructor is allowed");
+      if (!element.name.startsWith("\$_")) {
+        throw NotAllowedError(
+            "AppState name should star with \$_ , but you speciefd ${element.name}");
       }
-      final classElement = element;
-      final name = classElement.name;
-      final fields = classElement.fields;
-      // print("fields2 ${fields.map((e) => e.type.element!.displayName)}");
-      final copyWithMapBody = fields
-          .map((f) =>
-              "..${f.name} = map.containsKey('${f.name}') ? map['${f.name}'] as ${f.type} : this.${f.name}")
-          .join("\n");
 
-      final copyWithMap =
-          "${name} copyWithMap(Map<String,dynamic> map) => ${name}()${copyWithMapBody};";
-
-      final toMap =
-          """Map<String,PStateModel> toMap() => <String,PStateModel>{${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
-
-      final fieldGetters =
-          fields.map((f) => "${f.type} get ${f.name};").join("\n");
-
-      final createMeta = """
-       Map<String,PStateMeta> create${name}Meta() {
-          return <String,PStateMeta>{${fields.map((f) => """ "${f.name}" : ${f.type}Meta """).join(", ")}};
-       }
-    """;
-      return """
-      mixin _\$${name} {
-        ${fieldGetters}
-        ${copyWithMap}
-        ${toMap}
-      }
-     ${createMeta}
-    """;
+      return createAppState(element);
     } catch (e, st) {
       logger.error("Error generating AppState for ${element.name}", e, st);
       rethrow;

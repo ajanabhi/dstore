@@ -453,7 +453,7 @@ void _processWebsocketAction(
 
 Middleware<S> createWebsocketMiddleware<S extends AppStateI<S>>(
     [WebsocketMiddlewareOptions? options]) {
-  return (Store<S, dynamic> store, Dispatch next, Action action) {
+  return (Store<S> store, Dispatch next, Action action) {
     if (action.isProcessed || action.ws == null) {
       return next(action);
     }
