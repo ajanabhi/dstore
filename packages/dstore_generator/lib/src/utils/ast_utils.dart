@@ -6,6 +6,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/errors.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 import './utils.dart';
@@ -307,9 +308,17 @@ extension ParameterElementExt on ParameterElement {
 }
 
 extension DartObjectExt on DartObject {
-  String? functionNameForField(String name) {
+  String? functionNameForField(String name,
+      {String? Function(ExecutableElement fn)? validateFn}) {
     final fn = getField(name)?.toFunctionValue();
     if (fn != null) {
+      logger.shout("fn = ${fn} Rt ${fn.returnType}");
+      if (validateFn != null) {
+        final message = validateFn(fn);
+        if (message != null) {
+          throw InvalidSignatureError(message);
+        }
+      }
       final name = fn.name;
       final enclosingName = fn.enclosingElement.name;
       return enclosingName != null ? "${enclosingName}.$name" : name;
@@ -326,8 +335,9 @@ extension ConstReadExt on ConstantReader {
     }
   }
 
-  String? functionNameForField(String name) {
-    return objectValue.functionNameForField(name);
+  String? functionNameForField(String name,
+      {String? Function(ExecutableElement fn)? validateFn}) {
+    return objectValue.functionNameForField(name, validateFn: validateFn);
   }
 }
 

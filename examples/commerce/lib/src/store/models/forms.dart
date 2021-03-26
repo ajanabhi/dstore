@@ -7,5 +7,6 @@ part "forms.dstore.dart";
 @FormModel()
 class $_LoginForm {
   @Validator(ValidationUtils.validateMobile)
-  final String phonenUmber = "2";
+  final String phonenUmber = "";
+  // final
 }

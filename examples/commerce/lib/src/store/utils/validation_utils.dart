@@ -1,6 +1,5 @@
 abstract class ValidationUtils {
-  static String? validateMobile(dynamic value) {
-    value = value as String;
+  static String? validateMobile(String value) {
     var pattern = r'(^[0-9]*$)';
     var regExp = RegExp(pattern);
     if (value.isEmpty) {

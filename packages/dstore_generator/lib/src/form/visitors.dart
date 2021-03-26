@@ -4,7 +4,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:source_gen/source_gen.dart';
 
 class FormModelVisitor extends SimpleAstVisitor<dynamic> {
   final fields = <Field>[];
@@ -44,7 +43,8 @@ class FormModelVisitor extends SimpleAstVisitor<dynamic> {
       final va = fe.annotationFromType(Validator);
       if (va != null) {
         final vao = va.computeConstantValue();
-        final fn = vao?.functionNameForField("fn");
+        final fn = vao?.functionNameForField("fn",
+            validateFn: _validateFunctionSignature);
         validators["${name}"] = fn!;
       }
       fields.add(Field(
@@ -54,5 +54,16 @@ class FormModelVisitor extends SimpleAstVisitor<dynamic> {
           isOptional: isOptional,
           value: value));
     });
+  }
+
+  String? _validateFunctionSignature(ExecutableElement fn) {
+    final rt = fn.returnType.toString();
+    if (rt != "String?" && rt != "Future<String?>") {
+      return "Return type of validator function ${fn.name} should be String? or Future<String?>";
+    }
+    if (fn.parameters.length != 1) {
+      return "Validator function ${fn.name} should accept only one parameter";
+    }
+    //TODO probaly check param type too!
   }
 }

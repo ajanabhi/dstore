@@ -144,7 +144,7 @@ class FormModel {
 }
 
 class Validator {
-  final String? Function(dynamic) fn;
+  final Function fn;
   const Validator(this.fn);
 }
 
