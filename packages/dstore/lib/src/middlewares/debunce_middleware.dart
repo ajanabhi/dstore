@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dstore/src/action.dart';
-import 'package:dstore/src/errors.dart';
 import 'package:dstore/src/store.dart';
 
 dynamic debounceMiddleware<S extends AppStateI<S>>(
@@ -10,7 +9,7 @@ dynamic debounceMiddleware<S extends AppStateI<S>>(
     next(action);
   } else {
     final duration = action.debounce!;
-    final id = "${action.type.hashCode}.${action.name}";
+    final id = action.id;
     if (duration == Duration.zero) {
       // if duration is zero then execute immediatley
       store.internalDebounceTimers[id]?.cancel();

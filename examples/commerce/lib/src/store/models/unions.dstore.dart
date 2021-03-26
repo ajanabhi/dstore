@@ -8,7 +8,7 @@ part of 'unions.dart';
 // **************************************************************************
 
 class MyUnion {
-  dynamic _value;
+  final dynamic _value;
 
   MyUnion.s(String value) : _value = value;
   MyUnion.codeent({required String code, String? boo})

@@ -9,6 +9,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 part "action.dstore.dart";
 
 @dimmutable
+@optionalTypeArgs
 abstract class Action<M> with _$Action<M> {
   const factory Action({
     required String name,
@@ -58,6 +59,8 @@ extension ActionExt on Action {
     map["http"] = http?.toJson(httpMeta!);
     return map;
   }
+
+  String get id => "$type.$name";
 }
 
 @dimmutable

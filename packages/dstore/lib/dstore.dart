@@ -15,3 +15,5 @@ export 'src/errors.dart';
 export 'src/offline.dart';
 export 'src/types.dart';
 export "package:dstore_annotation/dstore_annotation.dart";
+export "package:meta/meta.dart"
+    show immutable, nonVirtual, visibleForTesting, optionalTypeArgs;

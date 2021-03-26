@@ -69,7 +69,7 @@ String _createUnionModel(
     
     class $name {
       
-     dynamic _value;
+    final dynamic _value;
      
      $ctors
 
