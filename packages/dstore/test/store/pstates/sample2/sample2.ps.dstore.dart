@@ -16,10 +16,10 @@ class Sample2 extends PStateModel<Sample2> {
   Sample2({this.name = "name2"});
 
   @override
-  Sample2 copyWithMap(Map<String, dynamic> map) =>
-      Sample2(name: map.containsKey("name") ? map["name"] : this.name);
+  Sample2 copyWithMap(Map<String, dynamic> map) => Sample2(
+      name: map.containsKey("name") ? map["name"] as String : this.name);
 
-  Map<String, dynamic> toMap() => {"name": this.name};
+  Map<String, dynamic> toMap() => <String, dynamic>{"name": this.name};
 
   @override
   bool operator ==(Object o) {

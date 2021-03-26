@@ -21,10 +21,12 @@ class LoginScreenState extends PStateModel<LoginScreenState> {
 
   @override
   LoginScreenState copyWithMap(Map<String, dynamic> map) => LoginScreenState(
-      loginForm:
-          map.containsKey("loginForm") ? map["loginForm"] : this.loginForm);
+      loginForm: map.containsKey("loginForm")
+          ? map["loginForm"] as FormField<LoginFormKey, LoginForm>
+          : this.loginForm);
 
-  Map<String, dynamic> toMap() => {"loginForm": this.loginForm};
+  Map<String, dynamic> toMap() =>
+      <String, dynamic>{"loginForm": this.loginForm};
 
   @override
   bool operator ==(Object o) {
@@ -92,10 +94,10 @@ const _LoginScreenState_FullPath =
     "/store/pstates/login_screen_state/LoginScreenState";
 
 abstract class LoginScreenStateActions {
-  static loginForm(FormReq req) {
-    return Action(
+  static Action<dynamic> loginForm(FormReq req) {
+    return Action<dynamic>(
         name:
-            "Field(Name : loginForm Type : FormField<LoginFormKey, LoginForm> Value : FormField(value: LoginForm(), validateOnChange: true, validators: LoginFormValidators) isOptional : false annotations : []).name}",
+            "Field(Name : loginForm Type : FormField<LoginFormKey, LoginForm> Value : FormField(value: LoginForm(), validateOnChange: true, validators: LoginFormValidators) isOptional : false annotations : [] isNamed: false).name}",
         type: _LoginScreenState_FullPath,
         form: req);
   }

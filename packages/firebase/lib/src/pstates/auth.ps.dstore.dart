@@ -7,19 +7,21 @@ part of 'auth.dart';
 // **************************************************************************
 
 @immutable
-class DFirebaseAuth implements PStateModel<DFirebaseAuth> {
+class DFirebaseAuth extends PStateModel<DFirebaseAuth> {
   final StreamField<User> user;
 
   _$DFirebaseAuthCopyWith<DFirebaseAuth> get copyWith =>
       __$DFirebaseAuthCopyWithImpl<DFirebaseAuth>(this, IdentityFn);
 
-  const DFirebaseAuth({this.user = const StreamField()});
+  DFirebaseAuth({this.user = const StreamField()});
 
   @override
-  DFirebaseAuth copyWithMap(Map<String, dynamic> map) =>
-      DFirebaseAuth(user: map.containsKey("user") ? map["user"] : this.user);
+  DFirebaseAuth copyWithMap(Map<String, dynamic> map) => DFirebaseAuth(
+      user: map.containsKey("user")
+          ? map["user"] as StreamField<User>
+          : this.user);
 
-  Map<String, dynamic> toMap() => {"user": this.user};
+  Map<String, dynamic> toMap() => <String, dynamic>{"user": this.user};
 
   @override
   bool operator ==(Object o) {
@@ -76,6 +78,8 @@ class __$DFirebaseAuthCopyWithImpl<O> extends _$DFirebaseAuthCopyWithImpl<O>
   }
 }
 
+const _DFirebaseAuth_FullPath = "/pstates/auth/DFirebaseAuth";
+
 abstract class DFirebaseAuthActions {
   static Action<Iterable<User>> user(
       {required Stream<User> stream,
@@ -83,7 +87,7 @@ abstract class DFirebaseAuthActions {
       Iterable<User>? mock}) {
     return Action<Iterable<User>>(
         name: "user",
-        type: "/pstates/auth/DFirebaseAuth",
+        type: _DFirebaseAuth_FullPath,
         mock: mock,
         stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }
@@ -92,4 +96,4 @@ abstract class DFirebaseAuthActions {
 DFirebaseAuth DFirebaseAuth_DS() => DFirebaseAuth(user: StreamField());
 
 final DFirebaseAuthMeta = PStateMeta<DFirebaseAuth>(
-    type: "/pstates/auth/DFirebaseAuth", ds: DFirebaseAuth_DS);
+    type: _DFirebaseAuth_FullPath, ds: DFirebaseAuth_DS);

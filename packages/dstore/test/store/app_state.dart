@@ -15,6 +15,6 @@ class AppState with _$AppState implements AppStateI<AppState> {
 }
 
 final storeTester = StoreTester(Store<AppState, dynamic>(
-    meta: createAppStateMeta(),
+    inernalMeta: createAppStateMeta(),
     middlewares: [streamMiddleware],
     stateCreator: () => AppState()));

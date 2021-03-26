@@ -1,9 +1,0 @@
-targets:
-  $default:
-    builders:
-      dstore_generator:
-        options:
-          compact_query_methods: true
-      dstore_generator:ps:
-        options:
-          persistMode: ExplicitDontPersist     

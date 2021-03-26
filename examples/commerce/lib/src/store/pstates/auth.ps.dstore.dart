@@ -30,18 +30,23 @@ class Auth extends PStateModel<Auth> {
 
   @override
   Auth copyWithMap(Map<String, dynamic> map) => Auth(
-      loggedout:
-          map.containsKey("loggedout") ? map["loggedout"] : this.loggedout,
-      user: map.containsKey("user") ? map["user"] : this.user,
+      loggedout: map.containsKey("loggedout")
+          ? map["loggedout"] as bool
+          : this.loggedout,
+      user: map.containsKey("user")
+          ? map["user"] as StreamField<User?>
+          : this.user,
       userDetails: map.containsKey("userDetails")
-          ? map["userDetails"]
+          ? map["userDetails"] as dynamic
           : this.userDetails,
       getUserDetails: map.containsKey("getUserDetails")
-          ? map["getUserDetails"]
+          ? map["getUserDetails"] as AsyncActionField
           : this.getUserDetails,
-      signout: map.containsKey("signout") ? map["signout"] : this.signout);
+      signout: map.containsKey("signout")
+          ? map["signout"] as AsyncActionField
+          : this.signout);
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() => <String, dynamic>{
         "loggedout": this.loggedout,
         "user": this.user,
         "userDetails": this.userDetails,

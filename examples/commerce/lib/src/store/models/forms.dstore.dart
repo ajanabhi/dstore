@@ -20,10 +20,11 @@ class LoginForm implements FormFieldObject<LoginForm> {
   @override
   LoginForm copyWithMap(Map<String, dynamic> map) => LoginForm(
       phonenUmber: map.containsKey("phonenUmber")
-          ? map["phonenUmber"]
+          ? map["phonenUmber"] as String
           : this.phonenUmber);
 
-  Map<String, dynamic> toMap() => {"phonenUmber": this.phonenUmber};
+  Map<String, dynamic> toMap() =>
+      <String, dynamic>{"phonenUmber": this.phonenUmber};
 
   @override
   bool operator ==(Object o) {

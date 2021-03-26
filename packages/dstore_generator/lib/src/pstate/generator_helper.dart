@@ -263,7 +263,7 @@ String _generateActionsCreators({
     final params = paramsList.join(", ");
 
     var payload = m.params.isNotEmpty
-        ? "{ " +
+        ? "<String,dynamic>{ " +
             m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
             "}"
         : "";
@@ -291,8 +291,8 @@ String _generateActionsCreators({
 
   final formActions = formFields.map((ff) {
     return """
-   static ${ff.name}(FormReq req) {
-     return Action(name:"$ff.name}",type:${type},form:req);
+   static Action<dynamic> ${ff.name}(FormReq req) {
+     return Action<dynamic>(name:"$ff.name}",type:${type},form:req);
    }
    """;
   }).join("\n");
@@ -380,17 +380,10 @@ String _createPStateModel(
   }
   final m = mixins.isNotEmpty ? "with ${mixins.join(", ")}" : "";
 
-  final psFeilds =
-      psDeps.map((e) => "late final ${e.type} ${e.name};").join("\n");
-
-  final setPSFields = psFeilds.isEmpty
-      ? ""
-      : """
-    @override
-    internalSetPSDeps(List<dynamic> psDeps){
-       ${psDeps.mapIndexed((index, t) => "this.${t.name} = psDeps[$index];").join("\n")}
-    }
-  """;
+  final psFeilds = psDeps
+      .map((e) =>
+          " ${e.type} get ${e.name} => dont_touch_me_store.state.${e.name} as ${e.type};")
+      .join("\n");
 
   final result = """
       
@@ -400,7 +393,6 @@ String _createPStateModel(
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
-        $setPSFields
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}
 

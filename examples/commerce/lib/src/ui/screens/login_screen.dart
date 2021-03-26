@@ -3,7 +3,7 @@ import 'package:commerce/src/store/models/forms.dart';
 import 'package:commerce/src/store/selectors/login_screen/login_screen_selectors.dart';
 import 'package:commerce/src/ui/utils/styles.dart';
 import 'package:dstore/dstore.dart';
-import 'package:dstore_flutter/flutter_dstore.dart';
+import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:flutter/material.dart' hide FormField;
 
 class LoginScreen extends StatelessWidget {

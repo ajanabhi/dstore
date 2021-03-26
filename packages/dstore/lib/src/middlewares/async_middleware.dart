@@ -8,7 +8,7 @@ dynamic asyncMiddleware<S extends AppStateI<S>>(
     next(action);
   } else {
     final sk = store.getStateKeyForPstateType(action.type);
-    final psm = store.meta[sk]!;
+    final psm = store.inernalMeta[sk]!;
     final gsMap = store.state.toMap();
     final currentS = gsMap[sk]!;
     store.dispatch(action.copyWith(

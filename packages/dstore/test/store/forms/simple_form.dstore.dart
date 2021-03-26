@@ -17,10 +17,10 @@ class SimpleForm implements FormFieldObject<SimpleForm> {
   const SimpleForm({this.name = ""});
 
   @override
-  SimpleForm copyWithMap(Map<String, dynamic> map) =>
-      SimpleForm(name: map.containsKey("name") ? map["name"] : this.name);
+  SimpleForm copyWithMap(Map<String, dynamic> map) => SimpleForm(
+      name: map.containsKey("name") ? map["name"] as String : this.name);
 
-  Map<String, dynamic> toMap() => {"name": this.name};
+  Map<String, dynamic> toMap() => <String, dynamic>{"name": this.name};
 
   @override
   bool operator ==(Object o) {

@@ -11,11 +11,16 @@ mixin _$AppState {
   Auth get auth;
   LoginScreenState get loginScreen;
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
-    ..auth = map["auth"] ?? this.auth
-    ..loginScreen = map["loginScreen"] ?? this.loginScreen;
+    ..auth = map.containsKey('auth') ? map['auth'] as Auth : this.auth
+    ..loginScreen = map.containsKey('loginScreen')
+        ? map['loginScreen'] as LoginScreenState
+        : this.loginScreen;
   Map<String, PStateModel> toMap() =>
-      {"auth": this.auth, "loginScreen": this.loginScreen};
+      <String, PStateModel>{"auth": this.auth, "loginScreen": this.loginScreen};
 }
 Map<String, PStateMeta> createAppStateMeta() {
-  return {"auth": AuthMeta, "loginScreen": LoginScreenStateMeta};
+  return <String, PStateMeta>{
+    "auth": AuthMeta,
+    "loginScreen": LoginScreenStateMeta
+  };
 }

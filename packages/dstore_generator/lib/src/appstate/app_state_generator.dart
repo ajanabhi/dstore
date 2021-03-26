@@ -22,21 +22,22 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
       final fields = classElement.fields;
       // print("fields2 ${fields.map((e) => e.type.element!.displayName)}");
       final copyWithMapBody = fields
-          .map((f) => "..${f.name} = map[\"${f.name}\"] ?? this.${f.name}")
+          .map((f) =>
+              "..${f.name} = map.containsKey('${f.name}') ? map['${f.name}'] as ${f.type} : this.${f.name}")
           .join("\n");
 
       final copyWithMap =
           "${name} copyWithMap(Map<String,dynamic> map) => ${name}()${copyWithMapBody};";
 
       final toMap =
-          """Map<String,PStateModel> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
+          """Map<String,PStateModel> toMap() => <String,PStateModel>{${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
 
       final fieldGetters =
           fields.map((f) => "${f.type} get ${f.name};").join("\n");
 
       final createMeta = """
        Map<String,PStateMeta> create${name}Meta() {
-          return {${fields.map((f) => """ "${f.name}" : ${f.type}Meta """).join(", ")}};
+          return <String,PStateMeta>{${fields.map((f) => """ "${f.name}" : ${f.type}Meta """).join(", ")}};
        }
     """;
       return """

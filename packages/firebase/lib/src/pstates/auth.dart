@@ -5,7 +5,6 @@ import "package:meta/meta.dart";
 part "auth.ps.dstore.dart";
 
 @PState()
-// ignore: unused_element
-class _DFirebaseAuth {
+class $_DFirebaseAuth {
   StreamField<User> user = StreamField();
 }

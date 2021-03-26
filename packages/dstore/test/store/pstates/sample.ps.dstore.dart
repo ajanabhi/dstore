@@ -20,11 +20,7 @@ class Sample extends PStateModel<Sample> {
 
   final AsyncActionField changeTheme;
 
-  late final Sample2 s;
-  @override
-  internalSetPSDeps(List<dynamic> psDeps) {
-    this.s = psDeps[0];
-  }
+  Sample2 get s => dont_touch_me_store.state.s as Sample2;
 
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
@@ -39,17 +35,18 @@ class Sample extends PStateModel<Sample> {
 
   @override
   Sample copyWithMap(Map<String, dynamic> map) => Sample(
-      name: map.containsKey("name") ? map["name"] : this.name,
-      age: map.containsKey("age") ? map["age"] : this.age,
-      intStream:
-          map.containsKey("intStream") ? map["intStream"] : this.intStream,
-      list: map.containsKey("list") ? map["list"] : this.list,
-      isDark: map.containsKey("isDark") ? map["isDark"] : this.isDark,
+      name: map.containsKey("name") ? map["name"] as String : this.name,
+      age: map.containsKey("age") ? map["age"] as int : this.age,
+      intStream: map.containsKey("intStream")
+          ? map["intStream"] as StreamField<int>
+          : this.intStream,
+      list: map.containsKey("list") ? map["list"] as List<String> : this.list,
+      isDark: map.containsKey("isDark") ? map["isDark"] as bool : this.isDark,
       changeTheme: map.containsKey("changeTheme")
-          ? map["changeTheme"]
+          ? map["changeTheme"] as AsyncActionField
           : this.changeTheme);
 
-  Map<String, dynamic> toMap() => {
+  Map<String, dynamic> toMap() => <String, dynamic>{
         "name": this.name,
         "age": this.age,
         "intStream": this.intStream,
@@ -233,7 +230,7 @@ abstract class SampleActions {
     return Action<SampleChangeNameResult>(
         name: "changeName",
         type: _Sample_FullPath,
-        payload: {"newName": newName},
+        payload: <String, dynamic>{"newName": newName},
         mock: mock,
         isAsync: false);
   }
@@ -243,7 +240,7 @@ abstract class SampleActions {
     return Action<SampleChangeAgeResult>(
         name: "changeAge",
         type: _Sample_FullPath,
-        payload: {"newAge": newAge},
+        payload: <String, dynamic>{"newAge": newAge},
         mock: mock,
         isAsync: false);
   }
@@ -253,7 +250,7 @@ abstract class SampleActions {
     return Action<SampleAddToListResult>(
         name: "addToList",
         type: _Sample_FullPath,
-        payload: {"item": item},
+        payload: <String, dynamic>{"item": item},
         mock: mock,
         isAsync: false);
   }
@@ -265,7 +262,7 @@ abstract class SampleActions {
     return Action<SampleChangeThemeResult>(
         name: "changeTheme",
         type: _Sample_FullPath,
-        payload: {"value": value},
+        payload: <String, dynamic>{"value": value},
         mock: mock,
         isAsync: true,
         debounce: debounce);
@@ -294,11 +291,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_name = _DStoreState.name;
         _DStore_name = newName;
-        final newState = _DStoreState.copyWith(name: _DStore_name);
-
-        newState.s = _DStoreState.s;
-
-        return newState;
+        return _DStoreState.copyWith(name: _DStore_name);
       }
 
     case "changeAge":
@@ -308,11 +301,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_age = _DStoreState.age;
         _DStore_age = newAge;
-        final newState = _DStoreState.copyWith(age: _DStore_age);
-
-        newState.s = _DStoreState.s;
-
-        return newState;
+        return _DStoreState.copyWith(age: _DStore_age);
       }
 
     case "addToList":
@@ -322,11 +311,7 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
         var _DStore_list = _DStoreState.list;
         _DStore_list = [..._DStoreState.list, item];
-        final newState = _DStoreState.copyWith(list: _DStore_list);
-
-        newState.s = _DStoreState.s;
-
-        return newState;
+        return _DStoreState.copyWith(list: _DStore_list);
       }
 
     default:
@@ -349,11 +334,7 @@ Future<dynamic> Sample_AsyncReducer(
         var _DStore_isDark = _DStoreState.isDark;
         await 5.seconds.delay;
         _DStore_isDark = value;
-        final newState = _DStoreState.copyWith(isDark: _DStore_isDark);
-
-        newState.s = _DStoreState.s;
-
-        return newState;
+        return _DStoreState.copyWith(isDark: _DStore_isDark);
       }
 
     default:

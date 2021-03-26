@@ -54,9 +54,9 @@ String _createUnionModel(
           return "${f.type} ${f.name}";
         }
       }).join(", ");
-      return "${name}.${m.name}({$params}):_value = ${m.type}(${m.fields.map((e) => "${e.name} : ${e.name}").join(", ")});}";
+      return "${name}.${m.name}({$params}):_value = ${m.type}(${m.fields.map((e) => "${e.name} : ${e.name}").join(", ")});";
     } else {
-      return "${name}.${m.name}(${m.type} value):_value = value;}";
+      return "${name}.${m.name}(${m.type} value):_value = value;";
     }
   }).join("\n");
 
@@ -75,7 +75,7 @@ String _createUnionModel(
 
      $getters
 
-     ${_getWhenMethod(members)};
+     ${_getWhenMethod(members)}
      
     }
     
@@ -98,7 +98,7 @@ String _getWhenMethod(List<UnionMember> members) {
     }
     return """
         $prefix {
-          return ${t.name}(_value);
+          return ${t.name}(_value as ${t.type});
         }
       """;
   }).join("\n");
@@ -113,6 +113,8 @@ String _convertsUnionMemebrsToClass(UnionMember m) {
   final name = m.type;
   final fields = m.fields;
   final isJson = false;
+  final typeParamsWithBounds = "";
+  final typeParams = "";
   return """
      
      class ${m.type} {
@@ -130,6 +132,8 @@ String _convertsUnionMemebrsToClass(UnionMember m) {
 
         ${isJson ? ModelUtils.createToJson(name) : ""}
      }
+
+     ${ModelUtils.createCopyWithClasses(name: name, fields: fields, typeParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
    
    """;
 }

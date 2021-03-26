@@ -11,6 +11,6 @@ class AppState extends AppStateI<AppState> with _$AppState {
 }
 
 final store = Store<AppState, dynamic>(
-    meta: createAppStateMeta(),
+    inernalMeta: createAppStateMeta(),
     stateCreator: () => AppState(),
     middlewares: [loggingMiddleware, formMiddleware, streamMiddleware]);

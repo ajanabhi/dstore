@@ -13,10 +13,16 @@ class UnionGenerator extends GeneratorForAnnotation<DUnion> {
     try {
       logger.shout("DUnion ${element.runtimeType}");
       if (!(element is FunctionElement)) {
-        throw UnsupportedError("DUnion should be used only on functions");
+        throw UnsupportedError(
+            "DUnion should be used only on functions but you used on ${element.name} which is of type ${element.runtimeType}");
       }
       if (!element.name.startsWith("\$_")) {
-        throw NotAllowedError("DUnion function name should with \$_");
+        throw NotAllowedError(
+            "DUnion function name should with \$_ but you specified ${element.name}");
+      }
+      if (element.parameters.length < 2) {
+        throw NotAllowedError(
+            "DUnion function ${element.name} should contain atleast two params");
       }
       return await generateUnion(element, buildStep);
     } catch (e, st) {

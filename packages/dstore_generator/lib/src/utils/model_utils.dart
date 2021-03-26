@@ -128,13 +128,13 @@ abstract class ModelUtils {
     if (emptyConstructor) {
       final cfields = fields
           .map((f) =>
-              "..${f.name} = map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] : this.${f.name}")
+              "..${f.name} = map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] as ${f.type}  : this.${f.name}")
           .join("");
       cons = "${name}()$cfields;";
     } else {
       final cfields = fields
           .map((f) =>
-              "${f.name} : map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] : this.${f.name}")
+              "${f.name} : map.containsKey(\"${f.name}\") ? map[\"${f.name}\"] as ${f.type} : this.${f.name}")
           .join(", ");
       cons = "${name}($cfields);";
     }
@@ -145,7 +145,7 @@ abstract class ModelUtils {
   }
 
   static String createToMapFromFieldsList(List<Field> fields) {
-    return """Map<String,dynamic> toMap() => {${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
+    return """Map<String,dynamic> toMap() => <String,dynamic>{${fields.map((f) => """ "${f.name}" : this.${f.name} """).join(", ")}};""";
   }
 
   static String createToStringFromFieldsList(String name, List<Field> fields) {
