@@ -32,7 +32,7 @@ String _createValidator(
     {required Map<String, String> validators,
     required String modelName,
     required String enumName}) {
-  final mapType = "<String,FormFieldValidator>";
+  final mapType = "<String,Function>";
   return """
    const ${modelName}Validators = ${mapType}{${validators.entries.map((e) => "\"${e.key}\": ${e.value}").join(", ")}};
  

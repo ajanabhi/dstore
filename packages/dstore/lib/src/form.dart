@@ -7,7 +7,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part "form.dstore.dart";
 
-typedef FormFieldValidator = String? Function(dynamic value);
+typedef FormFieldValidator<T> = String? Function(T value);
 
 abstract class FormFieldObject<M> {
   M copyWithMap(Map<String, dynamic> map);
@@ -19,7 +19,7 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
     with _$FormField<Key, F> {
   const factory FormField(
       {required F value,
-      required Map<String, FormFieldValidator> validators,
+      required Map<String, Function> validators,
       @Default(<String, String>{}) Map<String, String> errors,
       @Default(<String, bool>{}) Map<String, bool> touched,
       @Default(false) bool isValid,
@@ -43,7 +43,7 @@ extension FormFieldExt on FormField {
 class FromFieldPropInfo {
   final dynamic name;
   final dynamic value;
-  final FormFieldValidator? validator;
+  final Function? validator;
   final String? error;
   final bool touched;
   final void Function(dynamic value, {bool? validate}) setValue;
@@ -195,7 +195,7 @@ abstract class FormUtils {
 
     for (final e in ff.validators.entries) {
       try {
-        final r = await e.value(values[e.key]);
+        final r = (await e.value(values[e.key])) as String?;
         if (r != null) {
           errors[e.key] = r;
         }

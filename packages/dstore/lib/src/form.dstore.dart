@@ -9,7 +9,7 @@ part of 'form.dart';
 
 mixin _$FormField<Key, F extends FormFieldObject<F>> {
   F get value;
-  Map<String, String? Function(dynamic)> get validators;
+  Map<String, Function> get validators;
   Map<String, String> get errors;
   Map<String, bool> get touched;
   bool get isValid;
@@ -30,7 +30,7 @@ class _FormField<Key, F extends FormFieldObject<F>>
   final F value;
 
   @override
-  final Map<String, String? Function(dynamic)> validators;
+  final Map<String, Function> validators;
 
   @override
   @Default(<String, String>{})
@@ -141,7 +141,7 @@ abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
       _$FormFieldCopyWithImpl<Key, F, O>;
   O call(
       {F value,
-      Map<String, String? Function(dynamic)> validators,
+      Map<String, Function> validators,
       Map<String, String> errors,
       Map<String, bool> touched,
       bool isValid,
@@ -178,7 +178,7 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, String? Function(dynamic)>,
+            : validators as Map<String, Function>,
         errors: errors == dimmutable
             ? _value.errors
             : errors as Map<String, String>,
@@ -217,7 +217,7 @@ abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
       __$FormFieldCopyWithImpl<Key, F, O>;
   O call(
       {F value,
-      Map<String, String? Function(dynamic)> validators,
+      Map<String, Function> validators,
       Map<String, String> errors,
       Map<String, bool> touched,
       bool isValid,
@@ -258,7 +258,7 @@ class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
         value: value == dimmutable ? _value.value : value as F,
         validators: validators == dimmutable
             ? _value.validators
-            : validators as Map<String, String? Function(dynamic)>,
+            : validators as Map<String, Function>,
         errors: errors == dimmutable
             ? _value.errors
             : errors as Map<String, String>,

@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/form.dart';
 import 'package:dstore/src/store.dart';
@@ -27,7 +26,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
           as FormFieldObject;
       if (validate && validator != null) {
-        final newE = await validator(req.value);
+        final newE = (await validator(req.value)) as String?;
         if (newE != null) {
           errors[req.key] = newE;
         } else {
@@ -49,8 +48,8 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       final validator = ff.validators[req.key];
       final touched = <String, bool>{...ff.touched, req.key: true};
       if (validate && validator != null) {
-        final newE = await validator(
-            ff.value.toMap()[FormUtils.getNameFromKey(req.key)]);
+        final newE = (await validator(
+            ff.value.toMap()[FormUtils.getNameFromKey(req.key)])) as String?;
         if (newE != null) {
           errors[req.key] = newE;
         } else {
@@ -97,6 +96,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
 bool _isFormValid(FormField ff,
     [Map<String, bool> touched = const <String, bool>{}]) {
   touched = touched.isEmpty ? ff.touched : touched;
-  return const IterableEquality<String>()
-      .equals(ff.validators.keys, touched.keys);
+  final vkeys = ff.validators.keys.toSet();
+  final tKeys = touched.keys.toSet();
+  return tKeys.containsAll(vkeys);
 }

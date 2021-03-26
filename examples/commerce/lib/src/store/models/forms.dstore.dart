@@ -84,6 +84,6 @@ class __$LoginFormCopyWithImpl<O> extends _$LoginFormCopyWithImpl<O>
 
 enum LoginFormKey { phonenUmber }
 
-const LoginFormValidators = <String, FormFieldValidator>{
+const LoginFormValidators = <String, Function>{
   "phonenUmber": ValidationUtils.validateMobile
 };
