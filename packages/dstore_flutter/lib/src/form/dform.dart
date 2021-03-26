@@ -33,8 +33,8 @@ class DForm extends InheritedWidget {
         value: kv,
         validator: validator,
         error: error,
-        setValue: (dynamic value) =>
-            ops.setFieldValue(FormSetFieldValue(key: key, value: value)),
+        setValue: (dynamic value, {bool? validate}) => ops.setFieldValue(
+            FormSetFieldValue(key: key, value: value, validate: validate)),
         setError: (String? error) =>
             ops.setFieldError(FormSetFieldError(key: key, value: error)),
         setTouched: (bool validate) => ops

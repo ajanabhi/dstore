@@ -32,15 +32,27 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
       @Default("") String internalAType}) = _FormField<Key, F>;
 }
 
+extension FormFieldExt on FormField {
+  bool isFieldKeyValid(dynamic key) {
+    final name = key.toString().split(".").last;
+    final v = validators[name];
+    return v == null || touched.containsKey(name) && !errors.containsKey(name);
+  }
+}
+
 class FromFieldPropInfo {
   final dynamic name;
   final dynamic value;
   final FormFieldValidator? validator;
   final String? error;
   final bool touched;
-  final void Function(dynamic value) setValue;
+  final void Function(dynamic value, {bool? validate}) setValue;
   final void Function(String? value) setError;
   final void Function(bool value) setTouched;
+
+  bool get isValid {
+    return validator == null || touched && error == null;
+  }
 
   FromFieldPropInfo(
       {required this.name,
@@ -63,10 +75,9 @@ abstract class FormReq {}
 class FormSetFieldValue extends FormReq {
   final String key;
   final dynamic value;
-  final bool validate;
+  final bool? validate;
 
-  FormSetFieldValue(
-      {required this.key, required this.value, this.validate = false});
+  FormSetFieldValue({required this.key, required this.value, this.validate});
 
   @override
   String toString() =>

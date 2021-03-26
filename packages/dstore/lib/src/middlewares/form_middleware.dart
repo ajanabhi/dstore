@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/form.dart';
 import 'package:dstore/src/store.dart';
@@ -16,11 +17,12 @@ dynamic formMiddleware<S extends AppStateI<S>>(
     late FormField<dynamic, FormFieldObject<dynamic>> nff;
     if (req is FormSetFieldValue) {
       var validate = ff.validateOnChange;
-      if (req.validate) {
-        validate = req.validate;
+      if (req.validate != null) {
+        validate = req.validate!;
       }
       final validator = ff.validators[req.key];
       final errors = {...ff.errors};
+      final touched = <String, bool>{...ff.touched, req.key: true};
       final name = FormUtils.getNameFromKey(req.key);
       final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
           as FormFieldObject;
@@ -35,8 +37,9 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       nff = ff.copyWith(
           value: value,
           errors: errors,
+          touched: touched,
           internalKeysChanged: [req.key],
-          isValid: errors.isEmpty);
+          isValid: errors.isEmpty && _isFormValid(ff, touched));
     } else if (req is FormSetFieldTouched) {
       var validate = ff.validateOnBlur;
       if (req.validate) {
@@ -58,7 +61,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
           touched: touched,
           errors: errors,
           internalKeysChanged: [req.key],
-          isValid: errors.isEmpty);
+          isValid: errors.isEmpty && _isFormValid(ff, touched));
     } else if (req is FormSetFieldError) {
       final errors = {...ff.errors};
       if (req.value == null) {
@@ -69,7 +72,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       nff = ff.copyWith(
           errors: errors,
           internalKeysChanged: [req.key],
-          isValid: errors.isEmpty);
+          isValid: errors.isEmpty && _isFormValid(ff));
     } else if (req is FormSetErrors) {
       nff = ff.copyWith(errors: req.errors, isValid: req.errors.isEmpty);
     } else if (req is FormReset) {
@@ -89,4 +92,11 @@ dynamic formMiddleware<S extends AppStateI<S>>(
         internal: ActionInternal(
             processed: true, type: ActionInternalType.DATA, data: nff)));
   }
+}
+
+bool _isFormValid(FormField ff,
+    [Map<String, bool> touched = const <String, bool>{}]) {
+  touched = touched.isEmpty ? ff.touched : touched;
+  return const IterableEquality<String>()
+      .equals(ff.validators.keys, touched.keys);
 }

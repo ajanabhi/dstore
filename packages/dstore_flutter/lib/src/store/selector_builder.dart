@@ -1,4 +1,5 @@
 import 'package:dstore/dstore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:dstore_flutter/src/store/store_provider.dart';
 
@@ -94,4 +95,8 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   Widget build(BuildContext context) {
     return widget.builder(context, _state);
   }
+}
+
+void hello() {
+  if (kDebugMode) {}
 }
