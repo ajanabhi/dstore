@@ -1,4 +1,5 @@
 import 'package:dstore/src/action.dart';
+import 'package:dstore/src/errors.dart';
 import 'package:dstore/src/form.dart';
 import 'package:dstore/src/store.dart';
 
@@ -23,16 +24,25 @@ dynamic formMiddleware<S extends AppStateI<S>>(
       final errors = {...ff.errors};
       final touched = <String, bool>{...ff.touched, req.key: true};
       final name = FormUtils.getNameFromKey(req.key);
-      final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
-          as FormFieldObject;
       if (validate && validator != null) {
-        final newE = (await validator(req.value)) as String?;
+        String? newE;
+        try {
+          newE = (await validator(req.value, ff.value)) as String?;
+        } on NoSuchMethodError {
+          rethrow;
+        } catch (e) {
+          newE = "$e";
+        }
+
         if (newE != null) {
           errors[req.key] = newE;
         } else {
           errors.remove(req.key);
         }
       }
+      final value = ff.value.copyWithMap(<String, dynamic>{name: req.value})
+          as FormFieldObject;
+
       nff = ff.copyWith(
           value: value,
           errors: errors,

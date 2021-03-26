@@ -12,8 +12,9 @@ void main() {
     // Bloc.observer = MyBlocObserver();
     // Crashlytics.instance.enableInDevMode = false;
     // FlutterError.onError = CrashlyticsService.recordFlutterError;
-    runApp(App());
+    runApp(MyApp());
   }, (error, stack) {
     // CrashlyticsService.recordError(error, stack);
+    print("Error in app");
   }, zoneSpecification: ZoneSpecification());
 }

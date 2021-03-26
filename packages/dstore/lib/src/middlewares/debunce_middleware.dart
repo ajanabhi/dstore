@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dstore/src/action.dart';
+import 'package:dstore/src/errors.dart';
 import 'package:dstore/src/store.dart';
 
 dynamic debounceMiddleware<S extends AppStateI<S>>(

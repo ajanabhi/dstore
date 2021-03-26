@@ -1,4 +1,5 @@
 import 'package:dstore/src/action.dart';
+import 'package:dstore/src/errors.dart';
 import 'package:dstore/src/store.dart';
 import 'package:dstore/src/stream.dart';
 import 'package:dstore/src/types.dart';

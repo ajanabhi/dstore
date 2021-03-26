@@ -23,7 +23,8 @@ class AppState implements AppStateI<AppState> {
 }
 
 Store<AppState> createStore(
-    {List<Middleware<AppState>>? middlewares,
+    {required StoreErrorHandle handleError,
+    List<Middleware<AppState>>? middlewares,
     StorageOptions<dynamic>? storageOptions,
     NetworkOptions? networkOptions,
     bool useEqualsComparision = false}) {
@@ -35,6 +36,7 @@ Store<AppState> createStore(
       stateCreator: () => AppState(),
       networkOptions: networkOptions,
       middlewares: middlewares,
+      handleError: handleError,
       storageOptions: storageOptions,
       useEqualsComparision: useEqualsComparision);
 }

@@ -23,7 +23,7 @@ String createAppState(FunctionElement element) {
 
   final createStore = """
     
-    Store<$name> createStore({List<Middleware<$name>>? middlewares,
+    Store<$name> createStore({required StoreErrorHandle handleError, List<Middleware<$name>>? middlewares,
     StorageOptions<dynamic>? storageOptions,
     NetworkOptions? networkOptions,
     bool useEqualsComparision = false}) {
@@ -31,6 +31,7 @@ String createAppState(FunctionElement element) {
       stateCreator: () => $name(),
       networkOptions:networkOptions,
       middlewares:middlewares,
+      handleError:handleError,
       storageOptions: storageOptions,
       useEqualsComparision: useEqualsComparision);
     }

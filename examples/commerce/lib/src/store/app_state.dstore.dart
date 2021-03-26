@@ -10,32 +10,39 @@ part of 'app_state.dart';
 class AppState implements AppStateI<AppState> {
   late final Auth auth;
   late final LoginScreenState loginScreen;
+  late final SnackState snack;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..auth = map.containsKey('auth') ? map['auth'] as Auth : this.auth
     ..loginScreen = map.containsKey('loginScreen')
         ? map['loginScreen'] as LoginScreenState
-        : this.loginScreen;
+        : this.loginScreen
+    ..snack =
+        map.containsKey('snack') ? map['snack'] as SnackState : this.snack;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
         "auth": this.auth,
-        "loginScreen": this.loginScreen
+        "loginScreen": this.loginScreen,
+        "snack": this.snack
       };
 }
 
 Store<AppState> createStore(
-    {List<Middleware<AppState>>? middlewares,
+    {required StoreErrorHandle handleError,
+    List<Middleware<AppState>>? middlewares,
     StorageOptions<dynamic>? storageOptions,
     NetworkOptions? networkOptions,
     bool useEqualsComparision = false}) {
   return Store<AppState>(
       internalMeta: <String, PStateMeta>{
         "auth": AuthMeta,
-        "loginScreen": LoginScreenStateMeta
+        "loginScreen": LoginScreenStateMeta,
+        "snack": SnackStateMeta
       },
       stateCreator: () => AppState(),
       networkOptions: networkOptions,
       middlewares: middlewares,
+      handleError: handleError,
       storageOptions: storageOptions,
       useEqualsComparision: useEqualsComparision);
 }

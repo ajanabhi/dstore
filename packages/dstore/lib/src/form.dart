@@ -195,7 +195,7 @@ abstract class FormUtils {
 
     for (final e in ff.validators.entries) {
       try {
-        final r = (await e.value(values[e.key])) as String?;
+        final r = (await e.value(values[e.key], ff.value)) as String?;
         if (r != null) {
           errors[e.key] = r;
         }

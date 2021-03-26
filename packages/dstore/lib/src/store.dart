@@ -5,12 +5,13 @@ import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
 import 'package:dstore/src/middlewares/async_middleware.dart';
 import 'package:dstore/src/selector.dart';
-import 'package:collection/collection.dart';
 
 typedef Dispatch = dynamic Function(Action<dynamic> action);
 
 typedef Middleware<State extends AppStateI<State>> = dynamic Function(
     Store<State> store, Dispatch next, Action<dynamic> action);
+
+typedef StoreErrorHandle = void Function(DStoreError derror);
 
 typedef Callback = dynamic Function();
 
@@ -29,6 +30,7 @@ class Store<S extends AppStateI<S>> {
   final StorageOptions<dynamic>? storageOptions;
   void Function()? _onReadyListener;
   final bool useEqualsComparision;
+  final StoreErrorHandle handleError;
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
@@ -39,6 +41,7 @@ class Store<S extends AppStateI<S>> {
       this.useEqualsComparision = false,
       NetworkOptions? networkOptions,
       required S Function() stateCreator,
+      required this.handleError,
       List<Middleware<S>>? middlewares,
       S? initialState}) {
     middlewares ??= [];
@@ -170,21 +173,17 @@ class Store<S extends AppStateI<S>> {
     isReady = true;
   }
 
-  MapEntry<String, PStateMeta> _getPStateMetaFromType(String type) {
-    final value =
-        internalMeta.entries.singleWhereOrNull((me) => me.value.type == type);
-    if (value == null) {
-      throw ArgumentError.value(
-          "Looks like you diidnt added $type to AppState");
-    }
-    return value;
-  }
-
   List<Dispatch> _createDispatchers(List<Middleware<S>> middlewares) {
     final dispatchers = <Dispatch>[]..add(_defaultDispatch);
     middlewares.reversed.forEach((m) {
       final next = dispatchers.last;
-      dispatchers.add((Action<dynamic> action) => m(this, next, action));
+      dispatchers.add((Action<dynamic> action) async {
+        try {
+          return await m(this, next, action);
+        } catch (e, st) {
+          handleError(DStoreError(e: e, st: st, action: action));
+        }
+      });
     });
     return dispatchers.reversed.toList();
   }
@@ -519,8 +518,12 @@ class Store<S extends AppStateI<S>> {
     return internalMeta[sk]!;
   }
 
-  dynamic dispatch(Action<dynamic> action) {
-    _dispatchers[0](action);
+  dynamic dispatch(Action<dynamic> action) async {
+    try {
+      await _dispatchers[0](action);
+    } catch (e, st) {
+      handleError(DStoreError(e: e, st: st, action: action));
+    }
   }
 
   SelectorUnSubscribeFn subscribeSelector(
