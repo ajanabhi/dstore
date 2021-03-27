@@ -1,6 +1,7 @@
 import 'package:commerce/src/store/models/forms.dart';
 import 'package:commerce/src/store/utils/validation_utils.dart';
 import 'package:dstore/dstore.dart';
+import 'package:dstore_firebase/firebase.dart';
 import 'package:meta/meta.dart';
 part 'login_screen_state.ps.dstore.dart';
 
@@ -10,4 +11,6 @@ class $_LoginScreenState {
       value: LoginForm(),
       validateOnChange: true,
       validators: LoginFormValidators);
+
+  StreamField<FirebasePhoneVerification> phoneVerification = StreamField();
 }

@@ -13,13 +13,29 @@ class StreamPayload {
 }
 
 @dimmutable
-abstract class StreamField<D> with _$StreamField<D> {
-  const factory StreamField({
-    D? data,
-    StreamSubscription<dynamic>? internalSubscription,
-    @Default(null) dynamic? error,
-    @Default(false) bool listening,
-    @Default(false) bool firstEventArrived,
-    @Default(false) bool completed,
-  }) = _StreamField<D>;
+void $_StreamField<D, E>({
+  D? data,
+  StreamSubscription<dynamic>? internalSubscription,
+  E? error,
+  bool listening = false,
+  bool firstEventArrived = false,
+  bool completed = false,
+}) {}
+
+extension StreamFieldExtension<D, E> on StreamField<D, E> {
+  T when<T>(
+      {required T Function() listening,
+      required T Function(D data) data,
+      required T Function(E error) error,
+      required T Function() completed}) {
+    if (this.data != null) {
+      return data(this.data!);
+    } else if (this.error != null) {
+      return error(this.error!);
+    } else if (this.completed) {
+      return completed();
+    } else {
+      return listening();
+    }
+  }
 }

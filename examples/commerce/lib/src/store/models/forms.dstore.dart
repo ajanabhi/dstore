@@ -12,37 +12,41 @@ class LoginForm implements FormFieldObject<LoginForm> {
   @Validator(ValidationUtils.validateMobile)
   final String phonenUmber;
 
+  final String otp;
+
   _$LoginFormCopyWith<LoginForm> get copyWith =>
       __$LoginFormCopyWithImpl<LoginForm>(this, IdentityFn);
 
-  const LoginForm({this.phonenUmber = ""});
+  const LoginForm({this.phonenUmber = "", this.otp = ""});
 
   @override
   LoginForm copyWithMap(Map<String, dynamic> map) => LoginForm(
       phonenUmber: map.containsKey("phonenUmber")
           ? map["phonenUmber"] as String
-          : this.phonenUmber);
+          : this.phonenUmber,
+      otp: map.containsKey("otp") ? map["otp"] as String : this.otp);
 
   Map<String, dynamic> toMap() =>
-      <String, dynamic>{"phonenUmber": this.phonenUmber};
+      <String, dynamic>{"phonenUmber": this.phonenUmber, "otp": this.otp};
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LoginForm && o.phonenUmber == phonenUmber;
+    return o is LoginForm && o.phonenUmber == phonenUmber && o.otp == otp;
   }
 
   @override
-  int get hashCode => phonenUmber.hashCode;
+  int get hashCode => phonenUmber.hashCode ^ otp.hashCode;
 
   @override
-  String toString() => "LoginForm(phonenUmber: ${this.phonenUmber})";
+  String toString() =>
+      "LoginForm(phonenUmber: ${this.phonenUmber}, otp: ${this.otp})";
 }
 
 abstract class $LoginFormCopyWith<O> {
   factory $LoginFormCopyWith(LoginForm value, O Function(LoginForm) then) =
       _$LoginFormCopyWithImpl<O>;
-  O call({String phonenUmber});
+  O call({String phonenUmber, String otp});
 }
 
 class _$LoginFormCopyWithImpl<O> implements $LoginFormCopyWith<O> {
@@ -51,18 +55,19 @@ class _$LoginFormCopyWithImpl<O> implements $LoginFormCopyWith<O> {
   _$LoginFormCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? phonenUmber = dimmutable}) {
+  O call({Object? phonenUmber = dimmutable, Object? otp = dimmutable}) {
     return _then(_value.copyWith(
         phonenUmber: phonenUmber == dimmutable
             ? _value.phonenUmber
-            : phonenUmber as String));
+            : phonenUmber as String,
+        otp: otp == dimmutable ? _value.otp : otp as String));
   }
 }
 
 abstract class _$LoginFormCopyWith<O> implements $LoginFormCopyWith<O> {
   factory _$LoginFormCopyWith(LoginForm value, O Function(LoginForm) then) =
       __$LoginFormCopyWithImpl<O>;
-  O call({String phonenUmber});
+  O call({String phonenUmber, String otp});
 }
 
 class __$LoginFormCopyWithImpl<O> extends _$LoginFormCopyWithImpl<O>
@@ -74,15 +79,16 @@ class __$LoginFormCopyWithImpl<O> extends _$LoginFormCopyWithImpl<O>
   LoginForm get _value => super._value;
 
   @override
-  O call({Object? phonenUmber = dimmutable}) {
+  O call({Object? phonenUmber = dimmutable, Object? otp = dimmutable}) {
     return _then(LoginForm(
         phonenUmber: phonenUmber == dimmutable
             ? _value.phonenUmber
-            : phonenUmber as String));
+            : phonenUmber as String,
+        otp: otp == dimmutable ? _value.otp : otp as String));
   }
 }
 
-enum LoginFormKey { phonenUmber }
+enum LoginFormKey { phonenUmber, otp }
 
 const LoginFormValidators = <String, Function>{
   "phonenUmber": ValidationUtils.validateMobile

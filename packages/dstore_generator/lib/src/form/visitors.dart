@@ -61,7 +61,7 @@ class FormModelVisitor extends SimpleAstVisitor<dynamic> {
     if (rt != "String?" && rt != "Future<String?>") {
       return "Return type of validator function ${fn.name} should be String? or Future<String?>";
     }
-    if (fn.parameters.length != 1) {
+    if (fn.parameters.length != 2) {
       return "Validator function ${fn.name} should accept two parameters one for field value and an another one for form value";
     }
     //TODO probaly check param type too!

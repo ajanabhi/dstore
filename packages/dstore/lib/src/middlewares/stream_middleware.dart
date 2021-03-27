@@ -46,8 +46,7 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
             store.dispatch(action.copyWith(
                 internal: ActionInternal(
               processed: true,
-              data: field.copyWith(
-                  data: null, listening: false, error: null, completed: true),
+              data: field.copyWith(listening: false, completed: true),
               type: ActionInternalType.DATA,
             )));
           });

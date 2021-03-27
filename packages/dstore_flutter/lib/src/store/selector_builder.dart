@@ -14,6 +14,8 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
   final void Function(BuildContext context, I state)? onDispose;
   final void Function(BuildContext context, I prevState, I newState)?
       onStateChange;
+  final bool Function(BuildContext context, I prevState, I newState)?
+      shouldRebuild;
 
   const SelectorBuilder(
       {Key? key,
@@ -23,6 +25,7 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
       this.onInitialBuild,
       this.onDispose,
       this.onStateChange,
+      this.shouldRebuild,
       this.options})
       : super(key: key);
 
@@ -53,7 +56,11 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
         final prevState = _state;
         _state = widget.selector.fn(store.state);
         widget.onStateChange?.call(context, prevState, _state);
-        setState(() {});
+        final shouldRebuild =
+            widget.shouldRebuild?.call(context, prevState, _state);
+        if (shouldRebuild != false) {
+          setState(() {});
+        }
       };
       _state = widget.selector.fn(store.state);
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
@@ -73,10 +80,8 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   void didUpdateWidget(covariant SelectorBuilder<S, I> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selector != widget.selector) {
-      _unSubscribe(oldWidget.options);
-      final store = context.storeTyped<S>();
-      _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
-      _state = widget.selector.fn(store.state);
+      throw ArgumentError.value(
+          "You can not change selector field in runtime, make sure you're not using inline functions as selector");
     }
   }
 
@@ -95,8 +100,4 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   Widget build(BuildContext context) {
     return widget.builder(context, _state);
   }
-}
-
-void hello() {
-  if (kDebugMode) {}
 }

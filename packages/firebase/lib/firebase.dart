@@ -1,8 +1,8 @@
 /// dstore firebase helpers
 ///
-/// More dartdocs go here.
+///
 library firebase;
 
-export 'src/pstates/auth.dart';
-
-// TODO: Export any libraries intended for clients of this package.
+export 'src/pstates/pstates.dart';
+export "src/utils/auth_utils.dart";
+export "src/models/models.dart";

@@ -9,7 +9,7 @@ part "sample.ps.dstore.dart";
 class $_Sample {
   String name = "hello";
   int age = 0;
-  StreamField<int> intStream = StreamField();
+  StreamField<int, Object> intStream = StreamField();
   List<String> list = [];
   bool isDark = false;
   late final $_Sample2 s;

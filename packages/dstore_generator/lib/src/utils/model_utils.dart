@@ -4,8 +4,9 @@ abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
       {bool addLateModifier = false, bool addOverrideAnnotation = false}) {
     return fields.map((f) {
-      final type =
-          f.isOptional && !f.type.endsWith("?") ? "${f.type}?" : "${f.type}";
+      final type = f.isOptional && !f.type.endsWith("?") && f.value == null
+          ? "${f.type}?"
+          : "${f.type}";
       return """
      ${addOverrideAnnotation ? "@override" : ""}
      ${f.annotations != null ? f.annotations!.join("\n") : ""}

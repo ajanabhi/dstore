@@ -33,6 +33,8 @@ dependencies:
     path: ../../packages/dstore/
   dstore_flutter:
     path: ../../packages/dstore_flutter/
+  dstore_firebase:
+    path: ../../packages/firebase/ 
   json_annotation:
   cloud_firestore: 
   firebase_crashlytics: 

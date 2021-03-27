@@ -17,7 +17,7 @@ List<StreamFieldInfo> getStreamFields(List<FieldElement> fields) {
 StreamFieldInfo? _getStreamFieldInfoForElement(FieldElement element) {
   final type = element.type;
   if (type.toString().startsWith("StreamField") && type is InterfaceType) {
-    if (type.typeArguments.length != 1) {
+    if (type.typeArguments.length != 2) {
       throw ArgumentError.value(
           "You should provide Stream response type as StreamField typeArg");
     }

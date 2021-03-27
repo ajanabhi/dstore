@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dstore/dstore.dart';
+import 'package:dstore_firebase/firebase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import "package:meta/meta.dart";
 
@@ -10,7 +11,10 @@ class $_Auth {
   bool loggedout = false;
 
   StreamField<User?> user = StreamField();
-  dynamic userDetails = null;
+
+  String? verificationId;
+
+  DocumentSnapshot? userDetails;
 
   void getUserDetails() async {
     final documentSnapshot = await FirebaseFirestore.instance
@@ -25,5 +29,9 @@ class $_Auth {
   void signout() async {
     await FirebaseAuth.instance.signOut();
     this.loggedout = true;
+  }
+
+  void setVerificationId(String verificationId) {
+    this.verificationId = verificationId;
   }
 }

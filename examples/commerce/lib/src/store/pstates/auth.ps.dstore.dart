@@ -12,7 +12,9 @@ class Auth extends PStateModel<Auth> {
 
   final StreamField<User?> user;
 
-  final dynamic userDetails;
+  final String? verificationId;
+
+  final DocumentSnapshot? userDetails;
 
   final AsyncActionField getUserDetails;
 
@@ -24,6 +26,7 @@ class Auth extends PStateModel<Auth> {
   Auth(
       {this.loggedout = false,
       this.user = const StreamField(),
+      this.verificationId = null,
       this.userDetails = null,
       this.getUserDetails = const AsyncActionField(),
       this.signout = const AsyncActionField()});
@@ -36,8 +39,11 @@ class Auth extends PStateModel<Auth> {
       user: map.containsKey("user")
           ? map["user"] as StreamField<User?>
           : this.user,
+      verificationId: map.containsKey("verificationId")
+          ? map["verificationId"] as String?
+          : this.verificationId,
       userDetails: map.containsKey("userDetails")
-          ? map["userDetails"] as dynamic
+          ? map["userDetails"] as DocumentSnapshot?
           : this.userDetails,
       getUserDetails: map.containsKey("getUserDetails")
           ? map["getUserDetails"] as AsyncActionField
@@ -49,6 +55,7 @@ class Auth extends PStateModel<Auth> {
   Map<String, dynamic> toMap() => <String, dynamic>{
         "loggedout": this.loggedout,
         "user": this.user,
+        "verificationId": this.verificationId,
         "userDetails": this.userDetails,
         "getUserDetails": this.getUserDetails,
         "signout": this.signout
@@ -60,6 +67,7 @@ class Auth extends PStateModel<Auth> {
     return o is Auth &&
         o.loggedout == loggedout &&
         o.user == user &&
+        o.verificationId == verificationId &&
         o.userDetails == userDetails &&
         o.getUserDetails == getUserDetails &&
         o.signout == signout;
@@ -69,13 +77,14 @@ class Auth extends PStateModel<Auth> {
   int get hashCode =>
       loggedout.hashCode ^
       user.hashCode ^
+      verificationId.hashCode ^
       userDetails.hashCode ^
       getUserDetails.hashCode ^
       signout.hashCode;
 
   @override
   String toString() =>
-      "Auth(loggedout: ${this.loggedout}, user: ${this.user}, userDetails: ${this.userDetails}, getUserDetails: ${this.getUserDetails}, signout: ${this.signout})";
+      "Auth(loggedout: ${this.loggedout}, user: ${this.user}, verificationId: ${this.verificationId}, userDetails: ${this.userDetails}, getUserDetails: ${this.getUserDetails}, signout: ${this.signout})";
 }
 
 abstract class $AuthCopyWith<O> {
@@ -84,7 +93,8 @@ abstract class $AuthCopyWith<O> {
   O call(
       {bool loggedout,
       StreamField<User?> user,
-      dynamic userDetails,
+      String? verificationId,
+      DocumentSnapshot? userDetails,
       AsyncActionField getUserDetails,
       AsyncActionField signout});
 }
@@ -98,6 +108,7 @@ class _$AuthCopyWithImpl<O> implements $AuthCopyWith<O> {
   O call(
       {Object? loggedout = dimmutable,
       Object? user = dimmutable,
+      Object? verificationId = dimmutable,
       Object? userDetails = dimmutable,
       Object? getUserDetails = dimmutable,
       Object? signout = dimmutable}) {
@@ -105,9 +116,12 @@ class _$AuthCopyWithImpl<O> implements $AuthCopyWith<O> {
         loggedout:
             loggedout == dimmutable ? _value.loggedout : loggedout as bool,
         user: user == dimmutable ? _value.user : user as StreamField<User?>,
+        verificationId: verificationId == dimmutable
+            ? _value.verificationId
+            : verificationId as String?,
         userDetails: userDetails == dimmutable
             ? _value.userDetails
-            : userDetails as dynamic,
+            : userDetails as DocumentSnapshot?,
         getUserDetails: getUserDetails == dimmutable
             ? _value.getUserDetails
             : getUserDetails as AsyncActionField,
@@ -123,7 +137,8 @@ abstract class _$AuthCopyWith<O> implements $AuthCopyWith<O> {
   O call(
       {bool loggedout,
       StreamField<User?> user,
-      dynamic userDetails,
+      String? verificationId,
+      DocumentSnapshot? userDetails,
       AsyncActionField getUserDetails,
       AsyncActionField signout});
 }
@@ -140,6 +155,7 @@ class __$AuthCopyWithImpl<O> extends _$AuthCopyWithImpl<O>
   O call(
       {Object? loggedout = dimmutable,
       Object? user = dimmutable,
+      Object? verificationId = dimmutable,
       Object? userDetails = dimmutable,
       Object? getUserDetails = dimmutable,
       Object? signout = dimmutable}) {
@@ -147,9 +163,12 @@ class __$AuthCopyWithImpl<O> extends _$AuthCopyWithImpl<O>
         loggedout:
             loggedout == dimmutable ? _value.loggedout : loggedout as bool,
         user: user == dimmutable ? _value.user : user as StreamField<User?>,
+        verificationId: verificationId == dimmutable
+            ? _value.verificationId
+            : verificationId as String?,
         userDetails: userDetails == dimmutable
             ? _value.userDetails
-            : userDetails as dynamic,
+            : userDetails as DocumentSnapshot?,
         getUserDetails: getUserDetails == dimmutable
             ? _value.getUserDetails
             : getUserDetails as AsyncActionField,
@@ -162,14 +181,14 @@ class __$AuthCopyWithImpl<O> extends _$AuthCopyWithImpl<O>
 const _Auth_FullPath = "/store/pstates/auth/Auth";
 
 class AuthGetUserDetailsResult implements ToMap {
-  final dynamic? userDetails;
+  final Optional<DocumentSnapshot?> userDetails;
 
-  const AuthGetUserDetailsResult({this.userDetails});
+  const AuthGetUserDetailsResult({this.userDetails = optionalDefault});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
-    if (userDetails != null) {
-      map["userDetails"] = userDetails;
+    if (userDetails != optionalDefault) {
+      map["userDetails"] = userDetails.value;
     }
 
     return map;
@@ -185,6 +204,21 @@ class AuthSignoutResult implements ToMap {
     final map = <String, dynamic>{};
     if (loggedout != null) {
       map["loggedout"] = loggedout;
+    }
+
+    return map;
+  }
+}
+
+class AuthSetVerificationIdResult implements ToMap {
+  final Optional<String?> verificationId;
+
+  const AuthSetVerificationIdResult({this.verificationId = optionalDefault});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (verificationId != optionalDefault) {
+      map["verificationId"] = verificationId.value;
     }
 
     return map;
@@ -212,15 +246,46 @@ abstract class AuthActions {
         debounce: debounce);
   }
 
-  static Action<Iterable<User?>> user(
-      {required Stream<User?> stream,
+  static Action<AuthSetVerificationIdResult> setVerificationId(
+      {required String verificationId, AuthSetVerificationIdResult? mock}) {
+    return Action<AuthSetVerificationIdResult>(
+        name: "setVerificationId",
+        type: _Auth_FullPath,
+        payload: <String, dynamic>{"verificationId": verificationId},
+        mock: mock,
+        isAsync: false);
+  }
+
+  static Action<Iterable<dynamic>> user(
+      {required Stream<dynamic> stream,
       bool cancelOnError = false,
-      Iterable<User?>? mock}) {
-    return Action<Iterable<User?>>(
+      Iterable<dynamic>? mock}) {
+    return Action<Iterable<dynamic>>(
         name: "user",
         type: _Auth_FullPath,
         mock: mock,
         stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
+  }
+}
+
+dynamic Auth_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
+  _DStoreState = _DStoreState as Auth;
+  final name = _DstoreAction.name;
+  switch (name) {
+    case "setVerificationId":
+      {
+        final _DstoreActionPayload = _DstoreAction.payload!;
+        final verificationId = _DstoreActionPayload["verificationId"] as String;
+
+        var _DStore_verificationId = _DStoreState.verificationId;
+        _DStore_verificationId = verificationId;
+        return _DStoreState.copyWith(verificationId: _DStore_verificationId);
+      }
+
+    default:
+      {
+        return _DStoreState;
+      }
   }
 }
 
@@ -260,9 +325,13 @@ Future<dynamic> Auth_AsyncReducer(
 Auth Auth_DS() => Auth(
     loggedout: false,
     user: StreamField(),
+    verificationId: null,
     userDetails: null,
     getUserDetails: AsyncActionField(),
     signout: AsyncActionField());
 
 final AuthMeta = PStateMeta<Auth>(
-    type: _Auth_FullPath, aReducer: Auth_AsyncReducer, ds: Auth_DS);
+    type: _Auth_FullPath,
+    reducer: Auth_SyncReducer,
+    aReducer: Auth_AsyncReducer,
+    ds: Auth_DS);

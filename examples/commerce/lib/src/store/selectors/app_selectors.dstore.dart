@@ -11,4 +11,17 @@ part of 'app_selectors.dart';
 class AppSelectors {
   static final snack = Selector<AppState, SnackState>(
       fn: $_AppSelectors.snack, deps: {"snack": []});
+  static final auth = Selector<AppState, Auth>(fn: $_AppSelectors.auth, deps: {
+    "auth": []
+  }, sfDeps: {
+    "auth": ["user"]
+  });
+  static final loginScreen = Selector<AppState, LoginScreenState>(
+      fn: $_AppSelectors.loginScreen,
+      deps: {
+        "loginScreen": []
+      },
+      sfDeps: {
+        "loginScreen": ["phoneVerification"]
+      });
 }

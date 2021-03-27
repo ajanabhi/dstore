@@ -1,7 +1,7 @@
 import 'package:commerce/src/store/models/forms.dart';
 
 abstract class ValidationUtils {
-  static String? validateMobile(String value) {
+  static String? validateMobile(String value, LoginForm fv) {
     var pattern = r'(^[0-9]*$)';
     var regExp = RegExp(pattern);
     if (value.isEmpty) {
@@ -11,6 +11,5 @@ abstract class ValidationUtils {
     } else if (!regExp.hasMatch(value)) {
       return "Phone number must be digits";
     }
-    return null;
   }
 }

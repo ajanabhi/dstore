@@ -12,7 +12,7 @@ class Sample extends PStateModel<Sample> {
 
   final int age;
 
-  final StreamField<int> intStream;
+  final StreamField<int, Object> intStream;
 
   final List<String> list;
 
@@ -38,7 +38,7 @@ class Sample extends PStateModel<Sample> {
       name: map.containsKey("name") ? map["name"] as String : this.name,
       age: map.containsKey("age") ? map["age"] as int : this.age,
       intStream: map.containsKey("intStream")
-          ? map["intStream"] as StreamField<int>
+          ? map["intStream"] as StreamField<int, Object>
           : this.intStream,
       list: map.containsKey("list") ? map["list"] as List<String> : this.list,
       isDark: map.containsKey("isDark") ? map["isDark"] as bool : this.isDark,
@@ -87,7 +87,7 @@ abstract class $SampleCopyWith<O> {
   O call(
       {String name,
       int age,
-      StreamField<int> intStream,
+      StreamField<int, Object> intStream,
       List<String> list,
       bool isDark,
       AsyncActionField changeTheme});
@@ -111,7 +111,7 @@ class _$SampleCopyWithImpl<O> implements $SampleCopyWith<O> {
         age: age == dimmutable ? _value.age : age as int,
         intStream: intStream == dimmutable
             ? _value.intStream
-            : intStream as StreamField<int>,
+            : intStream as StreamField<int, Object>,
         list: list == dimmutable ? _value.list : list as List<String>,
         isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
         changeTheme: changeTheme == dimmutable
@@ -126,7 +126,7 @@ abstract class _$SampleCopyWith<O> implements $SampleCopyWith<O> {
   O call(
       {String name,
       int age,
-      StreamField<int> intStream,
+      StreamField<int, Object> intStream,
       List<String> list,
       bool isDark,
       AsyncActionField changeTheme});
@@ -153,7 +153,7 @@ class __$SampleCopyWithImpl<O> extends _$SampleCopyWithImpl<O>
         age: age == dimmutable ? _value.age : age as int,
         intStream: intStream == dimmutable
             ? _value.intStream
-            : intStream as StreamField<int>,
+            : intStream as StreamField<int, Object>,
         list: list == dimmutable ? _value.list : list as List<String>,
         isDark: isDark == dimmutable ? _value.isDark : isDark as bool,
         changeTheme: changeTheme == dimmutable

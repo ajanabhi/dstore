@@ -9,6 +9,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:tuple/tuple.dart';
 import './utils.dart';
 import "package:collection/collection.dart";
 
@@ -39,12 +40,13 @@ abstract class AstUtils {
     }
   }
 
-  // static Future<AstNode> getResolvedAstNodeFromElement(Element element) async {
-  //   final session = element.session!;
-  //   final s = await session.getResolvedLibraryByElement(element.library!);
-  //   final s2 = s.getElementDeclaration(element)!;
-  //   return s2.node;
-  // }
+  static Tuple2<String, String> getTypeParamsAndBounds(
+      List<TypeParameterElement> typeParameters) {
+    final typeParamsWithBounds =
+        typeParameters.map((e) => e.toString()).join(",");
+    final typeParams = typeParameters.map((e) => e.name).join(",");
+    return Tuple2(typeParams, typeParamsWithBounds);
+  }
 
   static String addConstToDefaultValue(String value) {
     return !value.trimLeft().startsWith("const") &&
@@ -91,12 +93,13 @@ abstract class AstUtils {
       final type = param.type != null
           ? param.type.getDisplayString(withNullability: true)
           : "dynamic";
-      var defaultValue = param.defaultValue;
+      var defaultValue = param.defaultValueCode;
+
       var annotations = param.metadata.map((e) => e.toSource()).toList();
       var isOptional = param.isOptional;
       if (dim) {
         if (param.isOptional && !type.endsWith("?")) {
-          defaultValue = param.defaultValue;
+          defaultValue = param.defaultValueFromAnnotation;
           if (defaultValue == null) {
             throw ArgumentError.value(
                 "Should provide Default for field ${name} using @Default annotation in DImmutable models");
@@ -116,7 +119,6 @@ abstract class AstUtils {
           }
         }
       }
-
       return Field(
         name: name,
         type: type,
@@ -300,7 +302,7 @@ extension JsonKeyExt on JsonKey {
 
 extension ParameterElementExt on ParameterElement {
   bool get hasJsonKey => AnnotationUtils.hasJsonKey(this);
-  String? get defaultValue => AnnotationUtils.defaultValue(this);
+  String? get defaultValueFromAnnotation => AnnotationUtils.defaultValue(this);
 
   List<String> mergeJsonKeyAndReturnAnnotations(
           Map<String, dynamic> newFields) =>

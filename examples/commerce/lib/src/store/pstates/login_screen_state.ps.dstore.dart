@@ -10,6 +10,8 @@ part of 'login_screen_state.dart';
 class LoginScreenState extends PStateModel<LoginScreenState> {
   final FormField<LoginFormKey, LoginForm> loginForm;
 
+  final StreamField<FirebasePhoneVerification> phoneVerification;
+
   _$LoginScreenStateCopyWith<LoginScreenState> get copyWith =>
       __$LoginScreenStateCopyWithImpl<LoginScreenState>(this, IdentityFn);
 
@@ -17,35 +19,46 @@ class LoginScreenState extends PStateModel<LoginScreenState> {
       {this.loginForm = const FormField(
           value: LoginForm(),
           validateOnChange: true,
-          validators: LoginFormValidators)});
+          validators: LoginFormValidators),
+      this.phoneVerification = const StreamField()});
 
   @override
   LoginScreenState copyWithMap(Map<String, dynamic> map) => LoginScreenState(
       loginForm: map.containsKey("loginForm")
           ? map["loginForm"] as FormField<LoginFormKey, LoginForm>
-          : this.loginForm);
+          : this.loginForm,
+      phoneVerification: map.containsKey("phoneVerification")
+          ? map["phoneVerification"] as StreamField<FirebasePhoneVerification>
+          : this.phoneVerification);
 
-  Map<String, dynamic> toMap() =>
-      <String, dynamic>{"loginForm": this.loginForm};
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        "loginForm": this.loginForm,
+        "phoneVerification": this.phoneVerification
+      };
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LoginScreenState && o.loginForm == loginForm;
+    return o is LoginScreenState &&
+        o.loginForm == loginForm &&
+        o.phoneVerification == phoneVerification;
   }
 
   @override
-  int get hashCode => loginForm.hashCode;
+  int get hashCode => loginForm.hashCode ^ phoneVerification.hashCode;
 
   @override
-  String toString() => "LoginScreenState(loginForm: ${this.loginForm})";
+  String toString() =>
+      "LoginScreenState(loginForm: ${this.loginForm}, phoneVerification: ${this.phoneVerification})";
 }
 
 abstract class $LoginScreenStateCopyWith<O> {
   factory $LoginScreenStateCopyWith(
           LoginScreenState value, O Function(LoginScreenState) then) =
       _$LoginScreenStateCopyWithImpl<O>;
-  O call({FormField<LoginFormKey, LoginForm> loginForm});
+  O call(
+      {FormField<LoginFormKey, LoginForm> loginForm,
+      StreamField<FirebasePhoneVerification> phoneVerification});
 }
 
 class _$LoginScreenStateCopyWithImpl<O>
@@ -55,11 +68,16 @@ class _$LoginScreenStateCopyWithImpl<O>
   _$LoginScreenStateCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? loginForm = dimmutable}) {
+  O call(
+      {Object? loginForm = dimmutable,
+      Object? phoneVerification = dimmutable}) {
     return _then(_value.copyWith(
         loginForm: loginForm == dimmutable
             ? _value.loginForm
-            : loginForm as FormField<LoginFormKey, LoginForm>));
+            : loginForm as FormField<LoginFormKey, LoginForm>,
+        phoneVerification: phoneVerification == dimmutable
+            ? _value.phoneVerification
+            : phoneVerification as StreamField<FirebasePhoneVerification>));
   }
 }
 
@@ -68,7 +86,9 @@ abstract class _$LoginScreenStateCopyWith<O>
   factory _$LoginScreenStateCopyWith(
           LoginScreenState value, O Function(LoginScreenState) then) =
       __$LoginScreenStateCopyWithImpl<O>;
-  O call({FormField<LoginFormKey, LoginForm> loginForm});
+  O call(
+      {FormField<LoginFormKey, LoginForm> loginForm,
+      StreamField<FirebasePhoneVerification> phoneVerification});
 }
 
 class __$LoginScreenStateCopyWithImpl<O>
@@ -82,11 +102,16 @@ class __$LoginScreenStateCopyWithImpl<O>
   LoginScreenState get _value => super._value;
 
   @override
-  O call({Object? loginForm = dimmutable}) {
+  O call(
+      {Object? loginForm = dimmutable,
+      Object? phoneVerification = dimmutable}) {
     return _then(LoginScreenState(
         loginForm: loginForm == dimmutable
             ? _value.loginForm
-            : loginForm as FormField<LoginFormKey, LoginForm>));
+            : loginForm as FormField<LoginFormKey, LoginForm>,
+        phoneVerification: phoneVerification == dimmutable
+            ? _value.phoneVerification
+            : phoneVerification as StreamField<FirebasePhoneVerification>));
   }
 }
 
@@ -101,6 +126,17 @@ abstract class LoginScreenStateActions {
         type: _LoginScreenState_FullPath,
         form: req);
   }
+
+  static Action<Iterable<dynamic>> phoneVerification(
+      {required Stream<dynamic> stream,
+      bool cancelOnError = false,
+      Iterable<dynamic>? mock}) {
+    return Action<Iterable<dynamic>>(
+        name: "phoneVerification",
+        type: _LoginScreenState_FullPath,
+        mock: mock,
+        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
+  }
 }
 
 LoginScreenState LoginScreenState_DS() => LoginScreenState(
@@ -109,7 +145,8 @@ LoginScreenState LoginScreenState_DS() => LoginScreenState(
         validateOnChange: true,
         validators: LoginFormValidators,
         internalAName: "loginForm",
-        internalAType: _LoginScreenState_FullPath));
+        internalAType: _LoginScreenState_FullPath),
+    phoneVerification: StreamField());
 
 final LoginScreenStateMeta = PStateMeta<LoginScreenState>(
     type: _LoginScreenState_FullPath, ds: LoginScreenState_DS);

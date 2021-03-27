@@ -3,7 +3,6 @@ import 'package:commerce/src/store/app_state.dart';
 import 'package:commerce/src/store/pstates/auth.dart';
 import 'package:commerce/src/store/pstates/snack.dart';
 import 'package:commerce/src/store/selectors/app_selectors.dart';
-import 'package:commerce/src/store/selectors/auth_selectors.dart';
 import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ class _MyAppState extends State<MyApp> {
     return StoreProvider(
       store: store,
       child: SelectorListener<AppState, Auth>(
-        selector: AuthSelectors.auth,
+        selector: AppSelectors.auth,
         listener: (context, auth) {
           if (auth.loggedout) {
             // redirect to login screen

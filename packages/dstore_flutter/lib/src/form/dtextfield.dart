@@ -57,14 +57,16 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
     final text = widget.toText != null
         ? widget.toText!(_info?.value)
         : "${_info!.value}";
+    final prevSelection = _controller.selection;
     _controller.text = text;
+    _controller.selection = prevSelection;
   }
 
   TextField _getWidget() {
     return TextField(
       controller: _controller,
-      onChanged: _handleOnChange,
       keyboardType: widget.keyboardType,
+      onChanged: _handleOnChange,
       decoration: widget.decoration != null
           ? widget.decoration!.copyWith(errorText: _info!.error)
           : InputDecoration(errorText: _info!.error),

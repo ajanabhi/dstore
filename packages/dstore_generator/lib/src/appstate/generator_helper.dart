@@ -3,7 +3,6 @@ import 'package:analyzer/dart/element/element.dart';
 String createAppState(FunctionElement element) {
   final name = element.name.substring(2);
   final fields = element.parameters;
-  // print("fields2 ${fields.map((e) => e.type.element!.displayName)}");
   final copyWithMapBody = fields
       .map((f) =>
           "..${f.name} = map.containsKey('${f.name}') ? map['${f.name}'] as ${f.type} : this.${f.name}")

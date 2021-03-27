@@ -7,18 +7,7 @@ part of 'stream.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$StreamField<D> {
-  D? get data;
-  StreamSubscription<dynamic>? get internalSubscription;
-  dynamic get error;
-  bool get listening;
-  bool get firstEventArrived;
-  bool get completed;
-
-  $StreamFieldCopyWith<D, StreamField<D>> get copyWith;
-}
-
-class _StreamField<D> implements StreamField<D> {
+class StreamField<D, E> {
   @override
   final D? data;
 
@@ -26,32 +15,24 @@ class _StreamField<D> implements StreamField<D> {
   final StreamSubscription<dynamic>? internalSubscription;
 
   @override
-  @Default(null)
-  @JsonKey(defaultValue: null)
-  final dynamic error;
+  final E? error;
 
   @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool listening;
 
   @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool firstEventArrived;
 
   @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool completed;
 
-  _$StreamFieldCopyWith<D, StreamField<D>> get copyWith =>
-      __$StreamFieldCopyWithImpl<D, StreamField<D>>(this, IdentityFn);
+  _$StreamFieldCopyWith<D, E, StreamField<D, E>> get copyWith =>
+      __$StreamFieldCopyWithImpl<D, E, StreamField<D, E>>(this, IdentityFn);
 
-  const _StreamField(
+  const StreamField(
       {this.data,
       this.internalSubscription,
-      this.error = null,
+      this.error,
       this.listening = false,
       this.firstEventArrived = false,
       this.completed = false});
@@ -59,7 +40,7 @@ class _StreamField<D> implements StreamField<D> {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _StreamField &&
+    return o is StreamField &&
         o.data == data &&
         o.internalSubscription == internalSubscription &&
         o.error == error &&
@@ -82,22 +63,23 @@ class _StreamField<D> implements StreamField<D> {
       "StreamField(data: ${this.data}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, firstEventArrived: ${this.firstEventArrived}, completed: ${this.completed})";
 }
 
-abstract class $StreamFieldCopyWith<D, O> {
+abstract class $StreamFieldCopyWith<D, E, O> {
   factory $StreamFieldCopyWith(
-          StreamField<D> value, O Function(StreamField<D>) then) =
-      _$StreamFieldCopyWithImpl<D, O>;
+          StreamField<D, E> value, O Function(StreamField<D, E>) then) =
+      _$StreamFieldCopyWithImpl<D, E, O>;
   O call(
       {D? data,
       StreamSubscription<dynamic>? internalSubscription,
-      dynamic error,
+      E? error,
       bool listening,
       bool firstEventArrived,
       bool completed});
 }
 
-class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
-  final StreamField<D> _value;
-  final O Function(StreamField<D>) _then;
+class _$StreamFieldCopyWithImpl<D, E, O>
+    implements $StreamFieldCopyWith<D, E, O> {
+  final StreamField<D, E> _value;
+  final O Function(StreamField<D, E>) _then;
   _$StreamFieldCopyWithImpl(this._value, this._then);
 
   @override
@@ -113,7 +95,7 @@ class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,
-        error: error == dimmutable ? _value.error : error as dynamic,
+        error: error == dimmutable ? _value.error : error as E?,
         listening:
             listening == dimmutable ? _value.listening : listening as bool,
         firstEventArrived: firstEventArrived == dimmutable
@@ -124,28 +106,29 @@ class _$StreamFieldCopyWithImpl<D, O> implements $StreamFieldCopyWith<D, O> {
   }
 }
 
-abstract class _$StreamFieldCopyWith<D, O>
-    implements $StreamFieldCopyWith<D, O> {
+abstract class _$StreamFieldCopyWith<D, E, O>
+    implements $StreamFieldCopyWith<D, E, O> {
   factory _$StreamFieldCopyWith(
-          StreamField<D> value, O Function(StreamField<D>) then) =
-      __$StreamFieldCopyWithImpl<D, O>;
+          StreamField<D, E> value, O Function(StreamField<D, E>) then) =
+      __$StreamFieldCopyWithImpl<D, E, O>;
   O call(
       {D? data,
       StreamSubscription<dynamic>? internalSubscription,
-      dynamic error,
+      E? error,
       bool listening,
       bool firstEventArrived,
       bool completed});
 }
 
-class __$StreamFieldCopyWithImpl<D, O> extends _$StreamFieldCopyWithImpl<D, O>
-    implements _$StreamFieldCopyWith<D, O> {
+class __$StreamFieldCopyWithImpl<D, E, O>
+    extends _$StreamFieldCopyWithImpl<D, E, O>
+    implements _$StreamFieldCopyWith<D, E, O> {
   __$StreamFieldCopyWithImpl(
-      StreamField<D> _value, O Function(StreamField<D>) _then)
+      StreamField<D, E> _value, O Function(StreamField<D, E>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  StreamField<D> get _value => super._value;
+  StreamField<D, E> get _value => super._value;
 
   @override
   O call(
@@ -160,7 +143,7 @@ class __$StreamFieldCopyWithImpl<D, O> extends _$StreamFieldCopyWithImpl<D, O>
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,
-        error: error == dimmutable ? _value.error : error as dynamic,
+        error: error == dimmutable ? _value.error : error as E?,
         listening:
             listening == dimmutable ? _value.listening : listening as bool,
         firstEventArrived: firstEventArrived == dimmutable
