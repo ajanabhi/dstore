@@ -177,12 +177,8 @@ class Store<S extends AppStateI<S>> {
     final dispatchers = <Dispatch>[]..add(_defaultDispatch);
     middlewares.reversed.forEach((m) {
       final next = dispatchers.last;
-      dispatchers.add((Action<dynamic> action) async {
-        try {
-          return await m(this, next, action);
-        } catch (e, st) {
-          handleError(DStoreError(e: e, st: st, action: action));
-        }
+      dispatchers.add((Action<dynamic> action) {
+        m(this, next, action);
       });
     });
     return dispatchers.reversed.toList();
@@ -519,11 +515,7 @@ class Store<S extends AppStateI<S>> {
   }
 
   dynamic dispatch(Action<dynamic> action) async {
-    try {
-      await _dispatchers[0](action);
-    } catch (e, st) {
-      handleError(DStoreError(e: e, st: st, action: action));
-    }
+    _dispatchers[0](action);
   }
 
   SelectorUnSubscribeFn subscribeSelector(

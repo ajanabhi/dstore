@@ -25,6 +25,7 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
   TextField? _w;
   FromFieldPropInfo? _info;
   late TextEditingController _controller;
+  late DForm dform;
   @override
   void initState() {
     super.initState();
@@ -34,7 +35,7 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final dform = DForm.of(context);
+    dform = DForm.of(context);
     final key = FormUtils.getNameFromKey(widget.name);
     _info ??= dform.getInfo(key);
     if (dform.ff.internalKeysChanged != null &&
@@ -83,8 +84,17 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
   void didUpdateWidget(covariant DTextField<FieldKey> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.name != widget.name) {
-      throw NotSUpportedError(
-          "You can not change name of textfield in runtime");
+      final key = FormUtils.getNameFromKey(widget.name);
+      _info = dform.getInfo(key);
+      _setText();
+      _w = _getWidget();
     }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _w = null;
+    super.dispose();
   }
 }

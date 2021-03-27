@@ -80,8 +80,12 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   void didUpdateWidget(covariant SelectorBuilder<S, I> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.selector != widget.selector) {
-      throw ArgumentError.value(
-          "You can not change selector field in runtime, make sure you're not using inline functions as selector");
+      _unSubscribe(oldWidget.options);
+      final store = context.storeTyped<S>();
+      _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
+      final prevState = _state;
+      _state = widget.selector.fn(store.state);
+      widget.onStateChange?.call(context, prevState, _state);
     }
   }
 

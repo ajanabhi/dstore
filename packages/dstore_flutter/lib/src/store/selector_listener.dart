@@ -71,6 +71,7 @@ class _SelectorListenerState<S extends AppStateI<S>, I>
       final store = context.storeTyped<S>();
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       _state = widget.selector.fn(store.state);
+      widget.listener(context, _state);
     }
   }
 
