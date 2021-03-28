@@ -8,3 +8,6 @@ Navigation :
 https://github.com/flutter/flutter/issues/72212 ( web browser history)
 
 https://github.com/polyflection/flit_router
+
+https://ulusoyca.medium.com/flutter-navigator-2-0-for-authentication-and-bootstrapping-part-1-introduction-d7b6dfdd0849
+

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import "configuration/confiure_native.dart"
+    if (dart.library.html) "configuration/configure_web.dart";
 
-class Nav extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder();
-  }
+void configureNav() {
+  configurePlatForm();
 }
