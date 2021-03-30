@@ -8,7 +8,7 @@ part of 'auth.dart';
 
 @immutable
 class DFirebaseAuth extends PStateModel<DFirebaseAuth> {
-  final StreamField<User> user;
+  final StreamField<User, Object> user;
 
   _$DFirebaseAuthCopyWith<DFirebaseAuth> get copyWith =>
       __$DFirebaseAuthCopyWithImpl<DFirebaseAuth>(this, IdentityFn);
@@ -18,7 +18,7 @@ class DFirebaseAuth extends PStateModel<DFirebaseAuth> {
   @override
   DFirebaseAuth copyWithMap(Map<String, dynamic> map) => DFirebaseAuth(
       user: map.containsKey("user")
-          ? map["user"] as StreamField<User>
+          ? map["user"] as StreamField<User, Object>
           : this.user);
 
   Map<String, dynamic> toMap() => <String, dynamic>{"user": this.user};
@@ -40,7 +40,7 @@ abstract class $DFirebaseAuthCopyWith<O> {
   factory $DFirebaseAuthCopyWith(
           DFirebaseAuth value, O Function(DFirebaseAuth) then) =
       _$DFirebaseAuthCopyWithImpl<O>;
-  O call({StreamField<User> user});
+  O call({StreamField<User, Object> user});
 }
 
 class _$DFirebaseAuthCopyWithImpl<O> implements $DFirebaseAuthCopyWith<O> {
@@ -51,7 +51,9 @@ class _$DFirebaseAuthCopyWithImpl<O> implements $DFirebaseAuthCopyWith<O> {
   @override
   O call({Object? user = dimmutable}) {
     return _then(_value.copyWith(
-        user: user == dimmutable ? _value.user : user as StreamField<User>));
+        user: user == dimmutable
+            ? _value.user
+            : user as StreamField<User, Object>));
   }
 }
 
@@ -59,7 +61,7 @@ abstract class _$DFirebaseAuthCopyWith<O> implements $DFirebaseAuthCopyWith<O> {
   factory _$DFirebaseAuthCopyWith(
           DFirebaseAuth value, O Function(DFirebaseAuth) then) =
       __$DFirebaseAuthCopyWithImpl<O>;
-  O call({StreamField<User> user});
+  O call({StreamField<User, Object> user});
 }
 
 class __$DFirebaseAuthCopyWithImpl<O> extends _$DFirebaseAuthCopyWithImpl<O>
@@ -74,7 +76,9 @@ class __$DFirebaseAuthCopyWithImpl<O> extends _$DFirebaseAuthCopyWithImpl<O>
   @override
   O call({Object? user = dimmutable}) {
     return _then(DFirebaseAuth(
-        user: user == dimmutable ? _value.user : user as StreamField<User>));
+        user: user == dimmutable
+            ? _value.user
+            : user as StreamField<User, Object>));
   }
 }
 

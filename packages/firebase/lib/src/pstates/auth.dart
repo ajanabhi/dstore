@@ -6,5 +6,5 @@ part "auth.ps.dstore.dart";
 
 @PState()
 class $_DFirebaseAuth {
-  StreamField<User> user = StreamField();
+  StreamField<User, Object> user = StreamField();
 }

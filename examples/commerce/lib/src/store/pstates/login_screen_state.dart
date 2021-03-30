@@ -12,5 +12,6 @@ class $_LoginScreenState {
       validateOnChange: true,
       validators: LoginFormValidators);
 
-  StreamField<FirebasePhoneVerification> phoneVerification = StreamField();
+  StreamField<FirebasePhoneVerification, Object> phoneVerification =
+      StreamField();
 }

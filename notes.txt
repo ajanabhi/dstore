@@ -11,3 +11,10 @@ https://github.com/polyflection/flit_router
 
 https://ulusoyca.medium.com/flutter-navigator-2-0-for-authentication-and-bootstrapping-part-1-introduction-d7b6dfdd0849
 
+https://lucasdelsol01.medium.com/flutter-navigator-2-0-for-mobile-dev-bloc-state-management-integration-3a180b4d25b3
+
+
+UI : 
+
+
+https://ulusoyca.medium.com/switching-between-client-specific-themes-for-b2b-flutter-apps-part-i-design-c9c501700c0e

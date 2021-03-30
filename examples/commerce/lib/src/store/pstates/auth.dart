@@ -10,7 +10,7 @@ part "auth.ps.dstore.dart";
 class $_Auth {
   bool loggedout = false;
 
-  StreamField<User?> user = StreamField();
+  StreamField<User?, Object> user = StreamField();
 
   String? verificationId;
 

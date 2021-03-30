@@ -17,15 +17,28 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   final ClassElement element;
   final bool historyEnabled;
   final int? historyLimit;
+  final bool isNav;
 
   PStateAstVisitor(
       {required this.element,
       required this.isPersitable,
+      this.isNav = false,
       this.historyLimit,
       required this.historyEnabled});
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
+    final name = node.name.name;
+    if (isNav && name == "buildPages") {
+      logger.shout("buildPages : ${node.toSource()}");
+      methods.add(PStateMethod(
+          isAsync: false,
+          name: name,
+          params: [],
+          keysModified: [],
+          body: node.toSource()));
+      return;
+    }
     if (node.isGetter || node.isSetter) {
       throw NotAllowedError(
           "getters and setters are not allowed in pstates , remove '${node.name}' from PStste");
@@ -44,7 +57,6 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           "You should annotate method  '${node.name.name}' return type with void  ");
     }
 
-    final name = node.name.toString();
     final params = AstUtils.convertParamsToFields(node.parameters);
 
     final paramsStr = _convertMethodParamsToString(params);

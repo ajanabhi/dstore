@@ -151,3 +151,7 @@ class Validator {
 class DUnion {
   const DUnion();
 }
+
+class PStateNav {
+  const PStateNav();
+}

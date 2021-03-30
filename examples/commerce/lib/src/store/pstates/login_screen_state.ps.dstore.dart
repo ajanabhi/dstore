@@ -10,7 +10,7 @@ part of 'login_screen_state.dart';
 class LoginScreenState extends PStateModel<LoginScreenState> {
   final FormField<LoginFormKey, LoginForm> loginForm;
 
-  final StreamField<FirebasePhoneVerification> phoneVerification;
+  final StreamField<FirebasePhoneVerification, Object> phoneVerification;
 
   _$LoginScreenStateCopyWith<LoginScreenState> get copyWith =>
       __$LoginScreenStateCopyWithImpl<LoginScreenState>(this, IdentityFn);
@@ -28,7 +28,8 @@ class LoginScreenState extends PStateModel<LoginScreenState> {
           ? map["loginForm"] as FormField<LoginFormKey, LoginForm>
           : this.loginForm,
       phoneVerification: map.containsKey("phoneVerification")
-          ? map["phoneVerification"] as StreamField<FirebasePhoneVerification>
+          ? map["phoneVerification"]
+              as StreamField<FirebasePhoneVerification, Object>
           : this.phoneVerification);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
@@ -58,7 +59,7 @@ abstract class $LoginScreenStateCopyWith<O> {
       _$LoginScreenStateCopyWithImpl<O>;
   O call(
       {FormField<LoginFormKey, LoginForm> loginForm,
-      StreamField<FirebasePhoneVerification> phoneVerification});
+      StreamField<FirebasePhoneVerification, Object> phoneVerification});
 }
 
 class _$LoginScreenStateCopyWithImpl<O>
@@ -77,7 +78,8 @@ class _$LoginScreenStateCopyWithImpl<O>
             : loginForm as FormField<LoginFormKey, LoginForm>,
         phoneVerification: phoneVerification == dimmutable
             ? _value.phoneVerification
-            : phoneVerification as StreamField<FirebasePhoneVerification>));
+            : phoneVerification
+                as StreamField<FirebasePhoneVerification, Object>));
   }
 }
 
@@ -88,7 +90,7 @@ abstract class _$LoginScreenStateCopyWith<O>
       __$LoginScreenStateCopyWithImpl<O>;
   O call(
       {FormField<LoginFormKey, LoginForm> loginForm,
-      StreamField<FirebasePhoneVerification> phoneVerification});
+      StreamField<FirebasePhoneVerification, Object> phoneVerification});
 }
 
 class __$LoginScreenStateCopyWithImpl<O>
@@ -111,7 +113,8 @@ class __$LoginScreenStateCopyWithImpl<O>
             : loginForm as FormField<LoginFormKey, LoginForm>,
         phoneVerification: phoneVerification == dimmutable
             ? _value.phoneVerification
-            : phoneVerification as StreamField<FirebasePhoneVerification>));
+            : phoneVerification
+                as StreamField<FirebasePhoneVerification, Object>));
   }
 }
 
@@ -127,11 +130,11 @@ abstract class LoginScreenStateActions {
         form: req);
   }
 
-  static Action<Iterable<dynamic>> phoneVerification(
-      {required Stream<dynamic> stream,
+  static Action<Iterable<FirebasePhoneVerification>> phoneVerification(
+      {required Stream<FirebasePhoneVerification> stream,
       bool cancelOnError = false,
-      Iterable<dynamic>? mock}) {
-    return Action<Iterable<dynamic>>(
+      Iterable<FirebasePhoneVerification>? mock}) {
+    return Action<Iterable<FirebasePhoneVerification>>(
         name: "phoneVerification",
         type: _LoginScreenState_FullPath,
         mock: mock,

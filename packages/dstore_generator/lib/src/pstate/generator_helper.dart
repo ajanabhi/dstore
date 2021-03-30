@@ -116,9 +116,9 @@ String _getPStateMeta(
     required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
-      _createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
+      createReducerFunctionSync(methods.where((m) => !m.isAsync), modelName);
   final asyncReducerFubctionStr =
-      _createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
+      createReducerFunctionAsync(methods.where((m) => m.isAsync), modelName);
   print(fields);
 
   var defaultState =
@@ -416,7 +416,7 @@ String _createPStateModel(
   return result;
 }
 
-String _createReducerFunctionSync(
+String createReducerFunctionSync(
   Iterable<PStateMethod> methods,
   String modelName,
 ) {
@@ -442,7 +442,7 @@ String _createReducerFunctionSync(
   """;
 }
 
-String _createReducerFunctionAsync(
+String createReducerFunctionAsync(
   Iterable<PStateMethod> methods,
   String modelName,
 ) {

@@ -10,7 +10,7 @@ part of 'auth.dart';
 class Auth extends PStateModel<Auth> {
   final bool loggedout;
 
-  final StreamField<User?> user;
+  final StreamField<User?, Object> user;
 
   final String? verificationId;
 
@@ -37,7 +37,7 @@ class Auth extends PStateModel<Auth> {
           ? map["loggedout"] as bool
           : this.loggedout,
       user: map.containsKey("user")
-          ? map["user"] as StreamField<User?>
+          ? map["user"] as StreamField<User?, Object>
           : this.user,
       verificationId: map.containsKey("verificationId")
           ? map["verificationId"] as String?
@@ -92,7 +92,7 @@ abstract class $AuthCopyWith<O> {
       _$AuthCopyWithImpl<O>;
   O call(
       {bool loggedout,
-      StreamField<User?> user,
+      StreamField<User?, Object> user,
       String? verificationId,
       DocumentSnapshot? userDetails,
       AsyncActionField getUserDetails,
@@ -115,7 +115,9 @@ class _$AuthCopyWithImpl<O> implements $AuthCopyWith<O> {
     return _then(_value.copyWith(
         loggedout:
             loggedout == dimmutable ? _value.loggedout : loggedout as bool,
-        user: user == dimmutable ? _value.user : user as StreamField<User?>,
+        user: user == dimmutable
+            ? _value.user
+            : user as StreamField<User?, Object>,
         verificationId: verificationId == dimmutable
             ? _value.verificationId
             : verificationId as String?,
@@ -136,7 +138,7 @@ abstract class _$AuthCopyWith<O> implements $AuthCopyWith<O> {
       __$AuthCopyWithImpl<O>;
   O call(
       {bool loggedout,
-      StreamField<User?> user,
+      StreamField<User?, Object> user,
       String? verificationId,
       DocumentSnapshot? userDetails,
       AsyncActionField getUserDetails,
@@ -162,7 +164,9 @@ class __$AuthCopyWithImpl<O> extends _$AuthCopyWithImpl<O>
     return _then(Auth(
         loggedout:
             loggedout == dimmutable ? _value.loggedout : loggedout as bool,
-        user: user == dimmutable ? _value.user : user as StreamField<User?>,
+        user: user == dimmutable
+            ? _value.user
+            : user as StreamField<User?, Object>,
         verificationId: verificationId == dimmutable
             ? _value.verificationId
             : verificationId as String?,
@@ -256,11 +260,11 @@ abstract class AuthActions {
         isAsync: false);
   }
 
-  static Action<Iterable<dynamic>> user(
-      {required Stream<dynamic> stream,
+  static Action<Iterable<User?>> user(
+      {required Stream<User?> stream,
       bool cancelOnError = false,
-      Iterable<dynamic>? mock}) {
-    return Action<Iterable<dynamic>>(
+      Iterable<User?>? mock}) {
+    return Action<Iterable<User?>>(
         name: "user",
         type: _Auth_FullPath,
         mock: mock,
