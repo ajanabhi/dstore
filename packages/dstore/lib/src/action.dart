@@ -1,7 +1,7 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
 import 'package:dstore/src/stream.dart';
-import 'package:dstore/src/utils.dart';
+import 'package:dstore/src/utils/utils.dart';
 import 'package:dstore/src/websocket.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';

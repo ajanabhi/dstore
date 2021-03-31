@@ -26,7 +26,7 @@ class Sample extends PStateModel<Sample> {
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
 
   Sample(
-      {this.name = "hello",
+      {this.name = "hello1",
       this.age = 0,
       this.intStream = const StreamField(),
       this.list = const [],
@@ -334,7 +334,7 @@ Future<dynamic> Sample_AsyncReducer(
 }
 
 Sample Sample_DS() => Sample(
-    name: "hello",
+    name: "hello1",
     age: 0,
     intStream: StreamField(),
     list: [],

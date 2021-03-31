@@ -350,3 +350,14 @@ extension FieldElementExt on FieldElement {
           Map<String, dynamic> newFields) =>
       AnnotationUtils.mergeJsonKeyAndReturnAnnotations(this, newFields);
 }
+
+extension MethodElementExt on MethodElement {
+  String? getUrlFromAnnotation() {
+    final a = this.annotationFromType(Url);
+    if (a != null) {
+      final ao = ConstantReader(a.computeConstantValue());
+      final url = ao.peek("path");
+      return url?.stringValue;
+    }
+  }
+}

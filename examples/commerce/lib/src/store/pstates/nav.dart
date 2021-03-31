@@ -4,10 +4,15 @@ import 'package:flutter/src/widgets/navigator.dart';
 part 'nav.ps.dstore.dart';
 
 @PStateNav()
-class $_NavState implements NavStateI {
+class $_NavState extends NavStateI<dynamic> {
+  String page = "";
   @override
   List<Page> buildPages() {
-    // TODO: implement buildPages
-    throw UnimplementedError();
+    return [];
+  }
+
+  @Url("/")
+  void home() {
+    page = "home2";
   }
 }

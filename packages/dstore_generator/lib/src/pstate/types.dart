@@ -82,12 +82,14 @@ class PStateMethod {
   final List<Field> params;
   final String body;
   final bool isAsync;
+  final String? url;
   final List<Field> keysModified;
 
   PStateMethod(
       {required this.isAsync,
       required this.name,
       required this.params,
+      this.url,
       required this.keysModified,
       required this.body});
 }

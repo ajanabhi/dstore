@@ -1,5 +1,7 @@
 import "package:collection/collection.dart";
 
+export "dstore_dev_utils.dart";
+
 T IdentityFn<T>(T v) => v;
 
 String convertEnumToString(Object enumEntry) {

@@ -7,7 +7,7 @@ part "sample.ps.dstore.dart";
 
 @PState()
 class $_Sample {
-  String name = "hello";
+  String name = "hello1";
   int age = 0;
   StreamField<int, Object> intStream = StreamField();
   List<String> list = [];

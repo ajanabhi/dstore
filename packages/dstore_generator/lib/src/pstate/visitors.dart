@@ -5,6 +5,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
+import 'package:dstore_generator/src/pstate/nav/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
@@ -29,6 +30,9 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
     final name = node.name.name;
+    if (isNav) {
+      logger.shout("Annot ${node.metadata.first.elementAnnotation}");
+    }
     if (isNav && name == "buildPages") {
       logger.shout("buildPages : ${node.toSource()}");
       methods.add(PStateMethod(
@@ -62,6 +66,13 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     final paramsStr = _convertMethodParamsToString(params);
     var mbody = "";
     final keys = <String>[];
+    String? rawUrl;
+    String? finalUrl;
+    if (isNav) {
+      final urlTuple = getUrlFromMethod(node, params);
+      rawUrl = urlTuple?.item1;
+      finalUrl = urlTuple?.item2;
+    }
     if (body is ExpressionFunctionBody) {
       final e = body.expression;
       if (e is AssignmentExpression) {
@@ -84,6 +95,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       final msr = processMethodStatements(
           statements: body.block.statements,
           historyEnabled: historyEnabled,
+          url: finalUrl,
+          isNav: isNav,
           limit: historyLimit);
       final statements = msr.item1;
       keys.addAll(msr.item2);
@@ -106,9 +119,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     //     }
     //   });
     // }
+
     methods.add(PStateMethod(
         isAsync: node.body.isAsynchronous,
         name: name,
+        url: rawUrl,
         params: params,
         keysModified: keys
             .map((e) => fields.singleWhere((element) => element.name == e))
@@ -511,6 +526,8 @@ List<String> convertStatementResultsToString(
 Tuple2<String, Set<String>> processMethodStatements(
     {required List<Statement> statements,
     required bool historyEnabled,
+    String? url,
+    bool isNav = false,
     int? limit}) {
   final statementResults = processStatements(statements);
   print("statementResults ${statementResults}");
@@ -571,9 +588,14 @@ Tuple2<String, Set<String>> processMethodStatements(
   final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
-    ${(historyEnabled) ? """
+    ${(historyEnabled || url != null || isNav) ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
     ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
+    ${url != null ? " newState.dontTouchUrl = $url" : ""}
+    ${isNav ? """ 
+    newState.dontTouchMeStaticMeta = ${STATE_VARIABLE}.dontTouchMeStaticMeta;
+    newState.dontTouchMeDynamicMeta = ${STATE_VARIABLE}.dontTouchMeDynamicMeta;
+    """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
     

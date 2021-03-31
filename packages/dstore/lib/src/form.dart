@@ -1,7 +1,7 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/store.dart';
-import 'package:dstore/src/utils.dart';
+import 'package:dstore/src/utils/utils.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:json_annotation/json_annotation.dart';
 

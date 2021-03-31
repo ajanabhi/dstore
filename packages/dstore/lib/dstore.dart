@@ -10,7 +10,7 @@ export 'src/storage.dart';
 export 'src/stream.dart';
 export "src/middlewares/middlewares.dart";
 export 'src/form.dart';
-export 'src/utils.dart';
+export 'src/utils/utils.dart';
 export 'src/errors.dart';
 export 'src/offline.dart';
 export 'src/types.dart';

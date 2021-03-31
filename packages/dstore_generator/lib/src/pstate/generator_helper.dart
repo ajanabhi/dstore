@@ -113,6 +113,9 @@ String _getPStateMeta(
     required Map<String, List<String>> actionsMeta,
     required bool isPersiable,
     required int? historyLimit,
+    bool isNav = false,
+    String navStaticMeta = "{}",
+    String navDynamicMeta = "{}",
     required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
@@ -145,13 +148,17 @@ String _getPStateMeta(
     params.add(
         "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
-  if (enableHistory) {
+  if (enableHistory || isNav) {
     params.add("enableHistory: true");
     params.add("actionsMeta: ${jsonEncode(actionsMeta)}");
     defaultStateFn = """
       $modelName ${modelName}_DS() {
         final state = $defaultState;
-        state.internalPSHistory = PStateHistory<$modelName>($historyLimit);
+        ${enableHistory ? "state.dontTouchMePSHistory = PStateHistory<$modelName>($historyLimit);" : ""} 
+        ${isNav ? """
+          state.dontTouchMeStaticMeta = $navStaticMeta;
+          state.dontTouchMeDynamicMeta = $navDynamicMeta;
+        """ : ""}
         return history;
       }
     """;
