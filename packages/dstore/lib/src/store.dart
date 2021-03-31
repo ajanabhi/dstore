@@ -201,6 +201,25 @@ class Store<S extends AppStateI<S>> {
         newS = action.internal!.data as PStateModel;
       }
     } else {
+      if (DstoreDevUtils.isDebugMode) {
+        if (action.ws != null) {
+          throw ArgumentError.value(
+              "action ${action.id} is a websocket action , looks like you didnt added websocket middleware while creating store!");
+        }
+        if (action.http != null) {
+          throw ArgumentError.value(
+              "action ${action.id} is a http action , looks like you didnt added http middleware while creating store!");
+        }
+        if (action.form != null) {
+          throw ArgumentError.value(
+              "action ${action.id} is form action , looks like you didnt added form middleware while creating store!");
+        }
+
+        if (action.stream != null) {
+          throw ArgumentError.value(
+              "action ${action.id} is stream action , looks like you didn't added stream middleware while creating store!");
+        }
+      }
       newS = psm.reducer!(currentS, action) as PStateModel;
     }
     if (!identical(newS, currentS)) {
