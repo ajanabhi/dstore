@@ -15,6 +15,7 @@ abstract class Action<M> with _$Action<M> {
     required String name,
     required String type,
     @Default(false) bool isAsync,
+    @Default(false) bool isNav,
     Map<String, dynamic>? payload,
     HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
     WebSocketPayload<dynamic, dynamic, dynamic>? ws,

@@ -155,3 +155,8 @@ class DUnion {
 class PStateNav {
   const PStateNav();
 }
+
+class Url {
+  final String path;
+  const Url(this.path);
+}

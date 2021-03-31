@@ -34,6 +34,7 @@ class Store<S extends AppStateI<S>> {
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
+
   PersitantStorage<dynamic>? get storage => storageOptions?.storage;
   Store(
       {required this.internalMeta,

@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
     with ChangeNotifier {
-  final Selector<S, NavigationI> selector;
+  final Selector<S, NavStateI> selector;
 
   DRouterDelegate({required this.selector});
 
   @override
   Widget build(BuildContext context) {
-    return SelectorBuilder<S, NavigationI>(
+    return SelectorBuilder<S, NavStateI>(
       selector: selector,
       builder: (context, state) {
         return Navigator(

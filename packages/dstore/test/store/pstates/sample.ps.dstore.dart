@@ -267,17 +267,6 @@ abstract class SampleActions {
         isAsync: true,
         debounce: debounce);
   }
-
-  static Action<Iterable<int>> intStream(
-      {required Stream<int> stream,
-      bool cancelOnError = false,
-      Iterable<int>? mock}) {
-    return Action<Iterable<int>>(
-        name: "intStream",
-        type: _Sample_FullPath,
-        mock: mock,
-        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
-  }
 }
 
 dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
