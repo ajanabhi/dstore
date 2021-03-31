@@ -20,7 +20,7 @@ class Sample extends PStateModel<Sample> {
 
   final AsyncActionField changeTheme;
 
-  Sample2 get s => dont_touch_me_store.state.s as Sample2;
+  Sample2 get s => dontTouchMeStore.state.s as Sample2;
 
   _$SampleCopyWith<Sample> get copyWith =>
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);

@@ -129,7 +129,7 @@ class Store<S extends AppStateI<S>> {
                   as PStateModel
               : ds;
           if (psm.psDeps != null) {
-            ds.setDontTouchMeStore(this);
+            ds.dontTouchMeStore = this;
           }
           map[key] = ds;
         });
@@ -166,7 +166,7 @@ class Store<S extends AppStateI<S>> {
       _pStateTypeToStateKeyMap[psm.type] = key;
       final ps = psm.ds();
       if (psm.psDeps != null) {
-        ps.setDontTouchMeStore(this);
+        ps.dontTouchMeStore = this;
       }
       map[key] = ps;
     });
@@ -251,7 +251,7 @@ class Store<S extends AppStateI<S>> {
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.ignore) {
-            previousState.setDontTouchMeStore(null);
+            previousState.dontTouchMeStore = null;
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -276,7 +276,7 @@ class Store<S extends AppStateI<S>> {
             newState = previousState;
             previousState = newState;
             newGlobalStateMap[stateKey] = newState;
-            previousState.setDontTouchMeStore(null);
+            previousState.dontTouchMeStore = null;
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -288,7 +288,7 @@ class Store<S extends AppStateI<S>> {
         }
       }
     } else {
-      previousState.setDontTouchMeStore(null);
+      previousState.dontTouchMeStore = null;
       _state = _state.copyWithMap(newGlobalStateMap);
       _notifyListeners(
           stateKey: stateKey,
@@ -575,7 +575,7 @@ class Store<S extends AppStateI<S>> {
   void cleanup() {
     _unsubscribeNetworkStatusListener?.call();
     _state.toMap().forEach((key, value) {
-      value.setDontTouchMeStore(null);
+      value.dontTouchMeStore = null;
     });
   }
 }

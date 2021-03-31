@@ -27,8 +27,8 @@ abstract class PStateModel<M> {
   M copyWithMap(Map<String, dynamic> map);
   Map<String, dynamic> toMap();
   Store<dynamic>? _dont_touch_me_store;
-  Store<dynamic> get dont_touch_me_store => _dont_touch_me_store!;
-  void setDontTouchMeStore(Store<dynamic>? s) {
+  Store<dynamic> get dontTouchMeStore => _dont_touch_me_store!;
+  set dontTouchMeStore(Store<dynamic>? s) {
     _dont_touch_me_store = s;
   }
 }

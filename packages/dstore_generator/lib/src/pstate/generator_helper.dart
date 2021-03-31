@@ -14,9 +14,10 @@ import "dart:convert";
 
 Future<String> generatePStateForClassElement(
     ClassElement element, BuildStep buildStep) async {
-  final typeParamsWithBounds =
-      element.typeParameters.map((e) => e.toString()).join(",");
-  final typeParams = element.typeParameters.map((e) => e.name).join(",");
+  final typeParamsTuple =
+      AstUtils.getTypeParamsAndBounds(element.typeParameters);
+  final typeParamsWithBounds = typeParamsTuple.item2;
+  final typeParams = typeParamsTuple.item1;
   final modelName = element.name.substring(2);
 
   final pstate = element.getPState();
@@ -60,7 +61,7 @@ Future<String> generatePStateForClassElement(
   final actionsmeta =
       _getActionsmeta(visitor.methods, actionsInfo.specialActions);
   final actions = actionsInfo.actions;
-  final pstateMeta = _getPStateMeta(
+  final pstateMeta = getPStateMeta(
       modelName: modelName,
       fields: fields,
       psDeps: psDeps,
@@ -104,7 +105,7 @@ String getFullTypeName(ClassElement element) {
   return "$path/${element.name.substring(2)}";
 }
 
-String _getPStateMeta(
+String getPStateMeta(
     {required String modelName,
     required List<Field> fields,
     required List<Field> psDeps,
@@ -389,7 +390,7 @@ String _createPStateModel(
 
   final psFeilds = psDeps
       .map((e) =>
-          " ${e.type} get ${e.name} => dont_touch_me_store.state.${e.name} as ${e.type};")
+          " ${e.type} get ${e.name} => dontTouchMeStore.state.${e.name} as ${e.type};")
       .join("\n");
 
   final result = """
