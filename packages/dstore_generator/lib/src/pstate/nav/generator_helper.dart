@@ -71,6 +71,13 @@ String _getStaticUrlMeta(
   final items = methods
       .where((element) => element.url != null && !element.url!.contains(":"))
       .map((e) {
+    final Uri uri;
+    
+    final fn = """
+         (Uri uri) {
+           retutn ${modelName}Action.${e.name}();
+         }
+        """;
     return '"${e.url}":';
   }).join(",");
   return "{$items}";

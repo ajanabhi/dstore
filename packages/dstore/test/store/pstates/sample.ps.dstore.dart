@@ -210,14 +210,34 @@ class SampleAddToListResult implements ToMap {
 }
 
 class SampleChangeThemeResult implements ToMap {
+  final int? age;
   final bool? isDark;
 
-  const SampleChangeThemeResult({this.isDark});
+  const SampleChangeThemeResult({this.age, this.isDark});
 
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
+    if (age != null) {
+      map["age"] = age;
+    }
+
     if (isDark != null) {
       map["isDark"] = isDark;
+    }
+
+    return map;
+  }
+}
+
+class SampleTestResult implements ToMap {
+  final int? age;
+
+  const SampleTestResult({this.age});
+
+  Map<String, dynamic> toMap() {
+    final map = <String, dynamic>{};
+    if (age != null) {
+      map["age"] = age;
     }
 
     return map;
@@ -267,6 +287,27 @@ abstract class SampleActions {
         isAsync: true,
         debounce: debounce);
   }
+
+  static Action<SampleTestResult> test(
+      {required int age2, SampleTestResult? mock}) {
+    return Action<SampleTestResult>(
+        name: "test",
+        type: _Sample_FullPath,
+        payload: <String, dynamic>{"age2": age2},
+        mock: mock,
+        isAsync: false);
+  }
+
+  static Action<Iterable<int>> intStream(
+      {required Stream<int> stream,
+      bool cancelOnError = false,
+      Iterable<int>? mock}) {
+    return Action<Iterable<int>>(
+        name: "intStream",
+        type: _Sample_FullPath,
+        mock: mock,
+        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
+  }
 }
 
 dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
@@ -303,6 +344,16 @@ dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         return _DStoreState.copyWith(list: _DStore_list);
       }
 
+    case "test":
+      {
+        final _DstoreActionPayload = _DstoreAction.payload!;
+        final age2 = _DstoreActionPayload["age2"] as int;
+
+        var _DStore_age = _DStoreState.age;
+        _DStore_age = age2;
+        return _DStoreState.copyWith(age: _DStore_age);
+      }
+
     default:
       {
         return _DStoreState;
@@ -320,10 +371,13 @@ Future<dynamic> Sample_AsyncReducer(
         final _DstoreActionPayload = _DstoreAction.payload!;
         final value = _DstoreActionPayload["value"] as bool;
 
+        var _DStore_age = _DStoreState.age;
         var _DStore_isDark = _DStoreState.isDark;
+        _DStore_age = 2;
+        final s1 = _DStore_age;
         await 5.seconds.delay;
         _DStore_isDark = value;
-        return _DStoreState.copyWith(isDark: _DStore_isDark);
+        return _DStoreState.copyWith(age: _DStore_age, isDark: _DStore_isDark);
       }
 
     default:

@@ -27,7 +27,13 @@ class $_Sample {
   }
 
   Future<void> changeTheme(bool value) async {
+    this.age = 2;
+    final s1 = this.age;
     await 5.seconds.delay;
     this.isDark = value;
+  }
+
+  void test(int age2) {
+    this.age = age2;
   }
 }

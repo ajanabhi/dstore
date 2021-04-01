@@ -36,7 +36,7 @@ Future<String> generatePStateForClassElement(
   // });
   // logger.shout("TimeTracker ${tracker.duration.inMilliseconds}  $tracker");
   final astNode =
-      await AstUtils.getAstNodeFromElement(element, buildStep, resolve: true);
+      await AstUtils.getAstNodeFromElement(element, buildStep, resolve: false);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
   final methods = visitor.methods;

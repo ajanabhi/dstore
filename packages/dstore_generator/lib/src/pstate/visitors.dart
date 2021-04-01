@@ -105,20 +105,27 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
            ${statements}
            """;
     }
-    // if (node.body is BlockFunctionBody) {
-    //   final ex = node.body as BlockFunctionBody;
-    //   ex.block.statements.forEach((statement) {
-    //     print(
-    //         "************** Check ${statement.toString()} ${statement.runtimeType}");
-    //     // if(statement is TryStatement) {
-    //     //    statement.
-    //     // }
-    //     if (statement is ForStatement) {
-    //       print(
-    //           "forstatement lp ${statement.forLoopParts} body ${statement.body.runtimeType}");
-    //     }
-    //   });
-    // }
+    if (node.body is BlockFunctionBody) {
+      final ex = node.body as BlockFunctionBody;
+      final bodyVisitor = MethodAstVisitor(element);
+      node.body.visitChildren(bodyVisitor);
+      ex.block.statements.forEach((statement) {
+        print(
+            "************** Check ${statement.toString()} ${statement.runtimeType}");
+        if (statement is ExpressionStatement) {
+          print("exrp");
+          print(statement.expression.runtimeType);
+          // print(statement.)
+        }
+        // if(statement is TryStatement) {
+        //    statement.
+        // }
+        // if (statement is ForStatement) {
+        //   print(
+        //       "forstatement lp ${statement.forLoopParts} body ${statement.body.runtimeType}");
+        // }
+      });
+    }
 
     methods.add(PStateMethod(
         isAsync: node.body.isAsynchronous,
@@ -153,12 +160,15 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         // final typeN = typeA as TypeName;
         // logger.shout("typeN ${typeN.type} ${typeN}");
         // // typeN.
-        if (!type.startsWith("\$_") || !_isPStateModel(v)) {
+        final fe = element.fields
+            .singleWhere((element) => element.name == v.name.name);
+        print("fe $fe");
+        if (!type.startsWith("\$_") ||
+            fe.type.element?.annotationFromType(PState) == null) {
           throw NotAllowedError(
               "Only PState models are allowed as late variables");
         }
-        final dt = getFullTypeName(
-            (v.declaredElement as FieldElement).type.element as ClassElement);
+        final dt = getFullTypeName(fe.type.element as ClassElement);
         psDeps.add(Field(name: name, type: type.substring(2), value: dt));
       } else {
         if (!type.endsWith("?") && valueE == null) {
@@ -191,11 +201,10 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   }
 
   bool _isPStateModel(VariableDeclaration v) {
-    return (v.declaredElement as FieldElement)
-            .type
-            .element
-            ?.annotationFromType(PState) !=
-        null;
+    final fe =
+        element.fields.singleWhere((element) => element.name == v.name.name);
+    print("fe $fe");
+    return fe.type.element?.annotationFromType(PState) != null;
   }
 }
 
@@ -601,4 +610,45 @@ Tuple2<String, Set<String>> processMethodStatements(
     
   """;
   return Tuple2(stataments, keys);
+}
+
+class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
+  final ClassElement element;
+
+  MethodAstVisitor(
+    this.element,
+  );
+  // viAs
+  @override
+  dynamic visitSimpleIdentifier(SimpleIdentifier node) {
+    final name = node.name;
+    print(
+        "visitSimpleIdentifier $name , Parent ${node.parent}, pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ${_isClassMemeber(name)}");
+    if (_isClassMemeber(name) && !_isThisParent(node.parent)) {
+      print(element.fields.map((e) => e.name));
+      throw NotAllowedError(
+          "You should access class memeber ${name} with this. prefix , example : this.${name} , if $name is not a class memeber probably you're shadowing variable if thats the case please use different name for your local variable");
+    }
+    return super.visitSimpleIdentifier(node);
+  }
+
+  // @override
+  // dynamic visitDeclaredIdentifier(DeclaredIdentifier node) {
+  //   print(
+  //       "DeclaredIdentifier visit ${node.runtimeType} ${node.identifier.name}");
+  //   return super.visitDeclaredIdentifier(node);
+  // }
+
+  bool _isClassMemeber(String name) =>
+      element.fields.where((element) => element.name == name).isNotEmpty;
+
+  bool _isThisParent(AstNode? node) {
+    if (node == null) {
+      return false;
+    }
+    if (node is PropertyAccess) {
+      return true;
+    }
+    return false;
+  }
 }
