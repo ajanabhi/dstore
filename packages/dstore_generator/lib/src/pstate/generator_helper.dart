@@ -160,7 +160,7 @@ String getPStateMeta(
           state.dontTouchMeStaticMeta = $navStaticMeta;
           state.dontTouchMeDynamicMeta = $navDynamicMeta;
         """ : ""}
-        return history;
+        return state;
       }
     """;
   }

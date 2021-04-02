@@ -2,12 +2,13 @@ import 'package:dstore/dstore.dart';
 import 'package:flutter/material.dart' hide Action;
 import "configuration/confiure_native.dart"
     if (dart.library.html) "configuration/configure_web.dart";
+export "router_deleagte.dart";
 
 abstract class NavStateI<M> extends PStateModel<M> {
   List<Page> buildPages();
   String? _url;
   String? get dontTouchMeUrl => _url;
-  set dontTouchUrl(String value) {
+  set dontTouchMeUrl(String? value) {
     _url = value;
   }
 

@@ -55,6 +55,7 @@ Future<String> generatePStateNavForClassElement(
       isNav: true,
       isPersiable: false,
       historyLimit: null,
+      navStaticMeta: _getNavStaticMeta(methods: methods, modelName: name),
       httpMeta: "",
       methods: methods);
   return """
@@ -66,13 +67,22 @@ Future<String> generatePStateNavForClassElement(
   """;
 }
 
+String _getNavStaticMeta(
+    {required List<PStateMethod> methods, required String modelName}) {
+  final m =
+      methods.where((m) => m.url != null && !m.url!.contains(":")).map((e) {
+    return "'${e.url}' : (Uri uri) { return state.dontTouchMeStore.dispatch(${modelName}Actions.${e.name}());}";
+  }).join(", ");
+  return "{$m}";
+}
+
 String _getStaticUrlMeta(
     {required List<PStateMethod> methods, required String modelName}) {
   final items = methods
       .where((element) => element.url != null && !element.url!.contains(":"))
       .map((e) {
     final Uri uri;
-    
+
     final fn = """
          (Uri uri) {
            retutn ${modelName}Action.${e.name}();
@@ -99,7 +109,6 @@ String _createPStateNavModel(
 
   final result = """
       
-      @immutable
       ${annotations.join("\n")}
       class ${name} extends NavStateI<$name> {
   
@@ -143,7 +152,6 @@ String _createActions(
       paramsList.add("Duration? debounce");
     }
     final mockName = getMockModelName(modelName: modelName, name: m.name);
-    paramsList.add("$mockName? mock");
     final params = paramsList.join(", ");
 
     var payload = m.params.isNotEmpty
@@ -155,8 +163,8 @@ String _createActions(
       payload = ", payload: ${payload}";
     }
     return """
-      static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action<$mockName>(name:"${m.name}",type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+      static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
+         return Action(name:"${m.name}",type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");
@@ -173,9 +181,10 @@ Tuple2<String, String>? getUrlFromMethod(
     MethodDeclaration md, List<Field> mparams) {
   final urlInput = md.metadata
       .map((e) => e.toSource())
-      .where((e) => e.startsWith("Url("))
+      .where((e) => e.startsWith("@Url("))
       .map((e) => e.substring(e.indexOf("(") + 2, e.length - 2))
       .firstOrNull;
+  logger.shout("Url Input $urlInput");
   if (urlInput != null) {
     var finalUrl = urlInput;
     if (urlInput.contains(":")) {
@@ -190,7 +199,7 @@ Tuple2<String, String>? getUrlFromMethod(
           .map((e) =>
               e is PathToken ? e.value : "\$${(e as ParameterToken).name}")
           .join("");
-      return Tuple2(urlInput, finalUrl);
     }
+    return Tuple2(urlInput, finalUrl);
   }
 }

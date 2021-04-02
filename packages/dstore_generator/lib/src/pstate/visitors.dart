@@ -592,7 +592,7 @@ Tuple2<String, Set<String>> processMethodStatements(
     ${(historyEnabled || url != null || isNav) ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
     ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
-    ${url != null ? " newState.dontTouchUrl = $url" : ""}
+    ${url != null ? " newState.dontTouchMeUrl = '$url';" : ""}
     ${isNav ? """ 
     newState.dontTouchMeStaticMeta = ${STATE_VARIABLE}.dontTouchMeStaticMeta;
     newState.dontTouchMeDynamicMeta = ${STATE_VARIABLE}.dontTouchMeDynamicMeta;
