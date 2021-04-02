@@ -152,14 +152,6 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       final valueE = v.initializer;
       if (v.isLate) {
         // check for psdeps
-        // logger.shout(
-        //     "VE ${v.runtimeType} ${v.declaredElement?.name} ${typeA.runtimeType}");
-        // final fe = v.declaredElement as FieldElement;
-        // logger.shout(
-        //     "Meta data ${fe.type.element?.metadata.map((e) => e.toSource())}");
-        // final typeN = typeA as TypeName;
-        // logger.shout("typeN ${typeN.type} ${typeN}");
-        // // typeN.
         final fe = element.fields
             .singleWhere((element) => element.name == v.name.name);
         print("fe $fe");
