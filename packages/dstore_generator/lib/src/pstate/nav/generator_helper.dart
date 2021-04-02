@@ -106,11 +106,12 @@ String _createPStateNavModel(
       .map((e) =>
           " ${e.type} get ${e.name} => dont_touch_me_store.state.${e.name} as ${e.type};")
       .join("\n");
+  final mixins = <String>["PStateStoreDepsMixin"];
 
   final result = """
       
       ${annotations.join("\n")}
-      class ${name} extends NavStateI<$name> {
+      class ${name} extends NavStateI<$name> with ${mixins.join(", ")} {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds

@@ -128,14 +128,12 @@ class Store<S extends AppStateI<S>> {
               ? ds.copyWithMap(sState[key]! as Map<String, dynamic>)
                   as PStateModel
               : ds;
-          if (psm.psDeps != null) {
-            ds.dontTouchMeStore = this;
-          }
+          _setStoreDepsForPState(ds, this);
           map[key] = ds;
         });
         _state = s.copyWithMap(map);
       }
-      final offA = await storage.getOfflineActions() as String;
+      final offA = await storage.getOfflineActions() as String?;
       if (offA != null) {
         final actions =
             (jsonDecode(offA) as List<Map<String, dynamic>>).map((e) {
@@ -165,13 +163,18 @@ class Store<S extends AppStateI<S>> {
       }
       _pStateTypeToStateKeyMap[psm.type] = key;
       final ps = psm.ds();
-      if (psm.psDeps != null) {
-        ps.dontTouchMeStore = this;
-      }
+      _setStoreDepsForPState(ps, this);
       map[key] = ps;
     });
     _state = s.copyWithMap(map);
     isReady = true;
+  }
+
+  void _setStoreDepsForPState(PStateModel m, Store? store) {
+    if (m is PStateStoreDepsMixin) {
+      final m1 = m as PStateStoreDepsMixin;
+      m1.dontTouchMeStore = store;
+    }
   }
 
   List<Dispatch> _createDispatchers(List<Middleware<S>> middlewares) {
@@ -251,7 +254,7 @@ class Store<S extends AppStateI<S>> {
         } on StorageError catch (e) {
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.ignore) {
-            previousState.dontTouchMeStore = null;
+            _setStoreDepsForPState(previousState, null);
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -276,7 +279,7 @@ class Store<S extends AppStateI<S>> {
             newState = previousState;
             previousState = newState;
             newGlobalStateMap[stateKey] = newState;
-            previousState.dontTouchMeStore = null;
+            _setStoreDepsForPState(previousState, null);
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -288,7 +291,7 @@ class Store<S extends AppStateI<S>> {
         }
       }
     } else {
-      previousState.dontTouchMeStore = null;
+      _setStoreDepsForPState(previousState, null);
       _state = _state.copyWithMap(newGlobalStateMap);
       _notifyListeners(
           stateKey: stateKey,
@@ -575,7 +578,7 @@ class Store<S extends AppStateI<S>> {
   void cleanup() {
     _unsubscribeNetworkStatusListener?.call();
     _state.toMap().forEach((key, value) {
-      value.dontTouchMeStore = null;
+      _setStoreDepsForPState(value, null);
     });
   }
 }

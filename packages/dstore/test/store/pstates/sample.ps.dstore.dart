@@ -7,7 +7,7 @@ part of 'sample.dart';
 // **************************************************************************
 
 @immutable
-class Sample extends PStateModel<Sample> {
+class Sample extends PStateModel<Sample> with PStateStoreDepsMixin {
   final String name;
 
   final int age;
@@ -26,7 +26,7 @@ class Sample extends PStateModel<Sample> {
       __$SampleCopyWithImpl<Sample>(this, IdentityFn);
 
   Sample(
-      {this.name = "hello1",
+      {this.name = "hello",
       this.age = 0,
       this.intStream = const StreamField(),
       this.list = const [],
@@ -377,7 +377,7 @@ Future<dynamic> Sample_AsyncReducer(
 }
 
 Sample Sample_DS() => Sample(
-    name: "hello1",
+    name: "hello",
     age: 0,
     intStream: StreamField(),
     list: [],

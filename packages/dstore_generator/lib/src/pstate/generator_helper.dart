@@ -149,9 +149,11 @@ String getPStateMeta(
     params.add(
         "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
-  if (enableHistory || isNav) {
+  if (enableHistory) {
     params.add("enableHistory: true");
     params.add("actionsMeta: ${jsonEncode(actionsMeta)}");
+  }
+  if (enableHistory || isNav) {
     defaultStateFn = """
       $modelName ${modelName}_DS() {
         final state = $defaultState;
@@ -386,7 +388,10 @@ String _createPStateModel(
   if (enableHistory) {
     mixins.add("PStateHistoryMixin<$name>");
   }
-  final m = mixins.isNotEmpty ? "with ${mixins.join(", ")}" : "";
+  if (psDeps.isNotEmpty) {
+    mixins.add("PStateStoreDepsMixin");
+  }
+  final m = mixins.isNotEmpty ? "with ${mixins.join(",")}" : "";
 
   final psFeilds = psDeps
       .map((e) =>
@@ -397,7 +402,7 @@ String _createPStateModel(
       
       @immutable
       ${annotations.join("\n")}
-      class ${name} $m extends PStateModel<$name> {
+      class ${name} extends PStateModel<$name> $m {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
