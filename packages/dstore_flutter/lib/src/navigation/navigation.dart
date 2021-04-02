@@ -28,7 +28,7 @@ class RouteInput {
   RouteInput({this.params, this.queryParams});
 }
 
-typedef UrlToAction = Action<dynamic> Function(Uri);
+typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
 abstract class NestedNavStateI {}
 

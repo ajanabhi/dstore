@@ -9,6 +9,8 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
   final Selector<S, NavStateI> selector;
   final Store<S> store;
   late final History history;
+  late NavStateI _navState;
+  late Dispatch _dispatch;
   DRouterDelegate({required this.selector, required this.store}) {
     history = createHistory();
     history.listen(handleUriChange);
@@ -16,13 +18,22 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
 
   void handleUriChange(Uri uri) {
     print("Uri Changed ${uri.path}");
+    final fn = _navState.dontTouchMeStaticMeta[uri.path.substring(1)];
+    if (fn != null) {
+      fn(uri, _dispatch);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    _dispatch = context.dispatch;
     return SelectorBuilder<S, NavStateI>(
       selector: selector,
+      onInitState: (context, state) {
+        _navState = state;
+      },
       onStateChange: (context, prevState, newState) {
+        // _navState = newState;
         print("State Change $newState");
         if (newState.dontTouchMeUrl != null) {
           history.push(newState.dontTouchMeUrl!);

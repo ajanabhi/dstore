@@ -71,7 +71,7 @@ String _getNavStaticMeta(
     {required List<PStateMethod> methods, required String modelName}) {
   final m =
       methods.where((m) => m.url != null && !m.url!.contains(":")).map((e) {
-    return "'${e.url}' : (Uri uri) { return state.dontTouchMeStore.dispatch(${modelName}Actions.${e.name}());}";
+    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}());}";
   }).join(", ");
   return "{$m}";
 }

@@ -139,9 +139,9 @@ String getPStateMeta(
   if (httpMeta.isNotEmpty) {
     params.add("httpMetaMap: $httpMeta");
   }
-  if (psDeps.isNotEmpty) {
-    params.add('psDeps: [${psDeps.map((e) => '"${e.value}"').join(", ")}]');
-  }
+  // if (psDeps.isNotEmpty) {
+  //   params.add('psDeps: [${psDeps.map((e) => '"${e.value}"').join(", ")}]');
+  // }
   if (isPersiable) {
     final smParams = <String>[];
     smParams.add("serializer: _\$${modelName}ToJson");

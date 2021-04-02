@@ -173,6 +173,7 @@ class Store<S extends AppStateI<S>> {
   void _setStoreDepsForPState(PStateModel m, Store? store) {
     if (m is PStateStoreDepsMixin) {
       final m1 = m as PStateStoreDepsMixin;
+      print("Setting store value for model $m store : $store");
       m1.dontTouchMeStore = store;
     }
   }
@@ -255,6 +256,7 @@ class Store<S extends AppStateI<S>> {
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.ignore) {
             _setStoreDepsForPState(previousState, null);
+            _setStoreDepsForPState(newState, this);
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -280,6 +282,7 @@ class Store<S extends AppStateI<S>> {
             previousState = newState;
             newGlobalStateMap[stateKey] = newState;
             _setStoreDepsForPState(previousState, null);
+            _setStoreDepsForPState(newState, this);
             _state = _state.copyWithMap(newGlobalStateMap);
             _notifyListeners(
                 stateKey: stateKey,
@@ -292,6 +295,7 @@ class Store<S extends AppStateI<S>> {
       }
     } else {
       _setStoreDepsForPState(previousState, null);
+      _setStoreDepsForPState(newState, this);
       _state = _state.copyWithMap(newGlobalStateMap);
       _notifyListeners(
           stateKey: stateKey,
@@ -537,7 +541,7 @@ class Store<S extends AppStateI<S>> {
     return internalMeta[sk]!;
   }
 
-  dynamic dispatch(Action<dynamic> action) async {
+  dynamic dispatch(Action<dynamic> action) {
     _dispatchers[0](action);
   }
 

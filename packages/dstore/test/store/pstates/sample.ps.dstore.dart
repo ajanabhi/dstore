@@ -297,6 +297,17 @@ abstract class SampleActions {
         mock: mock,
         isAsync: false);
   }
+
+  static Action<Iterable<int>> intStream(
+      {required Stream<int> stream,
+      bool cancelOnError = false,
+      Iterable<int>? mock}) {
+    return Action<Iterable<int>>(
+        name: "intStream",
+        type: _Sample_FullPath,
+        mock: mock,
+        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
+  }
 }
 
 dynamic Sample_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
@@ -388,5 +399,4 @@ final SampleMeta = PStateMeta<Sample>(
     type: _Sample_FullPath,
     reducer: Sample_SyncReducer,
     aReducer: Sample_AsyncReducer,
-    ds: Sample_DS,
-    psDeps: ["/dstore/test/store/pstates/sample2/sample2/Sample2"]);
+    ds: Sample_DS);
