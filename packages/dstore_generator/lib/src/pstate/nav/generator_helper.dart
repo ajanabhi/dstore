@@ -71,24 +71,26 @@ String _getNavStaticMeta(
     {required List<PStateMethod> methods, required String modelName}) {
   final m =
       methods.where((m) => m.url != null && !m.url!.contains(":")).map((e) {
-    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}());}";
+    var params = e.params
+        .singleWhereOrNull((p) => p.type.startsWith("Map<String,String>"))
+        ?.name;
+    if (params != null) {
+      params = "$params : uri.queryParameters";
+    } else {
+      params = "";
+    }
+    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}";
   }).join(", ");
   return "{$m}";
 }
 
-String _getStaticUrlMeta(
+String _getNavDynamicMeta(
     {required List<PStateMethod> methods, required String modelName}) {
-  final items = methods
-      .where((element) => element.url != null && !element.url!.contains(":"))
-      .map((e) {
-    final fn = """
-         (Uri uri) {
-           retutn ${modelName}Action.${e.name}();
-         }
-        """;
-    return '"${e.url}":$fn';
-  }).join(",");
-  return "{$items}";
+  final m =
+      methods.where((m) => m.url != null && m.url!.contains(":")).map((e) {
+    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}());}";
+  }).join(", ");
+  return "{$m}";
 }
 
 String _createPStateNavModel(
