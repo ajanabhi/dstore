@@ -71,14 +71,11 @@ String _getNavStaticMeta(
     {required List<PStateMethod> methods, required String modelName}) {
   final m =
       methods.where((m) => m.url != null && !m.url!.contains(":")).map((e) {
-    var params = e.params
+    final name = e.params
         .singleWhereOrNull((p) => p.type.startsWith("Map<String,String>"))
         ?.name;
-    if (params != null) {
-      params = "$params : uri.queryParameters";
-    } else {
-      params = "";
-    }
+
+    final params = name != null ? "$name : uri.queryParameters" : "";
     return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}";
   }).join(", ");
   return "{$m}";
@@ -88,7 +85,36 @@ String _getNavDynamicMeta(
     {required List<PStateMethod> methods, required String modelName}) {
   final m =
       methods.where((m) => m.url != null && m.url!.contains(":")).map((e) {
-    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}());}";
+    final parameters = <String>[];
+    pathToRegExp('${e.url}', parameters: parameters);
+    final params = <String>[];
+    e.params.forEach((p) {
+      final name = p.name;
+      if (parameters.contains(p)) {
+        // path param
+        if (p.type == "num") {
+          params.add("$name: num.parse(params['$name']) ");
+        } else if (p.type == "int") {
+          params.add("$name: int.parse(params['$name']) ");
+        } else if (p.type == "double") {
+          params.add("$name: double.parse(params['$name']) ");
+        } else {
+          params.add("$name : params['$name']");
+        }
+      } else if (p.type.startsWith("Map<String,String>")) {
+        // query params
+        params.add("$name: uri.queryParameters");
+      }
+    });
+    return """'${e.url}' : 
+    (Uri uri,Dispatch dispatch) { 
+      final path = uri.path;
+      final parameters = <String>[];
+      final regExp = pathToRegExp('${e.url}', parameters: parameters);
+      final match = regExp.matchAsPrefix(path);
+      final params = extract(parameters, match);
+      return dispatch(${modelName}Actions.${e.name}(${params.join(", ")}));
+    }""";
   }).join(", ");
   return "{$m}";
 }
