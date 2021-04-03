@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:dstore_flutter/src/navigation/history/history.dart';
@@ -7,19 +9,20 @@ import 'package:flutter/material.dart';
 class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
-  final Store<S> store;
   late final History history;
   late NavStateI _navState;
   late Dispatch _dispatch;
-  DRouterDelegate({required this.selector, required this.store}) {
+  bool _triggerFromHostory = false;
+  DRouterDelegate({required this.selector}) {
     history = createHistory();
     history.listen(handleUriChange);
   }
 
   void handleUriChange(Uri uri) {
-    print("Uri Changed ${uri.path}");
+    print("Uri Changed2 ${uri.path}");
     final fn = _navState.dontTouchMeStaticMeta[uri.path.substring(1)];
     if (fn != null) {
+      _triggerFromHostory = true;
       fn(uri, _dispatch);
     }
   }
@@ -32,11 +35,15 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
       onInitState: (context, state) {
         _navState = state;
       },
-      onStateChange: (context, prevState, newState) {
-        // _navState = newState;
-        print("State Change $newState");
-        if (newState.dontTouchMeUrl != null) {
-          history.push(newState.dontTouchMeUrl!);
+      shouldRebuild: (context, prevState, newState) {
+        if (newState.redirectToAction != null) {
+          final action = newState.redirectToAction!;
+          newState.redirectToAction = null;
+          scheduleMicrotask(() => _dispatch(action));
+          return false;
+        } else {
+          _updateUrl(navState: newState);
+          return true;
         }
       },
       builder: (context, state) {
@@ -49,6 +56,23 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
         );
       },
     );
+  }
+
+  void _updateUrl({required NavStateI navState}) {
+    if (_triggerFromHostory) {
+      _triggerFromHostory = false;
+    } else {
+      if (navState.dontTouchMeUrl != null) {
+        final url = navState.dontTouchMeUrl!;
+        // print("pusing url ${navState.dontTouchMeUrl}");
+        if (navState.historyUpdate == HistoryUpdate.replace) {
+          history.replace(url);
+        } else {
+          history.push(url);
+        }
+        navState.historyUpdate = null;
+      }
+    }
   }
 
   @override

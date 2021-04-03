@@ -81,14 +81,12 @@ String _getStaticUrlMeta(
   final items = methods
       .where((element) => element.url != null && !element.url!.contains(":"))
       .map((e) {
-    final Uri uri;
-
     final fn = """
          (Uri uri) {
            retutn ${modelName}Action.${e.name}();
          }
         """;
-    return '"${e.url}":';
+    return '"${e.url}":$fn';
   }).join(",");
   return "{$items}";
 }
@@ -186,9 +184,11 @@ Tuple2<String, String>? getUrlFromMethod(
       .map((e) => e.substring(e.indexOf("(") + 2, e.length - 2))
       .firstOrNull;
   logger.shout("Url Input $urlInput");
+  var errorMessage = "";
   if (urlInput != null) {
     var finalUrl = urlInput;
     if (urlInput.contains(":")) {
+      // dynamic url
       final parameters = <String>[];
       pathToRegExp(urlInput, parameters: parameters);
       final mp = mparams.map((e) => e.name).toSet();
@@ -200,7 +200,64 @@ Tuple2<String, String>? getUrlFromMethod(
           .map((e) =>
               e is PathToken ? e.value : "\$${(e as ParameterToken).name}")
           .join("");
+      if (mparams.length != parameters.length) {
+        errorMessage =
+            "apart from path params  $parameters action method ${md.name} can have only two extra params at most, param1 of type Map<String,String> that is to specify query params, param2 of type HistoryUpdate? to indicate history whether to push or replace url in history";
+        finalUrl =
+            _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
+                params: mparams, message: errorMessage, url: finalUrl);
+      }
+    } else {
+      // static url
+      errorMessage =
+          "static url action method ${md.name} should have only two params at most, param1 of type Map<String,String> that is to specify query params, param2 of type HistoryUpdate? to indicate history whether to push or replace url in history";
+      finalUrl =
+          _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
+              params: mparams, message: errorMessage, url: urlInput);
     }
     return Tuple2(urlInput, finalUrl);
   }
 }
+
+String _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
+    {required List<Field> params,
+    required String message,
+    required String url}) {
+  final qp = "Map<String,String>";
+  final hu = "HistoryUpdate?";
+  var result = url;
+  bool isAllowedType(String type) => type.startsWith(qp) || type.startsWith(hu);
+  if (params.length > 2) {
+    throw InvalidSignatureError(message);
+  }
+  if (params.length == 2) {
+    final fp = params.first;
+    final sp = params.last;
+    if (!isAllowedType(fp.type) || !isAllowedType(sp.type)) {
+      throw InvalidSignatureError(message);
+    }
+    var name = "";
+    if (fp.type.startsWith(qp)) {
+      name = fp.name;
+    }
+    if (sp.type.startsWith(hu)) {
+      name = sp.name;
+    }
+    result = "$url?\${Uri(queryParameters: \${${name}})}";
+  }
+  if (params.length == 1) {
+    final p = params.first;
+    if (!isAllowedType(p.type)) {
+      throw InvalidSignatureError(message);
+    }
+    if (p.type.startsWith(qp)) {
+      result = "$url?\${Uri(queryParameters: \${${p.name}})}";
+    }
+  }
+
+  return result;
+}
+
+// String _convertMapToQueryParams(Map<String,String> map) {
+//   Uri(queryParameters: )
+// }
