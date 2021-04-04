@@ -13,6 +13,7 @@ https://ulusoyca.medium.com/flutter-navigator-2-0-for-authentication-and-bootstr
 
 https://lucasdelsol01.medium.com/flutter-navigator-2-0-for-mobile-dev-bloc-state-management-integration-3a180b4d25b3
 
+https://github.com/flutter/flutter/issues/74437
 
 UI : 
 

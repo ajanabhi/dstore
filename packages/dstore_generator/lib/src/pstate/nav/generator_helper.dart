@@ -56,6 +56,7 @@ Future<String> generatePStateNavForClassElement(
       isPersiable: false,
       historyLimit: null,
       navStaticMeta: _getNavStaticMeta(methods: methods, modelName: name),
+      navDynamicMeta: _getNavDynamicMeta(methods: methods, modelName: name),
       httpMeta: "",
       methods: methods);
   return """
@@ -98,8 +99,11 @@ String _getNavDynamicMeta(
           params.add("$name: int.parse(params['$name']) ");
         } else if (p.type == "double") {
           params.add("$name: double.parse(params['$name']) ");
-        } else {
+        } else if (p.type == "String") {
           params.add("$name : params['$name']");
+        } else {
+          throw InvalidSignatureError(
+              "in method '${e.name} , path param '${name}' type can be one of String/int/double/num , but you specified ${p.type}");
         }
       } else if (p.type.startsWith("Map<String,String>")) {
         // query params
