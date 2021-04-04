@@ -12,7 +12,8 @@ class AppStateGenerator extends GeneratorForAnnotation<AppStateAnnotation> {
       Element element, ConstantReader annotation, BuildStep buildStep) {
     try {
       if (!(element is FunctionElement)) {
-        throw NotAllowedError("AppStateAnnotation can only be used on classes");
+        throw NotAllowedError(
+            "AppStateAnnotation can only be used on functions");
       }
       if (!element.name.startsWith("\$_")) {
         throw NotAllowedError(

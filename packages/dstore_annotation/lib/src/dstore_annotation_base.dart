@@ -160,3 +160,9 @@ class Url {
   final String path;
   const Url(this.path);
 }
+
+class OpenApi {
+  final String file;
+
+  OpenApi(this.file);
+}
