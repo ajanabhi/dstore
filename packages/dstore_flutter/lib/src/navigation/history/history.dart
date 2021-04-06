@@ -6,7 +6,7 @@ typedef HistoryListener = void Function(Uri uri);
 
 abstract class History {
   VoidCallback listen(HistoryListener listener);
-
+  bool urlChangedInSystem = false;
   void push(String url);
   void replace(String url);
 }

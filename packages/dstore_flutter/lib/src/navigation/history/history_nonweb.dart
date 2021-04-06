@@ -1,7 +1,7 @@
 import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:flutter/material.dart';
 
-class HistoryImpl implements History {
+class HistoryImpl extends History {
   @override
   VoidCallback listen(HistoryListener listener) {
     //noop

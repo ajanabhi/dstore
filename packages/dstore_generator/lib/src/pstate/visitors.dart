@@ -5,7 +5,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
-import 'package:dstore_generator/src/pstate/nav/generator_helper.dart';
+import 'package:dstore_generator/src/pstate/nav/nav_generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';

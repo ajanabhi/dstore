@@ -33,7 +33,7 @@ class RouteInput {
 
 typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
-abstract class NestedNavStateI {}
+abstract class NestedNavStateI extends NavStateI<dynamic> {}
 
 void configureNav() {
   configurePlatForm();

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:dstore_flutter/src/navigation/history/history.dart';
+import 'package:dstore_flutter/src/navigation/navigation_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -30,37 +31,39 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
   @override
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
-    return SelectorBuilder<S, NavStateI>(
-      selector: selector,
-      onInitState: (context, state) {
-        _navState = state;
-      },
-      shouldRebuild: (context, prevState, newState) {
-        if (newState.redirectToAction != null) {
-          final action = newState.redirectToAction!;
-          newState.redirectToAction = null;
-          scheduleMicrotask(() => _dispatch(action));
-          return false;
-        } else {
-          _updateUrl(navState: newState);
-          return true;
-        }
-      },
-      builder: (context, state) {
-        return Navigator(
-          pages: state.buildPages(),
-          onPopPage: (route, dynamic result) {
-            print("on Pop Page");
-            return false;
+    return NavigationProvider(
+        history: history,
+        child: SelectorBuilder<S, NavStateI>(
+          selector: selector,
+          onInitState: (context, state) {
+            _navState = state;
           },
-        );
-      },
-    );
+          shouldRebuild: (context, prevState, newState) {
+            if (newState.redirectToAction != null) {
+              final action = newState.redirectToAction!;
+              newState.redirectToAction = null;
+              scheduleMicrotask(() => _dispatch(action));
+              return false;
+            } else {
+              _updateUrl(navState: newState);
+              return true;
+            }
+          },
+          builder: (context, state) {
+            return Navigator(
+              pages: state.buildPages(),
+              onPopPage: (route, dynamic result) {
+                print("on Pop Page");
+                return false;
+              },
+            );
+          },
+        ));
   }
 
   void _updateUrl({required NavStateI navState}) {
-    if (_triggerFromHostory) {
-      _triggerFromHostory = false;
+    if (history.urlChangedInSystem) {
+      history.urlChangedInSystem = false;
     } else {
       if (navState.dontTouchMeUrl != null) {
         final url = navState.dontTouchMeUrl!;

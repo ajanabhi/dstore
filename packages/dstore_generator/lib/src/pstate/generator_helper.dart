@@ -3,6 +3,7 @@ import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
+import 'package:dstore_generator/src/pstate/nav/nav_generator_helper.dart';
 import 'package:dstore_generator/src/pstate/persitance.dart';
 import 'package:dstore_generator/src/pstate/stream.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
@@ -14,13 +15,16 @@ import "dart:convert";
 
 Future<String> generatePStateForClassElement(
     ClassElement element, BuildStep buildStep) async {
+  final pstate = element.getPState();
+  if (pstate.nav == true) {
+    return await generatePStateNavForClassElement(element, buildStep);
+  }
   final typeParamsTuple =
       AstUtils.getTypeParamsAndBounds(element.typeParameters);
   final typeParamsWithBounds = typeParamsTuple.item2;
   final typeParams = typeParamsTuple.item1;
   final modelName = element.name.substring(2);
 
-  final pstate = element.getPState();
   final isPerssit = isPersitable(pstate);
   final visitor = PStateAstVisitor(
       element: element,
@@ -233,9 +237,11 @@ extension PStateExtension on ClassElement {
     final persit = reader.peek("persit")?.boolValue;
     final enableHistory = reader.peek("enableHistory")?.boolValue;
     final historyLimit = reader.peek("historyLimit")?.intValue;
+    final nav = reader.peek("nav")?.boolValue;
     return PState(
         persist: persit,
         enableHistory: enableHistory ?? false,
+        nav: nav,
         historyLimit: historyLimit);
   }
 }

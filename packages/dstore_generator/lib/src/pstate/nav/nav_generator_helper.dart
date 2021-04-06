@@ -13,9 +13,12 @@ Future<String> generatePStateNavForClassElement(
     ClassElement element, BuildStep buildStep) async {
   final isNavInterfaceImplemented =
       AstUtils.isSubTypeof(element.thisType, "NavStateI");
-  if (isNavInterfaceImplemented == null) {
+  final isNestedNavInterfaceImplemented =
+      AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
+  if (isNavInterfaceImplemented == null ||
+      isNestedNavInterfaceImplemented == null) {
     throw InvalidSignatureError(
-        "NavState ${element.name} should implement NavigationI interface");
+        "PState ${element.name} should extend NavStatedI / NestedNavStateI ");
   }
 
   final typeParamsTuple =

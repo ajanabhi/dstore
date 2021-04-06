@@ -3,7 +3,7 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:flutter/src/widgets/navigator.dart';
 part 'nav.ps.dstore.dart';
 
-@PStateNav()
+@PState(nav: true)
 class $_NavState extends NavStateI<dynamic> {
   String page = "";
   @override

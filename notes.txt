@@ -19,3 +19,9 @@ UI :
 
 
 https://ulusoyca.medium.com/switching-between-client-specific-themes-for-b2b-flutter-apps-part-i-design-c9c501700c0e
+
+https://www.instaflutter.com/flutter-tutorials/flutter-charts/
+
+Logging: 
+
+https://fredgrott.medium.com/logging-the-expert-way-5beb5c967e44

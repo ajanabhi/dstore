@@ -6,7 +6,6 @@ import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema_generator.dart';
 import 'package:dstore_generator/src/dimmutable/immutable_generator.dart';
-import 'package:dstore_generator/src/pstate/nav/nav.dart';
 import 'package:dstore_generator/src/pstate/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors/selectors_generator.dart';
 import 'package:dstore_generator/src/utils/builder_utils.dart';
@@ -19,7 +18,7 @@ Builder dstorePSGen(BuilderOptions options) {
   print("************************* options ${options.config}");
   PStateGeneratorBuildOptions.fromOptions(options.config);
   return PartBuilder(
-    [PStateGenerator(), PStaeNavGenrator()],
+    [PStateGenerator()],
     '.ps.dstore.dart',
   );
 }

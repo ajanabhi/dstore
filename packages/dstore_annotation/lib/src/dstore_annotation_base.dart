@@ -4,7 +4,9 @@ class PState {
   final bool? persist;
   final bool enableHistory;
   final int? historyLimit;
-  const PState({this.persist, this.enableHistory = false, this.historyLimit});
+  final bool? nav;
+  const PState(
+      {this.persist, this.enableHistory = false, this.historyLimit, this.nav});
 }
 
 class Selectors {
@@ -150,10 +152,6 @@ class Validator {
 
 class DUnion {
   const DUnion();
-}
-
-class PStateNav {
-  const PStateNav();
 }
 
 class Url {
