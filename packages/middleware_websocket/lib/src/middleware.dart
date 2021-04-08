@@ -310,7 +310,7 @@ class DWebSocket {
             data: data.copyWith(
                 internalUnsubscribe: Optional(_getUnSunscribeFuntion(action))),
             processed: true,
-            type: ActionInternalType.DATA)));
+            type: ActionInternalType.FIELD)));
   }
 
   bool removeFromSubscriptions(Action action) {

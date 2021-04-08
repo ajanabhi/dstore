@@ -99,7 +99,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
-            processed: true, type: ActionInternalType.DATA, data: nff)));
+            processed: true, type: ActionInternalType.FIELD, data: nff)));
   }
 }
 

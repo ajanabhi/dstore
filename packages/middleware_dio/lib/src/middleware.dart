@@ -83,7 +83,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,
-            type: ActionInternalType.DATA,
+            type: ActionInternalType.FIELD,
             data: HttpField(
                 data: payload.optimisticResponse,
                 abortController: abortController,
@@ -92,7 +92,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,
-            type: ActionInternalType.DATA,
+            type: ActionInternalType.FIELD,
             data: HttpField(loading: true, abortController: abortController))));
   }
   late final Response? response;
@@ -144,7 +144,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true,
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
               data: field.copyWith(loading: false, offline: true))));
     } else {
       var ef = HttpField(error: error);
@@ -153,7 +153,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       }
       store.dispatch(action.copyWith(
           internal: ActionInternal(
-              processed: true, type: ActionInternalType.DATA, data: ef)));
+              processed: true, type: ActionInternalType.FIELD, data: ef)));
     }
   }
   if (response != null) {
@@ -182,7 +182,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
-            processed: true, type: ActionInternalType.DATA, data: hf)));
+            processed: true, type: ActionInternalType.FIELD, data: hf)));
   }
 }
 

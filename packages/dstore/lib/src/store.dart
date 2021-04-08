@@ -197,11 +197,11 @@ class Store<S extends AppStateI<S>> {
     var newS = currentS;
     if (action.isProcessed) {
       // processed by middlewares
-      if (action.internal?.type == ActionInternalType.DATA) {
+      if (action.internal?.type == ActionInternalType.FIELD) {
         final csMap = currentS.toMap();
         csMap[action.name] = action.internal!.data;
         newS = currentS.copyWithMap(csMap) as PStateModel;
-      } else if (action.internal!.type == ActionInternalType.STATE) {
+      } else if (action.internal!.type == ActionInternalType.PSTATE) {
         newS = action.internal!.data as PStateModel;
       }
     } else {

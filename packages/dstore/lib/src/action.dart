@@ -73,4 +73,4 @@ abstract class ActionInternal with _$ActionInternal {
   }) = _ActionInternal;
 }
 
-enum ActionInternalType { DATA, STATE }
+enum ActionInternalType { FIELD, PSTATE }

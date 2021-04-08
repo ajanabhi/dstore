@@ -72,7 +72,7 @@ void _resolveDiscriminators(OpenApiSchema spec) {
   }
 }
 
-String getRef(String $ref) {
+String _getRef(String $ref) {
   final schema = $ref.replaceAndReturn("#/components/schemas/");
   if (schema != null) {
     return schema.cpatialize;
@@ -93,4 +93,27 @@ String getRef(String $ref) {
 
   throw ArgumentError.value(
       "This library only resolve \$ref that are include into '#components/*' for now");
+}
+
+String _getTypeName(SchemaOrReference sor) {
+  if (sor.ref != null) {
+    return _getRef(sor.ref!.$ref);
+  }
+  final schema = sor.schema!;
+  final isOptional = schema.nullable;
+  final nullable = isOptional ? "?" : "";
+  switch (schema.type) {
+    case "int32":
+    case "int64":
+    case "integer":
+    case "long":
+      return "int$nullable";
+    case "number":
+      return "num$nullable";
+    case "float":
+    case "double":
+      return "double$nullable";
+    default:
+      return "dynamic";
+  }
 }

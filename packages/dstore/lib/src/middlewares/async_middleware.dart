@@ -15,7 +15,7 @@ dynamic asyncMiddleware<S extends AppStateI<S>>(
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,
-            type: ActionInternalType.DATA,
+            type: ActionInternalType.FIELD,
             data: AsyncActionField(loading: true))));
     try {
       final s = await psm.aReducer!(currentS, action) as PStateModel;
@@ -24,12 +24,12 @@ dynamic asyncMiddleware<S extends AppStateI<S>>(
       final newS = s.copyWithMap(asm) as PStateModel;
       store.dispatch(action.copyWith(
           internal: ActionInternal(
-              processed: true, data: newS, type: ActionInternalType.STATE)));
+              processed: true, data: newS, type: ActionInternalType.PSTATE)));
     } catch (e) {
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true,
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
               data: AsyncActionField(error: e, completed: true))));
     }
   }

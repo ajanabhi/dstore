@@ -14,7 +14,7 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
       //  already listening
       store.dispatch(action.copyWith(
           internal: ActionInternal(
-              processed: true, type: ActionInternalType.DATA, data: field)));
+              processed: true, type: ActionInternalType.FIELD, data: field)));
     } else {
       final stream = action.stream!.stream;
       final cancelOnError = action.stream!.cancelOnError;
@@ -26,7 +26,7 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
               processed: true,
               data: field.copyWith(
                   data: event, firstEventArrived: true, error: null),
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
             )));
           },
           cancelOnError: cancelOnError,
@@ -38,7 +38,7 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
               data: field.copyWith(
                   error: Optional<dynamic>(e),
                   completed: cancelOnError ? true : false),
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
             )));
           },
           onDone: () {
@@ -47,13 +47,13 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
                 internal: ActionInternal(
               processed: true,
               data: field.copyWith(listening: false, completed: true),
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
             )));
           });
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true,
-              type: ActionInternalType.DATA,
+              type: ActionInternalType.FIELD,
               data:
                   field.copyWith(internalSubscription: sub, listening: true))));
     }
