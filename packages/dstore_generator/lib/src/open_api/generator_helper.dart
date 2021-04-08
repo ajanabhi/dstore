@@ -173,9 +173,7 @@ void _createDartModelFromSchemaObject(Schema schema, String name) {
       }).toList() ??
       [];
 
-  final result = """
-  
-  
-  """;
+  final result = ModelUtils.createDefaultDartModelFromFeilds(
+      fields: fields, className: name, isJsonSerializable: true);
   types.add(result);
 }

@@ -175,4 +175,37 @@ abstract class ModelUtils {
     }
   """;
   }
+
+  static String createDefaultDartModelFromFeilds(
+      {required List<Field> fields,
+      required String className,
+      String annotations = "",
+      bool isJsonSerializable = false}) {
+    if (annotations.isEmpty && isJsonSerializable) {
+      annotations = "@JsonSerializable()";
+    }
+    return """
+   $annotations 
+   class $className {
+         
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
+     
+     ${ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: "")}
+      
+     ${ModelUtils.createConstructorFromFieldsList(className, fields)}
+     
+      ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
+
+      ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
+
+     ${ModelUtils.createEqualsFromFieldsList(className, fields)}
+
+     ${ModelUtils.createHashcodeFromFieldsList(fields)}
+
+     ${ModelUtils.createToStringFromFieldsList(className, fields)}
+    }
+
+    ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "")}
+    """;
+  }
 }
