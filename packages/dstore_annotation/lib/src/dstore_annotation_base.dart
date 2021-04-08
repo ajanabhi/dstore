@@ -162,5 +162,5 @@ class Url {
 class OpenApi {
   final String file;
 
-  OpenApi(this.file);
+  const OpenApi(this.file);
 }

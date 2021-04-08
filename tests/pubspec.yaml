@@ -1,0 +1,20 @@
+name: dstore_test_suite
+description: A starting point for Dart libraries or applications.
+# version: 1.0.0
+# homepage: https://www.example.com
+
+environment:
+  sdk: '>=2.10.0 <3.0.0'
+
+dependencies:
+ flutter:
+   sdk: flutter 
+ dstore_flutter:
+   path: ../packages/dstore_flutter/
+
+dev_dependencies:
+  test: ^1.14.4
+  build_runner: 
+  dstore_generator:
+    path: ../packages/dstore_generator/  
+  grinder: 

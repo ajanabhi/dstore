@@ -6,6 +6,7 @@ import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema_generator.dart';
 import 'package:dstore_generator/src/dimmutable/immutable_generator.dart';
+import 'package:dstore_generator/src/open_api/open_api_generator.dart';
 import 'package:dstore_generator/src/pstate/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors/selectors_generator.dart';
 import 'package:dstore_generator/src/utils/builder_utils.dart';
@@ -23,12 +24,12 @@ Builder dstorePSGen(BuilderOptions options) {
   );
 }
 
-Builder dstoreGqlGen(BuilderOptions options) {
+Builder dstoreApiGen(BuilderOptions options) {
   print("************************* options ${options.config}");
 
   return PartBuilder(
-    [GraphlSchemaGenerator(), GraphqlOpsGenerator()],
-    '.gql.dstore.dart',
+    [GraphlSchemaGenerator(), GraphqlOpsGenerator(), OpenApiGenerator()],
+    '.api.dstore.dart',
   );
 }
 
