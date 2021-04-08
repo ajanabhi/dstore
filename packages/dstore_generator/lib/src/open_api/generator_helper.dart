@@ -19,6 +19,8 @@ String createOpenApi(
   return """""";
 }
 
+final types = <String>[];
+
 OpenApiSchema getSchemaFromFile(String file) {
   final content = File(file).readAsStringSync();
   Map<String, dynamic> map;
@@ -95,7 +97,7 @@ String _getRef(String $ref) {
       "This library only resolve \$ref that are include into '#components/*' for now");
 }
 
-String _getTypeName(SchemaOrReference sor) {
+String _getTypeName(SchemaOrReference sor, String objectName) {
   if (sor.ref != null) {
     return _getRef(sor.ref!.$ref);
   }
@@ -113,7 +115,67 @@ String _getTypeName(SchemaOrReference sor) {
     case "float":
     case "double":
       return "double$nullable";
+    case "string":
+    case "byte":
+    case "binary":
+    case "date-time":
+    case "dateTime":
+    case "password":
+      return "String$nullable"; //TODO enums schema.enum
+    case "boolean":
+      return "bool$nullable";
+    case "array":
+      if (schema.items != null) {
+        return "List<${_getTypeName(schema.items!, objectName)}>$nullable";
+      } else {
+        throw ArgumentError.value(
+            "All array schema types should have items field");
+      }
+
+    case "object":
+      if (schema.oneOf != null ||
+          schema.anyOf != null ||
+          schema.allOf != null) {
+        return "dynamic/*  ${_getCombinedTypes(schema)} */";
+      }
+      _createDartModelFromSchemaObject(schema, objectName);
+      return "$objectName$nullable";
     default:
       return "dynamic";
   }
+}
+
+String _getCombinedTypes(Schema schema) {
+  if (schema.allOf != null) {
+    return "allof ${schema.allOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+  }
+  if (schema.anyOf != null) {
+    return "anyOf ${schema.anyOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+  }
+  if (schema.oneOf != null) {
+    return "oneOf ${schema.oneOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+  }
+  return "";
+}
+
+void _createDartModelFromSchemaObject(Schema schema, String name) {
+  if (schema.type != "object") {
+    throw ArgumentError.value("You should provide schema of type object");
+  }
+  final fields = schema.properties?.entries.map((e) {
+        final fn = e.key;
+        var type = _getTypeName(e.value, "${name}_${fn.cpatialize}");
+        final isRequired = schema.required?.contains(fn) ?? false;
+        if (!isRequired) {
+          type = "$type?";
+        }
+        return Field(name: fn, type: type, isOptional: !isRequired);
+      }).toList() ??
+      [];
+
+  final result = """
+  
+  
+  """;
+  types.add(result);
 }
