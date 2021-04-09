@@ -35,8 +35,32 @@ String _getUrl(OpenApiSchema schema) {
 
 String _convertPaths(OpenApiSchema schema) {
   schema.paths.entries.map((e) {
-    final name = e.key;
-    e.value.
+    final path = e.key;
+    final ops = <String>{};
+    final methodAndOp = <String, Operation>{};
+    if (e.value.get != null) {
+      methodAndOp["GET"] = e.value.get!;
+    } else if (e.value.post != null) {
+      methodAndOp["POST"] = e.value.post!;
+    } else if (e.value.delete != null) {
+      methodAndOp["DELETE"] = e.value.delete!;
+    } else if (e.value.put != null) {
+      methodAndOp["PUT"] = e.value.put!;
+    } else if (e.value.patch != null) {
+      methodAndOp["PATCH"] = e.value.post!;
+    }
+    methodAndOp.forEach((method, op) {
+      if (op.operationId == null) {
+        throw ArgumentError.value(
+            "operationId for path $path and method $method should not be null ");
+      }
+      final oid = op.operationId!;
+      if (ops.contains(oid)) {
+        throw ArgumentError.value(
+            "operationId $oid is already used, please use unique values for operation Ids");
+      }
+      ops.add(oid);
+    });
   });
 
   return """""";
