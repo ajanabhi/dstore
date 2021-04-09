@@ -15,8 +15,44 @@ String createOpenApi(
   final schema = getSchemaFromFile(file);
   logger.shout("Schema Bro");
   print(schema);
-  _resolveDiscriminators(schema);
+  // _resolveDiscriminators(schema);
+  schema.components?.schemas?.forEach((key, value) {
+    if (value.schema != null && value.schema!.type == "object") {
+      _createDartModelFromSchemaObject(value.schema!, key);
+    }
+  });
+  final url = _getUrl(schema);
+
   return """""";
+}
+
+String _getUrl(OpenApiSchema schema) {
+  if (schema.servers == null || schema.servers!.isEmpty) {
+    return "";
+  }
+  return schema.servers!.first.url;
+}
+
+String _convertPaths(OpenApiSchema schema) {
+  schema.paths.entries.map((e) {
+    final name = e.key;
+    e.value.
+  });
+
+  return """""";
+}
+
+List<String> _getParamsInPath(String path) {
+  final result = <String>[];
+  final regEx = RegExp(r"\{(\w+)}");
+  final matches = regEx.allMatches(path);
+  matches.forEach((m) {
+    final f = m.group(1);
+    if (f != null) {
+      result.add(f);
+    }
+  });
+  return result;
 }
 
 final types = <String>[];
