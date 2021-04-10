@@ -60,10 +60,29 @@ String _convertPaths(OpenApiSchema schema) {
             "operationId $oid is already used, please use unique values for operation Ids");
       }
       ops.add(oid);
+      op.parameters?.forEach((por) {
+        final p = _getParameterFromParamOrRef(schema, por);
+        if (p.o_in == "query") {
+        } else if (p.o_in == "path") {}
+      });
     });
   });
 
   return """""";
+}
+
+Parameter _getParameterFromParamOrRef(OpenApiSchema schema, ParamOrRef por) {
+  if (por.param != null) {
+    return por.param!;
+  }
+  final ref = por.ref!.$ref;
+  final refName = _getRef(ref);
+  final por2 = schema.components?.parameters?[refName];
+  if (por2 == null) {
+    throw ArgumentError.value(
+        "Parameter ref $ref is not defined in schmea.components.parameters");
+  }
+  return _getParameterFromParamOrRef(schema, por2);
 }
 
 List<String> _getParamsInPath(String path) {
