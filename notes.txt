@@ -25,3 +25,9 @@ https://www.instaflutter.com/flutter-tutorials/flutter-charts/
 Logging: 
 
 https://fredgrott.medium.com/logging-the-expert-way-5beb5c967e44
+
+
+OpenAPI Samples:
+
+https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist/openapi/account-info-openapi.yaml
+

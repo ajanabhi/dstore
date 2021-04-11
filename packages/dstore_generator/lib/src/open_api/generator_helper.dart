@@ -8,6 +8,9 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:open_api_schema/v3.dart';
 import 'package:yaml/yaml.dart';
 
+ const APPLICATION_JSON = "application/json";
+  const  APPLICATION_OCTET_STREAM = "application/octet-stream";
+
 String createOpenApi(
     {required ClassElement element, required BuildStep buildStep}) {
   final opneApi = _getOpenApiAnnotation(element);
@@ -81,6 +84,7 @@ String _convertPaths(OpenApiSchema schema) {
               "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
         }
       }
+      op.requestBody
     });
   });
 
