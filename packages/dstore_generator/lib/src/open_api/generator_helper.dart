@@ -60,11 +60,27 @@ String _convertPaths(OpenApiSchema schema) {
             "operationId $oid is already used, please use unique values for operation Ids");
       }
       ops.add(oid);
+      final pathParamsAndTypes = <String, String>{};
+      final queryParamsAndTypes = <String, String>{};
       op.parameters?.forEach((por) {
         final p = _getParameterFromParamOrRef(schema, por);
+        final objectName = "${oid}_${p.name.cpatialize}";
+        final type = _getTypeName(p.schema!, objectName);
         if (p.o_in == "query") {
-        } else if (p.o_in == "path") {}
+          queryParamsAndTypes[p.name] = type;
+        } else if (p.o_in == "path") {
+          pathParamsAndTypes[p.name] = type;
+        }
       });
+      if (pathParamsAndTypes.isNotEmpty) {
+        final pathParams = _getParamsInPath(path).toSet();
+        final typesList = pathParamsAndTypes.keys.toSet();
+        if (pathParams.length != typesList.length ||
+            !pathParams.containsAll(typesList)) {
+          throw ArgumentError.value(
+              "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
+        }
+      }
     });
   });
 
