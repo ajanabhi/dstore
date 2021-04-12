@@ -85,22 +85,56 @@ String _convertPaths(OpenApiSchema schema) {
               "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
         }
       }
-      op.requestBody
+      final it = _getInputTypeFromReqoRRef(
+          schema: schema, ror: op.requestBody, name: oid);
+      // op.requestBody
     });
   });
 
   return """""";
 }
 
-InputType _getInputTypeFromReqoRRef(
-    {required OpenApiSchema schema, required RequestBodyOrReference ror,required }) {
-      RequestBody rb;
-      if(ror.ref != null) {
-         
-      } else {
-        rb = ror.req!;
+InputType? _getInputTypeFromReqoRRef(
+    {required OpenApiSchema schema,
+    required RequestBodyOrReference? ror,
+    required String name}) {
+  if (ror == null) {
+    return null;
+  }
+  RequestBody getRequestBody(RequestBodyOrReference ror) {
+    if (ror.ref != null) {
+      final refName =
+          ror.ref!.$ref.replaceFirst("#/components/requestBodies/", "");
+      final ror2 = schema.components?.requestBodies?[refName];
+      if (ror2 == null) {
+        throw ArgumentError.value(
+            "You used requestbody ref $refName but you didn't specified in components.requestBodies");
       }
-  return InputType(type: "", required: false, contentType: '');
+      return getRequestBody(ror2);
+    } else {
+      return ror.req!;
+    }
+  }
+
+  final rb = getRequestBody(ror);
+  String contentType;
+  String type;
+  if (rb.content.isEmpty) {
+    throw ArgumentError.value(
+        "You should provide content type and mediatype in requestBody content $name");
+  }
+  //TODO handle mutiple content types in requestbody!
+  // if (rb.content.length == 1) {
+  final c = rb.content.entries.first;
+  contentType = c.key;
+  type = _getTypeName(c.value.schema, name);
+  // } else {
+  //   for (final c in rb.content.entries) {
+
+  //   }
+  // }
+
+  return InputType(type: type, required: false, contentType: contentType);
 }
 
 Parameter _getParameterFromParamOrRef(OpenApiSchema schema, ParamOrRef por) {
