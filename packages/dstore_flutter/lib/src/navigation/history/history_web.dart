@@ -24,4 +24,16 @@ class HistoryImpl extends History {
   void replace(String url) {
     window.history.replaceState(null, "", url);
   }
+
+  @override
+  String goBack() {
+    window.history.back();
+    return "";
+  }
+
+  @override
+  String go(int number) {
+    window.history.go(number);
+    return "";
+  }
 }

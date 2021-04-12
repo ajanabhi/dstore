@@ -9,6 +9,8 @@ abstract class History {
   bool urlChangedInSystem = false;
   void push(String url);
   void replace(String url);
+  String goBack();
+  String go(int number);
 }
 
 History createHistory() => HistoryImpl();

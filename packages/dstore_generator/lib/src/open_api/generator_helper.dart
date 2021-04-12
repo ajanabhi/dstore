@@ -85,7 +85,7 @@ String _convertPaths(OpenApiSchema schema) {
               "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
         }
       }
-      // op.requestBody
+      op.requestBody
     });
   });
 
@@ -93,7 +93,13 @@ String _convertPaths(OpenApiSchema schema) {
 }
 
 InputType _getInputTypeFromReqoRRef(
-    {required OpenApiSchema schema, required RequestBodyOrReference ror}) {
+    {required OpenApiSchema schema, required RequestBodyOrReference ror,required }) {
+      RequestBody rb;
+      if(ror.ref != null) {
+         
+      } else {
+        rb = ror.req!;
+      }
   return InputType(type: "", required: false, contentType: '');
 }
 
