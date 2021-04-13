@@ -75,7 +75,7 @@ class __$HelloCopyWithImpl<O> extends _$HelloCopyWithImpl<O>
 }
 
 mixin _$Httpmeta<I, R, E, T> {
-  R Function(dynamic) get responseDeserializer;
+  R Function(int, dynamic) get responseDeserializer;
   dynamic Function(R)? get responseSerializer;
   HttpField<dynamic, dynamic, dynamic, dynamic> Function(
       HttpField<dynamic, dynamic, dynamic, dynamic>,
@@ -83,14 +83,14 @@ mixin _$Httpmeta<I, R, E, T> {
   dynamic Function(I)? get inputSerializer;
   Future<dynamic> Function(I)? get inputStorageSerializer;
   I Function(dynamic)? get inputDeserializer;
-  E Function(dynamic)? get errorDeserializer;
+  E Function(int, dynamic)? get errorDeserializer;
 
   $HttpmetaCopyWith<I, R, E, T, Httpmeta<I, R, E, T>> get copyWith;
 }
 
 class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   @override
-  final R Function(dynamic) responseDeserializer;
+  final R Function(int, dynamic) responseDeserializer;
 
   @override
   final dynamic Function(R)? responseSerializer;
@@ -110,7 +110,7 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   final I Function(dynamic)? inputDeserializer;
 
   @override
-  final E Function(dynamic)? errorDeserializer;
+  final E Function(int, dynamic)? errorDeserializer;
 
   _$HttpmetaCopyWith<I, R, E, T, Httpmeta<I, R, E, T>> get copyWith =>
       __$HttpmetaCopyWithImpl<I, R, E, T, Httpmeta<I, R, E, T>>(
@@ -158,7 +158,7 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
           Httpmeta<I, R, E, T> value, O Function(Httpmeta<I, R, E, T>) then) =
       _$HttpmetaCopyWithImpl<I, R, E, T, O>;
   O call(
-      {R Function(dynamic) responseDeserializer,
+      {R Function(int, dynamic) responseDeserializer,
       dynamic Function(R)? responseSerializer,
       HttpField<dynamic, dynamic, dynamic, dynamic> Function(
               HttpField<dynamic, dynamic, dynamic, dynamic>,
@@ -167,7 +167,7 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(dynamic)? errorDeserializer});
+      E Function(int, dynamic)? errorDeserializer});
 }
 
 class _$HttpmetaCopyWithImpl<I, R, E, T, O>
@@ -188,7 +188,7 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
     return _then(_value.copyWith(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
-            : responseDeserializer as R Function(dynamic),
+            : responseDeserializer as R Function(int, dynamic),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
             : responseSerializer as dynamic Function(R)?,
@@ -209,7 +209,7 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(dynamic)?));
+            : errorDeserializer as E Function(int, dynamic)?));
   }
 }
 
@@ -219,7 +219,7 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
           Httpmeta<I, R, E, T> value, O Function(Httpmeta<I, R, E, T>) then) =
       __$HttpmetaCopyWithImpl<I, R, E, T, O>;
   O call(
-      {R Function(dynamic) responseDeserializer,
+      {R Function(int, dynamic) responseDeserializer,
       dynamic Function(R)? responseSerializer,
       HttpField<dynamic, dynamic, dynamic, dynamic> Function(
               HttpField<dynamic, dynamic, dynamic, dynamic>,
@@ -228,7 +228,7 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(dynamic)? errorDeserializer});
+      E Function(int, dynamic)? errorDeserializer});
 }
 
 class __$HttpmetaCopyWithImpl<I, R, E, T, O>
@@ -253,7 +253,7 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
     return _then(Httpmeta(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
-            : responseDeserializer as R Function(dynamic),
+            : responseDeserializer as R Function(int, dynamic),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
             : responseSerializer as dynamic Function(R)?,
@@ -274,7 +274,7 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(dynamic)?));
+            : errorDeserializer as E Function(int, dynamic)?));
   }
 }
 

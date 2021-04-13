@@ -69,13 +69,13 @@ class HttpField<QP, I, R, E> {
 @DImmutable()
 abstract class Httpmeta<I, R, E, T> with _$Httpmeta<I, R, E, T> {
   const factory Httpmeta({
-    required R Function(dynamic) responseDeserializer,
+    required R Function(int status, dynamic resp) responseDeserializer,
     dynamic Function(R)? responseSerializer,
     HttpField Function(HttpField currentField, HttpField newField)? transformer,
     dynamic Function(I)? inputSerializer,
     Future<dynamic> Function(I)? inputStorageSerializer,
     I Function(dynamic)? inputDeserializer,
-    E Function(dynamic)? errorDeserializer,
+    E Function(int status, dynamic resp)? errorDeserializer,
   }) = _Httpmeta<I, R, E, T>;
 }
 

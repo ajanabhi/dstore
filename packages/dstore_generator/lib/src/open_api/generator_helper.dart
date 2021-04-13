@@ -7,6 +7,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/open_api/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:open_api_schema/v3.dart';
+import 'package:tuple/tuple.dart';
 import 'package:yaml/yaml.dart';
 
 const APPLICATION_JSON = "application/json";
@@ -86,8 +87,9 @@ String _convertPaths(OpenApiSchema schema) {
         }
       }
       final it = _getInputTypeFromReqoRRef(
-          schema: schema, ror: op.requestBody, name: oid);
-      // op.requestBody
+          schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
+      final ot = _getResponseType(
+          schema: schema, responses: op.responses, name: "${oid}Response");
     });
   });
 
@@ -135,6 +137,40 @@ InputType? _getInputTypeFromReqoRRef(
   // }
 
   return InputType(type: type, required: false, contentType: contentType);
+}
+
+Tuple3<String, String, String> _getResponseType(
+    {required OpenApiSchema schema,
+    required Map<String, ResponseOrReference> responses,
+    required String name}) {
+  Response getResponseFromResponseOrRef(ResponseOrReference ror) {
+    if (ror.ref != null) {
+      final refname = ror.ref!.$ref.replaceFirst("#/components/responses/", "");
+      final ror2 = schema.components?.responses?[refname];
+      if (ror2 == null) {
+        throw ArgumentError.value(
+            "Response ref $refname not found in schema.components.responses");
+      }
+      return getResponseFromResponseOrRef(ror2);
+    } else {
+      return ror.resp!;
+    }
+  }
+
+  final success =
+      responses.entries.where((e) => e.key.startsWith("2")).toList();
+  if (success.isEmpty) {
+    throw ArgumentError.value(
+        "You should provide atleast one successull response");
+  }
+  String type;
+  if (success.length == 1) {
+    final s1 = success.first.value;
+    final resp = getResponseFromResponseOrRef(s1);
+    // resp.
+    // type =
+  } else {}
+  return Tuple3("", "", "");
 }
 
 Parameter _getParameterFromParamOrRef(OpenApiSchema schema, ParamOrRef por) {
