@@ -160,7 +160,7 @@ InputType? _getInputTypeFromReqoRRef(
       deserializer: deserializer);
 }
 
-Tuple3<String, String, String> _getResponseType(
+OutputType _getResponseType(
     {required OpenApiSchema schema,
     required Map<String, ResponseOrReference> responses,
     required String name}) {
@@ -314,21 +314,68 @@ Tuple3<String, String, String> _getResponseType(
     throw ArgumentError.value(
         "You should provide atleast one successull response");
   }
-  String responseSuccessType;
+  String successType;
+  final successName = "${name}_Success";
   if (success.length == 1) {
     final s1 = success.first.value;
     final resp = getResponseFromResponseOrRef(s1);
-    responseSuccessType = getTypeFromResponse(resp, name);
+    successType = getTypeFromResponse(resp, successName);
   } else {
-    responseSuccessType = getTypeFromMultipleResponses(success, name);
+    successType = getTypeFromMultipleResponses(success, successName);
   }
-  String responseErrorType;
-  final erros = responses.entries
+  String errorType;
+  final errorName = "${name}_Error";
+  final errors = responses.entries
       .where((e) =>
           e.key.startsWith("4") || e.key.startsWith("5") || e.key == "default")
       .toList();
+  if (errors.isEmpty) {
+    throw ArgumentError.value(
+        "You should provide atleast one error response / default");
+  }
 
-  return Tuple3("", "", "");
+  if (errors.length == 1) {
+    final s1 = errors.first.value;
+    final resp = getResponseFromResponseOrRef(s1);
+    errorType = getTypeFromResponse(resp, errorName);
+  } else {
+    errorType = getTypeFromMultipleResponses(errors, errorName);
+  }
+  String serializer;
+  String deserializer;
+  if (successType == "String") {
+    serializer = """
+      String ${successName}Serializer(int status,String input) => input;
+    """;
+    deserializer = """
+      String ${successName}Deserializer(int status,dynamic input) => input.toString(); 
+    """;
+  } else {
+    serializer = "${successName}.toJson";
+    deserializer = "${successName}.fromJson";
+  }
+
+  String errorSerializer;
+  String errorDeserializer;
+  if (errorType == "String") {
+    errorSerializer = """
+      String ${errorName}Serializer(int status,String input) => input;
+    """;
+    errorDeserializer = """
+      String ${errorName}Deserializer(int status,dynamic input) => input.toString(); 
+    """;
+  } else {
+    errorSerializer = "${errorName}.toJson";
+    errorDeserializer = "${errorName}.fromJson";
+  }
+
+  return OutputType(
+      successType: successType,
+      errorType: errorType,
+      serializer: serializer,
+      deserializer: deserializer,
+      errorSerializer: errorSerializer,
+      errorDeserializer: errorDeserializer);
 }
 
 Parameter _getParameterFromParamOrRef(OpenApiSchema schema, ParamOrRef por) {
