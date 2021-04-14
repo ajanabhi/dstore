@@ -135,13 +135,29 @@ InputType? _getInputTypeFromReqoRRef(
 
   //   }
   // }
-
+  String serializer;
+  String deserializer;
+  if (type == "String") {
+    serializer = """
+      $type ${name}Serializer($type input) => input;
+    """;
+    deserializer = """
+      $type ${name}Deserializer(dynamic input) => input as $type;
+    """;
+  } else {
+    serializer = """
+      dynamic ${name}Serializer($type input) => input.toJson();
+    """;
+    deserializer = """
+      $type ${name}Deserializer(dynamic input) => ${type}.fromJson(input);
+    """;
+  }
   return InputType(
       type: type,
       required: false,
       contentType: contentType,
-      serializer: "",
-      deserializer: "");
+      serializer: serializer,
+      deserializer: deserializer);
 }
 
 Tuple3<String, String, String> _getResponseType(
@@ -173,6 +189,96 @@ Tuple3<String, String, String> _getResponseType(
     }
     final r1 = content.entries.first.value.schema;
     return _getTypeName(r1, name);
+  }
+
+  String getTypeFromMultipleResponses(
+      List<MapEntry<String, ResponseOrReference>> list, String name) {
+    final acceesors = <String>[];
+    final serializeCases = <String>[];
+    final deserializeCases = <String>[];
+    var serializeDefaultCase = "";
+    var deserializeDefaultCase = "";
+    list.forEach((e) {
+      final resp = getResponseFromResponseOrRef(e.value);
+      final type = getTypeFromResponse(resp, "${name}_${e.key}");
+      final status = e.key;
+
+      final accessor = """
+          $type? get $status => _value is $type ? _value as $type : null;
+        """;
+      acceesors.add(accessor);
+      var serializeCase = "";
+      //serialize
+      if (type == "String") {
+        if (status == "default") {
+          serializeDefaultCase = """
+           default:
+             return $name(input.toString()); 
+          """;
+        } else {
+          serializeCase = """
+          case $status:
+            return $name(input.toString());
+        """;
+        }
+      } else {
+        // assume its json
+        if (status == "default") {
+          serializeDefaultCase = """
+           default:
+             return $name(input.toJson()); 
+          """;
+        } else {
+          serializeCase = """
+          case $status:
+            return $name(input.toJson());
+        """;
+        }
+      }
+      var deserializeCase = "";
+      if (type == "String") {
+        if (status == "default") {
+          deserializeDefaultCase = """
+           default:
+             return $name(input.toString()); 
+          """;
+        } else {
+          deserializeCase = """
+          case $status:
+            return $name(input.toString());
+        """;
+        }
+      } else {
+        // assume its json!
+
+        if (status == "default") {
+          deserializeDefaultCase = """
+           default:
+             return $name(${name}_${status}.fromJson(input)); 
+          """;
+        } else {
+          deserializeCase = """
+          case $status:
+            return $name(${name}_${status}.fromJson(input));
+        """;
+        }
+      }
+      serializeCases.add(serializeCase);
+      deserializeCases.add(deserializeCase);
+    });
+    final typeImpl = """
+     
+     class $name {
+       
+       dynamic _value;
+       $name(this._value);
+
+
+
+     }
+    
+    """;
+    return name;
   }
 
   final success =
