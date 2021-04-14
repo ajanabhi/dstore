@@ -80,7 +80,7 @@ class HttpField<QP, I, R, E> {
 abstract class Httpmeta<I, R, E, T> with _$Httpmeta<I, R, E, T> {
   const factory Httpmeta({
     required R Function(int status, dynamic resp) responseDeserializer,
-    dynamic Function(R)? responseSerializer,
+    dynamic Function(int, R)? responseSerializer,
     HttpField Function(HttpField currentField, HttpField newField)? transformer,
     dynamic Function(I)? inputSerializer,
     Future<dynamic> Function(I)? inputStorageSerializer,
@@ -97,6 +97,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       required String method,
       required HttpResponseType responseType,
       R? optimisticResponse,
+      int? optimisticHttpStatus,
       @Default(false) bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
@@ -163,12 +164,13 @@ extension HttpPayloadExt on HttpPayload {
       map["data"] = meta.inputSerializer!(data);
     }
     map["responseType"] = responseType.value;
-    if (optimisticResponse != null) {
+    if (optimisticResponse != null && optimisticHttpStatus != null) {
       if (meta.responseSerializer == null) {
         throw ArgumentError.value(
             "You should provide responseSerializer for http field");
       }
-      map["optimisticResponse"] = meta.responseSerializer!(optimisticResponse);
+      map["optimisticResponse"] =
+          meta.responseSerializer!(optimisticHttpStatus!, optimisticResponse);
     }
     if (inputType != null) {
       map["inputType"] = inputType!.value;

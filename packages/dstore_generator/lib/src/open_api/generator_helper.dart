@@ -198,11 +198,14 @@ Tuple3<String, String, String> _getResponseType(
     final deserializeCases = <String>[];
     var serializeDefaultCase = "";
     var deserializeDefaultCase = "";
+    final ctors = <String>[];
     list.forEach((e) {
       final resp = getResponseFromResponseOrRef(e.value);
       final type = getTypeFromResponse(resp, "${name}_${e.key}");
       final status = e.key;
-
+      ctors.add("""
+       factory $name.$status($type value):_value:value;
+      """);
       final accessor = """
           $type? get $status => _value is $type ? _value as $type : null;
         """;
@@ -213,12 +216,12 @@ Tuple3<String, String, String> _getResponseType(
         if (status == "default") {
           serializeDefaultCase = """
            default:
-             return $name(input.toString()); 
+             return input.toString(); 
           """;
         } else {
           serializeCase = """
           case $status:
-            return $name(input.toString());
+            return input.toString();
         """;
         }
       } else {
@@ -226,12 +229,12 @@ Tuple3<String, String, String> _getResponseType(
         if (status == "default") {
           serializeDefaultCase = """
            default:
-             return $name(input.toJson()); 
+             return input.toJson(); 
           """;
         } else {
           serializeCase = """
           case $status:
-            return $name(input.toJson());
+            return input.toJson();
         """;
         }
       }
@@ -266,18 +269,42 @@ Tuple3<String, String, String> _getResponseType(
       serializeCases.add(serializeCase);
       deserializeCases.add(deserializeCase);
     });
+
+    final toJson = """
+    
+     static dynamic toJson(int status,$name input) {
+       switch(status){
+         ${serializeCases.join("\n")}
+         ${serializeDefaultCase}
+       }
+     }
+    """;
+
+    final fromJson = """
+     static $name fromJson(int status,dynamic input) {
+         switch(status){
+         ${deserializeCases.join("\n")}
+         ${deserializeDefaultCase}
+       }
+     }
+   """;
+
     final typeImpl = """
      
      class $name {
+       final dynamic _value;
+       ${ctors.join("\n")}
+      
+       ${acceesors.join("\n")}
        
-       dynamic _value;
-       $name(this._value);
+       $toJson
 
-
-
+       $fromJson
+       
      }
     
     """;
+    types.add(typeImpl);
     return name;
   }
 
@@ -287,13 +314,20 @@ Tuple3<String, String, String> _getResponseType(
     throw ArgumentError.value(
         "You should provide atleast one successull response");
   }
-  String type;
-  String contentType;
+  String responseSuccessType;
   if (success.length == 1) {
     final s1 = success.first.value;
     final resp = getResponseFromResponseOrRef(s1);
-    type = getTypeFromResponse(resp, name);
-  } else {}
+    responseSuccessType = getTypeFromResponse(resp, name);
+  } else {
+    responseSuccessType = getTypeFromMultipleResponses(success, name);
+  }
+  String responseErrorType;
+  final erros = responses.entries
+      .where((e) =>
+          e.key.startsWith("4") || e.key.startsWith("5") || e.key == "default")
+      .toList();
+
   return Tuple3("", "", "");
 }
 

@@ -14,14 +14,16 @@ class InputType {
 }
 
 class OutputType {
-  final String type;
+  final String successType;
+  final String errorType;
   final String serializer;
   final String errorSerializer;
   final String deserializer;
   final String errorDeserializer;
 
   OutputType({
-    required this.type,
+    required this.successType,
+    required this.errorType,
     required this.serializer,
     required this.deserializer,
     required this.errorSerializer,

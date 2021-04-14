@@ -76,7 +76,7 @@ class __$HelloCopyWithImpl<O> extends _$HelloCopyWithImpl<O>
 
 mixin _$Httpmeta<I, R, E, T> {
   R Function(int, dynamic) get responseDeserializer;
-  dynamic Function(R)? get responseSerializer;
+  dynamic Function(int, R)? get responseSerializer;
   HttpField<dynamic, dynamic, dynamic, dynamic> Function(
       HttpField<dynamic, dynamic, dynamic, dynamic>,
       HttpField<dynamic, dynamic, dynamic, dynamic>)? get transformer;
@@ -93,7 +93,7 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   final R Function(int, dynamic) responseDeserializer;
 
   @override
-  final dynamic Function(R)? responseSerializer;
+  final dynamic Function(int, R)? responseSerializer;
 
   @override
   final HttpField<dynamic, dynamic, dynamic, dynamic> Function(
@@ -159,7 +159,7 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
       _$HttpmetaCopyWithImpl<I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
-      dynamic Function(R)? responseSerializer,
+      dynamic Function(int, R)? responseSerializer,
       HttpField<dynamic, dynamic, dynamic, dynamic> Function(
               HttpField<dynamic, dynamic, dynamic, dynamic>,
               HttpField<dynamic, dynamic, dynamic, dynamic>)?
@@ -191,7 +191,7 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
             : responseDeserializer as R Function(int, dynamic),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
-            : responseSerializer as dynamic Function(R)?,
+            : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
             : transformer
@@ -220,7 +220,7 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
       __$HttpmetaCopyWithImpl<I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
-      dynamic Function(R)? responseSerializer,
+      dynamic Function(int, R)? responseSerializer,
       HttpField<dynamic, dynamic, dynamic, dynamic> Function(
               HttpField<dynamic, dynamic, dynamic, dynamic>,
               HttpField<dynamic, dynamic, dynamic, dynamic>)?
@@ -256,7 +256,7 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
             : responseDeserializer as R Function(int, dynamic),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
-            : responseSerializer as dynamic Function(R)?,
+            : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
             : transformer
@@ -284,6 +284,7 @@ mixin _$HttpPayload<I, R, E, T> {
   String get method;
   HttpResponseType get responseType;
   R? get optimisticResponse;
+  int? get optimisticHttpStatus;
   bool get offline;
   HttpInputType? get inputType;
   Map<String, dynamic>? get headers;
@@ -310,6 +311,9 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
 
   @override
   final R? optimisticResponse;
+
+  @override
+  final int? optimisticHttpStatus;
 
   @override
   @Default(false)
@@ -346,6 +350,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       required this.method,
       required this.responseType,
       this.optimisticResponse,
+      this.optimisticHttpStatus,
       this.offline = false,
       this.inputType,
       this.headers,
@@ -363,6 +368,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
         o.method == method &&
         o.responseType == responseType &&
         o.optimisticResponse == optimisticResponse &&
+        o.optimisticHttpStatus == optimisticHttpStatus &&
         o.offline == offline &&
         o.inputType == inputType &&
         o.headers == headers &&
@@ -379,6 +385,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       method.hashCode ^
       responseType.hashCode ^
       optimisticResponse.hashCode ^
+      optimisticHttpStatus.hashCode ^
       offline.hashCode ^
       inputType.hashCode ^
       headers.hashCode ^
@@ -389,7 +396,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
 
   @override
   String toString() =>
-      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, offline: ${this.offline}, inputType: ${this.inputType}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
+      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, inputType: ${this.inputType}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
 }
 
 abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
@@ -402,6 +409,7 @@ abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
       String method,
       HttpResponseType responseType,
       R? optimisticResponse,
+      int? optimisticHttpStatus,
       bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
@@ -424,6 +432,7 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? method = dimmutable,
       Object? responseType = dimmutable,
       Object? optimisticResponse = dimmutable,
+      Object? optimisticHttpStatus = dimmutable,
       Object? offline = dimmutable,
       Object? inputType = dimmutable,
       Object? headers = dimmutable,
@@ -441,6 +450,9 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
         optimisticResponse: optimisticResponse == dimmutable
             ? _value.optimisticResponse
             : optimisticResponse as R?,
+        optimisticHttpStatus: optimisticHttpStatus == dimmutable
+            ? _value.optimisticHttpStatus
+            : optimisticHttpStatus as int?,
         offline: offline == dimmutable ? _value.offline : offline as bool,
         inputType: inputType == dimmutable
             ? _value.inputType
@@ -473,6 +485,7 @@ abstract class _$HttpPayloadCopyWith<I, R, E, T, O>
       String method,
       HttpResponseType responseType,
       R? optimisticResponse,
+      int? optimisticHttpStatus,
       bool offline,
       HttpInputType? inputType,
       Map<String, dynamic>? headers,
@@ -499,6 +512,7 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? method = dimmutable,
       Object? responseType = dimmutable,
       Object? optimisticResponse = dimmutable,
+      Object? optimisticHttpStatus = dimmutable,
       Object? offline = dimmutable,
       Object? inputType = dimmutable,
       Object? headers = dimmutable,
@@ -516,6 +530,9 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
         optimisticResponse: optimisticResponse == dimmutable
             ? _value.optimisticResponse
             : optimisticResponse as R?,
+        optimisticHttpStatus: optimisticHttpStatus == dimmutable
+            ? _value.optimisticHttpStatus
+            : optimisticHttpStatus as int?,
         offline: offline == dimmutable ? _value.offline : offline as bool,
         inputType: inputType == dimmutable
             ? _value.inputType
