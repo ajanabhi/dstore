@@ -4,6 +4,7 @@ import 'package:flutter/material.dart' hide Action;
 import "configuration/confiure_native.dart"
     if (dart.library.html) "configuration/configure_web.dart";
 export "router_deleagte.dart";
+export "route_information_parser.dart";
 
 abstract class NavStateI<M> extends PStateModel<M> {
   List<Page> buildPages();

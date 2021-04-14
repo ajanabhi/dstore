@@ -22,8 +22,12 @@ class HistoryImpl extends History {
 
   @override
   String goBack() {
-    _source.removeLast();
-    return _source.last;
+    if (_source.length > 1) {
+      // final url = _source.last;
+      _source.removeLast();
+      return _source.last;
+    }
+    return "";
   }
 
   @override
@@ -31,5 +35,10 @@ class HistoryImpl extends History {
     //
     //
     return "";
+  }
+
+  @override
+  void setInitialUrl(String url) {
+    _source.add(url);
   }
 }

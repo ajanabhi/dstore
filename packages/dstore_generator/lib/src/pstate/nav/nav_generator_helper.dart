@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
@@ -15,10 +16,10 @@ Future<String> generatePStateNavForClassElement(
       AstUtils.isSubTypeof(element.thisType, "NavStateI");
   final isNestedNavInterfaceImplemented =
       AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
-  if (isNavInterfaceImplemented == null ||
+  if (isNavInterfaceImplemented == null &&
       isNestedNavInterfaceImplemented == null) {
     throw InvalidSignatureError(
-        "PState ${element.name} should extend NavStatedI / NestedNavStateI ");
+        "PState ${element.name} should extend NavStateI / NestedNavStateI ");
   }
 
   final typeParamsTuple =

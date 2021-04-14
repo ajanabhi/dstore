@@ -7,13 +7,13 @@ import 'package:dstore_flutter/src/navigation/navigation_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
+class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
   late final History history;
   late NavStateI _navState;
   late Dispatch _dispatch;
-  bool _triggerFromHostory = false;
+  bool _triggerFromHistory = false;
   DRouterDelegate({required this.selector}) {
     history = createHistory();
     history.listen(handleUriChange);
@@ -21,10 +21,15 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
 
   void handleUriChange(Uri uri) {
     print("Uri Changed2 ${uri.path}");
-    final fn = _navState.dontTouchMeStaticMeta[uri.path.substring(1)];
+    UrlToAction? fn;
+    final path = uri.path;
+    fn = _navState.dontTouchMeStaticMeta[path];
     if (fn != null) {
-      _triggerFromHostory = true;
+      _triggerFromHistory = true;
       fn(uri, _dispatch);
+    } else {
+      // match in dynamic paths
+
     }
   }
 
@@ -45,7 +50,11 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
               scheduleMicrotask(() => _dispatch(action));
               return false;
             } else {
-              _updateUrl(navState: newState);
+              if (_triggerFromHistory == true) {
+                _triggerFromHistory = false;
+              } else {
+                _updateUrl(navState: newState);
+              }
               return true;
             }
           },
@@ -63,11 +72,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
 
   void _updateUrl({required NavStateI navState}) {
     if (history.urlChangedInSystem) {
+      print("Url Changed in system");
       history.urlChangedInSystem = false;
     } else {
       if (navState.dontTouchMeUrl != null) {
         final url = navState.dontTouchMeUrl!;
-        // print("pusing url ${navState.dontTouchMeUrl}");
+        print("pushing url ${navState.dontTouchMeUrl}");
         if (navState.historyUpdate == HistoryUpdate.replace) {
           history.replace(url);
         } else {
@@ -80,13 +90,26 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<dynamic>
 
   @override
   Future<bool> popRoute() {
-    print("On Prop Route");
+    final url = history.goBack();
+    print("Pop route2 url : $url");
+    if (url.isEmpty) {
+      return SynchronousFuture(false);
+    }
+    scheduleMicrotask(() {
+      handleUriChange(Uri.parse(url));
+    });
     return SynchronousFuture(true);
   }
 
   @override
-  Future<void> setNewRoutePath(dynamic configuration) async {
-    print("Set new Route Path");
+  Future<void> setInitialRoutePath(String url) async {
+    print("setInitialRoutePath config $url");
+    history.setInitialUrl(url);
+  }
+
+  @override
+  Future<void> setNewRoutePath(String configuration) async {
+    print("Set new Route Path config $configuration");
     // do nothing
   }
 }
