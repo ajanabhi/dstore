@@ -136,7 +136,12 @@ InputType? _getInputTypeFromReqoRRef(
   //   }
   // }
 
-  return InputType(type: type, required: false, contentType: contentType);
+  return InputType(
+      type: type,
+      required: false,
+      contentType: contentType,
+      serializer: "",
+      deserializer: "");
 }
 
 Tuple3<String, String, String> _getResponseType(
