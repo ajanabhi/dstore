@@ -123,7 +123,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       case DioErrorType.RESPONSE:
         var re = e.response;
         if (meta?.errorDeserializer != null) {
-          re = meta?.errorDeserializer!(re);
+          re = meta?.errorDeserializer!(re.statusCode, re.data);
         }
         error = HttpError(type: HttpErrorType.Response, error: re);
         break;
@@ -170,11 +170,11 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       }
       dynamic? rdata;
       if (response.data["data"] != null) {
-        rdata = meta!.responseDeserializer(response.data["data"]);
+        rdata = meta!.responseDeserializer(200, response.data["data"]);
       }
       hf = HttpField(error: ge, data: rdata);
     } else {
-      var data = meta!.responseDeserializer(response.data);
+      var data = meta!.responseDeserializer(response.statusCode, response.data);
       hf = HttpField(data: data);
     }
     if (meta?.transformer != null) {

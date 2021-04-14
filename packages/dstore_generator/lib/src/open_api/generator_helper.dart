@@ -157,6 +157,19 @@ Tuple3<String, String, String> _getResponseType(
     }
   }
 
+  String getTypeFromResponse(Response resp, String objName) {
+    if (resp.content == null) {
+      return "Null";
+    }
+    final content = resp.content!;
+    if (content.isEmpty) {
+      throw ArgumentError.value(
+          "You should provide content type and mediatype in requestBody content $name");
+    }
+    final r1 = content.entries.first.value.schema;
+    return _getTypeName(r1, name);
+  }
+
   final success =
       responses.entries.where((e) => e.key.startsWith("2")).toList();
   if (success.isEmpty) {
@@ -164,11 +177,11 @@ Tuple3<String, String, String> _getResponseType(
         "You should provide atleast one successull response");
   }
   String type;
+  String contentType;
   if (success.length == 1) {
     final s1 = success.first.value;
     final resp = getResponseFromResponseOrRef(s1);
-    // resp.
-    // type =
+    type = getTypeFromResponse(resp, name);
   } else {}
   return Tuple3("", "", "");
 }

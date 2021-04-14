@@ -27,5 +27,9 @@ class HistoryImpl extends History {
   }
 
   @override
-  String go(int number) {}
+  String go(int number) {
+    //
+    //
+    return "";
+  }
 }

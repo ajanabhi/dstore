@@ -31,6 +31,8 @@ class HttpField<QP, I, R, E> {
   final bool loading;
   final R? data;
   final HttpError<E>? error;
+  final Map<String, String>? responseHeaders;
+  final int? status;
   final bool completed;
   final bool optimistic;
   final bool offline;
@@ -40,6 +42,8 @@ class HttpField<QP, I, R, E> {
       {this.loading = false,
       this.data,
       this.error,
+      this.responseHeaders,
+      this.status,
       this.offline = false,
       this.abortController,
       this.completed = false,
@@ -50,6 +54,8 @@ class HttpField<QP, I, R, E> {
       Optional<R?> data = optionalDefault,
       Optional<AbortController?> abortController = optionalDefault,
       Optional<HttpError<E>?> error = optionalDefault,
+      Optional<Map<String, String>?> responseHeaders = optionalDefault,
+      Optional<int?> status = optionalDefault,
       bool? completed,
       bool? offline,
       bool? optimistic}) {
@@ -61,6 +67,10 @@ class HttpField<QP, I, R, E> {
             ? this.abortController
             : abortController.value,
         completed: completed ?? this.completed,
+        responseHeaders: responseHeaders == optionalDefault
+            ? this.responseHeaders
+            : responseHeaders.value,
+        status: status == optionalDefault ? this.status : status.value,
         optimistic: optimistic ?? this.optimistic,
         offline: offline ?? this.offline);
   }
@@ -111,7 +121,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
     }
     var optimisticResponse = map["optimisticResponse"] as R?;
     if (optimisticResponse != null) {
-      optimisticResponse = meta.responseDeserializer(optimisticResponse);
+      optimisticResponse = meta.responseDeserializer(200, optimisticResponse);
     }
 
     final inputTypeS = map["inputType"] as String?;
