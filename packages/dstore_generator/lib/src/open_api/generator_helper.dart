@@ -39,7 +39,8 @@ String _getUrl(OpenApiSchema schema) {
 }
 
 String _convertPaths(OpenApiSchema schema) {
-  schema.paths.entries.map((e) {
+  final pathTypes = <String>[];
+  schema.paths.entries.forEach((e) {
     final path = e.key;
     final ops = <String>{};
     final methodAndOp = <String, Operation>{};
@@ -90,6 +91,13 @@ String _convertPaths(OpenApiSchema schema) {
           schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
       final ot = _getResponseType(
           schema: schema, responses: op.responses, name: "${oid}Response");
+
+      final dapi = """
+      
+       @HttpRequest()
+       class $oid = HttpField<>;
+      
+      """;
     });
   });
 
