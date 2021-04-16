@@ -199,11 +199,11 @@ OutputType _getResponseType(
     if (responseType.isEmpty) {
       final key = content.entries.first.key;
       if (key.startsWith("application/json")) {
-        responseType = HttpResponseType.JSON.value;
+        responseType = HttpResponseType.JSON.toString();
       } else if (key.startsWith("text/plain")) {
-        responseType = HttpResponseType.STRING.value;
+        responseType = HttpResponseType.STRING.toString();
       } else {
-        responseType = HttpResponseType.JSON.value;
+        responseType = HttpResponseType.JSON.toString();
       }
     }
     final r1 = content.entries.first.value.schema;
