@@ -17,6 +17,7 @@ class OutputType {
   final String successType;
   final String errorType;
   final String serializer;
+  final String responseType;
   final String errorSerializer;
   final String deserializer;
   final String errorDeserializer;
@@ -26,6 +27,7 @@ class OutputType {
     required this.errorType,
     required this.serializer,
     required this.deserializer,
+    required this.responseType,
     required this.errorSerializer,
     required this.errorDeserializer,
   });

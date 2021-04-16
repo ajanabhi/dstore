@@ -172,6 +172,7 @@ OutputType _getResponseType(
     {required OpenApiSchema schema,
     required Map<String, ResponseOrReference> responses,
     required String name}) {
+  var responseType = "";
   Response getResponseFromResponseOrRef(ResponseOrReference ror) {
     if (ror.ref != null) {
       final refname = ror.ref!.$ref.replaceFirst("#/components/responses/", "");
@@ -194,6 +195,16 @@ OutputType _getResponseType(
     if (content.isEmpty) {
       throw ArgumentError.value(
           "You should provide content type and mediatype in requestBody content $name");
+    }
+    if (responseType.isEmpty) {
+      final key = content.entries.first.key;
+      if (key.startsWith("application/json")) {
+        responseType = HttpResponseType.JSON.value;
+      } else if (key.startsWith("text/plain")) {
+        responseType = HttpResponseType.STRING.value;
+      } else {
+        responseType = HttpResponseType.JSON.value;
+      }
     }
     final r1 = content.entries.first.value.schema;
     return _getTypeName(r1, name);
@@ -382,6 +393,7 @@ OutputType _getResponseType(
       errorType: errorType,
       serializer: serializer,
       deserializer: deserializer,
+      responseType: responseType,
       errorSerializer: errorSerializer,
       errorDeserializer: errorDeserializer);
 }
