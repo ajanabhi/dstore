@@ -6,144 +6,6 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-NearFilter _$NearFilterFromJson(Map<String, dynamic> json) {
-  return NearFilter(
-    distance: (json['distance'] as num).toDouble(),
-    coordinate: json['coordinate'],
-  );
-}
-
-Map<String, dynamic> _$NearFilterToJson(NearFilter instance) =>
-    <String, dynamic>{
-      'distance': instance.distance,
-      'coordinate': instance.coordinate,
-    };
-
-ContainsFilter _$ContainsFilterFromJson(Map<String, dynamic> json) {
-  return ContainsFilter(
-    point: json['point'],
-    polygon: json['polygon'],
-  );
-}
-
-Map<String, dynamic> _$ContainsFilterToJson(ContainsFilter instance) =>
-    <String, dynamic>{
-      'point': instance.point,
-      'polygon': instance.polygon,
-    };
-
-UpdatePostInput _$UpdatePostInputFromJson(Map<String, dynamic> json) {
-  return UpdatePostInput(
-    filter: json['filter'],
-    set: json['set'],
-    remove: json['remove'],
-  );
-}
-
-Map<String, dynamic> _$UpdatePostInputToJson(UpdatePostInput instance) =>
-    <String, dynamic>{
-      'filter': instance.filter,
-      'set': instance.set,
-      'remove': instance.remove,
-    };
-
-PointGeoFilter _$PointGeoFilterFromJson(Map<String, dynamic> json) {
-  return PointGeoFilter(
-    near: json['near'],
-    within: json['within'],
-  );
-}
-
-Map<String, dynamic> _$PointGeoFilterToJson(PointGeoFilter instance) =>
-    <String, dynamic>{
-      'near': instance.near,
-      'within': instance.within,
-    };
-
-UserPatch _$UserPatchFromJson(Map<String, dynamic> json) {
-  return UserPatch(
-    name: json['name'] as String?,
-    tasks: json['tasks'] as List<dynamic>?,
-  );
-}
-
-Map<String, dynamic> _$UserPatchToJson(UserPatch instance) => <String, dynamic>{
-      'name': instance.name,
-      'tasks': instance.tasks,
-    };
-
-Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
-  return Int64Range(
-    min: json['min'],
-    max: json['max'],
-  );
-}
-
-Map<String, dynamic> _$Int64RangeToJson(Int64Range instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
-    };
-
-PolygonRef _$PolygonRefFromJson(Map<String, dynamic> json) {
-  return PolygonRef(
-    coordinates: json['coordinates'] as List<dynamic>,
-  );
-}
-
-Map<String, dynamic> _$PolygonRefToJson(PolygonRef instance) =>
-    <String, dynamic>{
-      'coordinates': instance.coordinates,
-    };
-
-MultiPolygonRef _$MultiPolygonRefFromJson(Map<String, dynamic> json) {
-  return MultiPolygonRef(
-    polygons: json['polygons'] as List<dynamic>,
-  );
-}
-
-Map<String, dynamic> _$MultiPolygonRefToJson(MultiPolygonRef instance) =>
-    <String, dynamic>{
-      'polygons': instance.polygons,
-    };
-
-StringRange _$StringRangeFromJson(Map<String, dynamic> json) {
-  return StringRange(
-    min: json['min'] as String,
-    max: json['max'] as String,
-  );
-}
-
-Map<String, dynamic> _$StringRangeToJson(StringRange instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
-    };
-
-WithinFilter _$WithinFilterFromJson(Map<String, dynamic> json) {
-  return WithinFilter(
-    polygon: json['polygon'],
-  );
-}
-
-Map<String, dynamic> _$WithinFilterToJson(WithinFilter instance) =>
-    <String, dynamic>{
-      'polygon': instance.polygon,
-    };
-
-StringHashFilter _$StringHashFilterFromJson(Map<String, dynamic> json) {
-  return StringHashFilter(
-    eq: json['eq'] as String?,
-    d_in: (json['d_in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
-  );
-}
-
-Map<String, dynamic> _$StringHashFilterToJson(StringHashFilter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'd_in': instance.d_in,
-    };
-
 StringFullTextFilter _$StringFullTextFilterFromJson(Map<String, dynamic> json) {
   return StringFullTextFilter(
     alloftext: json['alloftext'] as String?,
@@ -248,7 +110,7 @@ Map<String, dynamic> _$FloatFilterToJson(FloatFilter instance) =>
 
 HelloI _$HelloIFromJson(Map<String, dynamic> json) {
   return HelloI(
-    n: json['n'],
+    n: json['n'] as int?,
   );
 }
 
@@ -349,7 +211,7 @@ AddAuthorInput _$AddAuthorInputFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'],
+    n: json['n'] as int?,
   );
 }
 
@@ -390,11 +252,11 @@ Map<String, dynamic> _$PostFilterToJson(PostFilter instance) =>
 
 Int64Filter _$Int64FilterFromJson(Map<String, dynamic> json) {
   return Int64Filter(
-    eq: json['eq'],
-    le: json['le'],
-    lt: json['lt'],
-    ge: json['ge'],
-    gt: json['gt'],
+    eq: json['eq'] as int?,
+    le: json['le'] as int?,
+    lt: json['lt'] as int?,
+    ge: json['ge'] as int?,
+    gt: json['gt'] as int?,
     between: json['between'],
   );
 }
@@ -808,7 +670,7 @@ AuthorPatch _$AuthorPatchFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'],
+    n: json['n'] as int?,
   );
 }
 
@@ -826,7 +688,7 @@ AuthorRef _$AuthorRefFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'],
+    n: json['n'] as int?,
   );
 }
 
@@ -850,4 +712,142 @@ Map<String, dynamic> _$PostOrderToJson(PostOrder instance) => <String, dynamic>{
       'asc': instance.asc,
       'desc': instance.desc,
       'then': instance.then,
+    };
+
+NearFilter _$NearFilterFromJson(Map<String, dynamic> json) {
+  return NearFilter(
+    distance: (json['distance'] as num).toDouble(),
+    coordinate: json['coordinate'],
+  );
+}
+
+Map<String, dynamic> _$NearFilterToJson(NearFilter instance) =>
+    <String, dynamic>{
+      'distance': instance.distance,
+      'coordinate': instance.coordinate,
+    };
+
+ContainsFilter _$ContainsFilterFromJson(Map<String, dynamic> json) {
+  return ContainsFilter(
+    point: json['point'],
+    polygon: json['polygon'],
+  );
+}
+
+Map<String, dynamic> _$ContainsFilterToJson(ContainsFilter instance) =>
+    <String, dynamic>{
+      'point': instance.point,
+      'polygon': instance.polygon,
+    };
+
+UpdatePostInput _$UpdatePostInputFromJson(Map<String, dynamic> json) {
+  return UpdatePostInput(
+    filter: json['filter'],
+    set: json['set'],
+    remove: json['remove'],
+  );
+}
+
+Map<String, dynamic> _$UpdatePostInputToJson(UpdatePostInput instance) =>
+    <String, dynamic>{
+      'filter': instance.filter,
+      'set': instance.set,
+      'remove': instance.remove,
+    };
+
+PointGeoFilter _$PointGeoFilterFromJson(Map<String, dynamic> json) {
+  return PointGeoFilter(
+    near: json['near'],
+    within: json['within'],
+  );
+}
+
+Map<String, dynamic> _$PointGeoFilterToJson(PointGeoFilter instance) =>
+    <String, dynamic>{
+      'near': instance.near,
+      'within': instance.within,
+    };
+
+UserPatch _$UserPatchFromJson(Map<String, dynamic> json) {
+  return UserPatch(
+    name: json['name'] as String?,
+    tasks: json['tasks'] as List<dynamic>?,
+  );
+}
+
+Map<String, dynamic> _$UserPatchToJson(UserPatch instance) => <String, dynamic>{
+      'name': instance.name,
+      'tasks': instance.tasks,
+    };
+
+Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
+  return Int64Range(
+    min: json['min'] as int,
+    max: json['max'] as int,
+  );
+}
+
+Map<String, dynamic> _$Int64RangeToJson(Int64Range instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
+    };
+
+PolygonRef _$PolygonRefFromJson(Map<String, dynamic> json) {
+  return PolygonRef(
+    coordinates: json['coordinates'] as List<dynamic>,
+  );
+}
+
+Map<String, dynamic> _$PolygonRefToJson(PolygonRef instance) =>
+    <String, dynamic>{
+      'coordinates': instance.coordinates,
+    };
+
+MultiPolygonRef _$MultiPolygonRefFromJson(Map<String, dynamic> json) {
+  return MultiPolygonRef(
+    polygons: json['polygons'] as List<dynamic>,
+  );
+}
+
+Map<String, dynamic> _$MultiPolygonRefToJson(MultiPolygonRef instance) =>
+    <String, dynamic>{
+      'polygons': instance.polygons,
+    };
+
+StringRange _$StringRangeFromJson(Map<String, dynamic> json) {
+  return StringRange(
+    min: json['min'] as String,
+    max: json['max'] as String,
+  );
+}
+
+Map<String, dynamic> _$StringRangeToJson(StringRange instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
+    };
+
+WithinFilter _$WithinFilterFromJson(Map<String, dynamic> json) {
+  return WithinFilter(
+    polygon: json['polygon'],
+  );
+}
+
+Map<String, dynamic> _$WithinFilterToJson(WithinFilter instance) =>
+    <String, dynamic>{
+      'polygon': instance.polygon,
+    };
+
+StringHashFilter _$StringHashFilterFromJson(Map<String, dynamic> json) {
+  return StringHashFilter(
+    eq: json['eq'] as String?,
+    d_in: (json['d_in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  );
+}
+
+Map<String, dynamic> _$StringHashFilterToJson(StringHashFilter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'd_in': instance.d_in,
     };

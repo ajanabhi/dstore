@@ -216,7 +216,8 @@ abstract class ModelUtils {
       {required List<Field> fields,
       required String className,
       String annotations = "",
-      bool isJsonSerializable = false}) {
+      bool isJsonSerializable = false,
+      bool addOverrideAnnotation = false}) {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
     }
@@ -224,7 +225,7 @@ abstract class ModelUtils {
    $annotations 
    class $className {
          
-     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)}
      
      ${ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: "")}
       
