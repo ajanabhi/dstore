@@ -4,7 +4,6 @@ import 'package:dstore_generator/src/constants.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
-import 'package:meta/meta.dart';
 
 enum GListType { strict, nonstrict }
 
@@ -669,9 +668,36 @@ List<GType> getAllGTypes(Set<FieldG> fields) {
 String convertGTypeToString(GType gtype) {
   final name = gtype.name;
   if (gtype.unions.isNotEmpty) {
+    final ctors = <String>[];
+    final getters = <String>[];
+    final fromJson = <String>[];
+    gtype.unions.forEach((e) {
+      final un = e.name;
+      final tn = un.substring(e.name.lastIndexOf("_") + 1);
+      ctors.add("${name}.${tn}(${un} value):_value:value;");
+      getters.add("$un get ${tn} => _value is $un ? _value as $un : null;");
+      fromJson.add("""if(json["__typename"] == \"$tn\") {
+          return $name.$tn(${un}.fromJson(json));
+        }""");
+    });
     return """
     // this is a union type, check subclasses of this type for conecret types
-     abstract class $name {}
+      class $name {
+        dnamic _value;
+         ${ctors.join("\n")}
+         ${getters.join("\n")}
+        
+        static $name fromJson(Map<String,dynamic> json){
+           ${fromJson.join("\n")}
+          throw ArgumentError.value(
+          json,
+           'json',
+           'Cannot convert the provided data.',
+           );
+        }
+
+        Map<String,dynamic> toJson() => _value.toJson();
+      }
     """;
   }
   final specialConverters = <String>[];
@@ -681,12 +707,12 @@ String convertGTypeToString(GType gtype) {
     if (f.jsonKey != null) {
       jkFields.add("name:\"${f.jsonKey}\"");
     }
-    if (f.gType != null && f.gType!.unions.isNotEmpty) {
-      // union field we need special getter
-      final mn = "_${f.name}FromJson";
-      jkFields.add("fromJson: $mn");
-      specialConverters.add(getUnionConverterForField(f));
-    }
+    // if (f.gType != null && f.gType!.unions.isNotEmpty) {
+    //   // union field we need special getter
+    //   final mn = "_${f.name}FromJson";
+    //   jkFields.add("fromJson: $mn");
+    //   specialConverters.add(getUnionConverterForField(f));
+    // }
     final jk = jkFields.isNotEmpty ? "@JsonKey(${jkFields.join(",")})" : "";
     return """
     $jk
@@ -706,11 +732,12 @@ String convertGTypeToString(GType gtype) {
   final sc =
       gtype.baseTypes.isNotEmpty ? "extends ${gtype.baseTypes.first}" : "";
   return """
-   @JsonSerializable(createToJson: false)
+   @JsonSerializable()
    class ${name} $sc {
      ${finalFields}
      $ctor
-     $fromJson
+     ${fromJson}
+     ${ModelUtils.createToJson()}
      ${specialConverters.join("\n")}
    }
   
