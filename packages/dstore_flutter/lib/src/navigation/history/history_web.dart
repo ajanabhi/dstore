@@ -36,4 +36,7 @@ class HistoryImpl extends History {
     window.history.go(number);
     return "";
   }
+
+  @override
+  void setInitialUrl(String url) {}
 }
