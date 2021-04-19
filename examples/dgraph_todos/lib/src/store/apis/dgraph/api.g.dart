@@ -6,191 +6,6 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PostRef _$PostRefFromJson(Map<String, dynamic> json) {
-  return PostRef(
-    id: json['id'] as String?,
-    title: json['title'] as String?,
-    text: json['text'] as String?,
-    score: (json['score'] as num?)?.toDouble(),
-    completed: json['completed'] as bool?,
-    datePublished: json['datePublished'],
-    author: json['author'],
-  );
-}
-
-Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'text': instance.text,
-      'score': instance.score,
-      'completed': instance.completed,
-      'datePublished': instance.datePublished,
-      'author': instance.author,
-    };
-
-StringExactFilter _$StringExactFilterFromJson(Map<String, dynamic> json) {
-  return StringExactFilter(
-    eq: json['eq'] as String?,
-    d_in: (json['d_in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
-    le: json['le'] as String?,
-    lt: json['lt'] as String?,
-    ge: json['ge'] as String?,
-    gt: json['gt'] as String?,
-    between: json['between'],
-  );
-}
-
-Map<String, dynamic> _$StringExactFilterToJson(StringExactFilter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'd_in': instance.d_in,
-      'le': instance.le,
-      'lt': instance.lt,
-      'ge': instance.ge,
-      'gt': instance.gt,
-      'between': instance.between,
-    };
-
-UserOrder _$UserOrderFromJson(Map<String, dynamic> json) {
-  return UserOrder(
-    asc: json['asc'],
-    desc: json['desc'],
-    then: json['then'],
-  );
-}
-
-Map<String, dynamic> _$UserOrderToJson(UserOrder instance) => <String, dynamic>{
-      'asc': instance.asc,
-      'desc': instance.desc,
-      'then': instance.then,
-    };
-
-UpdateAuthorInput _$UpdateAuthorInputFromJson(Map<String, dynamic> json) {
-  return UpdateAuthorInput(
-    filter: json['filter'],
-    set: json['set'],
-    remove: json['remove'],
-  );
-}
-
-Map<String, dynamic> _$UpdateAuthorInputToJson(UpdateAuthorInput instance) =>
-    <String, dynamic>{
-      'filter': instance.filter,
-      'set': instance.set,
-      'remove': instance.remove,
-    };
-
-AddTaskInput _$AddTaskInputFromJson(Map<String, dynamic> json) {
-  return AddTaskInput(
-    title: json['title'] as String,
-    completed: json['completed'] as bool,
-    user: json['user'],
-  );
-}
-
-Map<String, dynamic> _$AddTaskInputToJson(AddTaskInput instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'completed': instance.completed,
-      'user': instance.user,
-    };
-
-AddPostInput _$AddPostInputFromJson(Map<String, dynamic> json) {
-  return AddPostInput(
-    title: json['title'] as String,
-    text: json['text'] as String?,
-    score: (json['score'] as num?)?.toDouble(),
-    completed: json['completed'] as bool?,
-    datePublished: json['datePublished'],
-    author: json['author'],
-  );
-}
-
-Map<String, dynamic> _$AddPostInputToJson(AddPostInput instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'text': instance.text,
-      'score': instance.score,
-      'completed': instance.completed,
-      'datePublished': instance.datePublished,
-      'author': instance.author,
-    };
-
-AddUserInput _$AddUserInputFromJson(Map<String, dynamic> json) {
-  return AddUserInput(
-    username: json['username'] as String,
-    name: json['name'] as String?,
-    tasks: json['tasks'] as List<dynamic>?,
-  );
-}
-
-Map<String, dynamic> _$AddUserInputToJson(AddUserInput instance) =>
-    <String, dynamic>{
-      'username': instance.username,
-      'name': instance.name,
-      'tasks': instance.tasks,
-    };
-
-CustomHTTP _$CustomHTTPFromJson(Map<String, dynamic> json) {
-  return CustomHTTP(
-    url: json['url'] as String,
-    method: json['method'],
-    body: json['body'] as String?,
-    graphql: json['graphql'] as String?,
-    mode: json['mode'],
-    forwardHeaders: (json['forwardHeaders'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
-    secretHeaders: (json['secretHeaders'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
-    introspectionHeaders: (json['introspectionHeaders'] as List<dynamic>?)
-        ?.map((e) => e as String)
-        .toList(),
-    skipIntrospection: json['skipIntrospection'] as bool?,
-  );
-}
-
-Map<String, dynamic> _$CustomHTTPToJson(CustomHTTP instance) =>
-    <String, dynamic>{
-      'url': instance.url,
-      'method': instance.method,
-      'body': instance.body,
-      'graphql': instance.graphql,
-      'mode': instance.mode,
-      'forwardHeaders': instance.forwardHeaders,
-      'secretHeaders': instance.secretHeaders,
-      'introspectionHeaders': instance.introspectionHeaders,
-      'skipIntrospection': instance.skipIntrospection,
-    };
-
-IntersectsFilter _$IntersectsFilterFromJson(Map<String, dynamic> json) {
-  return IntersectsFilter(
-    polygon: json['polygon'],
-    multiPolygon: json['multiPolygon'],
-  );
-}
-
-Map<String, dynamic> _$IntersectsFilterToJson(IntersectsFilter instance) =>
-    <String, dynamic>{
-      'polygon': instance.polygon,
-      'multiPolygon': instance.multiPolygon,
-    };
-
-TaskOrder _$TaskOrderFromJson(Map<String, dynamic> json) {
-  return TaskOrder(
-    asc: json['asc'],
-    desc: json['desc'],
-    then: json['then'],
-  );
-}
-
-Map<String, dynamic> _$TaskOrderToJson(TaskOrder instance) => <String, dynamic>{
-      'asc': instance.asc,
-      'desc': instance.desc,
-      'then': instance.then,
-    };
-
 PolygonGeoFilter _$PolygonGeoFilterFromJson(Map<String, dynamic> json) {
   return PolygonGeoFilter(
     near: json['near'],
@@ -348,7 +163,7 @@ AuthorPatch _$AuthorPatchFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'] as int?,
+    n: json['n'],
   );
 }
 
@@ -366,7 +181,7 @@ AuthorRef _$AuthorRefFromJson(Map<String, dynamic> json) {
     name: json['name'] as String?,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'] as int?,
+    n: json['n'],
   );
 }
 
@@ -460,8 +275,8 @@ Map<String, dynamic> _$UserPatchToJson(UserPatch instance) => <String, dynamic>{
 
 Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
   return Int64Range(
-    min: json['min'] as int,
-    max: json['max'] as int,
+    min: json['min'],
+    max: json['max'],
   );
 }
 
@@ -634,7 +449,7 @@ Map<String, dynamic> _$FloatFilterToJson(FloatFilter instance) =>
 
 HelloI _$HelloIFromJson(Map<String, dynamic> json) {
   return HelloI(
-    n: json['n'] as int?,
+    n: json['n'],
   );
 }
 
@@ -690,22 +505,6 @@ Map<String, dynamic> _$AuthorOrderToJson(AuthorOrder instance) =>
       'then': instance.then,
     };
 
-TaskRef _$TaskRefFromJson(Map<String, dynamic> json) {
-  return TaskRef(
-    id: json['id'] as String?,
-    title: json['title'] as String?,
-    completed: json['completed'] as bool?,
-    user: json['user'],
-  );
-}
-
-Map<String, dynamic> _$TaskRefToJson(TaskRef instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'completed': instance.completed,
-      'user': instance.user,
-    };
-
 DateTimeRange _$DateTimeRangeFromJson(Map<String, dynamic> json) {
   return DateTimeRange(
     min: json['min'],
@@ -735,7 +534,7 @@ AddAuthorInput _$AddAuthorInputFromJson(Map<String, dynamic> json) {
     name: json['name'] as String,
     posts: json['posts'] as List<dynamic>?,
     friends: json['friends'] as List<dynamic>?,
-    n: json['n'] as int?,
+    n: json['n'],
   );
 }
 
@@ -774,13 +573,29 @@ Map<String, dynamic> _$PostFilterToJson(PostFilter instance) =>
       'not': instance.not,
     };
 
+TaskRef _$TaskRefFromJson(Map<String, dynamic> json) {
+  return TaskRef(
+    id: json['id'] as String?,
+    title: json['title'] as String?,
+    completed: json['completed'] as bool?,
+    user: json['user'],
+  );
+}
+
+Map<String, dynamic> _$TaskRefToJson(TaskRef instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'completed': instance.completed,
+      'user': instance.user,
+    };
+
 Int64Filter _$Int64FilterFromJson(Map<String, dynamic> json) {
   return Int64Filter(
-    eq: json['eq'] as int?,
-    le: json['le'] as int?,
-    lt: json['lt'] as int?,
-    ge: json['ge'] as int?,
-    gt: json['gt'] as int?,
+    eq: json['eq'],
+    le: json['le'],
+    lt: json['lt'],
+    ge: json['ge'],
+    gt: json['gt'],
     between: json['between'],
   );
 }
@@ -850,4 +665,189 @@ Map<String, dynamic> _$AuthorFilterToJson(AuthorFilter instance) =>
       'and': instance.and,
       'or': instance.or,
       'not': instance.not,
+    };
+
+PostRef _$PostRefFromJson(Map<String, dynamic> json) {
+  return PostRef(
+    id: json['id'] as String?,
+    title: json['title'] as String?,
+    text: json['text'] as String?,
+    score: (json['score'] as num?)?.toDouble(),
+    completed: json['completed'] as bool?,
+    datePublished: json['datePublished'],
+    author: json['author'],
+  );
+}
+
+Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'text': instance.text,
+      'score': instance.score,
+      'completed': instance.completed,
+      'datePublished': instance.datePublished,
+      'author': instance.author,
+    };
+
+StringExactFilter _$StringExactFilterFromJson(Map<String, dynamic> json) {
+  return StringExactFilter(
+    eq: json['eq'] as String?,
+    d_in: (json['d_in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+    le: json['le'] as String?,
+    lt: json['lt'] as String?,
+    ge: json['ge'] as String?,
+    gt: json['gt'] as String?,
+    between: json['between'],
+  );
+}
+
+Map<String, dynamic> _$StringExactFilterToJson(StringExactFilter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'd_in': instance.d_in,
+      'le': instance.le,
+      'lt': instance.lt,
+      'ge': instance.ge,
+      'gt': instance.gt,
+      'between': instance.between,
+    };
+
+UserOrder _$UserOrderFromJson(Map<String, dynamic> json) {
+  return UserOrder(
+    asc: json['asc'],
+    desc: json['desc'],
+    then: json['then'],
+  );
+}
+
+Map<String, dynamic> _$UserOrderToJson(UserOrder instance) => <String, dynamic>{
+      'asc': instance.asc,
+      'desc': instance.desc,
+      'then': instance.then,
+    };
+
+UpdateAuthorInput _$UpdateAuthorInputFromJson(Map<String, dynamic> json) {
+  return UpdateAuthorInput(
+    filter: json['filter'],
+    set: json['set'],
+    remove: json['remove'],
+  );
+}
+
+Map<String, dynamic> _$UpdateAuthorInputToJson(UpdateAuthorInput instance) =>
+    <String, dynamic>{
+      'filter': instance.filter,
+      'set': instance.set,
+      'remove': instance.remove,
+    };
+
+AddTaskInput _$AddTaskInputFromJson(Map<String, dynamic> json) {
+  return AddTaskInput(
+    title: json['title'] as String,
+    completed: json['completed'] as bool,
+    user: json['user'],
+  );
+}
+
+Map<String, dynamic> _$AddTaskInputToJson(AddTaskInput instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'completed': instance.completed,
+      'user': instance.user,
+    };
+
+AddUserInput _$AddUserInputFromJson(Map<String, dynamic> json) {
+  return AddUserInput(
+    username: json['username'] as String,
+    name: json['name'] as String?,
+    tasks: json['tasks'] as List<dynamic>?,
+  );
+}
+
+Map<String, dynamic> _$AddUserInputToJson(AddUserInput instance) =>
+    <String, dynamic>{
+      'username': instance.username,
+      'name': instance.name,
+      'tasks': instance.tasks,
+    };
+
+CustomHTTP _$CustomHTTPFromJson(Map<String, dynamic> json) {
+  return CustomHTTP(
+    url: json['url'] as String,
+    method: json['method'],
+    body: json['body'] as String?,
+    graphql: json['graphql'] as String?,
+    mode: json['mode'],
+    forwardHeaders: (json['forwardHeaders'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    secretHeaders: (json['secretHeaders'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    introspectionHeaders: (json['introspectionHeaders'] as List<dynamic>?)
+        ?.map((e) => e as String)
+        .toList(),
+    skipIntrospection: json['skipIntrospection'] as bool?,
+  );
+}
+
+Map<String, dynamic> _$CustomHTTPToJson(CustomHTTP instance) =>
+    <String, dynamic>{
+      'url': instance.url,
+      'method': instance.method,
+      'body': instance.body,
+      'graphql': instance.graphql,
+      'mode': instance.mode,
+      'forwardHeaders': instance.forwardHeaders,
+      'secretHeaders': instance.secretHeaders,
+      'introspectionHeaders': instance.introspectionHeaders,
+      'skipIntrospection': instance.skipIntrospection,
+    };
+
+IntersectsFilter _$IntersectsFilterFromJson(Map<String, dynamic> json) {
+  return IntersectsFilter(
+    polygon: json['polygon'],
+    multiPolygon: json['multiPolygon'],
+  );
+}
+
+Map<String, dynamic> _$IntersectsFilterToJson(IntersectsFilter instance) =>
+    <String, dynamic>{
+      'polygon': instance.polygon,
+      'multiPolygon': instance.multiPolygon,
+    };
+
+AddPostInput _$AddPostInputFromJson(Map<String, dynamic> json) {
+  return AddPostInput(
+    title: json['title'] as String,
+    text: json['text'] as String?,
+    score: (json['score'] as num?)?.toDouble(),
+    completed: json['completed'] as bool?,
+    datePublished: json['datePublished'],
+    author: json['author'],
+  );
+}
+
+Map<String, dynamic> _$AddPostInputToJson(AddPostInput instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'text': instance.text,
+      'score': instance.score,
+      'completed': instance.completed,
+      'datePublished': instance.datePublished,
+      'author': instance.author,
+    };
+
+TaskOrder _$TaskOrderFromJson(Map<String, dynamic> json) {
+  return TaskOrder(
+    asc: json['asc'],
+    desc: json['desc'],
+    then: json['then'],
+  );
+}
+
+Map<String, dynamic> _$TaskOrderToJson(TaskOrder instance) => <String, dynamic>{
+      'asc': instance.asc,
+      'desc': instance.desc,
+      'then': instance.then,
     };
