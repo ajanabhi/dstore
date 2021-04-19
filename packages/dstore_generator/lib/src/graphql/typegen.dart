@@ -434,19 +434,23 @@ class OperationVisitor extends RecursiveVisitor {
 
   String _getScalarType(ScalarTypeDefinition typeDef,
       {bool customScalar = false}) {
-    switch (typeDef.name) {
-      case "String":
-      case "ID":
-        return "String";
-      case "Float":
-        return "double";
-      case "Boolean":
-        return "bool";
-      case "Int":
-        return "int";
-      default:
-        return customScalar ? typeDef.name : "dynamic";
-    }
+    return getScalarTypeFromString(typeDef.name, customScalar: customScalar);
+  }
+}
+
+String getScalarTypeFromString(String input, {bool customScalar = false}) {
+  switch (input) {
+    case "String":
+    case "ID":
+      return "String";
+    case "Float":
+      return "double";
+    case "Boolean":
+      return "bool";
+    case "Int":
+      return "int";
+    default:
+      return customScalar ? input : "dynamic";
   }
 }
 
