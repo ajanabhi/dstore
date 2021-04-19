@@ -1,4 +1,5 @@
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:json_annotation/json_annotation.dart';
 
 abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
@@ -9,10 +10,45 @@ abstract class ModelUtils {
           : "${f.type}";
       return """
      ${addOverrideAnnotation ? "@override" : ""}
-     ${f.annotations != null ? f.annotations!.join("\n") : ""}
+     ${f.annotations.join("\n")}
      ${addLateModifier ? "late" : ""} final $type ${f.name};
     """;
     }).join("\n ");
+  }
+
+  static List<Field> processFields(List<Field> fields,
+      {bool addJsonKey = false}) {
+    return fields.map((f) {
+      final name = getDNameForIdentifier(f.name);
+      var annotations = f.annotations;
+      if (addJsonKey && name != f.name) {
+        if (f.annotations
+            .where((element) => element.startsWith("@JsonKey"))
+            .isNotEmpty) {
+          annotations = annotations.map((e) {
+            if (e.startsWith("@JsonKey(")) {
+              if (e.contains("name:")) {
+                return e;
+              } else {
+                return "@JsonKey(name: $name,${e.substring("@JsonKey(".length)}";
+              }
+            } else {
+              return e;
+            }
+          }).toList();
+        } else {
+          f.annotations.add("@JsonKey(name: '${f.name}')");
+        }
+      }
+      return f.copyWith(
+          type: _getFinalTypeOfField(f),
+          name: name,
+          isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?"));
+    }).toList();
+  }
+
+  static String _getFinalTypeOfField(Field f) {
+    return (!f.type.endsWith("?") && f.isOptional) ? "${f.type}?" : f.type;
   }
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,

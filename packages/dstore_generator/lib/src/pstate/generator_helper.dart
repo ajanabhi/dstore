@@ -51,7 +51,7 @@ Future<String> generatePStateForClassElement(
       type: "AsyncActionField",
       value: "AsyncActionField()",
       param: null)));
-  fields = processFields(fields);
+  fields = ModelUtils.processFields(fields);
   logger.shout("Fields $fields Methods $methods");
   final typePath = getFullTypeName(element);
   final typeVariable = "_${modelName}_FullPath";

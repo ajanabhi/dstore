@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:ansicolor/ansicolor.dart';
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';

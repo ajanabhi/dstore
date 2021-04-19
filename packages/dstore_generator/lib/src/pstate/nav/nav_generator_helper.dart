@@ -42,7 +42,7 @@ Future<String> generatePStateNavForClassElement(
       type: "AsyncActionField",
       value: "AsyncActionField()",
       param: null)));
-  fields = processFields(fields);
+  fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
 
   final buildPages =

@@ -18,7 +18,7 @@ String generateDImmutableFromClass(ClassElement element) {
   final typeParams = tuple.item1;
   logger.shout("typeParams : $typeParamsWithBounds fields ${element.fields}");
 
-  final fields = processFields(
+  final fields = ModelUtils.processFields(
       AstUtils.convertParamElementsToFields(ctor.parameters, dim: true));
   final name = element.name;
   print("Params : $fields");

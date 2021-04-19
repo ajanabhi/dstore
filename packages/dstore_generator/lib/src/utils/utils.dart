@@ -5,12 +5,13 @@ export "builder_utils.dart";
 export "package:collection/collection.dart";
 import 'package:analyzer/dart/ast/ast.dart';
 import "package:collection/collection.dart";
+import 'package:dstore_generator/src/constants.dart';
 
 class Field {
   String name;
   String type;
   String? value;
-  List<String>? annotations;
+  List<String> annotations;
   bool isOptional;
   FormalParameter? param;
   bool isNamed;
@@ -18,7 +19,7 @@ class Field {
       {required this.name,
       required this.type,
       this.value,
-      this.annotations,
+      this.annotations = const [],
       this.isNamed = false,
       this.param,
       this.isOptional = false});
@@ -56,16 +57,8 @@ String replaceEndStar(String input) {
   return result;
 }
 
-String _getFinalTypeOfField(Field f) {
-  return (!f.type.endsWith("?") && f.isOptional) ? "${f.type}?" : f.type;
-}
-
-List<Field> processFields(List<Field> fields) {
-  return fields
-      .map((f) => f.copyWith(
-          type: _getFinalTypeOfField(f),
-          isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?")))
-      .toList();
+String getDNameForIdentifier(String name) {
+  return DART_RESERVED_KEYWORDS.contains(name) ? "d_$name" : "$name";
 }
 
 String convertEnumToString(Object enumEntry) {
