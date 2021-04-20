@@ -286,7 +286,6 @@ mixin _$HttpPayload<I, R, E, T> {
   R? get optimisticResponse;
   int? get optimisticHttpStatus;
   bool get offline;
-  HttpInputType? get inputType;
   Map<String, dynamic>? get headers;
   Map<String, dynamic>? get queryParams;
   int? get sendTimeout;
@@ -321,9 +320,6 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
   final bool offline;
 
   @override
-  final HttpInputType? inputType;
-
-  @override
   final Map<String, dynamic>? headers;
 
   @override
@@ -352,7 +348,6 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       this.optimisticResponse,
       this.optimisticHttpStatus,
       this.offline = false,
-      this.inputType,
       this.headers,
       this.queryParams,
       this.sendTimeout,
@@ -370,7 +365,6 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
         o.optimisticResponse == optimisticResponse &&
         o.optimisticHttpStatus == optimisticHttpStatus &&
         o.offline == offline &&
-        o.inputType == inputType &&
         o.headers == headers &&
         o.queryParams == queryParams &&
         o.sendTimeout == sendTimeout &&
@@ -387,7 +381,6 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       optimisticResponse.hashCode ^
       optimisticHttpStatus.hashCode ^
       offline.hashCode ^
-      inputType.hashCode ^
       headers.hashCode ^
       queryParams.hashCode ^
       sendTimeout.hashCode ^
@@ -396,7 +389,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
 
   @override
   String toString() =>
-      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, inputType: ${this.inputType}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
+      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
 }
 
 abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
@@ -411,7 +404,6 @@ abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
       R? optimisticResponse,
       int? optimisticHttpStatus,
       bool offline,
-      HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
       int? sendTimeout,
@@ -434,7 +426,6 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? optimisticResponse = dimmutable,
       Object? optimisticHttpStatus = dimmutable,
       Object? offline = dimmutable,
-      Object? inputType = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
       Object? sendTimeout = dimmutable,
@@ -454,9 +445,6 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
             ? _value.optimisticHttpStatus
             : optimisticHttpStatus as int?,
         offline: offline == dimmutable ? _value.offline : offline as bool,
-        inputType: inputType == dimmutable
-            ? _value.inputType
-            : inputType as HttpInputType?,
         headers: headers == dimmutable
             ? _value.headers
             : headers as Map<String, dynamic>?,
@@ -487,7 +475,6 @@ abstract class _$HttpPayloadCopyWith<I, R, E, T, O>
       R? optimisticResponse,
       int? optimisticHttpStatus,
       bool offline,
-      HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
       int? sendTimeout,
@@ -514,7 +501,6 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? optimisticResponse = dimmutable,
       Object? optimisticHttpStatus = dimmutable,
       Object? offline = dimmutable,
-      Object? inputType = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
       Object? sendTimeout = dimmutable,
@@ -534,9 +520,6 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
             ? _value.optimisticHttpStatus
             : optimisticHttpStatus as int?,
         offline: offline == dimmutable ? _value.offline : offline as bool,
-        inputType: inputType == dimmutable
-            ? _value.inputType
-            : inputType as HttpInputType?,
         headers: headers == dimmutable
             ? _value.headers
             : headers as Map<String, dynamic>?,

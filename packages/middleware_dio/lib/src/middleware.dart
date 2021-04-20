@@ -24,20 +24,6 @@ Options _getOptions(
       }
     }
   }
-  String? contentType;
-  switch (payload.inputType) {
-    case HttpInputType.JSON:
-      contentType = Headers.jsonContentType;
-      break;
-    case HttpInputType.FORM:
-      contentType = Headers.formUrlEncodedContentType;
-      break;
-    case HttpInputType.TEXT:
-      contentType = "text/plain;charset=UTF-8";
-      break;
-    default:
-      contentType = null;
-  }
   ResponseType responseType;
   switch (payload.responseType) {
     case HttpResponseType.JSON:
@@ -59,7 +45,6 @@ Options _getOptions(
   }
   headers.addAll(payload.headers ?? {});
   return Options(
-      contentType: contentType,
       headers: headers,
       responseType: responseType,
       sendTimeout: payload.sendTimeout,

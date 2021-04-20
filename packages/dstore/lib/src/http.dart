@@ -99,7 +99,6 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       R? optimisticResponse,
       int? optimisticHttpStatus,
       @Default(false) bool offline,
-      HttpInputType? inputType,
       Map<String, dynamic>? headers,
       Map<String, dynamic>? queryParams,
       int? sendTimeout,
