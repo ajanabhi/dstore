@@ -103,20 +103,21 @@ class HttpRequest<I, R, E> {
   final I Function(dynamic)? inputDeserializer;
   final E Function(dynamic)? errorDeserializer;
   final HttpResponseType? responseType;
-  final HttpInputType? inputType;
   final String? graphqlQuery;
+  final Map<String, String>? headers;
 
-  const HttpRequest(
-      {required this.method,
-      required this.url,
-      this.responseSerializer,
-      this.responseDeserializer,
-      this.inputSerializer,
-      this.responseType,
-      this.inputDeserializer,
-      this.errorDeserializer,
-      this.graphqlQuery,
-      this.inputType});
+  const HttpRequest({
+    required this.method,
+    required this.url,
+    this.responseSerializer,
+    this.responseDeserializer,
+    this.inputSerializer,
+    this.responseType,
+    this.headers,
+    this.inputDeserializer,
+    this.errorDeserializer,
+    this.graphqlQuery,
+  });
 }
 
 class HttpRequestExtension<T> {

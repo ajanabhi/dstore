@@ -142,6 +142,7 @@ class DuplicateOperationVisitor extends RecursiveVisitor {
 
   @override
   void visitOperationDefinitionNode(OperationDefinitionNode node) {
+    logger.shout("Dups visitOperationDefinitionNode ${node.type}");
     _ops += 1;
     opType = node.type;
     if (_ops > 1) {
@@ -176,6 +177,7 @@ class OperationVisitor extends RecursiveVisitor {
   late final OperationType opType;
   @override
   void visitOperationDefinitionNode(OperationDefinitionNode node) {
+    print("visiting operation ${node.type}");
     if (node.type == OperationType.query) {
       opType = OperationType.query;
       _parentTypeStack.stack(schema.query);
@@ -702,7 +704,8 @@ String convertGTypeToString(GType gtype) {
   }
   final specialConverters = <String>[];
 
-  final finalFields = gtype.fields.map((f) {
+  final fields = gtype.fields.map((f) {
+    final annotations = <String>[];
     final jkFields = <String>[];
     if (f.jsonKey != null) {
       jkFields.add("name:\"${f.jsonKey}\"");
@@ -713,35 +716,15 @@ String convertGTypeToString(GType gtype) {
     //   jkFields.add("fromJson: $mn");
     //   specialConverters.add(getUnionConverterForField(f));
     // }
-    final jk = jkFields.isNotEmpty ? "@JsonKey(${jkFields.join(",")})" : "";
-    return """
-    $jk
-    final ${f.type} ${f.name};
-   """;
-  }).join("\n");
 
-  final params = gtype.fields
-      .map((f) =>
-          f.type.endsWith("?") ? "this.${f.name}" : "required this.${f.name}")
-      .join(", ");
+    if (jkFields.isNotEmpty) {
+      annotations.add("@JsonKey(${jkFields.join(",")})");
+    }
 
-  final ctor = "${name}({$params});";
-  final fromJson =
-      "static ${name} ${name}.fromJson(Map<String,dynamic> json) => _\$${name}FromJson(json);";
-
-  final sc =
-      gtype.baseTypes.isNotEmpty ? "extends ${gtype.baseTypes.first}" : "";
-  return """
-   @JsonSerializable()
-   class ${name} $sc {
-     ${finalFields}
-     $ctor
-     ${fromJson}
-     ${ModelUtils.createToJson()}
-     ${specialConverters.join("\n")}
-   }
-  
-  """;
+    return Field(name: f.name, type: f.type, annotations: annotations);
+  }).toList();
+  return ModelUtils.createDefaultDartModelFromFeilds(
+      fields: fields, className: name, isJsonSerializable: true);
 }
 
 String getUnionConverterForField(FieldG f) {

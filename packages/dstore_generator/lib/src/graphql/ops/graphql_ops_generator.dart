@@ -4,6 +4,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:source_gen/source_gen.dart';
@@ -38,16 +39,19 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
     final ops = element.fields.where((f) => f.isStatic && f.isConst).map((e) {
       final v = e.computeConstantValue()!;
       var result = "";
+      logger.shout("Value $v");
       if (v.type.toString() == "String") {
         final query = v.toStringValue();
         final doc = lang.parseString(query);
         final dupOpsVisitor = DuplicateOperationVisitor(doc, schema);
+        doc.accept(dupOpsVisitor);
         if (dupOpsVisitor.opType != null) {
           if (dupOpsVisitor.isMultipleOpsExist) {
             throw Exception(
                 " You should specify only single query or mutation or subscription , not combined ops");
           }
           final tn = "${name}_${e.name}";
+          logger.shout("TN $tn");
           result = generateOpsTypeForQuery(
               schema: schema,
               query: query!,
@@ -76,6 +80,7 @@ String generateOpsTypeForQuery(
     required GraphqlApi api,
     required String name}) {
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
+  doc.accept(visitor);
   final types = getTypes(visitor, name);
   var result = "";
   if (visitor.opType == OperationType.query ||
@@ -84,9 +89,9 @@ String generateOpsTypeForQuery(
    @HttpRequest(
     method: "POST",
     url: "$url",
-    graphqlQuery: "$query"
+    graphqlQuery: \"\"\"$query\"\"\",
     responseType: HttpResponseType.JSON,
-    inputType: HttpInputType.JSON,
+    headers: {"Content_Type":"applications/josn"},
     responseDeserializer: getTodosSerializer)
   """;
     final inputType =
