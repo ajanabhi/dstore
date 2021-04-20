@@ -17,6 +17,7 @@ class HttpFieldInfo {
   final String name;
   final String fieldType;
   final String url;
+  final String? headers;
   final String? inputType;
   final HttpInputType inputTypeEnum;
   final HttpResponseType responseTypeEnum;
@@ -34,8 +35,9 @@ class HttpFieldInfo {
   HttpFieldInfo({
     required this.name,
     required this.url,
+    this.headers,
     required this.fieldType,
-    required this.inputType,
+    this.inputType,
     required this.inputTypeEnum,
     required this.responseType,
     required this.responseTypeEnum,

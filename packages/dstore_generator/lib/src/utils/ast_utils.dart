@@ -326,6 +326,12 @@ extension DartObjectExt on DartObject {
       return enclosingName != null ? "${enclosingName}.$name" : name;
     }
   }
+
+  Map<String, String>? getStringMapForField(String name) {
+    final m = getField(name)?.toMapValue();
+    return m?.map((key, value) =>
+        MapEntry(key!.toStringValue()!, value!.toStringValue()!));
+  }
 }
 
 extension ConstReadExt on ConstantReader {
@@ -340,6 +346,10 @@ extension ConstReadExt on ConstantReader {
   String? functionNameForField(String name,
       {String? Function(ExecutableElement fn)? validateFn}) {
     return objectValue.functionNameForField(name, validateFn: validateFn);
+  }
+
+  Map<String, String>? getStringMapForField(String name) {
+    return objectValue.getStringMapForField(name);
   }
 }
 

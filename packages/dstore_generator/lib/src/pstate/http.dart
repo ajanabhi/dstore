@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
@@ -74,6 +76,8 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final inputSerializer = reader.functionNameForField("inputSerializer");
   final responseSerializer = reader.functionNameForField("responseSerializer");
   final inputDeserializer = reader.functionNameForField("inputDeserializer");
+  final headersMap = reader.getStringMapForField("headers");
+  final headers = headersMap != null ? jsonEncode(headersMap) : null;
   final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
   String? transformer;
@@ -86,6 +90,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       name: element.name,
       url: url,
       method: method,
+      headers: headers,
       fieldType: element.type.toString(),
       inputTypeEnum: inputTypeEnum,
       responseTypeEnum: responseTypeEnum!,
@@ -147,8 +152,11 @@ String convertHttpFieldInfoToAction(
       : hf.fieldType;
   params.add("$mockType? mock");
   params.add("Duration? debounce");
+  final mergeHeaders =
+      hf.headers != null ? "headers = {...${hf.headers},...headers ?? {}}" : "";
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
+        $mergeHeaders
         return Action<$mockType>(name:"${hf.name}",mock:mock,type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
