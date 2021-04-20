@@ -218,7 +218,8 @@ ActionsInfo _getActionsInfo(
       params.add("responseSerializer: ${h.responseSerializer}");
     }
     params.add("responseDeserializer: ${h.responseDeserializer}");
-    final value = "HttpMeta(${params.join(", ")})";
+    final value =
+        "HttpMeta<${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";
 
     return """ "$key" : $value """;
   }).join(", ");

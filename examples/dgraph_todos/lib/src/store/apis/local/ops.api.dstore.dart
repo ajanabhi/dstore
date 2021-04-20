@@ -150,24 +150,17 @@ class __$Hello_todoData_todoCopyWithImpl<O>
   }
 }
 
-@HttpRequest(
-    method: "POST",
-    url: "http://localhost:4000/",
-    graphqlQuery: """    query todo{
-      todo {
-        text
-      } 
-    }
-  
-  """,
-    responseType: HttpResponseType.JSON,
-    headers: {"Content_Type": "applications/josn"},
-    responseSerializer: _$Hello_todoDataToJson,
-    inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: GraphqlRequestInput.fromJson,
-    responseDeserializer: _$Hello_todoDataToJson)
-class Hello_todo = HttpField<Null, GraphqlRequestInput, Hello_todoData, dynamic>
-    with EmptyMixin;
+GraphqlRequestInput<Null> Hello_todoInputDeserializer(
+    Map<String, dynamic> json) {
+  return GraphqlRequestInput.fromJson(json);
+}
+
+Map<String, dynamic> Hello_todoDataSerializer(
+        int status, Hello_todoData resp) =>
+    resp.toJson();
+
+Hello_todoData Hello_todoDataDeserializer(int status, dynamic json) =>
+    Hello_todoData.fromJson(json);
 
 @HttpRequest(
     method: "POST",
@@ -181,9 +174,28 @@ class Hello_todo = HttpField<Null, GraphqlRequestInput, Hello_todoData, dynamic>
   """,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
-    responseSerializer: _$Hello_todoDataToJson,
+    responseSerializer: Hello_todoDataSerializer,
     inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: GraphqlRequestInput.fromJson,
-    responseDeserializer: _$Hello_todoDataToJson)
-class Hello_todoT<T> = HttpField<Null, GraphqlRequestInput, T, dynamic>
+    inputDeserializer: Hello_todoInputDeserializer,
+    responseDeserializer: Hello_todoDataDeserializer)
+class Hello_todo = HttpField<Null, GraphqlRequestInput<Null>, Hello_todoData,
+    dynamic> with EmptyMixin;
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/",
+    graphqlQuery: """    query todo{
+      todo {
+        text
+      } 
+    }
+  
+  """,
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: Hello_todoDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: Hello_todoInputDeserializer,
+    responseDeserializer: Hello_todoDataDeserializer)
+class Hello_todoT<T> = HttpField<Null, GraphqlRequestInput<Null>, T, dynamic>
     with EmptyMixin;

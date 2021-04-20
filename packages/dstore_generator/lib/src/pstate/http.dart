@@ -44,11 +44,14 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final errorType = replaceEndStar(
       ht.typeArguments[3].getDisplayString(withNullability: true));
   final anot = type.element?.annotationFromType(HttpRequest);
+  logger.shout("Annotation $anot");
   if (anot == null) {
     throw ArgumentError.value(
         "You should anotate type ${type} with HttpRequest");
   }
-  final reader = ConstantReader(anot.computeConstantValue());
+  final value = anot.computeConstantValue();
+  logger.shout("Value $value, ${value?.getField('responseDeserializer')}");
+  final reader = ConstantReader(value);
   final url = reader.read("url").stringValue;
   final method = reader.read("method").stringValue;
   var responseTypeEnum =
@@ -68,8 +71,11 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       inputTypeEnum = HttpInputType.JSON;
     }
   }
+
   var responseDeserializer =
       reader.functionNameForField("responseDeserializer") ?? "IdentifyFn";
+  logger.shout(
+      "Response Deserializer $responseDeserializer , ${reader.peek('responseDeserializer')}");
   var errorDeserializer =
       reader.functionNameForField("errorDeserializer") ?? "IdentifyFn";
   final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
@@ -77,6 +83,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final responseSerializer = reader.functionNameForField("responseSerializer");
   final inputDeserializer = reader.functionNameForField("inputDeserializer");
   final headersMap = reader.getStringMapForField("headers");
+  logger.shout("headersMap $headersMap");
   final headers = headersMap != null ? jsonEncode(headersMap) : null;
   final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
@@ -97,6 +104,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       inputDeserializer: inputDeserializer,
       responseSerializer: responseSerializer,
       inputType: inputType,
+      errorType: errorType,
       responseDeserializer: responseDeserializer,
       errorDeserializer: errorDeserializer,
       queryParamsType: queryParamsType,
@@ -120,19 +128,23 @@ String convertHttpFieldInfoToAction(
   if (hf.inputType != null) {
     if (hf.inputType!.startsWith("GraphqlRequestInput")) {
       final it = hf.inputType!;
+
       final query = hf.graphqlQuery!;
+      final gq = "\"\"\"$query\"\"\"";
       final variableType = it.contains("<")
-          ? it.substring(it.indexOf("<"), it.indexOf(">"))
+          ? it.substring(it.indexOf("<") + 1, it.indexOf(">"))
           : null;
-      if (variableType != null) {
+      if (variableType != null &&
+          variableType != "dynamic" &&
+          variableType != "Null") {
         params.add("required ${variableType} variables");
-        payloadFields.add("input: GraphqlRequestInput(\"$query\",variables)");
+        payloadFields.add("data: GraphqlRequestInput($gq,variables)");
       } else {
-        payloadFields.add("input: GraphqlRequestInput(\"$query\",null)");
+        payloadFields.add("data: GraphqlRequestInput($gq,null)");
       }
     } else {
       params.add("required ${hf.inputType} input");
-      payloadFields.add("input:input");
+      payloadFields.add("data:input");
     }
   }
   params.add("bool abortable = false");
@@ -141,23 +153,23 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("offline: offline");
   params.add("Map<String,dynamic>? headers");
   payloadFields.add("headers:headers");
-  params.add("${hf.responseType} optimisticResponse");
+  params.add("${hf.responseType}? optimisticResponse");
   payloadFields.add("optimisticResponse:optimisticResponse");
   payloadFields.add("""url:"${hf.url}" """);
   payloadFields.add("""method: "${hf.method}" """);
-  payloadFields.add("inputType:${hf.inputTypeEnum}");
   payloadFields.add("responseType:${hf.responseTypeEnum}");
   final mockType = hf.fieldType.endsWith("?")
       ? hf.fieldType.replaceAll("?", "")
       : hf.fieldType;
   params.add("$mockType? mock");
   params.add("Duration? debounce");
-  final mergeHeaders =
-      hf.headers != null ? "headers = {...${hf.headers},...headers ?? {}}" : "";
+  final mergeHeaders = hf.headers != null
+      ? "headers = <String,dynamic>{...<String,String>${hf.headers},...headers ?? <String,String>{}};"
+      : "";
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
         $mergeHeaders
-        return Action<$mockType>(name:"${hf.name}",mock:mock,type:${type},http:HttpPayload(${payloadFields.join(", ")}),debounce:debounce);
+        return Action<$mockType>(name:"${hf.name}",type:${type},http:HttpPayload<${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

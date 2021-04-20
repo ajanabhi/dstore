@@ -38,7 +38,7 @@ class HttpField<QP, I, R, E> {
   final bool offline;
   final AbortController? abortController;
 
-  HttpField(
+  const HttpField(
       {this.loading = false,
       this.data,
       this.error,
@@ -77,8 +77,8 @@ class HttpField<QP, I, R, E> {
 }
 
 @DImmutable()
-abstract class Httpmeta<I, R, E, T> with _$Httpmeta<I, R, E, T> {
-  const factory Httpmeta({
+abstract class HttpMeta<I, R, E, T> with _$HttpMeta<I, R, E, T> {
+  const factory HttpMeta({
     required R Function(int status, dynamic resp) responseDeserializer,
     dynamic Function(int, R)? responseSerializer,
     HttpField Function(HttpField currentField, HttpField newField)? transformer,
@@ -86,7 +86,7 @@ abstract class Httpmeta<I, R, E, T> with _$Httpmeta<I, R, E, T> {
     Future<dynamic> Function(I)? inputStorageSerializer,
     I Function(dynamic)? inputDeserializer,
     E Function(int status, dynamic resp)? errorDeserializer,
-  }) = _Httpmeta<I, R, E, T>;
+  }) = _HttpMeta<I, R, E, T>;
 }
 
 @DImmutable()
@@ -106,7 +106,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       @Default(false) bool abortable}) = _HttpPayload<I, R, E, T>;
 
   factory HttpPayload.fromJson(
-      Map<String, dynamic> map, Httpmeta<I, R, E, T> meta) {
+      Map<String, dynamic> map, HttpMeta<I, R, E, T> meta) {
     final url = map["url"] as String;
     final method = map["method"] as String;
     final responseType =
@@ -141,7 +141,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
         responseType: responseType,
         data: data,
         optimisticResponse: optimisticResponse,
-        inputType: inputType,
+        // inputType: inputType,
         headers: headers,
         queryParams: queryParams,
         sendTimeout: sendTimeout,
@@ -151,7 +151,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
 }
 
 extension HttpPayloadExt on HttpPayload {
-  Map<String, dynamic> toJson(Httpmeta meta) {
+  Map<String, dynamic> toJson(HttpMeta meta) {
     final map = <String, dynamic>{};
     map["url"] = url;
     map["method"] = method;
@@ -171,9 +171,9 @@ extension HttpPayloadExt on HttpPayload {
       map["optimisticResponse"] =
           meta.responseSerializer!(optimisticHttpStatus!, optimisticResponse);
     }
-    if (inputType != null) {
-      map["inputType"] = inputType!.value;
-    }
+    // if (inputType != null) {
+    //   map["inputType"] = inputType!.value;
+    // }
     if (headers != null) {
       map["headers"] = headers;
     }

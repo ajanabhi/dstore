@@ -6,20 +6,6 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserRef _$UserRefFromJson(Map<String, dynamic> json) {
-  return UserRef(
-    username: json['username'] as String?,
-    name: json['name'] as String?,
-    tasks: json['tasks'] as List<dynamic>?,
-  );
-}
-
-Map<String, dynamic> _$UserRefToJson(UserRef instance) => <String, dynamic>{
-      'username': instance.username,
-      'name': instance.name,
-      'tasks': instance.tasks,
-    };
-
 FloatRange _$FloatRangeFromJson(Map<String, dynamic> json) {
   return FloatRange(
     min: (json['min'] as num).toDouble(),
@@ -85,18 +71,6 @@ Map<String, dynamic> _$TaskFilterToJson(TaskFilter instance) =>
       'not': instance.not,
     };
 
-PointRef _$PointRefFromJson(Map<String, dynamic> json) {
-  return PointRef(
-    longitude: (json['longitude'] as num).toDouble(),
-    latitude: (json['latitude'] as num).toDouble(),
-  );
-}
-
-Map<String, dynamic> _$PointRefToJson(PointRef instance) => <String, dynamic>{
-      'longitude': instance.longitude,
-      'latitude': instance.latitude,
-    };
-
 AuthorOrder _$AuthorOrderFromJson(Map<String, dynamic> json) {
   return AuthorOrder(
     asc: json['asc'],
@@ -112,17 +86,16 @@ Map<String, dynamic> _$AuthorOrderToJson(AuthorOrder instance) =>
       'then': instance.then,
     };
 
-DateTimeRange _$DateTimeRangeFromJson(Map<String, dynamic> json) {
-  return DateTimeRange(
-    min: json['min'],
-    max: json['max'],
+PointRef _$PointRefFromJson(Map<String, dynamic> json) {
+  return PointRef(
+    longitude: (json['longitude'] as num).toDouble(),
+    latitude: (json['latitude'] as num).toDouble(),
   );
 }
 
-Map<String, dynamic> _$DateTimeRangeToJson(DateTimeRange instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
+Map<String, dynamic> _$PointRefToJson(PointRef instance) => <String, dynamic>{
+      'longitude': instance.longitude,
+      'latitude': instance.latitude,
     };
 
 PointListRef _$PointListRefFromJson(Map<String, dynamic> json) {
@@ -194,6 +167,19 @@ Map<String, dynamic> _$TaskRefToJson(TaskRef instance) => <String, dynamic>{
       'title': instance.title,
       'completed': instance.completed,
       'user': instance.user,
+    };
+
+DateTimeRange _$DateTimeRangeFromJson(Map<String, dynamic> json) {
+  return DateTimeRange(
+    min: json['min'],
+    max: json['max'],
+  );
+}
+
+Map<String, dynamic> _$DateTimeRangeToJson(DateTimeRange instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
     };
 
 Int64Filter _$Int64FilterFromJson(Map<String, dynamic> json) {
@@ -527,22 +513,6 @@ Map<String, dynamic> _$PostPatchToJson(PostPatch instance) => <String, dynamic>{
       'author': instance.author,
     };
 
-AuthRule _$AuthRuleFromJson(Map<String, dynamic> json) {
-  return AuthRule(
-    and: json['and'] as List<dynamic>?,
-    or: json['or'] as List<dynamic>?,
-    not: json['not'],
-    rule: json['rule'] as String?,
-  );
-}
-
-Map<String, dynamic> _$AuthRuleToJson(AuthRule instance) => <String, dynamic>{
-      'and': instance.and,
-      'or': instance.or,
-      'not': instance.not,
-      'rule': instance.rule,
-    };
-
 GenerateMutationParams _$GenerateMutationParamsFromJson(
     Map<String, dynamic> json) {
   return GenerateMutationParams(
@@ -578,6 +548,22 @@ Map<String, dynamic> _$IntFilterToJson(IntFilter instance) => <String, dynamic>{
       'ge': instance.ge,
       'gt': instance.gt,
       'between': instance.between,
+    };
+
+AuthRule _$AuthRuleFromJson(Map<String, dynamic> json) {
+  return AuthRule(
+    and: json['and'] as List<dynamic>?,
+    or: json['or'] as List<dynamic>?,
+    not: json['not'],
+    rule: json['rule'] as String?,
+  );
+}
+
+Map<String, dynamic> _$AuthRuleToJson(AuthRule instance) => <String, dynamic>{
+      'and': instance.and,
+      'or': instance.or,
+      'not': instance.not,
+      'rule': instance.rule,
     };
 
 UserFilter _$UserFilterFromJson(Map<String, dynamic> json) {
@@ -660,19 +646,6 @@ Map<String, dynamic> _$PostOrderToJson(PostOrder instance) => <String, dynamic>{
       'then': instance.then,
     };
 
-NearFilter _$NearFilterFromJson(Map<String, dynamic> json) {
-  return NearFilter(
-    distance: (json['distance'] as num).toDouble(),
-    coordinate: json['coordinate'],
-  );
-}
-
-Map<String, dynamic> _$NearFilterToJson(NearFilter instance) =>
-    <String, dynamic>{
-      'distance': instance.distance,
-      'coordinate': instance.coordinate,
-    };
-
 ContainsFilter _$ContainsFilterFromJson(Map<String, dynamic> json) {
   return ContainsFilter(
     point: json['point'],
@@ -684,6 +657,19 @@ Map<String, dynamic> _$ContainsFilterToJson(ContainsFilter instance) =>
     <String, dynamic>{
       'point': instance.point,
       'polygon': instance.polygon,
+    };
+
+NearFilter _$NearFilterFromJson(Map<String, dynamic> json) {
+  return NearFilter(
+    distance: (json['distance'] as num).toDouble(),
+    coordinate: json['coordinate'],
+  );
+}
+
+Map<String, dynamic> _$NearFilterToJson(NearFilter instance) =>
+    <String, dynamic>{
+      'distance': instance.distance,
+      'coordinate': instance.coordinate,
     };
 
 UpdatePostInput _$UpdatePostInputFromJson(Map<String, dynamic> json) {
@@ -726,19 +712,6 @@ Map<String, dynamic> _$UserPatchToJson(UserPatch instance) => <String, dynamic>{
       'tasks': instance.tasks,
     };
 
-Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
-  return Int64Range(
-    min: json['min'] as int,
-    max: json['max'] as int,
-  );
-}
-
-Map<String, dynamic> _$Int64RangeToJson(Int64Range instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
-    };
-
 PolygonRef _$PolygonRefFromJson(Map<String, dynamic> json) {
   return PolygonRef(
     coordinates: json['coordinates'] as List<dynamic>,
@@ -759,6 +732,19 @@ MultiPolygonRef _$MultiPolygonRefFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$MultiPolygonRefToJson(MultiPolygonRef instance) =>
     <String, dynamic>{
       'polygons': instance.polygons,
+    };
+
+Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
+  return Int64Range(
+    min: json['min'] as int,
+    max: json['max'] as int,
+  );
+}
+
+Map<String, dynamic> _$Int64RangeToJson(Int64Range instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
     };
 
 StringRange _$StringRangeFromJson(Map<String, dynamic> json) {
@@ -850,4 +836,18 @@ Map<String, dynamic> _$TaskPatchToJson(TaskPatch instance) => <String, dynamic>{
       'title': instance.title,
       'completed': instance.completed,
       'user': instance.user,
+    };
+
+UserRef _$UserRefFromJson(Map<String, dynamic> json) {
+  return UserRef(
+    username: json['username'] as String?,
+    name: json['name'] as String?,
+    tasks: json['tasks'] as List<dynamic>?,
+  );
+}
+
+Map<String, dynamic> _$UserRefToJson(UserRef instance) => <String, dynamic>{
+      'username': instance.username,
+      'name': instance.name,
+      'tasks': instance.tasks,
     };

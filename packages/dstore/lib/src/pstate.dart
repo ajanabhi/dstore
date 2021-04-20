@@ -53,7 +53,7 @@ class PStateMeta<S extends PStateModel<S>> {
   final AReducerFn? aReducer;
   final List<String>? psDeps;
 
-  final Map<String, Httpmeta>? httpMetaMap;
+  final Map<String, HttpMeta>? httpMetaMap;
   final Map<String, List<String>>? actionsMeta;
   final S Function() ds;
 

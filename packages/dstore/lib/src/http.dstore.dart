@@ -74,7 +74,7 @@ class __$HelloCopyWithImpl<O> extends _$HelloCopyWithImpl<O>
   }
 }
 
-mixin _$Httpmeta<I, R, E, T> {
+mixin _$HttpMeta<I, R, E, T> {
   R Function(int, dynamic) get responseDeserializer;
   dynamic Function(int, R)? get responseSerializer;
   HttpField<dynamic, dynamic, dynamic, dynamic> Function(
@@ -85,10 +85,10 @@ mixin _$Httpmeta<I, R, E, T> {
   I Function(dynamic)? get inputDeserializer;
   E Function(int, dynamic)? get errorDeserializer;
 
-  $HttpmetaCopyWith<I, R, E, T, Httpmeta<I, R, E, T>> get copyWith;
+  $HttpMetaCopyWith<I, R, E, T, HttpMeta<I, R, E, T>> get copyWith;
 }
 
-class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
+class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
   @override
   final R Function(int, dynamic) responseDeserializer;
 
@@ -112,11 +112,11 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   @override
   final E Function(int, dynamic)? errorDeserializer;
 
-  _$HttpmetaCopyWith<I, R, E, T, Httpmeta<I, R, E, T>> get copyWith =>
-      __$HttpmetaCopyWithImpl<I, R, E, T, Httpmeta<I, R, E, T>>(
+  _$HttpMetaCopyWith<I, R, E, T, HttpMeta<I, R, E, T>> get copyWith =>
+      __$HttpMetaCopyWithImpl<I, R, E, T, HttpMeta<I, R, E, T>>(
           this, IdentityFn);
 
-  const _Httpmeta(
+  const _HttpMeta(
       {required this.responseDeserializer,
       this.responseSerializer,
       this.transformer,
@@ -128,7 +128,7 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _Httpmeta &&
+    return o is _HttpMeta &&
         o.responseDeserializer == responseDeserializer &&
         o.responseSerializer == responseSerializer &&
         o.transformer == transformer &&
@@ -150,13 +150,13 @@ class _Httpmeta<I, R, E, T> implements Httpmeta<I, R, E, T> {
 
   @override
   String toString() =>
-      "Httpmeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer})";
+      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer})";
 }
 
-abstract class $HttpmetaCopyWith<I, R, E, T, O> {
-  factory $HttpmetaCopyWith(
-          Httpmeta<I, R, E, T> value, O Function(Httpmeta<I, R, E, T>) then) =
-      _$HttpmetaCopyWithImpl<I, R, E, T, O>;
+abstract class $HttpMetaCopyWith<I, R, E, T, O> {
+  factory $HttpMetaCopyWith(
+          HttpMeta<I, R, E, T> value, O Function(HttpMeta<I, R, E, T>) then) =
+      _$HttpMetaCopyWithImpl<I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
@@ -170,11 +170,11 @@ abstract class $HttpmetaCopyWith<I, R, E, T, O> {
       E Function(int, dynamic)? errorDeserializer});
 }
 
-class _$HttpmetaCopyWithImpl<I, R, E, T, O>
-    implements $HttpmetaCopyWith<I, R, E, T, O> {
-  final Httpmeta<I, R, E, T> _value;
-  final O Function(Httpmeta<I, R, E, T>) _then;
-  _$HttpmetaCopyWithImpl(this._value, this._then);
+class _$HttpMetaCopyWithImpl<I, R, E, T, O>
+    implements $HttpMetaCopyWith<I, R, E, T, O> {
+  final HttpMeta<I, R, E, T> _value;
+  final O Function(HttpMeta<I, R, E, T>) _then;
+  _$HttpMetaCopyWithImpl(this._value, this._then);
 
   @override
   O call(
@@ -213,11 +213,11 @@ class _$HttpmetaCopyWithImpl<I, R, E, T, O>
   }
 }
 
-abstract class _$HttpmetaCopyWith<I, R, E, T, O>
-    implements $HttpmetaCopyWith<I, R, E, T, O> {
-  factory _$HttpmetaCopyWith(
-          Httpmeta<I, R, E, T> value, O Function(Httpmeta<I, R, E, T>) then) =
-      __$HttpmetaCopyWithImpl<I, R, E, T, O>;
+abstract class _$HttpMetaCopyWith<I, R, E, T, O>
+    implements $HttpMetaCopyWith<I, R, E, T, O> {
+  factory _$HttpMetaCopyWith(
+          HttpMeta<I, R, E, T> value, O Function(HttpMeta<I, R, E, T>) then) =
+      __$HttpMetaCopyWithImpl<I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
@@ -231,15 +231,15 @@ abstract class _$HttpmetaCopyWith<I, R, E, T, O>
       E Function(int, dynamic)? errorDeserializer});
 }
 
-class __$HttpmetaCopyWithImpl<I, R, E, T, O>
-    extends _$HttpmetaCopyWithImpl<I, R, E, T, O>
-    implements _$HttpmetaCopyWith<I, R, E, T, O> {
-  __$HttpmetaCopyWithImpl(
-      Httpmeta<I, R, E, T> _value, O Function(Httpmeta<I, R, E, T>) _then)
+class __$HttpMetaCopyWithImpl<I, R, E, T, O>
+    extends _$HttpMetaCopyWithImpl<I, R, E, T, O>
+    implements _$HttpMetaCopyWith<I, R, E, T, O> {
+  __$HttpMetaCopyWithImpl(
+      HttpMeta<I, R, E, T> _value, O Function(HttpMeta<I, R, E, T>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  Httpmeta<I, R, E, T> get _value => super._value;
+  HttpMeta<I, R, E, T> get _value => super._value;
 
   @override
   O call(
@@ -250,7 +250,7 @@ class __$HttpmetaCopyWithImpl<I, R, E, T, O>
       Object? inputStorageSerializer = dimmutable,
       Object? inputDeserializer = dimmutable,
       Object? errorDeserializer = dimmutable}) {
-    return _then(Httpmeta(
+    return _then(HttpMeta(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
             : responseDeserializer as R Function(int, dynamic),

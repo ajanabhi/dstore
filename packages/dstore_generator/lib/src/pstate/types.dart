@@ -19,6 +19,7 @@ class HttpFieldInfo {
   final String url;
   final String? headers;
   final String? inputType;
+  final String? errorType;
   final HttpInputType inputTypeEnum;
   final HttpResponseType responseTypeEnum;
   final String responseDeserializer;
@@ -36,6 +37,7 @@ class HttpFieldInfo {
     required this.name,
     required this.url,
     this.headers,
+    this.errorType,
     required this.fieldType,
     this.inputType,
     required this.inputTypeEnum,

@@ -86,21 +86,36 @@ String generateOpsTypeForQuery(
   if (visitor.opType == OperationType.query ||
       visitor.opType == OperationType.mutation) {
     final responseType = "${name}Data";
-    final responseSerializer = "_\$${responseType}ToJson";
-    final responserDeserializer = "_\$${responseType}ToJson";
+    final responseSerializer = "${responseType}Serializer";
+    final responserDeserializer = "${responseType}Deserializer";
+    final responseSerializerFn = """
+      
+      Map<String,dynamic> $responseSerializer(int status,$responseType resp) => resp.toJson();
+    
+    """;
+
+    final responseDeserializerFunction = """
+      $responseType $responserDeserializer(int status,dynamic json) => $responseType.fromJson(json);
+    """;
     final inputSerilizer = "GraphqlRequestInput.toJson";
-    var inputDeserializer = "GraphqlRequestInput.fromJson";
+    final inputDeserializer = "${name}InputDeserializer";
+
     var inputDeserializerFn = "";
     final variablesName = "${name}Variables";
     final inputType =
-        "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : ""}";
+        "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : "<Null>"}";
     if (visitor.variables.isNotEmpty) {
-      inputDeserializer = "${name}InputDeserializer";
       inputDeserializerFn = """        
         $inputType $inputDeserializer(Map<String,dynamic> json) {
              final query = json["query"] as String;
              final variables = $variablesName.fromJon(json["variables"] as Map<String,dynamic>);
              return GraphqlRequestInput(query,variables);
+        }
+      """;
+    } else {
+      inputDeserializerFn = """        
+        $inputType $inputDeserializer(Map<String,dynamic> json) {
+             return GraphqlRequestInput.fromJson(json);
         }
       """;
     }
@@ -120,6 +135,8 @@ String generateOpsTypeForQuery(
     result = """
     $types    
     $inputDeserializerFn
+    $responseSerializerFn
+    $responseDeserializerFunction
     $req
     class $name = HttpField<Null, $inputType, $responseType, dynamic> with EmptyMixin;
 

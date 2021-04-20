@@ -6,24 +6,6 @@ part of 'api.dart';
 // GraphqlSchemaGenerator
 // **************************************************************************
 
-enum DgraphIndex {
-  int,
-  int64,
-  float,
-  bool,
-  hash,
-  exact,
-  term,
-  fulltext,
-  trigram,
-  regexp,
-  year,
-  month,
-  day,
-  hour,
-  geo
-}
-enum UserOrderable { username, name }
 enum TaskOrderable { title }
 enum __DirectiveLocation {
   QUERY,
@@ -63,92 +45,23 @@ enum Mode { BATCH, SINGLE }
 enum TaskHasFilter { title, completed, user }
 enum AuthorHasFilter { name, posts, friends, n }
 enum UserHasFilter { username, name, tasks }
-
-@JsonSerializable()
-class UserRef {
-  final String? username;
-
-  final String? name;
-
-  final List<dynamic?>? tasks;
-
-  @JsonKey(ignore: true)
-  _$UserRefCopyWith<UserRef> get copyWith =>
-      __$UserRefCopyWithImpl<UserRef>(this, IdentityFn);
-
-  const UserRef({this.username, this.name, this.tasks});
-
-  factory UserRef.fromJson(Map<String, dynamic> json) =>
-      _$UserRefFromJson(json);
-
-  Map<String, dynamic> toJson() => _$UserRefToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is UserRef &&
-        o.username == username &&
-        o.name == name &&
-        o.tasks == tasks;
-  }
-
-  @override
-  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
-
-  @override
-  String toString() =>
-      "UserRef(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
-}
-
-abstract class $UserRefCopyWith<O> {
-  factory $UserRefCopyWith(UserRef value, O Function(UserRef) then) =
-      _$UserRefCopyWithImpl<O>;
-  O call({String? username, String? name, List<dynamic?>? tasks});
-}
-
-class _$UserRefCopyWithImpl<O> implements $UserRefCopyWith<O> {
-  final UserRef _value;
-  final O Function(UserRef) _then;
-  _$UserRefCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(_value.copyWith(
-        username:
-            username == dimmutable ? _value.username : username as String?,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
-  }
-}
-
-abstract class _$UserRefCopyWith<O> implements $UserRefCopyWith<O> {
-  factory _$UserRefCopyWith(UserRef value, O Function(UserRef) then) =
-      __$UserRefCopyWithImpl<O>;
-  O call({String? username, String? name, List<dynamic?>? tasks});
-}
-
-class __$UserRefCopyWithImpl<O> extends _$UserRefCopyWithImpl<O>
-    implements _$UserRefCopyWith<O> {
-  __$UserRefCopyWithImpl(UserRef _value, O Function(UserRef) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  UserRef get _value => super._value;
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(UserRef(
-        username:
-            username == dimmutable ? _value.username : username as String?,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
-  }
+enum UserOrderable { username, name }
+enum DgraphIndex {
+  int,
+  int64,
+  float,
+  bool,
+  hash,
+  exact,
+  term,
+  fulltext,
+  trigram,
+  regexp,
+  year,
+  month,
+  day,
+  hour,
+  geo
 }
 
 @JsonSerializable()
@@ -541,82 +454,6 @@ class __$TaskFilterCopyWithImpl<O> extends _$TaskFilterCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class PointRef {
-  final double longitude;
-
-  final double latitude;
-
-  @JsonKey(ignore: true)
-  _$PointRefCopyWith<PointRef> get copyWith =>
-      __$PointRefCopyWithImpl<PointRef>(this, IdentityFn);
-
-  const PointRef({required this.longitude, required this.latitude});
-
-  factory PointRef.fromJson(Map<String, dynamic> json) =>
-      _$PointRefFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PointRefToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is PointRef && o.longitude == longitude && o.latitude == latitude;
-  }
-
-  @override
-  int get hashCode => longitude.hashCode ^ latitude.hashCode;
-
-  @override
-  String toString() =>
-      "PointRef(longitude: ${this.longitude}, latitude: ${this.latitude})";
-}
-
-abstract class $PointRefCopyWith<O> {
-  factory $PointRefCopyWith(PointRef value, O Function(PointRef) then) =
-      _$PointRefCopyWithImpl<O>;
-  O call({double longitude, double latitude});
-}
-
-class _$PointRefCopyWithImpl<O> implements $PointRefCopyWith<O> {
-  final PointRef _value;
-  final O Function(PointRef) _then;
-  _$PointRefCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
-    return _then(_value.copyWith(
-        longitude:
-            longitude == dimmutable ? _value.longitude : longitude as double,
-        latitude:
-            latitude == dimmutable ? _value.latitude : latitude as double));
-  }
-}
-
-abstract class _$PointRefCopyWith<O> implements $PointRefCopyWith<O> {
-  factory _$PointRefCopyWith(PointRef value, O Function(PointRef) then) =
-      __$PointRefCopyWithImpl<O>;
-  O call({double longitude, double latitude});
-}
-
-class __$PointRefCopyWithImpl<O> extends _$PointRefCopyWithImpl<O>
-    implements _$PointRefCopyWith<O> {
-  __$PointRefCopyWithImpl(PointRef _value, O Function(PointRef) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  PointRef get _value => super._value;
-
-  @override
-  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
-    return _then(PointRef(
-        longitude:
-            longitude == dimmutable ? _value.longitude : longitude as double,
-        latitude:
-            latitude == dimmutable ? _value.latitude : latitude as double));
-  }
-}
-
-@JsonSerializable()
 class AuthorOrder {
   final dynamic? asc;
 
@@ -701,76 +538,78 @@ class __$AuthorOrderCopyWithImpl<O> extends _$AuthorOrderCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class DateTimeRange {
-  final dynamic min;
+class PointRef {
+  final double longitude;
 
-  final dynamic max;
+  final double latitude;
 
   @JsonKey(ignore: true)
-  _$DateTimeRangeCopyWith<DateTimeRange> get copyWith =>
-      __$DateTimeRangeCopyWithImpl<DateTimeRange>(this, IdentityFn);
+  _$PointRefCopyWith<PointRef> get copyWith =>
+      __$PointRefCopyWithImpl<PointRef>(this, IdentityFn);
 
-  const DateTimeRange({required this.min, required this.max});
+  const PointRef({required this.longitude, required this.latitude});
 
-  factory DateTimeRange.fromJson(Map<String, dynamic> json) =>
-      _$DateTimeRangeFromJson(json);
+  factory PointRef.fromJson(Map<String, dynamic> json) =>
+      _$PointRefFromJson(json);
 
-  Map<String, dynamic> toJson() => _$DateTimeRangeToJson(this);
+  Map<String, dynamic> toJson() => _$PointRefToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is DateTimeRange && o.min == min && o.max == max;
+    return o is PointRef && o.longitude == longitude && o.latitude == latitude;
   }
 
   @override
-  int get hashCode => min.hashCode ^ max.hashCode;
+  int get hashCode => longitude.hashCode ^ latitude.hashCode;
 
   @override
-  String toString() => "DateTimeRange(min: ${this.min}, max: ${this.max})";
+  String toString() =>
+      "PointRef(longitude: ${this.longitude}, latitude: ${this.latitude})";
 }
 
-abstract class $DateTimeRangeCopyWith<O> {
-  factory $DateTimeRangeCopyWith(
-          DateTimeRange value, O Function(DateTimeRange) then) =
-      _$DateTimeRangeCopyWithImpl<O>;
-  O call({dynamic min, dynamic max});
+abstract class $PointRefCopyWith<O> {
+  factory $PointRefCopyWith(PointRef value, O Function(PointRef) then) =
+      _$PointRefCopyWithImpl<O>;
+  O call({double longitude, double latitude});
 }
 
-class _$DateTimeRangeCopyWithImpl<O> implements $DateTimeRangeCopyWith<O> {
-  final DateTimeRange _value;
-  final O Function(DateTimeRange) _then;
-  _$DateTimeRangeCopyWithImpl(this._value, this._then);
+class _$PointRefCopyWithImpl<O> implements $PointRefCopyWith<O> {
+  final PointRef _value;
+  final O Function(PointRef) _then;
+  _$PointRefCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
     return _then(_value.copyWith(
-        min: min == dimmutable ? _value.min : min as dynamic,
-        max: max == dimmutable ? _value.max : max as dynamic));
+        longitude:
+            longitude == dimmutable ? _value.longitude : longitude as double,
+        latitude:
+            latitude == dimmutable ? _value.latitude : latitude as double));
   }
 }
 
-abstract class _$DateTimeRangeCopyWith<O> implements $DateTimeRangeCopyWith<O> {
-  factory _$DateTimeRangeCopyWith(
-          DateTimeRange value, O Function(DateTimeRange) then) =
-      __$DateTimeRangeCopyWithImpl<O>;
-  O call({dynamic min, dynamic max});
+abstract class _$PointRefCopyWith<O> implements $PointRefCopyWith<O> {
+  factory _$PointRefCopyWith(PointRef value, O Function(PointRef) then) =
+      __$PointRefCopyWithImpl<O>;
+  O call({double longitude, double latitude});
 }
 
-class __$DateTimeRangeCopyWithImpl<O> extends _$DateTimeRangeCopyWithImpl<O>
-    implements _$DateTimeRangeCopyWith<O> {
-  __$DateTimeRangeCopyWithImpl(
-      DateTimeRange _value, O Function(DateTimeRange) _then)
+class __$PointRefCopyWithImpl<O> extends _$PointRefCopyWithImpl<O>
+    implements _$PointRefCopyWith<O> {
+  __$PointRefCopyWithImpl(PointRef _value, O Function(PointRef) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  DateTimeRange get _value => super._value;
+  PointRef get _value => super._value;
 
   @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(DateTimeRange(
-        min: min == dimmutable ? _value.min : min as dynamic,
-        max: max == dimmutable ? _value.max : max as dynamic));
+  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
+    return _then(PointRef(
+        longitude:
+            longitude == dimmutable ? _value.longitude : longitude as double,
+        latitude:
+            latitude == dimmutable ? _value.latitude : latitude as double));
   }
 }
 
@@ -1206,6 +1045,80 @@ class __$TaskRefCopyWithImpl<O> extends _$TaskRefCopyWithImpl<O>
         completed:
             completed == dimmutable ? _value.completed : completed as bool?,
         user: user == dimmutable ? _value.user : user as dynamic?));
+  }
+}
+
+@JsonSerializable()
+class DateTimeRange {
+  final dynamic min;
+
+  final dynamic max;
+
+  @JsonKey(ignore: true)
+  _$DateTimeRangeCopyWith<DateTimeRange> get copyWith =>
+      __$DateTimeRangeCopyWithImpl<DateTimeRange>(this, IdentityFn);
+
+  const DateTimeRange({required this.min, required this.max});
+
+  factory DateTimeRange.fromJson(Map<String, dynamic> json) =>
+      _$DateTimeRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DateTimeRangeToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is DateTimeRange && o.min == min && o.max == max;
+  }
+
+  @override
+  int get hashCode => min.hashCode ^ max.hashCode;
+
+  @override
+  String toString() => "DateTimeRange(min: ${this.min}, max: ${this.max})";
+}
+
+abstract class $DateTimeRangeCopyWith<O> {
+  factory $DateTimeRangeCopyWith(
+          DateTimeRange value, O Function(DateTimeRange) then) =
+      _$DateTimeRangeCopyWithImpl<O>;
+  O call({dynamic min, dynamic max});
+}
+
+class _$DateTimeRangeCopyWithImpl<O> implements $DateTimeRangeCopyWith<O> {
+  final DateTimeRange _value;
+  final O Function(DateTimeRange) _then;
+  _$DateTimeRangeCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(_value.copyWith(
+        min: min == dimmutable ? _value.min : min as dynamic,
+        max: max == dimmutable ? _value.max : max as dynamic));
+  }
+}
+
+abstract class _$DateTimeRangeCopyWith<O> implements $DateTimeRangeCopyWith<O> {
+  factory _$DateTimeRangeCopyWith(
+          DateTimeRange value, O Function(DateTimeRange) then) =
+      __$DateTimeRangeCopyWithImpl<O>;
+  O call({dynamic min, dynamic max});
+}
+
+class __$DateTimeRangeCopyWithImpl<O> extends _$DateTimeRangeCopyWithImpl<O>
+    implements _$DateTimeRangeCopyWith<O> {
+  __$DateTimeRangeCopyWithImpl(
+      DateTimeRange _value, O Function(DateTimeRange) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  DateTimeRange get _value => super._value;
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(DateTimeRange(
+        min: min == dimmutable ? _value.min : min as dynamic,
+        max: max == dimmutable ? _value.max : max as dynamic));
   }
 }
 
@@ -3229,98 +3142,6 @@ class __$PostPatchCopyWithImpl<O> extends _$PostPatchCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class AuthRule {
-  final List<dynamic?>? and;
-
-  final List<dynamic?>? or;
-
-  final dynamic? not;
-
-  final String? rule;
-
-  @JsonKey(ignore: true)
-  _$AuthRuleCopyWith<AuthRule> get copyWith =>
-      __$AuthRuleCopyWithImpl<AuthRule>(this, IdentityFn);
-
-  const AuthRule({this.and, this.or, this.not, this.rule});
-
-  factory AuthRule.fromJson(Map<String, dynamic> json) =>
-      _$AuthRuleFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AuthRuleToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AuthRule &&
-        o.and == and &&
-        o.or == or &&
-        o.not == not &&
-        o.rule == rule;
-  }
-
-  @override
-  int get hashCode => and.hashCode ^ or.hashCode ^ not.hashCode ^ rule.hashCode;
-
-  @override
-  String toString() =>
-      "AuthRule(and: ${this.and}, or: ${this.or}, not: ${this.not}, rule: ${this.rule})";
-}
-
-abstract class $AuthRuleCopyWith<O> {
-  factory $AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
-      _$AuthRuleCopyWithImpl<O>;
-  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
-}
-
-class _$AuthRuleCopyWithImpl<O> implements $AuthRuleCopyWith<O> {
-  final AuthRule _value;
-  final O Function(AuthRule) _then;
-  _$AuthRuleCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? and = dimmutable,
-      Object? or = dimmutable,
-      Object? not = dimmutable,
-      Object? rule = dimmutable}) {
-    return _then(_value.copyWith(
-        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
-        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
-        not: not == dimmutable ? _value.not : not as dynamic?,
-        rule: rule == dimmutable ? _value.rule : rule as String?));
-  }
-}
-
-abstract class _$AuthRuleCopyWith<O> implements $AuthRuleCopyWith<O> {
-  factory _$AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
-      __$AuthRuleCopyWithImpl<O>;
-  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
-}
-
-class __$AuthRuleCopyWithImpl<O> extends _$AuthRuleCopyWithImpl<O>
-    implements _$AuthRuleCopyWith<O> {
-  __$AuthRuleCopyWithImpl(AuthRule _value, O Function(AuthRule) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AuthRule get _value => super._value;
-
-  @override
-  O call(
-      {Object? and = dimmutable,
-      Object? or = dimmutable,
-      Object? not = dimmutable,
-      Object? rule = dimmutable}) {
-    return _then(AuthRule(
-        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
-        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
-        not: not == dimmutable ? _value.not : not as dynamic?,
-        rule: rule == dimmutable ? _value.rule : rule as String?));
-  }
-}
-
-@JsonSerializable()
 class GenerateMutationParams {
   final bool? add;
 
@@ -3521,6 +3342,98 @@ class __$IntFilterCopyWithImpl<O> extends _$IntFilterCopyWithImpl<O>
         ge: ge == dimmutable ? _value.ge : ge as int?,
         gt: gt == dimmutable ? _value.gt : gt as int?,
         between: between == dimmutable ? _value.between : between as dynamic?));
+  }
+}
+
+@JsonSerializable()
+class AuthRule {
+  final List<dynamic?>? and;
+
+  final List<dynamic?>? or;
+
+  final dynamic? not;
+
+  final String? rule;
+
+  @JsonKey(ignore: true)
+  _$AuthRuleCopyWith<AuthRule> get copyWith =>
+      __$AuthRuleCopyWithImpl<AuthRule>(this, IdentityFn);
+
+  const AuthRule({this.and, this.or, this.not, this.rule});
+
+  factory AuthRule.fromJson(Map<String, dynamic> json) =>
+      _$AuthRuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuthRuleToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AuthRule &&
+        o.and == and &&
+        o.or == or &&
+        o.not == not &&
+        o.rule == rule;
+  }
+
+  @override
+  int get hashCode => and.hashCode ^ or.hashCode ^ not.hashCode ^ rule.hashCode;
+
+  @override
+  String toString() =>
+      "AuthRule(and: ${this.and}, or: ${this.or}, not: ${this.not}, rule: ${this.rule})";
+}
+
+abstract class $AuthRuleCopyWith<O> {
+  factory $AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
+      _$AuthRuleCopyWithImpl<O>;
+  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
+}
+
+class _$AuthRuleCopyWithImpl<O> implements $AuthRuleCopyWith<O> {
+  final AuthRule _value;
+  final O Function(AuthRule) _then;
+  _$AuthRuleCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? and = dimmutable,
+      Object? or = dimmutable,
+      Object? not = dimmutable,
+      Object? rule = dimmutable}) {
+    return _then(_value.copyWith(
+        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
+        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
+        not: not == dimmutable ? _value.not : not as dynamic?,
+        rule: rule == dimmutable ? _value.rule : rule as String?));
+  }
+}
+
+abstract class _$AuthRuleCopyWith<O> implements $AuthRuleCopyWith<O> {
+  factory _$AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
+      __$AuthRuleCopyWithImpl<O>;
+  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
+}
+
+class __$AuthRuleCopyWithImpl<O> extends _$AuthRuleCopyWithImpl<O>
+    implements _$AuthRuleCopyWith<O> {
+  __$AuthRuleCopyWithImpl(AuthRule _value, O Function(AuthRule) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AuthRule get _value => super._value;
+
+  @override
+  O call(
+      {Object? and = dimmutable,
+      Object? or = dimmutable,
+      Object? not = dimmutable,
+      Object? rule = dimmutable}) {
+    return _then(AuthRule(
+        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
+        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
+        not: not == dimmutable ? _value.not : not as dynamic?,
+        rule: rule == dimmutable ? _value.rule : rule as String?));
   }
 }
 
@@ -4007,6 +3920,82 @@ class __$PostOrderCopyWithImpl<O> extends _$PostOrderCopyWithImpl<O>
 }
 
 @JsonSerializable()
+class ContainsFilter {
+  final dynamic? point;
+
+  final dynamic? polygon;
+
+  @JsonKey(ignore: true)
+  _$ContainsFilterCopyWith<ContainsFilter> get copyWith =>
+      __$ContainsFilterCopyWithImpl<ContainsFilter>(this, IdentityFn);
+
+  const ContainsFilter({this.point, this.polygon});
+
+  factory ContainsFilter.fromJson(Map<String, dynamic> json) =>
+      _$ContainsFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ContainsFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is ContainsFilter && o.point == point && o.polygon == polygon;
+  }
+
+  @override
+  int get hashCode => point.hashCode ^ polygon.hashCode;
+
+  @override
+  String toString() =>
+      "ContainsFilter(point: ${this.point}, polygon: ${this.polygon})";
+}
+
+abstract class $ContainsFilterCopyWith<O> {
+  factory $ContainsFilterCopyWith(
+          ContainsFilter value, O Function(ContainsFilter) then) =
+      _$ContainsFilterCopyWithImpl<O>;
+  O call({dynamic? point, dynamic? polygon});
+}
+
+class _$ContainsFilterCopyWithImpl<O> implements $ContainsFilterCopyWith<O> {
+  final ContainsFilter _value;
+  final O Function(ContainsFilter) _then;
+  _$ContainsFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
+    return _then(_value.copyWith(
+        point: point == dimmutable ? _value.point : point as dynamic?,
+        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
+  }
+}
+
+abstract class _$ContainsFilterCopyWith<O>
+    implements $ContainsFilterCopyWith<O> {
+  factory _$ContainsFilterCopyWith(
+          ContainsFilter value, O Function(ContainsFilter) then) =
+      __$ContainsFilterCopyWithImpl<O>;
+  O call({dynamic? point, dynamic? polygon});
+}
+
+class __$ContainsFilterCopyWithImpl<O> extends _$ContainsFilterCopyWithImpl<O>
+    implements _$ContainsFilterCopyWith<O> {
+  __$ContainsFilterCopyWithImpl(
+      ContainsFilter _value, O Function(ContainsFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  ContainsFilter get _value => super._value;
+
+  @override
+  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
+    return _then(ContainsFilter(
+        point: point == dimmutable ? _value.point : point as dynamic?,
+        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
+  }
+}
+
+@JsonSerializable()
 class NearFilter {
   final double distance;
 
@@ -4081,82 +4070,6 @@ class __$NearFilterCopyWithImpl<O> extends _$NearFilterCopyWithImpl<O>
         coordinate: coordinate == dimmutable
             ? _value.coordinate
             : coordinate as dynamic));
-  }
-}
-
-@JsonSerializable()
-class ContainsFilter {
-  final dynamic? point;
-
-  final dynamic? polygon;
-
-  @JsonKey(ignore: true)
-  _$ContainsFilterCopyWith<ContainsFilter> get copyWith =>
-      __$ContainsFilterCopyWithImpl<ContainsFilter>(this, IdentityFn);
-
-  const ContainsFilter({this.point, this.polygon});
-
-  factory ContainsFilter.fromJson(Map<String, dynamic> json) =>
-      _$ContainsFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ContainsFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is ContainsFilter && o.point == point && o.polygon == polygon;
-  }
-
-  @override
-  int get hashCode => point.hashCode ^ polygon.hashCode;
-
-  @override
-  String toString() =>
-      "ContainsFilter(point: ${this.point}, polygon: ${this.polygon})";
-}
-
-abstract class $ContainsFilterCopyWith<O> {
-  factory $ContainsFilterCopyWith(
-          ContainsFilter value, O Function(ContainsFilter) then) =
-      _$ContainsFilterCopyWithImpl<O>;
-  O call({dynamic? point, dynamic? polygon});
-}
-
-class _$ContainsFilterCopyWithImpl<O> implements $ContainsFilterCopyWith<O> {
-  final ContainsFilter _value;
-  final O Function(ContainsFilter) _then;
-  _$ContainsFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
-    return _then(_value.copyWith(
-        point: point == dimmutable ? _value.point : point as dynamic?,
-        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
-  }
-}
-
-abstract class _$ContainsFilterCopyWith<O>
-    implements $ContainsFilterCopyWith<O> {
-  factory _$ContainsFilterCopyWith(
-          ContainsFilter value, O Function(ContainsFilter) then) =
-      __$ContainsFilterCopyWithImpl<O>;
-  O call({dynamic? point, dynamic? polygon});
-}
-
-class __$ContainsFilterCopyWithImpl<O> extends _$ContainsFilterCopyWithImpl<O>
-    implements _$ContainsFilterCopyWith<O> {
-  __$ContainsFilterCopyWithImpl(
-      ContainsFilter _value, O Function(ContainsFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  ContainsFilter get _value => super._value;
-
-  @override
-  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
-    return _then(ContainsFilter(
-        point: point == dimmutable ? _value.point : point as dynamic?,
-        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
   }
 }
 
@@ -4397,77 +4310,6 @@ class __$UserPatchCopyWithImpl<O> extends _$UserPatchCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class Int64Range {
-  final int min;
-
-  final int max;
-
-  @JsonKey(ignore: true)
-  _$Int64RangeCopyWith<Int64Range> get copyWith =>
-      __$Int64RangeCopyWithImpl<Int64Range>(this, IdentityFn);
-
-  const Int64Range({required this.min, required this.max});
-
-  factory Int64Range.fromJson(Map<String, dynamic> json) =>
-      _$Int64RangeFromJson(json);
-
-  Map<String, dynamic> toJson() => _$Int64RangeToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is Int64Range && o.min == min && o.max == max;
-  }
-
-  @override
-  int get hashCode => min.hashCode ^ max.hashCode;
-
-  @override
-  String toString() => "Int64Range(min: ${this.min}, max: ${this.max})";
-}
-
-abstract class $Int64RangeCopyWith<O> {
-  factory $Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
-      _$Int64RangeCopyWithImpl<O>;
-  O call({int min, int max});
-}
-
-class _$Int64RangeCopyWithImpl<O> implements $Int64RangeCopyWith<O> {
-  final Int64Range _value;
-  final O Function(Int64Range) _then;
-  _$Int64RangeCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(_value.copyWith(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
-  }
-}
-
-abstract class _$Int64RangeCopyWith<O> implements $Int64RangeCopyWith<O> {
-  factory _$Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
-      __$Int64RangeCopyWithImpl<O>;
-  O call({int min, int max});
-}
-
-class __$Int64RangeCopyWithImpl<O> extends _$Int64RangeCopyWithImpl<O>
-    implements _$Int64RangeCopyWith<O> {
-  __$Int64RangeCopyWithImpl(Int64Range _value, O Function(Int64Range) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  Int64Range get _value => super._value;
-
-  @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(Int64Range(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
-  }
-}
-
-@JsonSerializable()
 class PolygonRef {
   final List<dynamic> coordinates;
 
@@ -4610,6 +4452,77 @@ class __$MultiPolygonRefCopyWithImpl<O> extends _$MultiPolygonRefCopyWithImpl<O>
         polygons: polygons == dimmutable
             ? _value.polygons
             : polygons as List<dynamic>));
+  }
+}
+
+@JsonSerializable()
+class Int64Range {
+  final int min;
+
+  final int max;
+
+  @JsonKey(ignore: true)
+  _$Int64RangeCopyWith<Int64Range> get copyWith =>
+      __$Int64RangeCopyWithImpl<Int64Range>(this, IdentityFn);
+
+  const Int64Range({required this.min, required this.max});
+
+  factory Int64Range.fromJson(Map<String, dynamic> json) =>
+      _$Int64RangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$Int64RangeToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is Int64Range && o.min == min && o.max == max;
+  }
+
+  @override
+  int get hashCode => min.hashCode ^ max.hashCode;
+
+  @override
+  String toString() => "Int64Range(min: ${this.min}, max: ${this.max})";
+}
+
+abstract class $Int64RangeCopyWith<O> {
+  factory $Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
+      _$Int64RangeCopyWithImpl<O>;
+  O call({int min, int max});
+}
+
+class _$Int64RangeCopyWithImpl<O> implements $Int64RangeCopyWith<O> {
+  final Int64Range _value;
+  final O Function(Int64Range) _then;
+  _$Int64RangeCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(_value.copyWith(
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
+  }
+}
+
+abstract class _$Int64RangeCopyWith<O> implements $Int64RangeCopyWith<O> {
+  factory _$Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
+      __$Int64RangeCopyWithImpl<O>;
+  O call({int min, int max});
+}
+
+class __$Int64RangeCopyWithImpl<O> extends _$Int64RangeCopyWithImpl<O>
+    implements _$Int64RangeCopyWith<O> {
+  __$Int64RangeCopyWithImpl(Int64Range _value, O Function(Int64Range) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  Int64Range get _value => super._value;
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(Int64Range(
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
   }
 }
 
@@ -5164,5 +5077,92 @@ class __$TaskPatchCopyWithImpl<O> extends _$TaskPatchCopyWithImpl<O>
         completed:
             completed == dimmutable ? _value.completed : completed as bool?,
         user: user == dimmutable ? _value.user : user as dynamic?));
+  }
+}
+
+@JsonSerializable()
+class UserRef {
+  final String? username;
+
+  final String? name;
+
+  final List<dynamic?>? tasks;
+
+  @JsonKey(ignore: true)
+  _$UserRefCopyWith<UserRef> get copyWith =>
+      __$UserRefCopyWithImpl<UserRef>(this, IdentityFn);
+
+  const UserRef({this.username, this.name, this.tasks});
+
+  factory UserRef.fromJson(Map<String, dynamic> json) =>
+      _$UserRefFromJson(json);
+
+  Map<String, dynamic> toJson() => _$UserRefToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is UserRef &&
+        o.username == username &&
+        o.name == name &&
+        o.tasks == tasks;
+  }
+
+  @override
+  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
+
+  @override
+  String toString() =>
+      "UserRef(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
+}
+
+abstract class $UserRefCopyWith<O> {
+  factory $UserRefCopyWith(UserRef value, O Function(UserRef) then) =
+      _$UserRefCopyWithImpl<O>;
+  O call({String? username, String? name, List<dynamic?>? tasks});
+}
+
+class _$UserRefCopyWithImpl<O> implements $UserRefCopyWith<O> {
+  final UserRef _value;
+  final O Function(UserRef) _then;
+  _$UserRefCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(_value.copyWith(
+        username:
+            username == dimmutable ? _value.username : username as String?,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
+  }
+}
+
+abstract class _$UserRefCopyWith<O> implements $UserRefCopyWith<O> {
+  factory _$UserRefCopyWith(UserRef value, O Function(UserRef) then) =
+      __$UserRefCopyWithImpl<O>;
+  O call({String? username, String? name, List<dynamic?>? tasks});
+}
+
+class __$UserRefCopyWithImpl<O> extends _$UserRefCopyWithImpl<O>
+    implements _$UserRefCopyWith<O> {
+  __$UserRefCopyWithImpl(UserRef _value, O Function(UserRef) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  UserRef get _value => super._value;
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(UserRef(
+        username:
+            username == dimmutable ? _value.username : username as String?,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
   }
 }

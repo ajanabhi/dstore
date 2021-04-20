@@ -338,7 +338,8 @@ extension ConstReadExt on ConstantReader {
   T? getEnumField<T>(String name, List<T> values) {
     final field = peek(name);
     if (field != null) {
-      final v = field.literalValue.toString();
+      print("field type ${field.runtimeType}");
+      final v = field.toString();
       return values.singleWhereOrNull((element) => element.toString() == v);
     }
   }

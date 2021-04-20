@@ -28,7 +28,7 @@ abstract class Action<M> with _$Action<M> {
   }) = _Action<M>;
 
   factory Action.fromJson(Map<String, dynamic> map,
-      Httpmeta<dynamic, dynamic, dynamic, dynamic>? httpMeta) {
+      HttpMeta<dynamic, dynamic, dynamic, dynamic>? httpMeta) {
     final name = map["name"] as String;
     final type = map["type"] as String;
     final httpMap = map["http"] as Map<String, dynamic>?;
@@ -49,7 +49,7 @@ extension ActionExt on Action {
   bool get isProcessed => internal?.processed ?? false;
   // currently only http actions support offline functionality
   Map<String, dynamic> toJson(
-      {Httpmeta<dynamic, dynamic, dynamic, dynamic>? httpMeta}) {
+      {HttpMeta<dynamic, dynamic, dynamic, dynamic>? httpMeta}) {
     final map = <String, dynamic>{};
     if (http != null && httpMeta == null) {
       throw ArgumentError.value(
