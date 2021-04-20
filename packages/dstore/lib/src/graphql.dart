@@ -11,6 +11,11 @@ class GraphqlRequestInput<V> {
           req.variables != null ? (req.variables as dynamic).toJson() : null
     };
   }
+
+  static GraphqlRequestInput<Null> fromJson(Map<String, dynamic> json) {
+    final query = json["query"]! as String;
+    return GraphqlRequestInput(query, null);
+  }
 }
 
 class SourceLocation {

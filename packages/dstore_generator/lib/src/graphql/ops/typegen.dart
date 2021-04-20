@@ -632,26 +632,8 @@ Field converGFieldToField(GField field) {
 String createVariableType(List<GField> gFields, String name) {
   final fields = gFields.map(converGFieldToField).toList();
 
-  return """
-   @JsonSerializable(createFactory: false)
-   class $name {
-     
-     ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
-
-     ${ModelUtils.createConstructorFromFieldsList(name, fields)}
-
-     ${ModelUtils.createCopyWithFromFieldsList(name, fields)}
-
-     ${ModelUtils.createToJson(name)}
-
-     ${ModelUtils.createToStringFromFieldsList(name, fields)}
-
-     ${ModelUtils.createEqualsFromFieldsList(name, fields)}
-
-     ${ModelUtils.createHashcodeFromFieldsList(fields)}
-   }
-  
-  """;
+  return ModelUtils.createDefaultDartModelFromFeilds(
+      fields: fields, className: name, isJsonSerializable: true);
 }
 
 List<GType> getAllGTypes(Set<FieldG> fields) {

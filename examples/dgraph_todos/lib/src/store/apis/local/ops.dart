@@ -10,7 +10,7 @@ abstract class Hello {
     query todo{
       todo {
         text
-      }
+      } 
     }
   
   """;

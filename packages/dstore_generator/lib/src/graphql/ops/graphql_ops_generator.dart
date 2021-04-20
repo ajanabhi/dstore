@@ -85,6 +85,25 @@ String generateOpsTypeForQuery(
   var result = "";
   if (visitor.opType == OperationType.query ||
       visitor.opType == OperationType.mutation) {
+    final responseType = "${name}Data";
+    final responseSerializer = "_\$${responseType}ToJson";
+    final responserDeserializer = "_\$${responseType}ToJson";
+    final inputSerilizer = "GraphqlRequestInput.toJson";
+    var inputDeserializer = "GraphqlRequestInput.fromJson";
+    var inputDeserializerFn = "";
+    final variablesName = "${name}Variables";
+    final inputType =
+        "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : ""}";
+    if (visitor.variables.isNotEmpty) {
+      inputDeserializer = "${name}InputDeserializer";
+      inputDeserializerFn = """        
+        $inputType $inputDeserializer(Map<String,dynamic> json) {
+             final query = json["query"] as String;
+             final variables = $variablesName.fromJon(json["variables"] as Map<String,dynamic>);
+             return GraphqlRequestInput(query,variables);
+        }
+      """;
+    }
     final req = """
    @HttpRequest(
     method: "POST",
@@ -92,16 +111,17 @@ String generateOpsTypeForQuery(
     graphqlQuery: \"\"\"$query\"\"\",
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type":"applications/josn"},
-    responseDeserializer: getTodosSerializer)
+    responseSerializer : $responseSerializer,
+    inputSerializer: $inputSerilizer,
+    inputDeserializer: $inputDeserializer,
+    responseDeserializer: $responserDeserializer)
   """;
-    final inputType =
-        "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<${name}Variables>" : ""}";
 
     result = """
     $types    
-
+    $inputDeserializerFn
     $req
-    class $name = HttpField<Null, $inputType, ${name}Data, dynamic> with EmptyMixin;
+    class $name = HttpField<Null, $inputType, $responseType, dynamic> with EmptyMixin;
 
     $req
     class ${name}T<T> = HttpField<Null, $inputType, T, dynamic> with EmptyMixin;
