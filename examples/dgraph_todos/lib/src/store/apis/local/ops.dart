@@ -14,4 +14,15 @@ abstract class Hello {
     }
   
   """;
+
+  static const ut = """
+    query hu{
+      hellou {
+        __typename
+        ... on Hello1 {
+          one
+        }
+      }
+    }
+  """;
 }

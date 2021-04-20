@@ -345,11 +345,16 @@ class OperationVisitor extends RecursiveVisitor {
           fieldType is UnionTypeDefinition) {
         // fields =
         final fe = _resultFieldElementStack.consume();
-        if (fe.fields.isEmpty && fe.typeFragments.isEmpty) {
-          throw Exception("You should select fields for field ${fieldName}");
-        }
         fields = fe.fields;
         fragments = fe.typeFragments;
+        print("fields $fields fragments $fragments");
+        if (fields.isEmpty && fragments.isEmpty) {
+          throw Exception("You should select fields for field ${fieldName}");
+        }
+        if (fieldType is UnionTypeDefinition && fragments.isEmpty) {
+          throw ArgumentError.value(
+              "You should seelct one of union memebrs for field $fieldName");
+        }
         _parentTypeStack.consume();
       }
       var name = node.alias?.value ?? fieldName;
@@ -362,6 +367,7 @@ class OperationVisitor extends RecursiveVisitor {
         name = "g$name";
         jsonKey = name;
       }
+      logger.shout("isUnion $isUnion");
       _resultFieldElementStack.current.fields.add(GField(
           name: name,
           listType: fm.listType,
@@ -489,12 +495,14 @@ class FieldG {
 class GType {
   final Set<FieldG> fields;
   final String name;
+  final bool isOptional;
   final List<GType> unions;
   final Set<String> baseTypes;
   GType(
       {required this.fields,
       required this.name,
       this.unions = const [],
+      this.isOptional = false,
       this.baseTypes = const {}});
 
   @override
@@ -509,7 +517,7 @@ FieldG convertGraphqlFieldToField(
     // union type
     final type = "${prefix}_${gf.name}";
     List<GFragment> frags;
-    if (gf.fragments.length == 1) {
+    if (gf.fragments.length == 1 && gf.fragments.first.typeNode != null) {
       // toplevel union fragment spread
       final typeNode = gf.fragments.first.typeNode!;
       final tf = fragmentFieldsMap[typeNode]!;
@@ -532,13 +540,19 @@ FieldG convertGraphqlFieldToField(
         on = f.on!;
       }
       final name = "${type}_${on}";
-      return GType(fields: fields, name: name, baseTypes: {type});
+      return GType(
+        fields: fields,
+        name: name,
+        baseTypes: {type},
+      );
     }).toList();
+    logger.shout("isOptional Union ${gf.optional} ${gf.name}");
     return FieldG(
         name: gf.name,
         jsonKey: gf.jsonKey,
         type: getDType(gf, type),
-        gType: GType(name: type, fields: {}, unions: unions));
+        gType: GType(
+            name: type, fields: {}, unions: unions, isOptional: gf.optional));
   } else if (gf.fields.isNotEmpty || gf.fragments.isNotEmpty) {
     // object or interface
     final type = "${prefix}_${gf.name}";
@@ -658,20 +672,36 @@ String convertGTypeToString(GType gtype) {
     gtype.unions.forEach((e) {
       final un = e.name;
       final tn = un.substring(e.name.lastIndexOf("_") + 1);
-      ctors.add("${name}.${tn}(${un} value):_value:value;");
-      getters.add("$un get ${tn} => _value is $un ? _value as $un : null;");
+      ctors.add("${name}.${tn}(${un} value):_value = value;");
+      getters.add("$un? get ${tn} => _value is $un ? _value as $un : null;");
       fromJson.add("""if(json["__typename"] == \"$tn\") {
           return $name.$tn(${un}.fromJson(json));
         }""");
     });
+    final oq = gtype.isOptional ? "?" : "";
+    var nullCheckFrom = "";
+    var nullCheckTo = "";
+    if (oq.isNotEmpty) {
+      nullCheckFrom = """
+        if(json == null) {
+          return null;
+        }
+      """;
+
+      nullCheckTo = """
+        if(value == null) {
+          return null;
+        }
+      """;
+    }
     return """
-    // this is a union type, check subclasses of this type for conecret types
       class $name {
-        dnamic _value;
+        final dynamic _value;
          ${ctors.join("\n")}
          ${getters.join("\n")}
         
-        static $name fromJson(Map<String,dynamic> json){
+        static $name$oq fromJson(Map<String,dynamic>$oq json){
+           $nullCheckFrom
            ${fromJson.join("\n")}
           throw ArgumentError.value(
           json,
@@ -680,7 +710,11 @@ String convertGTypeToString(GType gtype) {
            );
         }
 
-        Map<String,dynamic> toJson() => _value.toJson();
+        static Map<String,dynamic>$oq toJson($name$oq value) {
+            $nullCheckTo
+           return  value._value.toJson() as Map<String,dynamic>;
+           }
+        
       }
     """;
   }
@@ -692,12 +726,12 @@ String convertGTypeToString(GType gtype) {
     if (f.jsonKey != null) {
       jkFields.add("name:\"${f.jsonKey}\"");
     }
-    // if (f.gType != null && f.gType!.unions.isNotEmpty) {
-    //   // union field we need special getter
-    //   final mn = "_${f.name}FromJson";
-    //   jkFields.add("fromJson: $mn");
-    //   specialConverters.add(getUnionConverterForField(f));
-    // }
+    if (f.gType != null && f.gType!.unions.isNotEmpty) {
+      // union field we need special getter
+      final tn = f.gType!.name;
+      jkFields.add("fromJson: $tn.fromJson");
+      jkFields.add("toJson: ${tn}.toJson");
+    }
 
     if (jkFields.isNotEmpty) {
       annotations.add("@JsonKey(${jkFields.join(",")})");

@@ -14,61 +14,65 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
   @override
   Future<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) async {
-    if (!(element is ClassElement)) {
-      throw Exception(
-          "Graphqlops annotation should should only be applied on abstract classes");
-    }
-    final name = element.name;
-    print("OpsName $name fields ${element.fields}");
-    element.fields.forEach((f) {
-      print("${f.name} ${f.isStatic} ${f.isConst}");
-    });
-    final opsAnnotations = element.metadata.first.computeConstantValue();
-    final apiA = opsAnnotations?.getField("api")!;
-    final gAPi = getGraphqlApi(apiA);
-    final apiUrl = gAPi.apiUrl;
-    GraphQLSchema schema;
-
-    final eSchema = graphqlSchemaMap[apiUrl];
-    if (eSchema == null) {
-      schema = await getGraphqlSchemaFromApiUrl(gAPi);
-    } else {
-      schema = eSchema;
-    }
-    print("Api Type ${gAPi}");
-    final ops = element.fields.where((f) => f.isStatic && f.isConst).map((e) {
-      final v = e.computeConstantValue()!;
-      var result = "";
-      logger.shout("Value $v");
-      if (v.type.toString() == "String") {
-        final query = v.toStringValue();
-        final doc = lang.parseString(query);
-        final dupOpsVisitor = DuplicateOperationVisitor(doc, schema);
-        doc.accept(dupOpsVisitor);
-        if (dupOpsVisitor.opType != null) {
-          if (dupOpsVisitor.isMultipleOpsExist) {
-            throw Exception(
-                " You should specify only single query or mutation or subscription , not combined ops");
-          }
-          final tn = "${name}_${e.name}";
-          logger.shout("TN $tn");
-          result = generateOpsTypeForQuery(
-              schema: schema,
-              query: "${element.name}.${e.name}",
-              doc: doc,
-              url: apiUrl,
-              name: tn,
-              api: gAPi);
-        }
+    try {
+      if (!(element is ClassElement)) {
+        throw Exception(
+            "Graphqlops annotation should should only be applied on abstract classes");
       }
-      print("opsvalue $v ${v.type}");
+      final name = element.name;
+      print("OpsName $name fields ${element.fields}");
+      element.fields.forEach((f) {
+        print("${f.name} ${f.isStatic} ${f.isConst}");
+      });
+      final opsAnnotations = element.metadata.first.computeConstantValue();
+      final apiA = opsAnnotations?.getField("api")!;
+      final gAPi = getGraphqlApi(apiA);
+      final apiUrl = gAPi.apiUrl;
+      GraphQLSchema schema;
 
-      return result;
-    }).join("\n");
-    print("opso $ops");
-    return """
+      final eSchema = graphqlSchemaMap[apiUrl];
+      if (eSchema == null) {
+        schema = await getGraphqlSchemaFromApiUrl(gAPi);
+      } else {
+        schema = eSchema;
+      }
+      print("Api Type ${gAPi}");
+      final ops = element.fields.where((f) => f.isStatic && f.isConst).map((e) {
+        final v = e.computeConstantValue()!;
+        var result = "";
+        logger.shout("Value $v");
+        if (v.type.toString() == "String") {
+          final query = v.toStringValue();
+          final doc = lang.parseString(query);
+          final dupOpsVisitor = DuplicateOperationVisitor(doc, schema);
+          doc.accept(dupOpsVisitor);
+          if (dupOpsVisitor.opType != null) {
+            if (dupOpsVisitor.isMultipleOpsExist) {
+              throw Exception(
+                  " You should specify only single query or mutation or subscription , not combined ops");
+            }
+            final tn = "${name}_${e.name}";
+            logger.shout("TN $tn");
+            result = generateOpsTypeForQuery(
+                schema: schema,
+                query: "${element.name}.${e.name}",
+                doc: doc,
+                url: apiUrl,
+                name: tn,
+                api: gAPi);
+          }
+        }
+        print("opsvalue $v ${v.type}");
+
+        return result;
+      }).join("\n");
+      return """
      $ops
     """;
+    } catch (e, st) {
+      logger.error("Error in generate GraphqlOps for ${element.name}", e, st);
+      rethrow;
+    }
   }
 }
 

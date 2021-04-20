@@ -19,24 +19,30 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
   @override
   Future<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) async {
-    if (!(element is ClassElement)) {
-      throw Exception(
-          "Graphql Api annotation should only be applied on classes");
-    }
+    try {
+      if (!(element is ClassElement)) {
+        throw Exception(
+            "Graphql Api annotation should only be applied on classes");
+      }
 
-    final gApi = getGraphqlApi(element.metadata.first.computeConstantValue());
-    final schema = await getGraphqlSchemaFromApiUrl(gApi);
-    final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
-    final inputs = schema.inputObjectTypes
-        .map((e) => _convertGInputTypeToDType(e, gApi.scalarMap))
-        .join("\n");
-    return """
+      final gApi = getGraphqlApi(element.metadata.first.computeConstantValue());
+      final schema = await getGraphqlSchemaFromApiUrl(gApi);
+      final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
+      final inputs = schema.inputObjectTypes
+          .map((e) => _convertGInputTypeToDType(e, gApi.scalarMap))
+          .join("\n");
+      return """
       
       $enums 
 
       $inputs
     
     """;
+    } catch (e, st) {
+      logger.error(
+          "Error in generate GraphqlSchema  for ${element.name}", e, st);
+      rethrow;
+    }
   }
 }
 

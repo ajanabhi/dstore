@@ -44,13 +44,11 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final errorType = replaceEndStar(
       ht.typeArguments[3].getDisplayString(withNullability: true));
   final anot = type.element?.annotationFromType(HttpRequest);
-  logger.shout("Annotation $anot");
   if (anot == null) {
     throw ArgumentError.value(
         "You should anotate type ${type} with HttpRequest");
   }
   final value = anot.computeConstantValue();
-  logger.shout("Value $value, ${value?.getField('responseDeserializer')}");
   final reader = ConstantReader(value);
   final url = reader.read("url").stringValue;
   final method = reader.read("method").stringValue;
@@ -74,8 +72,6 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
 
   var responseDeserializer =
       reader.functionNameForField("responseDeserializer") ?? "IdentifyFn";
-  logger.shout(
-      "Response Deserializer $responseDeserializer , ${reader.peek('responseDeserializer')}");
   var errorDeserializer =
       reader.functionNameForField("errorDeserializer") ?? "IdentifyFn";
   final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
@@ -83,7 +79,6 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final responseSerializer = reader.functionNameForField("responseSerializer");
   final inputDeserializer = reader.functionNameForField("inputDeserializer");
   final headersMap = reader.getStringMapForField("headers");
-  logger.shout("headersMap $headersMap");
   final headers = headersMap != null ? jsonEncode(headersMap) : null;
   final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
