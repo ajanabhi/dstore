@@ -94,14 +94,14 @@ extension HttpInputTypeExt on HttpInputType {
   }
 }
 
-class HttpRequest<I, R, E> {
+class HttpRequest {
   final String method;
   final String url;
-  final R Function(dynamic)? responseDeserializer;
-  final dynamic Function(I)? inputSerializer;
-  final dynamic Function(R)? responseSerializer;
-  final I Function(dynamic)? inputDeserializer;
-  final E Function(dynamic)? errorDeserializer;
+  final Function? responseDeserializer;
+  final Function? inputSerializer;
+  final Function? responseSerializer;
+  final Function? inputDeserializer;
+  final Function? errorDeserializer;
   final HttpResponseType? responseType;
   final String? graphqlQuery;
   final Map<String, String>? headers;
