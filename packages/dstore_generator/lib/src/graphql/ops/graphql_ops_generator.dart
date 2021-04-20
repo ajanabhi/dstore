@@ -54,7 +54,7 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
           logger.shout("TN $tn");
           result = generateOpsTypeForQuery(
               schema: schema,
-              query: query!,
+              query: "${element.name}.${e.name}",
               doc: doc,
               url: apiUrl,
               name: tn,
@@ -95,7 +95,7 @@ String generateOpsTypeForQuery(
     """;
 
     final responseDeserializerFunction = """
-      $responseType $responserDeserializer(int status,dynamic json) => $responseType.fromJson(json);
+      $responseType $responserDeserializer(int status,dynamic json) => $responseType.fromJson(json as Map<String,dynamic>);
     """;
     final inputSerilizer = "GraphqlRequestInput.toJson";
     final inputDeserializer = "${name}InputDeserializer";
@@ -106,7 +106,8 @@ String generateOpsTypeForQuery(
         "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : "<Null>"}";
     if (visitor.variables.isNotEmpty) {
       inputDeserializerFn = """        
-        $inputType $inputDeserializer(Map<String,dynamic> json) {
+        $inputType $inputDeserializer(dynamic json) {
+            json = json as Map<String,dynamic>;
              final query = json["query"] as String;
              final variables = $variablesName.fromJon(json["variables"] as Map<String,dynamic>);
              return GraphqlRequestInput(query,variables);
@@ -114,8 +115,8 @@ String generateOpsTypeForQuery(
       """;
     } else {
       inputDeserializerFn = """        
-        $inputType $inputDeserializer(Map<String,dynamic> json) {
-             return GraphqlRequestInput.fromJson(json);
+        $inputType $inputDeserializer(dynamic json) {
+             return GraphqlRequestInput.fromJson(json as Map<String,dynamic>);
         }
       """;
     }
@@ -123,7 +124,7 @@ String generateOpsTypeForQuery(
    @HttpRequest(
     method: "POST",
     url: "$url",
-    graphqlQuery: \"\"\"$query\"\"\",
+    graphqlQuery: $query,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type":"applications/josn"},
     responseSerializer : $responseSerializer,

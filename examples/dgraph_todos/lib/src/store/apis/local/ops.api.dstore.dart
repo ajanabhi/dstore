@@ -150,9 +150,8 @@ class __$Hello_todoData_todoCopyWithImpl<O>
   }
 }
 
-GraphqlRequestInput<Null> Hello_todoInputDeserializer(
-    Map<String, dynamic> json) {
-  return GraphqlRequestInput.fromJson(json);
+GraphqlRequestInput<Null> Hello_todoInputDeserializer(dynamic json) {
+  return GraphqlRequestInput.fromJson(json as Map<String, dynamic>);
 }
 
 Map<String, dynamic> Hello_todoDataSerializer(
@@ -160,18 +159,12 @@ Map<String, dynamic> Hello_todoDataSerializer(
     resp.toJson();
 
 Hello_todoData Hello_todoDataDeserializer(int status, dynamic json) =>
-    Hello_todoData.fromJson(json);
+    Hello_todoData.fromJson(json as Map<String, dynamic>);
 
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query todo{
-      todo {
-        text
-      } 
-    }
-  
-  """,
+    graphqlQuery: Hello.todo,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_todoDataSerializer,
@@ -184,13 +177,7 @@ class Hello_todo = HttpField<Null, GraphqlRequestInput<Null>, Hello_todoData,
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query todo{
-      todo {
-        text
-      } 
-    }
-  
-  """,
+    graphqlQuery: Hello.todo,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_todoDataSerializer,
