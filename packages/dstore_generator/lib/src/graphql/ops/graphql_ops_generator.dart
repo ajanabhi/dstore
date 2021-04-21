@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
+import 'package:dstore_generator/src/graphql/ops/visitors.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
@@ -62,10 +63,16 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
                 api: gAPi);
           }
         }
+
         print("opsvalue $v ${v.type}");
 
         return result;
       }).join("\n");
+      if (ops.isEmpty) {
+        final visitor = DSLVisitor();
+        final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
+        ast.visitChildren(visitor);
+      }
       return """
      $ops
     """;
