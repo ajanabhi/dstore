@@ -1,35 +1,39 @@
 class Query {
-  String get hello => throw Error();
-  String get hello1 => throw Error();
-  String get ping => throw Error();
-  Todo get todo => throw Error();
-  Todo get users => throw Error();
+  late String hello;
+  late String hello1;
+  late String ping;
+  late Todo todo;
+  late Todo users;
 }
 
 class Todo {
-  Todo get text => throw Error();
+  late Todo text;
   void fragment(Todo t) => throw Error();
 }
 
 class Person {
-  Person get name => throw Error();
-  String get screen => throw Error();
-  String get screens => throw Error();
-  String get tags => throw Error();
+  late Person name;
+  late String screen;
+  late String screens;
+  late String tags;
 }
 
 class Hello1 {
-  Hello1 get name => throw Error();
-  Hello1 get one => throw Error();
+  late Hello1 name;
+  late Hello1 one;
 }
 
 class Hello2 {
-  Hello2 get name => throw Error();
-  Hello2 get two => throw Error();
+  late Hello2 name;
+  late Hello2 two;
 }
 
 class HelloU {
-  HelloU get d__typename => throw Error();
+  late HelloU d__typename;
   HelloU unionfrag_Hello1(Hello1 h1) => throw Error();
   HelloU unionfrag_Hello2(Hello2 h2) => throw Error();
+}
+
+class Country {
+  // Country get
 }
