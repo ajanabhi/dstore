@@ -8,6 +8,7 @@ class Query {
 
 class Todo {
   Todo get text => throw Error();
+  void fragment(Todo t) => throw Error();
 }
 
 class Person {
@@ -29,4 +30,6 @@ class Hello2 {
 
 class HelloU {
   HelloU get d__typename => throw Error();
+  HelloU unionfrag_Hello1(Hello1 h1) => throw Error();
+  HelloU unionfrag_Hello2(Hello2 h2) => throw Error();
 }
