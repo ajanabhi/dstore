@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/constants.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
