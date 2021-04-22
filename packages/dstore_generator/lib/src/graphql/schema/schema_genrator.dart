@@ -49,6 +49,34 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
   }
 }
 
+String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition ot) {
+  final name = ot.name;
+
+  final memebers = ot.fields.map((f) {
+    final fn = f.name;
+    final ft = getFieldMetadataFromFieldTypeInstance(f.type);
+    final type = f.type.baseTypeName;
+    final isScalar = ft.fieldType is gschema.ScalarTypeDefinition;
+    final args = f.args.map((a) {
+      final an = a.name;
+      return "String? $an";
+    }).toList();
+    args.add("String? alias");
+    args.add("String? directive");
+    var reqArgs = "";
+    if (!isScalar) {
+      reqArgs = "$type $fn,";
+    }
+    return "void $fn($reqArgs{${args.join(", ")}}) { }";
+  }).join("\n ");
+
+  return """
+    class $name {
+      $memebers
+    }
+  """;
+}
+
 String getDslTypes(gschema.GraphQLSchema schema) {
   return """"
   

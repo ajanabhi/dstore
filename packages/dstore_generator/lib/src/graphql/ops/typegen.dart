@@ -304,7 +304,7 @@ class OperationVisitor extends RecursiveVisitor {
     if (fieldName != "__typename") {
       final f = (_parentTypeStack.current as TypeDefinitionWithFieldSet)
           .getField(node.name.value);
-      fm = _getFieldMetadataFromFieldTypeInstance(f.type);
+      fm = getFieldMetadataFromFieldTypeInstance(f.type);
       print("field meta $fm");
       if (fm.fieldType is ObjectTypeDefinition ||
           fm.fieldType is InterfaceTypeDefinition ||
@@ -380,32 +380,6 @@ class OperationVisitor extends RecursiveVisitor {
     }
   }
 
-  FieldMetadata _getFieldMetadataFromFieldTypeInstance(GraphQLType type,
-      {List<GListType> list = const []}) {
-    print("ftinput ${type.runtimeType} ${type} ${type.baseTypeName} $list");
-    final listm = List<GListType>.from(list);
-    if (type is ListType) {
-      if (type.isNonNull) {
-        listm.add(GListType.strict);
-      } else {
-        listm.add(GListType.nonstrict);
-      }
-      type = type.type;
-    }
-    if (type is NamedType) {
-      var strict = false;
-      if (type.isNonNull) {
-        strict = true;
-      }
-      var ftd = type.type as TypeDefinition?;
-      ftd ??= ScalarTypeDefinition(
-          ScalarTypeDefinitionNode(name: NameNode(value: type.baseTypeName)));
-      return FieldMetadata(fieldType: ftd, listType: listm, strict: strict);
-    } else {
-      return _getFieldMetadataFromFieldTypeInstance(type, list: listm);
-    }
-  }
-
   TypeNodeMeta _getTypeNodeMeta(TypeNode type,
       {List<GListType> list = const []}) {
     print("ftinput ${type.runtimeType} ${type}  $list");
@@ -460,6 +434,32 @@ String getScalarTypeFromString(String input, {Map<String, String>? scalarMap}) {
       return "int";
     default:
       return scalarMap?[input] ?? "dynamic";
+  }
+}
+
+FieldMetadata getFieldMetadataFromFieldTypeInstance(GraphQLType type,
+    {List<GListType> list = const []}) {
+  print("ftinput ${type.runtimeType} ${type} ${type.baseTypeName} $list");
+  final listm = List<GListType>.from(list);
+  if (type is ListType) {
+    if (type.isNonNull) {
+      listm.add(GListType.strict);
+    } else {
+      listm.add(GListType.nonstrict);
+    }
+    type = type.type;
+  }
+  if (type is NamedType) {
+    var strict = false;
+    if (type.isNonNull) {
+      strict = true;
+    }
+    var ftd = type.type as TypeDefinition?;
+    ftd ??= ScalarTypeDefinition(
+        ScalarTypeDefinitionNode(name: NameNode(value: type.baseTypeName)));
+    return FieldMetadata(fieldType: ftd, listType: listm, strict: strict);
+  } else {
+    return getFieldMetadataFromFieldTypeInstance(type, list: listm);
   }
 }
 
