@@ -6,6 +6,20 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+StringFullTextFilter _$StringFullTextFilterFromJson(Map<String, dynamic> json) {
+  return StringFullTextFilter(
+    alloftext: json['alloftext'] as String?,
+    anyoftext: json['anyoftext'] as String?,
+  );
+}
+
+Map<String, dynamic> _$StringFullTextFilterToJson(
+        StringFullTextFilter instance) =>
+    <String, dynamic>{
+      'alloftext': instance.alloftext,
+      'anyoftext': instance.anyoftext,
+    };
+
 UpdateTaskInput _$UpdateTaskInputFromJson(Map<String, dynamic> json) {
   return UpdateTaskInput(
     filter: json['filter'],
@@ -314,28 +328,6 @@ Map<String, dynamic> _$AuthorFilterToJson(AuthorFilter instance) =>
       'not': instance.not,
     };
 
-PostRef _$PostRefFromJson(Map<String, dynamic> json) {
-  return PostRef(
-    id: json['id'] as String?,
-    title: json['title'] as String?,
-    text: json['text'] as String?,
-    score: (json['score'] as num?)?.toDouble(),
-    completed: json['completed'] as bool?,
-    datePublished: json['datePublished'],
-    author: json['author'],
-  );
-}
-
-Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'text': instance.text,
-      'score': instance.score,
-      'completed': instance.completed,
-      'datePublished': instance.datePublished,
-      'author': instance.author,
-    };
-
 StringExactFilter _$StringExactFilterFromJson(Map<String, dynamic> json) {
   return StringExactFilter(
     eq: json['eq'] as String?,
@@ -357,6 +349,28 @@ Map<String, dynamic> _$StringExactFilterToJson(StringExactFilter instance) =>
       'ge': instance.ge,
       'gt': instance.gt,
       'between': instance.between,
+    };
+
+PostRef _$PostRefFromJson(Map<String, dynamic> json) {
+  return PostRef(
+    id: json['id'] as String?,
+    title: json['title'] as String?,
+    text: json['text'] as String?,
+    score: (json['score'] as num?)?.toDouble(),
+    completed: json['completed'] as bool?,
+    datePublished: json['datePublished'],
+    author: json['author'],
+  );
+}
+
+Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'text': instance.text,
+      'score': instance.score,
+      'completed': instance.completed,
+      'datePublished': instance.datePublished,
+      'author': instance.author,
     };
 
 UserOrder _$UserOrderFromJson(Map<String, dynamic> json) {
@@ -401,21 +415,6 @@ Map<String, dynamic> _$AddTaskInputToJson(AddTaskInput instance) =>
       'title': instance.title,
       'completed': instance.completed,
       'user': instance.user,
-    };
-
-AddUserInput _$AddUserInputFromJson(Map<String, dynamic> json) {
-  return AddUserInput(
-    username: json['username'] as String,
-    name: json['name'] as String?,
-    tasks: json['tasks'] as List<dynamic>?,
-  );
-}
-
-Map<String, dynamic> _$AddUserInputToJson(AddUserInput instance) =>
-    <String, dynamic>{
-      'username': instance.username,
-      'name': instance.name,
-      'tasks': instance.tasks,
     };
 
 CustomHTTP _$CustomHTTPFromJson(Map<String, dynamic> json) {
@@ -483,6 +482,21 @@ Map<String, dynamic> _$AddPostInputToJson(AddPostInput instance) =>
       'completed': instance.completed,
       'datePublished': instance.datePublished,
       'author': instance.author,
+    };
+
+AddUserInput _$AddUserInputFromJson(Map<String, dynamic> json) {
+  return AddUserInput(
+    username: json['username'] as String,
+    name: json['name'] as String?,
+    tasks: json['tasks'] as List<dynamic>?,
+  );
+}
+
+Map<String, dynamic> _$AddUserInputToJson(AddUserInput instance) =>
+    <String, dynamic>{
+      'username': instance.username,
+      'name': instance.name,
+      'tasks': instance.tasks,
     };
 
 TaskOrder _$TaskOrderFromJson(Map<String, dynamic> json) {
@@ -836,18 +850,4 @@ Map<String, dynamic> _$StringHashFilterToJson(StringHashFilter instance) =>
     <String, dynamic>{
       'eq': instance.eq,
       'd_in': instance.d_in,
-    };
-
-StringFullTextFilter _$StringFullTextFilterFromJson(Map<String, dynamic> json) {
-  return StringFullTextFilter(
-    alloftext: json['alloftext'] as String?,
-    anyoftext: json['anyoftext'] as String?,
-  );
-}
-
-Map<String, dynamic> _$StringFullTextFilterToJson(
-        StringFullTextFilter instance) =>
-    <String, dynamic>{
-      'alloftext': instance.alloftext,
-      'anyoftext': instance.anyoftext,
     };

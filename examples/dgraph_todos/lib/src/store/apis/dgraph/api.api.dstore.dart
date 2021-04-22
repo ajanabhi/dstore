@@ -65,6 +65,91 @@ enum TaskHasFilter { title, completed, user }
 enum AuthorHasFilter { name, posts, friends, n }
 
 @JsonSerializable()
+class StringFullTextFilter {
+  final String? alloftext;
+
+  final String? anyoftext;
+
+  @JsonKey(ignore: true)
+  _$StringFullTextFilterCopyWith<StringFullTextFilter> get copyWith =>
+      __$StringFullTextFilterCopyWithImpl<StringFullTextFilter>(
+          this, IdentityFn);
+
+  const StringFullTextFilter({this.alloftext, this.anyoftext});
+
+  factory StringFullTextFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringFullTextFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StringFullTextFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is StringFullTextFilter &&
+        o.alloftext == alloftext &&
+        o.anyoftext == anyoftext;
+  }
+
+  @override
+  int get hashCode => alloftext.hashCode ^ anyoftext.hashCode;
+
+  @override
+  String toString() =>
+      "StringFullTextFilter(alloftext: ${this.alloftext}, anyoftext: ${this.anyoftext})";
+}
+
+abstract class $StringFullTextFilterCopyWith<O> {
+  factory $StringFullTextFilterCopyWith(
+          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
+      _$StringFullTextFilterCopyWithImpl<O>;
+  O call({String? alloftext, String? anyoftext});
+}
+
+class _$StringFullTextFilterCopyWithImpl<O>
+    implements $StringFullTextFilterCopyWith<O> {
+  final StringFullTextFilter _value;
+  final O Function(StringFullTextFilter) _then;
+  _$StringFullTextFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
+    return _then(_value.copyWith(
+        alloftext:
+            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
+        anyoftext:
+            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
+  }
+}
+
+abstract class _$StringFullTextFilterCopyWith<O>
+    implements $StringFullTextFilterCopyWith<O> {
+  factory _$StringFullTextFilterCopyWith(
+          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
+      __$StringFullTextFilterCopyWithImpl<O>;
+  O call({String? alloftext, String? anyoftext});
+}
+
+class __$StringFullTextFilterCopyWithImpl<O>
+    extends _$StringFullTextFilterCopyWithImpl<O>
+    implements _$StringFullTextFilterCopyWith<O> {
+  __$StringFullTextFilterCopyWithImpl(
+      StringFullTextFilter _value, O Function(StringFullTextFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  StringFullTextFilter get _value => super._value;
+
+  @override
+  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
+    return _then(StringFullTextFilter(
+        alloftext:
+            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
+        anyoftext:
+            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
+  }
+}
+
+@JsonSerializable()
 class UpdateTaskInput {
   final dynamic filter;
 
@@ -1920,6 +2005,147 @@ class __$AuthorFilterCopyWithImpl<O> extends _$AuthorFilterCopyWithImpl<O>
 }
 
 @JsonSerializable()
+class StringExactFilter {
+  final String? eq;
+
+  final List<String?>? d_in;
+
+  final String? le;
+
+  final String? lt;
+
+  final String? ge;
+
+  final String? gt;
+
+  final dynamic? between;
+
+  @JsonKey(ignore: true)
+  _$StringExactFilterCopyWith<StringExactFilter> get copyWith =>
+      __$StringExactFilterCopyWithImpl<StringExactFilter>(this, IdentityFn);
+
+  const StringExactFilter(
+      {this.eq, this.d_in, this.le, this.lt, this.ge, this.gt, this.between});
+
+  factory StringExactFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringExactFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StringExactFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is StringExactFilter &&
+        o.eq == eq &&
+        o.d_in == d_in &&
+        o.le == le &&
+        o.lt == lt &&
+        o.ge == ge &&
+        o.gt == gt &&
+        o.between == between;
+  }
+
+  @override
+  int get hashCode =>
+      eq.hashCode ^
+      d_in.hashCode ^
+      le.hashCode ^
+      lt.hashCode ^
+      ge.hashCode ^
+      gt.hashCode ^
+      between.hashCode;
+
+  @override
+  String toString() =>
+      "StringExactFilter(eq: ${this.eq}, d_in: ${this.d_in}, le: ${this.le}, lt: ${this.lt}, ge: ${this.ge}, gt: ${this.gt}, between: ${this.between})";
+}
+
+abstract class $StringExactFilterCopyWith<O> {
+  factory $StringExactFilterCopyWith(
+          StringExactFilter value, O Function(StringExactFilter) then) =
+      _$StringExactFilterCopyWithImpl<O>;
+  O call(
+      {String? eq,
+      List<String?>? d_in,
+      String? le,
+      String? lt,
+      String? ge,
+      String? gt,
+      dynamic? between});
+}
+
+class _$StringExactFilterCopyWithImpl<O>
+    implements $StringExactFilterCopyWith<O> {
+  final StringExactFilter _value;
+  final O Function(StringExactFilter) _then;
+  _$StringExactFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? eq = dimmutable,
+      Object? d_in = dimmutable,
+      Object? le = dimmutable,
+      Object? lt = dimmutable,
+      Object? ge = dimmutable,
+      Object? gt = dimmutable,
+      Object? between = dimmutable}) {
+    return _then(_value.copyWith(
+        eq: eq == dimmutable ? _value.eq : eq as String?,
+        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?,
+        le: le == dimmutable ? _value.le : le as String?,
+        lt: lt == dimmutable ? _value.lt : lt as String?,
+        ge: ge == dimmutable ? _value.ge : ge as String?,
+        gt: gt == dimmutable ? _value.gt : gt as String?,
+        between: between == dimmutable ? _value.between : between as dynamic?));
+  }
+}
+
+abstract class _$StringExactFilterCopyWith<O>
+    implements $StringExactFilterCopyWith<O> {
+  factory _$StringExactFilterCopyWith(
+          StringExactFilter value, O Function(StringExactFilter) then) =
+      __$StringExactFilterCopyWithImpl<O>;
+  O call(
+      {String? eq,
+      List<String?>? d_in,
+      String? le,
+      String? lt,
+      String? ge,
+      String? gt,
+      dynamic? between});
+}
+
+class __$StringExactFilterCopyWithImpl<O>
+    extends _$StringExactFilterCopyWithImpl<O>
+    implements _$StringExactFilterCopyWith<O> {
+  __$StringExactFilterCopyWithImpl(
+      StringExactFilter _value, O Function(StringExactFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  StringExactFilter get _value => super._value;
+
+  @override
+  O call(
+      {Object? eq = dimmutable,
+      Object? d_in = dimmutable,
+      Object? le = dimmutable,
+      Object? lt = dimmutable,
+      Object? ge = dimmutable,
+      Object? gt = dimmutable,
+      Object? between = dimmutable}) {
+    return _then(StringExactFilter(
+        eq: eq == dimmutable ? _value.eq : eq as String?,
+        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?,
+        le: le == dimmutable ? _value.le : le as String?,
+        lt: lt == dimmutable ? _value.lt : lt as String?,
+        ge: ge == dimmutable ? _value.ge : ge as String?,
+        gt: gt == dimmutable ? _value.gt : gt as String?,
+        between: between == dimmutable ? _value.between : between as dynamic?));
+  }
+}
+
+@JsonSerializable()
 class PostRef {
   final String? id;
 
@@ -2063,147 +2289,6 @@ class __$PostRefCopyWithImpl<O> extends _$PostRefCopyWithImpl<O>
             ? _value.datePublished
             : datePublished as dynamic?,
         author: author == dimmutable ? _value.author : author as dynamic?));
-  }
-}
-
-@JsonSerializable()
-class StringExactFilter {
-  final String? eq;
-
-  final List<String?>? d_in;
-
-  final String? le;
-
-  final String? lt;
-
-  final String? ge;
-
-  final String? gt;
-
-  final dynamic? between;
-
-  @JsonKey(ignore: true)
-  _$StringExactFilterCopyWith<StringExactFilter> get copyWith =>
-      __$StringExactFilterCopyWithImpl<StringExactFilter>(this, IdentityFn);
-
-  const StringExactFilter(
-      {this.eq, this.d_in, this.le, this.lt, this.ge, this.gt, this.between});
-
-  factory StringExactFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringExactFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringExactFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringExactFilter &&
-        o.eq == eq &&
-        o.d_in == d_in &&
-        o.le == le &&
-        o.lt == lt &&
-        o.ge == ge &&
-        o.gt == gt &&
-        o.between == between;
-  }
-
-  @override
-  int get hashCode =>
-      eq.hashCode ^
-      d_in.hashCode ^
-      le.hashCode ^
-      lt.hashCode ^
-      ge.hashCode ^
-      gt.hashCode ^
-      between.hashCode;
-
-  @override
-  String toString() =>
-      "StringExactFilter(eq: ${this.eq}, d_in: ${this.d_in}, le: ${this.le}, lt: ${this.lt}, ge: ${this.ge}, gt: ${this.gt}, between: ${this.between})";
-}
-
-abstract class $StringExactFilterCopyWith<O> {
-  factory $StringExactFilterCopyWith(
-          StringExactFilter value, O Function(StringExactFilter) then) =
-      _$StringExactFilterCopyWithImpl<O>;
-  O call(
-      {String? eq,
-      List<String?>? d_in,
-      String? le,
-      String? lt,
-      String? ge,
-      String? gt,
-      dynamic? between});
-}
-
-class _$StringExactFilterCopyWithImpl<O>
-    implements $StringExactFilterCopyWith<O> {
-  final StringExactFilter _value;
-  final O Function(StringExactFilter) _then;
-  _$StringExactFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? eq = dimmutable,
-      Object? d_in = dimmutable,
-      Object? le = dimmutable,
-      Object? lt = dimmutable,
-      Object? ge = dimmutable,
-      Object? gt = dimmutable,
-      Object? between = dimmutable}) {
-    return _then(_value.copyWith(
-        eq: eq == dimmutable ? _value.eq : eq as String?,
-        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?,
-        le: le == dimmutable ? _value.le : le as String?,
-        lt: lt == dimmutable ? _value.lt : lt as String?,
-        ge: ge == dimmutable ? _value.ge : ge as String?,
-        gt: gt == dimmutable ? _value.gt : gt as String?,
-        between: between == dimmutable ? _value.between : between as dynamic?));
-  }
-}
-
-abstract class _$StringExactFilterCopyWith<O>
-    implements $StringExactFilterCopyWith<O> {
-  factory _$StringExactFilterCopyWith(
-          StringExactFilter value, O Function(StringExactFilter) then) =
-      __$StringExactFilterCopyWithImpl<O>;
-  O call(
-      {String? eq,
-      List<String?>? d_in,
-      String? le,
-      String? lt,
-      String? ge,
-      String? gt,
-      dynamic? between});
-}
-
-class __$StringExactFilterCopyWithImpl<O>
-    extends _$StringExactFilterCopyWithImpl<O>
-    implements _$StringExactFilterCopyWith<O> {
-  __$StringExactFilterCopyWithImpl(
-      StringExactFilter _value, O Function(StringExactFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringExactFilter get _value => super._value;
-
-  @override
-  O call(
-      {Object? eq = dimmutable,
-      Object? d_in = dimmutable,
-      Object? le = dimmutable,
-      Object? lt = dimmutable,
-      Object? ge = dimmutable,
-      Object? gt = dimmutable,
-      Object? between = dimmutable}) {
-    return _then(StringExactFilter(
-        eq: eq == dimmutable ? _value.eq : eq as String?,
-        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?,
-        le: le == dimmutable ? _value.le : le as String?,
-        lt: lt == dimmutable ? _value.lt : lt as String?,
-        ge: ge == dimmutable ? _value.ge : ge as String?,
-        gt: gt == dimmutable ? _value.gt : gt as String?,
-        between: between == dimmutable ? _value.between : between as dynamic?));
   }
 }
 
@@ -2468,94 +2553,6 @@ class __$AddTaskInputCopyWithImpl<O> extends _$AddTaskInputCopyWithImpl<O>
         completed:
             completed == dimmutable ? _value.completed : completed as bool,
         user: user == dimmutable ? _value.user : user as dynamic));
-  }
-}
-
-@JsonSerializable()
-class AddUserInput {
-  final String username;
-
-  final String? name;
-
-  final List<dynamic?>? tasks;
-
-  @JsonKey(ignore: true)
-  _$AddUserInputCopyWith<AddUserInput> get copyWith =>
-      __$AddUserInputCopyWithImpl<AddUserInput>(this, IdentityFn);
-
-  const AddUserInput({required this.username, this.name, this.tasks});
-
-  factory AddUserInput.fromJson(Map<String, dynamic> json) =>
-      _$AddUserInputFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AddUserInputToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AddUserInput &&
-        o.username == username &&
-        o.name == name &&
-        o.tasks == tasks;
-  }
-
-  @override
-  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
-
-  @override
-  String toString() =>
-      "AddUserInput(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
-}
-
-abstract class $AddUserInputCopyWith<O> {
-  factory $AddUserInputCopyWith(
-          AddUserInput value, O Function(AddUserInput) then) =
-      _$AddUserInputCopyWithImpl<O>;
-  O call({String username, String? name, List<dynamic?>? tasks});
-}
-
-class _$AddUserInputCopyWithImpl<O> implements $AddUserInputCopyWith<O> {
-  final AddUserInput _value;
-  final O Function(AddUserInput) _then;
-  _$AddUserInputCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(_value.copyWith(
-        username: username == dimmutable ? _value.username : username as String,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
-  }
-}
-
-abstract class _$AddUserInputCopyWith<O> implements $AddUserInputCopyWith<O> {
-  factory _$AddUserInputCopyWith(
-          AddUserInput value, O Function(AddUserInput) then) =
-      __$AddUserInputCopyWithImpl<O>;
-  O call({String username, String? name, List<dynamic?>? tasks});
-}
-
-class __$AddUserInputCopyWithImpl<O> extends _$AddUserInputCopyWithImpl<O>
-    implements _$AddUserInputCopyWith<O> {
-  __$AddUserInputCopyWithImpl(
-      AddUserInput _value, O Function(AddUserInput) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AddUserInput get _value => super._value;
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(AddUserInput(
-        username: username == dimmutable ? _value.username : username as String,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
   }
 }
 
@@ -2958,6 +2955,94 @@ class __$AddPostInputCopyWithImpl<O> extends _$AddPostInputCopyWithImpl<O>
             ? _value.datePublished
             : datePublished as dynamic?,
         author: author == dimmutable ? _value.author : author as dynamic));
+  }
+}
+
+@JsonSerializable()
+class AddUserInput {
+  final String username;
+
+  final String? name;
+
+  final List<dynamic?>? tasks;
+
+  @JsonKey(ignore: true)
+  _$AddUserInputCopyWith<AddUserInput> get copyWith =>
+      __$AddUserInputCopyWithImpl<AddUserInput>(this, IdentityFn);
+
+  const AddUserInput({required this.username, this.name, this.tasks});
+
+  factory AddUserInput.fromJson(Map<String, dynamic> json) =>
+      _$AddUserInputFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AddUserInputToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AddUserInput &&
+        o.username == username &&
+        o.name == name &&
+        o.tasks == tasks;
+  }
+
+  @override
+  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
+
+  @override
+  String toString() =>
+      "AddUserInput(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
+}
+
+abstract class $AddUserInputCopyWith<O> {
+  factory $AddUserInputCopyWith(
+          AddUserInput value, O Function(AddUserInput) then) =
+      _$AddUserInputCopyWithImpl<O>;
+  O call({String username, String? name, List<dynamic?>? tasks});
+}
+
+class _$AddUserInputCopyWithImpl<O> implements $AddUserInputCopyWith<O> {
+  final AddUserInput _value;
+  final O Function(AddUserInput) _then;
+  _$AddUserInputCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(_value.copyWith(
+        username: username == dimmutable ? _value.username : username as String,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
+  }
+}
+
+abstract class _$AddUserInputCopyWith<O> implements $AddUserInputCopyWith<O> {
+  factory _$AddUserInputCopyWith(
+          AddUserInput value, O Function(AddUserInput) then) =
+      __$AddUserInputCopyWithImpl<O>;
+  O call({String username, String? name, List<dynamic?>? tasks});
+}
+
+class __$AddUserInputCopyWithImpl<O> extends _$AddUserInputCopyWithImpl<O>
+    implements _$AddUserInputCopyWith<O> {
+  __$AddUserInputCopyWithImpl(
+      AddUserInput _value, O Function(AddUserInput) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AddUserInput get _value => super._value;
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(AddUserInput(
+        username: username == dimmutable ? _value.username : username as String,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
   }
 }
 
@@ -5079,90 +5164,5 @@ class __$StringHashFilterCopyWithImpl<O>
     return _then(StringHashFilter(
         eq: eq == dimmutable ? _value.eq : eq as String?,
         d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?));
-  }
-}
-
-@JsonSerializable()
-class StringFullTextFilter {
-  final String? alloftext;
-
-  final String? anyoftext;
-
-  @JsonKey(ignore: true)
-  _$StringFullTextFilterCopyWith<StringFullTextFilter> get copyWith =>
-      __$StringFullTextFilterCopyWithImpl<StringFullTextFilter>(
-          this, IdentityFn);
-
-  const StringFullTextFilter({this.alloftext, this.anyoftext});
-
-  factory StringFullTextFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringFullTextFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringFullTextFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringFullTextFilter &&
-        o.alloftext == alloftext &&
-        o.anyoftext == anyoftext;
-  }
-
-  @override
-  int get hashCode => alloftext.hashCode ^ anyoftext.hashCode;
-
-  @override
-  String toString() =>
-      "StringFullTextFilter(alloftext: ${this.alloftext}, anyoftext: ${this.anyoftext})";
-}
-
-abstract class $StringFullTextFilterCopyWith<O> {
-  factory $StringFullTextFilterCopyWith(
-          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
-      _$StringFullTextFilterCopyWithImpl<O>;
-  O call({String? alloftext, String? anyoftext});
-}
-
-class _$StringFullTextFilterCopyWithImpl<O>
-    implements $StringFullTextFilterCopyWith<O> {
-  final StringFullTextFilter _value;
-  final O Function(StringFullTextFilter) _then;
-  _$StringFullTextFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
-    return _then(_value.copyWith(
-        alloftext:
-            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
-        anyoftext:
-            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
-  }
-}
-
-abstract class _$StringFullTextFilterCopyWith<O>
-    implements $StringFullTextFilterCopyWith<O> {
-  factory _$StringFullTextFilterCopyWith(
-          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
-      __$StringFullTextFilterCopyWithImpl<O>;
-  O call({String? alloftext, String? anyoftext});
-}
-
-class __$StringFullTextFilterCopyWithImpl<O>
-    extends _$StringFullTextFilterCopyWithImpl<O>
-    implements _$StringFullTextFilterCopyWith<O> {
-  __$StringFullTextFilterCopyWithImpl(
-      StringFullTextFilter _value, O Function(StringFullTextFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringFullTextFilter get _value => super._value;
-
-  @override
-  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
-    return _then(StringFullTextFilter(
-        alloftext:
-            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
-        anyoftext:
-            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
   }
 }

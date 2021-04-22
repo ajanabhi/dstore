@@ -4,24 +4,25 @@ import 'local.dart';
 
 @GraphqlOps(api)
 class _HelloDSL {
-  final todo = Query().todo(Todo().text).users(Person()
-      .name
-      .tags
-      .hello(HelloU().d__typename.unionfrag_Hello1(Hello1().name)));
+  final todo = Query()
+    ..hello
+    ..hello1(id: "dude")
+    ..todo(Todo().text.text)
+    ..users(Person().name.tags
+      ..hello(HelloU().d__typename..unionfrag_Hello1(Hello1().name)));
 }
 
 class Query {
-  late Query hello;
-  late Query hello1;
-  late Query ping;
-  Query todo(Todo t) => throw Error();
-  Query users(Person t) => throw Error();
-  Query hellou(HelloU t) => throw Error();
+  late void hello;
+  void hello1({String? id}) => throw Error();
+  late void ping;
+  void todo(Todo t) => throw Error();
+  void users(Person t) => throw Error();
+  void hellou(HelloU t) => throw Error();
 }
 
 class Todo {
   late Todo text;
-  void fragment(Todo t) => throw Error();
 }
 
 class Person {
@@ -60,7 +61,10 @@ class Country {
   late Country name;
 }
 
-final q = Query().todo(Todo().text).users(Person()
-    .name
-    .tags
-    .hello(HelloU().d__typename.unionfrag_Hello1(Hello1().name)));
+final q = Query()
+  ..todo(Todo().text)
+  ..users(Person()
+      .name
+      .tags
+      .name
+      .hello(HelloU().d__typename.unionfrag_Hello1(Hello1().name)));
