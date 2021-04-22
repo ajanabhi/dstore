@@ -31,11 +31,14 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
       final inputs = schema.inputObjectTypes
           .map((e) => _convertGInputTypeToDType(e, gApi.scalarMap))
           .join("\n");
+      final dslTypes = getDslTypes(schema);
       return """
       
       $enums 
 
       $inputs
+
+      $dslTypes
     
     """;
     } catch (e, st) {
@@ -44,6 +47,13 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
       rethrow;
     }
   }
+}
+
+String getDslTypes(gschema.GraphQLSchema schema) {
+  return """"
+  
+  
+  """;
 }
 
 GraphqlApi getGraphqlApi(DartObject? obj) {
