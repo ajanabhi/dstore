@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:dstore_generator/src/errors.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
@@ -15,7 +16,7 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
     final body = field.initializer!.toSource();
     final visitor = DSLVisitor();
     field.initializer!.visitChildren(visitor);
-    field.initializer!.toString();
+    logger.shout("Query is ${visitor.temp}");
     print("DSL body $body");
     if (body.startsWith("Query(")) {
       // final
@@ -25,16 +26,44 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
 }
 
 class DSLVisitor extends RecursiveAstVisitor<Object> {
+  var temp = "";
+  final _propsForType = <String>[];
   @override
   Object? visitPropertyAccess(PropertyAccess node) {
     print("Peroperty access $node");
+    var name = node.propertyName.name;
+    if (name == "d__typename") {
+      name = "__typename";
+    }
+    _propsForType.add(name);
+    temp += "$name\n";
     return super.visitPropertyAccess(node);
   }
 
   @override
   Object? visitMethodInvocation(MethodInvocation node) {
-    print("Method invocation $node");
-    return super.visitMethodInvocation(node);
+    print("Method invocation enter $node ${node.methodName}");
+    var methodName = node.methodName.name;
+    final nodeString = node.toString();
+    _propsForType.clear();
+    if (methodName == "Query") {
+      temp += "query hello { \n";
+    } else if (nodeString.startsWith("..")) {
+      final s = nodeString.substring(2);
+      var bracket = "";
+      if (s.split(".").first.endsWith("()")) {
+        bracket = "{ ";
+      }
+      if (methodName.startsWith("unionfrag_")) {
+        methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
+      }
+      temp += "$methodName $bracket \n";
+    }
+    super.visitMethodInvocation(node);
+    print("method invcation leave $node");
+    if (_propsForType.isNotEmpty) {
+      temp += "}\n";
+    }
   }
 
   @override
@@ -45,7 +74,6 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
 
   @override
   Object? visitSimpleIdentifier(SimpleIdentifier node) {
-    print("SimpleIdentifier $node");
     return super.visitSimpleIdentifier(node);
   }
 }
