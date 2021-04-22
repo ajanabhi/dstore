@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
