@@ -49,8 +49,12 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
   }
 }
 
-String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition ot) {
-  final name = ot.name;
+String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
+    {String? newName}) {
+  if (ot == null) {
+    return "";
+  }
+  final name = newName ?? ot.name;
 
   final memebers = ot.fields.map((f) {
     final fn = f.name;
@@ -77,9 +81,44 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition ot) {
   """;
 }
 
-String getDslTypes(gschema.GraphQLSchema schema) {
-  return """"
+String _convertUnionTypeToDSl(gschema.UnionTypeDefinition ut) {
+  final name = ut.name;
+  final members = ut.typeNames.map((e) {
+    return "void unionfrag_${e.name}(${e.name} value) {}";
+  }).join("\n");
+  return """
+   
+   class $name {
+     void d__typename;
+     
+     $members
+   }
   
+  """;
+}
+
+String getDslTypes(gschema.GraphQLSchema schema) {
+  String? getNewNameForObjectType(gschema.ObjectTypeDefinition ot) {
+    final name = ot.name;
+    if (name == schema.query?.name) {
+      return "Query";
+    }
+    if (name == schema.mutation?.name) {
+      return "Mutation";
+    }
+
+    if (name == schema.subscription?.name) {
+      return "Subscription";
+    }
+  }
+
+  final types = <String>[];
+
+  types.addAll(schema.objectTypes.map(
+      (e) => _convertObjectTypeToDSl(e, newName: getNewNameForObjectType(e))));
+  types.addAll(schema.unions.map((e) => _convertUnionTypeToDSl(e)));
+  return """
+   ${types.join("\n")}
   
   """;
 }
