@@ -4,7 +4,10 @@ import 'local.dart';
 
 @GraphqlOps(api)
 class _HelloDSL {
-  final todo = Query().hello1;
+  final todo = Query().todo(Todo().text).users(Person()
+      .name
+      .tags
+      .hello(HelloU().d__typename.unionfrag_Hello1(Hello1().name)));
 }
 
 class Query {

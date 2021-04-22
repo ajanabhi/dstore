@@ -58,7 +58,6 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
                 schema: schema,
                 query: "${element.name}.${e.name}",
                 doc: doc,
-                url: apiUrl,
                 name: tn,
                 api: gAPi);
           }
@@ -87,7 +86,6 @@ String generateOpsTypeForQuery(
     {required GraphQLSchema schema,
     required String query,
     required DocumentNode doc,
-    required String url,
     required GraphqlApi api,
     required String name}) {
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
@@ -134,7 +132,7 @@ String generateOpsTypeForQuery(
     final req = """
    @HttpRequest(
     method: "POST",
-    url: "$url",
+    url: "${api.apiUrl}",
     graphqlQuery: $query,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type":"applications/josn"},
