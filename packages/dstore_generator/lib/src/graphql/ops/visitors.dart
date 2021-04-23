@@ -4,29 +4,36 @@ import 'package:dstore_generator/src/utils/utils.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
+  final String className;
+
+  DSLFieldsVisitor({required this.className});
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
     final field = node.fields.variables.first;
-    final name = field.name;
+    final name = field.name.name;
     if (field.initializer == null) {
       throw ArgumentError.value(
           "You should provide inititalizer for  field $name");
     }
-    final body = field.initializer!.toSource();
-    final visitor = DSLVisitor();
-    field.initializer!.visitChildren(visitor);
-    logger.shout("Query is ${visitor.temp}");
-    print("DSL body $body");
-    if (body.startsWith("Query(")) {
-      // final
-      final props = body.replaceFirst("Query()", "");
+    final op = field.initializer!.toSource();
+    if (op.startsWith("Query(") ||
+        op.startsWith("Mutation(") ||
+        op.startsWith("Subscription(")) {
+      final visitor = DSLVisitor("${className}_${name}");
+      field.initializer!.visitChildren(visitor);
+      ops.add(visitor.query);
+      logger.shout("Query is ${visitor.query}");
     }
   }
 }
 
 class DSLVisitor extends RecursiveAstVisitor<Object> {
-  var temp = "";
+  var query = "";
+  final String opName;
   final _propsForType = <String>[];
+
+  DSLVisitor(this.opName);
+
   @override
   Object? visitPropertyAccess(PropertyAccess node) {
     print("Peroperty access $node");
@@ -35,7 +42,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       name = "__typename";
     }
     _propsForType.add(name);
-    temp += "$name\n";
+    query += "$name\n";
     return super.visitPropertyAccess(node);
   }
 
@@ -44,25 +51,31 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     print("Method invocation enter $node ${node.methodName}");
     var methodName = node.methodName.name;
     final nodeString = node.toString();
-    _propsForType.clear();
-    if (methodName == "Query") {
-      temp += "query hello { \n";
+    var isOp = false;
+    if (methodName == "Query" ||
+        methodName == "Mutation" ||
+        methodName == "Subscription") {
+      isOp = true;
+      query += "${methodName.toLowerCase()} $opName { \n";
     } else if (nodeString.startsWith("..")) {
       final s = nodeString.substring(2);
       var bracket = "";
       if (node.argumentList.arguments.isNotEmpty &&
           s.split(".").first.endsWith("()")) {
+        _propsForType.clear(); // its object field
         bracket = "{ ";
       }
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
       }
-      temp += "$methodName $bracket \n";
+      query += "$methodName $bracket \n";
+    } else if (nodeString.endsWith("()")) {
+      _propsForType.clear();
     }
     super.visitMethodInvocation(node);
     print("method invcation leave $node");
-    if (_propsForType.isNotEmpty) {
-      temp += "}\n";
+    if (isOp || _propsForType.isNotEmpty) {
+      query += "}\n";
     }
   }
 
