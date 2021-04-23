@@ -1,6 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/constants.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];

@@ -2,6 +2,7 @@ import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
+import 'package:dstore_generator/src/graphql/ops/gql_visitors.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
 import 'package:dstore_generator/src/graphql/ops/visitors.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
