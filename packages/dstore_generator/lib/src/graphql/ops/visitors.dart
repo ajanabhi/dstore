@@ -1,8 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:dstore_annotation/dstore_annotation.dart';
-import 'package:dstore_generator/src/constants.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
@@ -52,7 +50,8 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     } else if (nodeString.startsWith("..")) {
       final s = nodeString.substring(2);
       var bracket = "";
-      if (s.split(".").first.endsWith("()")) {
+      if (node.argumentList.arguments.isNotEmpty &&
+          s.split(".").first.endsWith("()")) {
         bracket = "{ ";
       }
       if (methodName.startsWith("unionfrag_")) {
