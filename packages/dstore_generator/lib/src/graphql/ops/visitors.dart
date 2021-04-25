@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:tuple/tuple.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
@@ -56,19 +57,27 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
         methodName == "Mutation" ||
         methodName == "Subscription") {
       isOp = true;
-      query += "${methodName.toLowerCase()} $opName { \n";
+      var argsList = node.argumentList.arguments;
+      final args = argsList.isNotEmpty ? "(${argsList.first})" : "";
+      query += "${methodName.toLowerCase()} $opName$args { \n";
     } else if (nodeString.startsWith("..")) {
       final s = nodeString.substring(2);
       var bracket = "";
+      var alias = "";
+      var directive = "";
+      var args = "";
       if (node.argumentList.arguments.isNotEmpty &&
           s.split(".").first.endsWith("()")) {
         _propsForType.clear(); // its object field
         bracket = "{ ";
+      } else {
+        // scalar field
+
       }
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
       }
-      query += "$methodName $bracket \n";
+      query += "$alias $methodName$args $directive $bracket \n";
     } else if (nodeString.endsWith("()")) {
       // object constructor
       _propsForType.clear();
@@ -78,6 +87,16 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     if (isOp || _propsForType.isNotEmpty) {
       query += " }\n";
     }
+  }
+
+  Tuple3<String?, String?, String?> _getAliasArgsAndDirective(
+      List<Expression> argsList) {
+    String? alias;
+    String? args;
+    String? directive;
+    if (argsList.isNotEmpty) {}
+
+    return Tuple3(alias, args, directive);
   }
 
   @override
