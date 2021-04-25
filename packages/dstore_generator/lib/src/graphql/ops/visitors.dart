@@ -1,13 +1,17 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:dstore_generator/src/graphql/globals.dart';
+import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:gql/schema.dart';
 import 'package:tuple/tuple.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
   final String className;
+  final String apiUrl;
 
-  DSLFieldsVisitor({required this.className});
+  DSLFieldsVisitor({required this.className, required this.apiUrl});
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
     final field = node.fields.variables.first;
@@ -20,10 +24,12 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
     if (op.startsWith("Query(") ||
         op.startsWith("Mutation(") ||
         op.startsWith("Subscription(")) {
-      final visitor = DSLVisitor("${className}_${name}");
+      final visitor =
+          DSLVisitor(opName: "${className}_${name}", apiUrl: apiUrl);
       field.initializer!.visitChildren(visitor);
-      ops.add(visitor.query);
-      logger.shout("Query is ${visitor.query}");
+      final op = "${visitor.query}\n }";
+      ops.add(op);
+      logger.shout("Query is $op");
     }
   }
 }
@@ -31,9 +37,10 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
 class DSLVisitor extends RecursiveAstVisitor<Object> {
   var query = "";
   final String opName;
+  final String apiUrl;
   final _propsForType = <String>[];
 
-  DSLVisitor(this.opName);
+  DSLVisitor({required this.opName, required this.apiUrl});
 
   @override
   Object? visitPropertyAccess(PropertyAccess node) {
@@ -52,26 +59,37 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     print("Method invocation enter $node ${node.methodName}");
     var methodName = node.methodName.name;
     final nodeString = node.toString();
-    var isOp = false;
+    var isObject = false;
+
     if (methodName == "Query" ||
         methodName == "Mutation" ||
         methodName == "Subscription") {
-      isOp = true;
       var argsList = node.argumentList.arguments;
       final args = argsList.isNotEmpty ? "(${argsList.first})" : "";
       query += "${methodName.toLowerCase()} $opName$args { \n";
     } else if (nodeString.startsWith("..")) {
-      final s = nodeString.substring(2);
       var bracket = "";
       var alias = "";
       var directive = "";
       var args = "";
       final argsList = node.argumentList.arguments;
+      print("Arg First1 ${argsList.firstOrNull.runtimeType}");
       print("Args List $argsList");
       Tuple3<String?, String?, String?>? tuple;
-      if (argsList.isNotEmpty && s.split(".").first.endsWith("()")) {
+      var objSpread = "";
+      if (argsList.isNotEmpty &&
+          (argsList.first is CascadeExpression ||
+              argsList.first is MethodInvocation)) {
         _propsForType.clear(); // its object field
+        isObject = true;
+        print("Arg First ${argsList.first.runtimeType}");
         bracket = "{ ";
+        if (argsList.first is MethodInvocation) {
+          // object invoked with no specific fields selected so lets query all fields
+          final objectName = argsList.first.toString().replaceAll("()", "");
+          objSpread = GraphqlAstUtils.getObjectQuery(
+              objectName: objectName, apiUrl: apiUrl);
+        }
         if (argsList.length > 1) {
           tuple = _getAliasArgsAndDirective(argsList.sublist(1));
         }
@@ -99,14 +117,14 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
       }
-      query += "$alias $methodName$args $directive $bracket \n";
+      query += "$alias $methodName$args $directive $bracket \n $objSpread";
     } else if (nodeString.endsWith("()")) {
       // object constructor
       _propsForType.clear();
     }
     super.visitMethodInvocation(node);
     print("method invcation leave $node");
-    if (isOp || _propsForType.isNotEmpty) {
+    if (isObject) {
       query += " }\n";
     }
   }

@@ -8,6 +8,7 @@ class _HelloDSL {
     ..hello(alias: "ho")
     ..hello1
     ..todo(Todo()..text)
+    ..todo(Todo())
     ..users(Person()
       ..name
       ..tags
