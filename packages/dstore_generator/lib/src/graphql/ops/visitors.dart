@@ -70,12 +70,13 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       }
       query += "$methodName $bracket \n";
     } else if (nodeString.endsWith("()")) {
+      // object constructor
       _propsForType.clear();
     }
     super.visitMethodInvocation(node);
     print("method invcation leave $node");
     if (isOp || _propsForType.isNotEmpty) {
-      query += "}\n";
+      query += " }\n";
     }
   }
 
