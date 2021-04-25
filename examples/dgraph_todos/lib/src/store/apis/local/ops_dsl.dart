@@ -5,7 +5,7 @@ import 'local.dart';
 @GraphqlOps(api)
 class _HelloDSL {
   final todo = Query()
-    ..hello
+    ..hello(alias: "ho")
     ..hello1
     ..todo(Todo()..text)
     ..users(Person()

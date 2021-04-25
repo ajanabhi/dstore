@@ -66,13 +66,35 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       var alias = "";
       var directive = "";
       var args = "";
-      if (node.argumentList.arguments.isNotEmpty &&
-          s.split(".").first.endsWith("()")) {
+      final argsList = node.argumentList.arguments;
+      print("Args List $argsList");
+      Tuple3<String?, String?, String?>? tuple;
+      if (argsList.isNotEmpty && s.split(".").first.endsWith("()")) {
         _propsForType.clear(); // its object field
         bracket = "{ ";
+        if (argsList.length > 1) {
+          tuple = _getAliasArgsAndDirective(argsList.sublist(1));
+        }
       } else {
         // scalar field
-
+        if (argsList.isNotEmpty) {
+          tuple = _getAliasArgsAndDirective(argsList);
+        }
+      }
+      print("Tuple $tuple");
+      if (tuple != null) {
+        final item1 = tuple.item1;
+        if (item1 != null) {
+          alias = "$item1: ";
+        }
+        final item2 = tuple.item2;
+        if (item2 != null) {
+          args = "($item2)";
+        }
+        final item3 = tuple.item3;
+        if (item3 != null) {
+          directive = item3;
+        }
       }
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
@@ -94,7 +116,24 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     String? alias;
     String? args;
     String? directive;
-    if (argsList.isNotEmpty) {}
+    argsList.forEach((e) {
+      if (e is NamedExpression) {
+        final name = e.name.label.name;
+        var value = e.expression.toString();
+        value = value.substring(1, value.length - 1);
+        if (name == "alias") {
+          alias = value;
+        } else if (name == "directive") {
+          directive = value;
+        } else {
+          if (args == null) {
+            args = "$name: $value";
+          } else {
+            args = "$args,$name: $value";
+          }
+        }
+      }
+    });
 
     return Tuple3(alias, args, directive);
   }

@@ -7,7 +7,6 @@ part of 'api.dart';
 // **************************************************************************
 
 enum UserHasFilter { username, name, tasks }
-enum UserOrderable { username, name }
 enum DgraphIndex {
   int,
   int64,
@@ -25,6 +24,7 @@ enum DgraphIndex {
   hour,
   geo
 }
+enum UserOrderable { username, name }
 enum TaskOrderable { title }
 enum __DirectiveLocation {
   QUERY,
@@ -60,9 +60,94 @@ enum __TypeKind {
 enum PostHasFilter { title, text, score, completed, datePublished, author }
 enum HTTPMethod { GET, POST, PUT, PATCH, DELETE }
 enum PostOrderable { title, text, score, datePublished }
-enum Mode { BATCH, SINGLE }
 enum TaskHasFilter { title, completed, user }
+enum Mode { BATCH, SINGLE }
 enum AuthorHasFilter { name, posts, friends, n }
+
+@JsonSerializable()
+class StringFullTextFilter {
+  final String? alloftext;
+
+  final String? anyoftext;
+
+  @JsonKey(ignore: true)
+  _$StringFullTextFilterCopyWith<StringFullTextFilter> get copyWith =>
+      __$StringFullTextFilterCopyWithImpl<StringFullTextFilter>(
+          this, IdentityFn);
+
+  const StringFullTextFilter({this.alloftext, this.anyoftext});
+
+  factory StringFullTextFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringFullTextFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StringFullTextFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is StringFullTextFilter &&
+        o.alloftext == alloftext &&
+        o.anyoftext == anyoftext;
+  }
+
+  @override
+  int get hashCode => alloftext.hashCode ^ anyoftext.hashCode;
+
+  @override
+  String toString() =>
+      "StringFullTextFilter(alloftext: ${this.alloftext}, anyoftext: ${this.anyoftext})";
+}
+
+abstract class $StringFullTextFilterCopyWith<O> {
+  factory $StringFullTextFilterCopyWith(
+          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
+      _$StringFullTextFilterCopyWithImpl<O>;
+  O call({String? alloftext, String? anyoftext});
+}
+
+class _$StringFullTextFilterCopyWithImpl<O>
+    implements $StringFullTextFilterCopyWith<O> {
+  final StringFullTextFilter _value;
+  final O Function(StringFullTextFilter) _then;
+  _$StringFullTextFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
+    return _then(_value.copyWith(
+        alloftext:
+            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
+        anyoftext:
+            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
+  }
+}
+
+abstract class _$StringFullTextFilterCopyWith<O>
+    implements $StringFullTextFilterCopyWith<O> {
+  factory _$StringFullTextFilterCopyWith(
+          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
+      __$StringFullTextFilterCopyWithImpl<O>;
+  O call({String? alloftext, String? anyoftext});
+}
+
+class __$StringFullTextFilterCopyWithImpl<O>
+    extends _$StringFullTextFilterCopyWithImpl<O>
+    implements _$StringFullTextFilterCopyWith<O> {
+  __$StringFullTextFilterCopyWithImpl(
+      StringFullTextFilter _value, O Function(StringFullTextFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  StringFullTextFilter get _value => super._value;
+
+  @override
+  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
+    return _then(StringFullTextFilter(
+        alloftext:
+            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
+        anyoftext:
+            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
+  }
+}
 
 @JsonSerializable()
 class UpdateTaskInput {
@@ -154,79 +239,6 @@ class __$UpdateTaskInputCopyWithImpl<O> extends _$UpdateTaskInputCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class StringRegExpFilter {
-  final String? regexp;
-
-  @JsonKey(ignore: true)
-  _$StringRegExpFilterCopyWith<StringRegExpFilter> get copyWith =>
-      __$StringRegExpFilterCopyWithImpl<StringRegExpFilter>(this, IdentityFn);
-
-  const StringRegExpFilter({this.regexp});
-
-  factory StringRegExpFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringRegExpFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringRegExpFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringRegExpFilter && o.regexp == regexp;
-  }
-
-  @override
-  int get hashCode => regexp.hashCode;
-
-  @override
-  String toString() => "StringRegExpFilter(regexp: ${this.regexp})";
-}
-
-abstract class $StringRegExpFilterCopyWith<O> {
-  factory $StringRegExpFilterCopyWith(
-          StringRegExpFilter value, O Function(StringRegExpFilter) then) =
-      _$StringRegExpFilterCopyWithImpl<O>;
-  O call({String? regexp});
-}
-
-class _$StringRegExpFilterCopyWithImpl<O>
-    implements $StringRegExpFilterCopyWith<O> {
-  final StringRegExpFilter _value;
-  final O Function(StringRegExpFilter) _then;
-  _$StringRegExpFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? regexp = dimmutable}) {
-    return _then(_value.copyWith(
-        regexp: regexp == dimmutable ? _value.regexp : regexp as String?));
-  }
-}
-
-abstract class _$StringRegExpFilterCopyWith<O>
-    implements $StringRegExpFilterCopyWith<O> {
-  factory _$StringRegExpFilterCopyWith(
-          StringRegExpFilter value, O Function(StringRegExpFilter) then) =
-      __$StringRegExpFilterCopyWithImpl<O>;
-  O call({String? regexp});
-}
-
-class __$StringRegExpFilterCopyWithImpl<O>
-    extends _$StringRegExpFilterCopyWithImpl<O>
-    implements _$StringRegExpFilterCopyWith<O> {
-  __$StringRegExpFilterCopyWithImpl(
-      StringRegExpFilter _value, O Function(StringRegExpFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringRegExpFilter get _value => super._value;
-
-  @override
-  O call({Object? regexp = dimmutable}) {
-    return _then(StringRegExpFilter(
-        regexp: regexp == dimmutable ? _value.regexp : regexp as String?));
-  }
-}
-
-@JsonSerializable()
 class TaskPatch {
   final String? title;
 
@@ -310,6 +322,79 @@ class __$TaskPatchCopyWithImpl<O> extends _$TaskPatchCopyWithImpl<O>
         completed:
             completed == dimmutable ? _value.completed : completed as bool?,
         user: user == dimmutable ? _value.user : user as dynamic?));
+  }
+}
+
+@JsonSerializable()
+class StringRegExpFilter {
+  final String? regexp;
+
+  @JsonKey(ignore: true)
+  _$StringRegExpFilterCopyWith<StringRegExpFilter> get copyWith =>
+      __$StringRegExpFilterCopyWithImpl<StringRegExpFilter>(this, IdentityFn);
+
+  const StringRegExpFilter({this.regexp});
+
+  factory StringRegExpFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringRegExpFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StringRegExpFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is StringRegExpFilter && o.regexp == regexp;
+  }
+
+  @override
+  int get hashCode => regexp.hashCode;
+
+  @override
+  String toString() => "StringRegExpFilter(regexp: ${this.regexp})";
+}
+
+abstract class $StringRegExpFilterCopyWith<O> {
+  factory $StringRegExpFilterCopyWith(
+          StringRegExpFilter value, O Function(StringRegExpFilter) then) =
+      _$StringRegExpFilterCopyWithImpl<O>;
+  O call({String? regexp});
+}
+
+class _$StringRegExpFilterCopyWithImpl<O>
+    implements $StringRegExpFilterCopyWith<O> {
+  final StringRegExpFilter _value;
+  final O Function(StringRegExpFilter) _then;
+  _$StringRegExpFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? regexp = dimmutable}) {
+    return _then(_value.copyWith(
+        regexp: regexp == dimmutable ? _value.regexp : regexp as String?));
+  }
+}
+
+abstract class _$StringRegExpFilterCopyWith<O>
+    implements $StringRegExpFilterCopyWith<O> {
+  factory _$StringRegExpFilterCopyWith(
+          StringRegExpFilter value, O Function(StringRegExpFilter) then) =
+      __$StringRegExpFilterCopyWithImpl<O>;
+  O call({String? regexp});
+}
+
+class __$StringRegExpFilterCopyWithImpl<O>
+    extends _$StringRegExpFilterCopyWithImpl<O>
+    implements _$StringRegExpFilterCopyWith<O> {
+  __$StringRegExpFilterCopyWithImpl(
+      StringRegExpFilter _value, O Function(StringRegExpFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  StringRegExpFilter get _value => super._value;
+
+  @override
+  O call({Object? regexp = dimmutable}) {
+    return _then(StringRegExpFilter(
+        regexp: regexp == dimmutable ? _value.regexp : regexp as String?));
   }
 }
 
@@ -790,6 +875,82 @@ class __$TaskFilterCopyWithImpl<O> extends _$TaskFilterCopyWithImpl<O>
 }
 
 @JsonSerializable()
+class PointRef {
+  final double longitude;
+
+  final double latitude;
+
+  @JsonKey(ignore: true)
+  _$PointRefCopyWith<PointRef> get copyWith =>
+      __$PointRefCopyWithImpl<PointRef>(this, IdentityFn);
+
+  const PointRef({required this.longitude, required this.latitude});
+
+  factory PointRef.fromJson(Map<String, dynamic> json) =>
+      _$PointRefFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PointRefToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is PointRef && o.longitude == longitude && o.latitude == latitude;
+  }
+
+  @override
+  int get hashCode => longitude.hashCode ^ latitude.hashCode;
+
+  @override
+  String toString() =>
+      "PointRef(longitude: ${this.longitude}, latitude: ${this.latitude})";
+}
+
+abstract class $PointRefCopyWith<O> {
+  factory $PointRefCopyWith(PointRef value, O Function(PointRef) then) =
+      _$PointRefCopyWithImpl<O>;
+  O call({double longitude, double latitude});
+}
+
+class _$PointRefCopyWithImpl<O> implements $PointRefCopyWith<O> {
+  final PointRef _value;
+  final O Function(PointRef) _then;
+  _$PointRefCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
+    return _then(_value.copyWith(
+        longitude:
+            longitude == dimmutable ? _value.longitude : longitude as double,
+        latitude:
+            latitude == dimmutable ? _value.latitude : latitude as double));
+  }
+}
+
+abstract class _$PointRefCopyWith<O> implements $PointRefCopyWith<O> {
+  factory _$PointRefCopyWith(PointRef value, O Function(PointRef) then) =
+      __$PointRefCopyWithImpl<O>;
+  O call({double longitude, double latitude});
+}
+
+class __$PointRefCopyWithImpl<O> extends _$PointRefCopyWithImpl<O>
+    implements _$PointRefCopyWith<O> {
+  __$PointRefCopyWithImpl(PointRef _value, O Function(PointRef) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  PointRef get _value => super._value;
+
+  @override
+  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
+    return _then(PointRef(
+        longitude:
+            longitude == dimmutable ? _value.longitude : longitude as double,
+        latitude:
+            latitude == dimmutable ? _value.latitude : latitude as double));
+  }
+}
+
+@JsonSerializable()
 class AuthorOrder {
   final dynamic? asc;
 
@@ -870,154 +1031,6 @@ class __$AuthorOrderCopyWithImpl<O> extends _$AuthorOrderCopyWithImpl<O>
         asc: asc == dimmutable ? _value.asc : asc as dynamic?,
         desc: desc == dimmutable ? _value.desc : desc as dynamic?,
         then: then == dimmutable ? _value.then : then as dynamic?));
-  }
-}
-
-@JsonSerializable()
-class PointRef {
-  final double longitude;
-
-  final double latitude;
-
-  @JsonKey(ignore: true)
-  _$PointRefCopyWith<PointRef> get copyWith =>
-      __$PointRefCopyWithImpl<PointRef>(this, IdentityFn);
-
-  const PointRef({required this.longitude, required this.latitude});
-
-  factory PointRef.fromJson(Map<String, dynamic> json) =>
-      _$PointRefFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PointRefToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is PointRef && o.longitude == longitude && o.latitude == latitude;
-  }
-
-  @override
-  int get hashCode => longitude.hashCode ^ latitude.hashCode;
-
-  @override
-  String toString() =>
-      "PointRef(longitude: ${this.longitude}, latitude: ${this.latitude})";
-}
-
-abstract class $PointRefCopyWith<O> {
-  factory $PointRefCopyWith(PointRef value, O Function(PointRef) then) =
-      _$PointRefCopyWithImpl<O>;
-  O call({double longitude, double latitude});
-}
-
-class _$PointRefCopyWithImpl<O> implements $PointRefCopyWith<O> {
-  final PointRef _value;
-  final O Function(PointRef) _then;
-  _$PointRefCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
-    return _then(_value.copyWith(
-        longitude:
-            longitude == dimmutable ? _value.longitude : longitude as double,
-        latitude:
-            latitude == dimmutable ? _value.latitude : latitude as double));
-  }
-}
-
-abstract class _$PointRefCopyWith<O> implements $PointRefCopyWith<O> {
-  factory _$PointRefCopyWith(PointRef value, O Function(PointRef) then) =
-      __$PointRefCopyWithImpl<O>;
-  O call({double longitude, double latitude});
-}
-
-class __$PointRefCopyWithImpl<O> extends _$PointRefCopyWithImpl<O>
-    implements _$PointRefCopyWith<O> {
-  __$PointRefCopyWithImpl(PointRef _value, O Function(PointRef) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  PointRef get _value => super._value;
-
-  @override
-  O call({Object? longitude = dimmutable, Object? latitude = dimmutable}) {
-    return _then(PointRef(
-        longitude:
-            longitude == dimmutable ? _value.longitude : longitude as double,
-        latitude:
-            latitude == dimmutable ? _value.latitude : latitude as double));
-  }
-}
-
-@JsonSerializable()
-class PointListRef {
-  final List<dynamic> points;
-
-  @JsonKey(ignore: true)
-  _$PointListRefCopyWith<PointListRef> get copyWith =>
-      __$PointListRefCopyWithImpl<PointListRef>(this, IdentityFn);
-
-  const PointListRef({required this.points});
-
-  factory PointListRef.fromJson(Map<String, dynamic> json) =>
-      _$PointListRefFromJson(json);
-
-  Map<String, dynamic> toJson() => _$PointListRefToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is PointListRef && o.points == points;
-  }
-
-  @override
-  int get hashCode => points.hashCode;
-
-  @override
-  String toString() => "PointListRef(points: ${this.points})";
-}
-
-abstract class $PointListRefCopyWith<O> {
-  factory $PointListRefCopyWith(
-          PointListRef value, O Function(PointListRef) then) =
-      _$PointListRefCopyWithImpl<O>;
-  O call({List<dynamic> points});
-}
-
-class _$PointListRefCopyWithImpl<O> implements $PointListRefCopyWith<O> {
-  final PointListRef _value;
-  final O Function(PointListRef) _then;
-  _$PointListRefCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? points = dimmutable}) {
-    return _then(_value.copyWith(
-        points:
-            points == dimmutable ? _value.points : points as List<dynamic>));
-  }
-}
-
-abstract class _$PointListRefCopyWith<O> implements $PointListRefCopyWith<O> {
-  factory _$PointListRefCopyWith(
-          PointListRef value, O Function(PointListRef) then) =
-      __$PointListRefCopyWithImpl<O>;
-  O call({List<dynamic> points});
-}
-
-class __$PointListRefCopyWithImpl<O> extends _$PointListRefCopyWithImpl<O>
-    implements _$PointListRefCopyWith<O> {
-  __$PointListRefCopyWithImpl(
-      PointListRef _value, O Function(PointListRef) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  PointListRef get _value => super._value;
-
-  @override
-  O call({Object? points = dimmutable}) {
-    return _then(PointListRef(
-        points:
-            points == dimmutable ? _value.points : points as List<dynamic>));
   }
 }
 
@@ -1455,6 +1468,78 @@ class __$DateTimeRangeCopyWithImpl<O> extends _$DateTimeRangeCopyWithImpl<O>
     return _then(DateTimeRange(
         min: min == dimmutable ? _value.min : min as dynamic,
         max: max == dimmutable ? _value.max : max as dynamic));
+  }
+}
+
+@JsonSerializable()
+class PointListRef {
+  final List<dynamic> points;
+
+  @JsonKey(ignore: true)
+  _$PointListRefCopyWith<PointListRef> get copyWith =>
+      __$PointListRefCopyWithImpl<PointListRef>(this, IdentityFn);
+
+  const PointListRef({required this.points});
+
+  factory PointListRef.fromJson(Map<String, dynamic> json) =>
+      _$PointListRefFromJson(json);
+
+  Map<String, dynamic> toJson() => _$PointListRefToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is PointListRef && o.points == points;
+  }
+
+  @override
+  int get hashCode => points.hashCode;
+
+  @override
+  String toString() => "PointListRef(points: ${this.points})";
+}
+
+abstract class $PointListRefCopyWith<O> {
+  factory $PointListRefCopyWith(
+          PointListRef value, O Function(PointListRef) then) =
+      _$PointListRefCopyWithImpl<O>;
+  O call({List<dynamic> points});
+}
+
+class _$PointListRefCopyWithImpl<O> implements $PointListRefCopyWith<O> {
+  final PointListRef _value;
+  final O Function(PointListRef) _then;
+  _$PointListRefCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? points = dimmutable}) {
+    return _then(_value.copyWith(
+        points:
+            points == dimmutable ? _value.points : points as List<dynamic>));
+  }
+}
+
+abstract class _$PointListRefCopyWith<O> implements $PointListRefCopyWith<O> {
+  factory _$PointListRefCopyWith(
+          PointListRef value, O Function(PointListRef) then) =
+      __$PointListRefCopyWithImpl<O>;
+  O call({List<dynamic> points});
+}
+
+class __$PointListRefCopyWithImpl<O> extends _$PointListRefCopyWithImpl<O>
+    implements _$PointListRefCopyWith<O> {
+  __$PointListRefCopyWithImpl(
+      PointListRef _value, O Function(PointListRef) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  PointListRef get _value => super._value;
+
+  @override
+  O call({Object? points = dimmutable}) {
+    return _then(PointListRef(
+        points:
+            points == dimmutable ? _value.points : points as List<dynamic>));
   }
 }
 
@@ -2472,6 +2557,233 @@ class __$AddTaskInputCopyWithImpl<O> extends _$AddTaskInputCopyWithImpl<O>
 }
 
 @JsonSerializable()
+class AddPostInput {
+  final String title;
+
+  final String? text;
+
+  final double? score;
+
+  final bool? completed;
+
+  final dynamic? datePublished;
+
+  final dynamic author;
+
+  @JsonKey(ignore: true)
+  _$AddPostInputCopyWith<AddPostInput> get copyWith =>
+      __$AddPostInputCopyWithImpl<AddPostInput>(this, IdentityFn);
+
+  const AddPostInput(
+      {required this.title,
+      this.text,
+      this.score,
+      this.completed,
+      this.datePublished,
+      required this.author});
+
+  factory AddPostInput.fromJson(Map<String, dynamic> json) =>
+      _$AddPostInputFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AddPostInputToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AddPostInput &&
+        o.title == title &&
+        o.text == text &&
+        o.score == score &&
+        o.completed == completed &&
+        o.datePublished == datePublished &&
+        o.author == author;
+  }
+
+  @override
+  int get hashCode =>
+      title.hashCode ^
+      text.hashCode ^
+      score.hashCode ^
+      completed.hashCode ^
+      datePublished.hashCode ^
+      author.hashCode;
+
+  @override
+  String toString() =>
+      "AddPostInput(title: ${this.title}, text: ${this.text}, score: ${this.score}, completed: ${this.completed}, datePublished: ${this.datePublished}, author: ${this.author})";
+}
+
+abstract class $AddPostInputCopyWith<O> {
+  factory $AddPostInputCopyWith(
+          AddPostInput value, O Function(AddPostInput) then) =
+      _$AddPostInputCopyWithImpl<O>;
+  O call(
+      {String title,
+      String? text,
+      double? score,
+      bool? completed,
+      dynamic? datePublished,
+      dynamic author});
+}
+
+class _$AddPostInputCopyWithImpl<O> implements $AddPostInputCopyWith<O> {
+  final AddPostInput _value;
+  final O Function(AddPostInput) _then;
+  _$AddPostInputCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? title = dimmutable,
+      Object? text = dimmutable,
+      Object? score = dimmutable,
+      Object? completed = dimmutable,
+      Object? datePublished = dimmutable,
+      Object? author = dimmutable}) {
+    return _then(_value.copyWith(
+        title: title == dimmutable ? _value.title : title as String,
+        text: text == dimmutable ? _value.text : text as String?,
+        score: score == dimmutable ? _value.score : score as double?,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool?,
+        datePublished: datePublished == dimmutable
+            ? _value.datePublished
+            : datePublished as dynamic?,
+        author: author == dimmutable ? _value.author : author as dynamic));
+  }
+}
+
+abstract class _$AddPostInputCopyWith<O> implements $AddPostInputCopyWith<O> {
+  factory _$AddPostInputCopyWith(
+          AddPostInput value, O Function(AddPostInput) then) =
+      __$AddPostInputCopyWithImpl<O>;
+  O call(
+      {String title,
+      String? text,
+      double? score,
+      bool? completed,
+      dynamic? datePublished,
+      dynamic author});
+}
+
+class __$AddPostInputCopyWithImpl<O> extends _$AddPostInputCopyWithImpl<O>
+    implements _$AddPostInputCopyWith<O> {
+  __$AddPostInputCopyWithImpl(
+      AddPostInput _value, O Function(AddPostInput) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AddPostInput get _value => super._value;
+
+  @override
+  O call(
+      {Object? title = dimmutable,
+      Object? text = dimmutable,
+      Object? score = dimmutable,
+      Object? completed = dimmutable,
+      Object? datePublished = dimmutable,
+      Object? author = dimmutable}) {
+    return _then(AddPostInput(
+        title: title == dimmutable ? _value.title : title as String,
+        text: text == dimmutable ? _value.text : text as String?,
+        score: score == dimmutable ? _value.score : score as double?,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool?,
+        datePublished: datePublished == dimmutable
+            ? _value.datePublished
+            : datePublished as dynamic?,
+        author: author == dimmutable ? _value.author : author as dynamic));
+  }
+}
+
+@JsonSerializable()
+class AddUserInput {
+  final String username;
+
+  final String? name;
+
+  final List<dynamic?>? tasks;
+
+  @JsonKey(ignore: true)
+  _$AddUserInputCopyWith<AddUserInput> get copyWith =>
+      __$AddUserInputCopyWithImpl<AddUserInput>(this, IdentityFn);
+
+  const AddUserInput({required this.username, this.name, this.tasks});
+
+  factory AddUserInput.fromJson(Map<String, dynamic> json) =>
+      _$AddUserInputFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AddUserInputToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AddUserInput &&
+        o.username == username &&
+        o.name == name &&
+        o.tasks == tasks;
+  }
+
+  @override
+  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
+
+  @override
+  String toString() =>
+      "AddUserInput(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
+}
+
+abstract class $AddUserInputCopyWith<O> {
+  factory $AddUserInputCopyWith(
+          AddUserInput value, O Function(AddUserInput) then) =
+      _$AddUserInputCopyWithImpl<O>;
+  O call({String username, String? name, List<dynamic?>? tasks});
+}
+
+class _$AddUserInputCopyWithImpl<O> implements $AddUserInputCopyWith<O> {
+  final AddUserInput _value;
+  final O Function(AddUserInput) _then;
+  _$AddUserInputCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(_value.copyWith(
+        username: username == dimmutable ? _value.username : username as String,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
+  }
+}
+
+abstract class _$AddUserInputCopyWith<O> implements $AddUserInputCopyWith<O> {
+  factory _$AddUserInputCopyWith(
+          AddUserInput value, O Function(AddUserInput) then) =
+      __$AddUserInputCopyWithImpl<O>;
+  O call({String username, String? name, List<dynamic?>? tasks});
+}
+
+class __$AddUserInputCopyWithImpl<O> extends _$AddUserInputCopyWithImpl<O>
+    implements _$AddUserInputCopyWith<O> {
+  __$AddUserInputCopyWithImpl(
+      AddUserInput _value, O Function(AddUserInput) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AddUserInput get _value => super._value;
+
+  @override
+  O call(
+      {Object? username = dimmutable,
+      Object? name = dimmutable,
+      Object? tasks = dimmutable}) {
+    return _then(AddUserInput(
+        username: username == dimmutable ? _value.username : username as String,
+        name: name == dimmutable ? _value.name : name as String?,
+        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
+  }
+}
+
+@JsonSerializable()
 class CustomHTTP {
   final String url;
 
@@ -2731,233 +3043,6 @@ class __$IntersectsFilterCopyWithImpl<O>
         multiPolygon: multiPolygon == dimmutable
             ? _value.multiPolygon
             : multiPolygon as dynamic?));
-  }
-}
-
-@JsonSerializable()
-class AddPostInput {
-  final String title;
-
-  final String? text;
-
-  final double? score;
-
-  final bool? completed;
-
-  final dynamic? datePublished;
-
-  final dynamic author;
-
-  @JsonKey(ignore: true)
-  _$AddPostInputCopyWith<AddPostInput> get copyWith =>
-      __$AddPostInputCopyWithImpl<AddPostInput>(this, IdentityFn);
-
-  const AddPostInput(
-      {required this.title,
-      this.text,
-      this.score,
-      this.completed,
-      this.datePublished,
-      required this.author});
-
-  factory AddPostInput.fromJson(Map<String, dynamic> json) =>
-      _$AddPostInputFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AddPostInputToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AddPostInput &&
-        o.title == title &&
-        o.text == text &&
-        o.score == score &&
-        o.completed == completed &&
-        o.datePublished == datePublished &&
-        o.author == author;
-  }
-
-  @override
-  int get hashCode =>
-      title.hashCode ^
-      text.hashCode ^
-      score.hashCode ^
-      completed.hashCode ^
-      datePublished.hashCode ^
-      author.hashCode;
-
-  @override
-  String toString() =>
-      "AddPostInput(title: ${this.title}, text: ${this.text}, score: ${this.score}, completed: ${this.completed}, datePublished: ${this.datePublished}, author: ${this.author})";
-}
-
-abstract class $AddPostInputCopyWith<O> {
-  factory $AddPostInputCopyWith(
-          AddPostInput value, O Function(AddPostInput) then) =
-      _$AddPostInputCopyWithImpl<O>;
-  O call(
-      {String title,
-      String? text,
-      double? score,
-      bool? completed,
-      dynamic? datePublished,
-      dynamic author});
-}
-
-class _$AddPostInputCopyWithImpl<O> implements $AddPostInputCopyWith<O> {
-  final AddPostInput _value;
-  final O Function(AddPostInput) _then;
-  _$AddPostInputCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? title = dimmutable,
-      Object? text = dimmutable,
-      Object? score = dimmutable,
-      Object? completed = dimmutable,
-      Object? datePublished = dimmutable,
-      Object? author = dimmutable}) {
-    return _then(_value.copyWith(
-        title: title == dimmutable ? _value.title : title as String,
-        text: text == dimmutable ? _value.text : text as String?,
-        score: score == dimmutable ? _value.score : score as double?,
-        completed:
-            completed == dimmutable ? _value.completed : completed as bool?,
-        datePublished: datePublished == dimmutable
-            ? _value.datePublished
-            : datePublished as dynamic?,
-        author: author == dimmutable ? _value.author : author as dynamic));
-  }
-}
-
-abstract class _$AddPostInputCopyWith<O> implements $AddPostInputCopyWith<O> {
-  factory _$AddPostInputCopyWith(
-          AddPostInput value, O Function(AddPostInput) then) =
-      __$AddPostInputCopyWithImpl<O>;
-  O call(
-      {String title,
-      String? text,
-      double? score,
-      bool? completed,
-      dynamic? datePublished,
-      dynamic author});
-}
-
-class __$AddPostInputCopyWithImpl<O> extends _$AddPostInputCopyWithImpl<O>
-    implements _$AddPostInputCopyWith<O> {
-  __$AddPostInputCopyWithImpl(
-      AddPostInput _value, O Function(AddPostInput) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AddPostInput get _value => super._value;
-
-  @override
-  O call(
-      {Object? title = dimmutable,
-      Object? text = dimmutable,
-      Object? score = dimmutable,
-      Object? completed = dimmutable,
-      Object? datePublished = dimmutable,
-      Object? author = dimmutable}) {
-    return _then(AddPostInput(
-        title: title == dimmutable ? _value.title : title as String,
-        text: text == dimmutable ? _value.text : text as String?,
-        score: score == dimmutable ? _value.score : score as double?,
-        completed:
-            completed == dimmutable ? _value.completed : completed as bool?,
-        datePublished: datePublished == dimmutable
-            ? _value.datePublished
-            : datePublished as dynamic?,
-        author: author == dimmutable ? _value.author : author as dynamic));
-  }
-}
-
-@JsonSerializable()
-class AddUserInput {
-  final String username;
-
-  final String? name;
-
-  final List<dynamic?>? tasks;
-
-  @JsonKey(ignore: true)
-  _$AddUserInputCopyWith<AddUserInput> get copyWith =>
-      __$AddUserInputCopyWithImpl<AddUserInput>(this, IdentityFn);
-
-  const AddUserInput({required this.username, this.name, this.tasks});
-
-  factory AddUserInput.fromJson(Map<String, dynamic> json) =>
-      _$AddUserInputFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AddUserInputToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AddUserInput &&
-        o.username == username &&
-        o.name == name &&
-        o.tasks == tasks;
-  }
-
-  @override
-  int get hashCode => username.hashCode ^ name.hashCode ^ tasks.hashCode;
-
-  @override
-  String toString() =>
-      "AddUserInput(username: ${this.username}, name: ${this.name}, tasks: ${this.tasks})";
-}
-
-abstract class $AddUserInputCopyWith<O> {
-  factory $AddUserInputCopyWith(
-          AddUserInput value, O Function(AddUserInput) then) =
-      _$AddUserInputCopyWithImpl<O>;
-  O call({String username, String? name, List<dynamic?>? tasks});
-}
-
-class _$AddUserInputCopyWithImpl<O> implements $AddUserInputCopyWith<O> {
-  final AddUserInput _value;
-  final O Function(AddUserInput) _then;
-  _$AddUserInputCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(_value.copyWith(
-        username: username == dimmutable ? _value.username : username as String,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
-  }
-}
-
-abstract class _$AddUserInputCopyWith<O> implements $AddUserInputCopyWith<O> {
-  factory _$AddUserInputCopyWith(
-          AddUserInput value, O Function(AddUserInput) then) =
-      __$AddUserInputCopyWithImpl<O>;
-  O call({String username, String? name, List<dynamic?>? tasks});
-}
-
-class __$AddUserInputCopyWithImpl<O> extends _$AddUserInputCopyWithImpl<O>
-    implements _$AddUserInputCopyWith<O> {
-  __$AddUserInputCopyWithImpl(
-      AddUserInput _value, O Function(AddUserInput) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AddUserInput get _value => super._value;
-
-  @override
-  O call(
-      {Object? username = dimmutable,
-      Object? name = dimmutable,
-      Object? tasks = dimmutable}) {
-    return _then(AddUserInput(
-        username: username == dimmutable ? _value.username : username as String,
-        name: name == dimmutable ? _value.name : name as String?,
-        tasks: tasks == dimmutable ? _value.tasks : tasks as List<dynamic?>?));
   }
 }
 
@@ -3254,94 +3339,6 @@ class __$GenerateQueryParamsCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class StringTermFilter {
-  final String? allofterms;
-
-  final String? anyofterms;
-
-  @JsonKey(ignore: true)
-  _$StringTermFilterCopyWith<StringTermFilter> get copyWith =>
-      __$StringTermFilterCopyWithImpl<StringTermFilter>(this, IdentityFn);
-
-  const StringTermFilter({this.allofterms, this.anyofterms});
-
-  factory StringTermFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringTermFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringTermFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringTermFilter &&
-        o.allofterms == allofterms &&
-        o.anyofterms == anyofterms;
-  }
-
-  @override
-  int get hashCode => allofterms.hashCode ^ anyofterms.hashCode;
-
-  @override
-  String toString() =>
-      "StringTermFilter(allofterms: ${this.allofterms}, anyofterms: ${this.anyofterms})";
-}
-
-abstract class $StringTermFilterCopyWith<O> {
-  factory $StringTermFilterCopyWith(
-          StringTermFilter value, O Function(StringTermFilter) then) =
-      _$StringTermFilterCopyWithImpl<O>;
-  O call({String? allofterms, String? anyofterms});
-}
-
-class _$StringTermFilterCopyWithImpl<O>
-    implements $StringTermFilterCopyWith<O> {
-  final StringTermFilter _value;
-  final O Function(StringTermFilter) _then;
-  _$StringTermFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? allofterms = dimmutable, Object? anyofterms = dimmutable}) {
-    return _then(_value.copyWith(
-        allofterms: allofterms == dimmutable
-            ? _value.allofterms
-            : allofterms as String?,
-        anyofterms: anyofterms == dimmutable
-            ? _value.anyofterms
-            : anyofterms as String?));
-  }
-}
-
-abstract class _$StringTermFilterCopyWith<O>
-    implements $StringTermFilterCopyWith<O> {
-  factory _$StringTermFilterCopyWith(
-          StringTermFilter value, O Function(StringTermFilter) then) =
-      __$StringTermFilterCopyWithImpl<O>;
-  O call({String? allofterms, String? anyofterms});
-}
-
-class __$StringTermFilterCopyWithImpl<O>
-    extends _$StringTermFilterCopyWithImpl<O>
-    implements _$StringTermFilterCopyWith<O> {
-  __$StringTermFilterCopyWithImpl(
-      StringTermFilter _value, O Function(StringTermFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringTermFilter get _value => super._value;
-
-  @override
-  O call({Object? allofterms = dimmutable, Object? anyofterms = dimmutable}) {
-    return _then(StringTermFilter(
-        allofterms: allofterms == dimmutable
-            ? _value.allofterms
-            : allofterms as String?,
-        anyofterms: anyofterms == dimmutable
-            ? _value.anyofterms
-            : anyofterms as String?));
-  }
-}
-
-@JsonSerializable()
 class PostPatch {
   final String? title;
 
@@ -3474,6 +3471,186 @@ class __$PostPatchCopyWithImpl<O> extends _$PostPatchCopyWithImpl<O>
             ? _value.datePublished
             : datePublished as dynamic?,
         author: author == dimmutable ? _value.author : author as dynamic?));
+  }
+}
+
+@JsonSerializable()
+class StringTermFilter {
+  final String? allofterms;
+
+  final String? anyofterms;
+
+  @JsonKey(ignore: true)
+  _$StringTermFilterCopyWith<StringTermFilter> get copyWith =>
+      __$StringTermFilterCopyWithImpl<StringTermFilter>(this, IdentityFn);
+
+  const StringTermFilter({this.allofterms, this.anyofterms});
+
+  factory StringTermFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringTermFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StringTermFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is StringTermFilter &&
+        o.allofterms == allofterms &&
+        o.anyofterms == anyofterms;
+  }
+
+  @override
+  int get hashCode => allofterms.hashCode ^ anyofterms.hashCode;
+
+  @override
+  String toString() =>
+      "StringTermFilter(allofterms: ${this.allofterms}, anyofterms: ${this.anyofterms})";
+}
+
+abstract class $StringTermFilterCopyWith<O> {
+  factory $StringTermFilterCopyWith(
+          StringTermFilter value, O Function(StringTermFilter) then) =
+      _$StringTermFilterCopyWithImpl<O>;
+  O call({String? allofterms, String? anyofterms});
+}
+
+class _$StringTermFilterCopyWithImpl<O>
+    implements $StringTermFilterCopyWith<O> {
+  final StringTermFilter _value;
+  final O Function(StringTermFilter) _then;
+  _$StringTermFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? allofterms = dimmutable, Object? anyofterms = dimmutable}) {
+    return _then(_value.copyWith(
+        allofterms: allofterms == dimmutable
+            ? _value.allofterms
+            : allofterms as String?,
+        anyofterms: anyofterms == dimmutable
+            ? _value.anyofterms
+            : anyofterms as String?));
+  }
+}
+
+abstract class _$StringTermFilterCopyWith<O>
+    implements $StringTermFilterCopyWith<O> {
+  factory _$StringTermFilterCopyWith(
+          StringTermFilter value, O Function(StringTermFilter) then) =
+      __$StringTermFilterCopyWithImpl<O>;
+  O call({String? allofterms, String? anyofterms});
+}
+
+class __$StringTermFilterCopyWithImpl<O>
+    extends _$StringTermFilterCopyWithImpl<O>
+    implements _$StringTermFilterCopyWith<O> {
+  __$StringTermFilterCopyWithImpl(
+      StringTermFilter _value, O Function(StringTermFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  StringTermFilter get _value => super._value;
+
+  @override
+  O call({Object? allofterms = dimmutable, Object? anyofterms = dimmutable}) {
+    return _then(StringTermFilter(
+        allofterms: allofterms == dimmutable
+            ? _value.allofterms
+            : allofterms as String?,
+        anyofterms: anyofterms == dimmutable
+            ? _value.anyofterms
+            : anyofterms as String?));
+  }
+}
+
+@JsonSerializable()
+class AuthRule {
+  final List<dynamic?>? and;
+
+  final List<dynamic?>? or;
+
+  final dynamic? not;
+
+  final String? rule;
+
+  @JsonKey(ignore: true)
+  _$AuthRuleCopyWith<AuthRule> get copyWith =>
+      __$AuthRuleCopyWithImpl<AuthRule>(this, IdentityFn);
+
+  const AuthRule({this.and, this.or, this.not, this.rule});
+
+  factory AuthRule.fromJson(Map<String, dynamic> json) =>
+      _$AuthRuleFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuthRuleToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AuthRule &&
+        o.and == and &&
+        o.or == or &&
+        o.not == not &&
+        o.rule == rule;
+  }
+
+  @override
+  int get hashCode => and.hashCode ^ or.hashCode ^ not.hashCode ^ rule.hashCode;
+
+  @override
+  String toString() =>
+      "AuthRule(and: ${this.and}, or: ${this.or}, not: ${this.not}, rule: ${this.rule})";
+}
+
+abstract class $AuthRuleCopyWith<O> {
+  factory $AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
+      _$AuthRuleCopyWithImpl<O>;
+  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
+}
+
+class _$AuthRuleCopyWithImpl<O> implements $AuthRuleCopyWith<O> {
+  final AuthRule _value;
+  final O Function(AuthRule) _then;
+  _$AuthRuleCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? and = dimmutable,
+      Object? or = dimmutable,
+      Object? not = dimmutable,
+      Object? rule = dimmutable}) {
+    return _then(_value.copyWith(
+        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
+        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
+        not: not == dimmutable ? _value.not : not as dynamic?,
+        rule: rule == dimmutable ? _value.rule : rule as String?));
+  }
+}
+
+abstract class _$AuthRuleCopyWith<O> implements $AuthRuleCopyWith<O> {
+  factory _$AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
+      __$AuthRuleCopyWithImpl<O>;
+  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
+}
+
+class __$AuthRuleCopyWithImpl<O> extends _$AuthRuleCopyWithImpl<O>
+    implements _$AuthRuleCopyWith<O> {
+  __$AuthRuleCopyWithImpl(AuthRule _value, O Function(AuthRule) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AuthRule get _value => super._value;
+
+  @override
+  O call(
+      {Object? and = dimmutable,
+      Object? or = dimmutable,
+      Object? not = dimmutable,
+      Object? rule = dimmutable}) {
+    return _then(AuthRule(
+        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
+        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
+        not: not == dimmutable ? _value.not : not as dynamic?,
+        rule: rule == dimmutable ? _value.rule : rule as String?));
   }
 }
 
@@ -3682,98 +3859,6 @@ class __$IntFilterCopyWithImpl<O> extends _$IntFilterCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class AuthRule {
-  final List<dynamic?>? and;
-
-  final List<dynamic?>? or;
-
-  final dynamic? not;
-
-  final String? rule;
-
-  @JsonKey(ignore: true)
-  _$AuthRuleCopyWith<AuthRule> get copyWith =>
-      __$AuthRuleCopyWithImpl<AuthRule>(this, IdentityFn);
-
-  const AuthRule({this.and, this.or, this.not, this.rule});
-
-  factory AuthRule.fromJson(Map<String, dynamic> json) =>
-      _$AuthRuleFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AuthRuleToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AuthRule &&
-        o.and == and &&
-        o.or == or &&
-        o.not == not &&
-        o.rule == rule;
-  }
-
-  @override
-  int get hashCode => and.hashCode ^ or.hashCode ^ not.hashCode ^ rule.hashCode;
-
-  @override
-  String toString() =>
-      "AuthRule(and: ${this.and}, or: ${this.or}, not: ${this.not}, rule: ${this.rule})";
-}
-
-abstract class $AuthRuleCopyWith<O> {
-  factory $AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
-      _$AuthRuleCopyWithImpl<O>;
-  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
-}
-
-class _$AuthRuleCopyWithImpl<O> implements $AuthRuleCopyWith<O> {
-  final AuthRule _value;
-  final O Function(AuthRule) _then;
-  _$AuthRuleCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? and = dimmutable,
-      Object? or = dimmutable,
-      Object? not = dimmutable,
-      Object? rule = dimmutable}) {
-    return _then(_value.copyWith(
-        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
-        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
-        not: not == dimmutable ? _value.not : not as dynamic?,
-        rule: rule == dimmutable ? _value.rule : rule as String?));
-  }
-}
-
-abstract class _$AuthRuleCopyWith<O> implements $AuthRuleCopyWith<O> {
-  factory _$AuthRuleCopyWith(AuthRule value, O Function(AuthRule) then) =
-      __$AuthRuleCopyWithImpl<O>;
-  O call({List<dynamic?>? and, List<dynamic?>? or, dynamic? not, String? rule});
-}
-
-class __$AuthRuleCopyWithImpl<O> extends _$AuthRuleCopyWithImpl<O>
-    implements _$AuthRuleCopyWith<O> {
-  __$AuthRuleCopyWithImpl(AuthRule _value, O Function(AuthRule) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AuthRule get _value => super._value;
-
-  @override
-  O call(
-      {Object? and = dimmutable,
-      Object? or = dimmutable,
-      Object? not = dimmutable,
-      Object? rule = dimmutable}) {
-    return _then(AuthRule(
-        and: and == dimmutable ? _value.and : and as List<dynamic?>?,
-        or: or == dimmutable ? _value.or : or as List<dynamic?>?,
-        not: not == dimmutable ? _value.not : not as dynamic?,
-        rule: rule == dimmutable ? _value.rule : rule as String?));
-  }
-}
-
-@JsonSerializable()
 class UserFilter {
   final dynamic? username;
 
@@ -3886,174 +3971,6 @@ class __$UserFilterCopyWithImpl<O> extends _$UserFilterCopyWithImpl<O>
         and: and == dimmutable ? _value.and : and as List<dynamic?>?,
         or: or == dimmutable ? _value.or : or as List<dynamic?>?,
         not: not == dimmutable ? _value.not : not as dynamic?));
-  }
-}
-
-@JsonSerializable()
-class IntRange {
-  final int min;
-
-  final int max;
-
-  @JsonKey(ignore: true)
-  _$IntRangeCopyWith<IntRange> get copyWith =>
-      __$IntRangeCopyWithImpl<IntRange>(this, IdentityFn);
-
-  const IntRange({required this.min, required this.max});
-
-  factory IntRange.fromJson(Map<String, dynamic> json) =>
-      _$IntRangeFromJson(json);
-
-  Map<String, dynamic> toJson() => _$IntRangeToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is IntRange && o.min == min && o.max == max;
-  }
-
-  @override
-  int get hashCode => min.hashCode ^ max.hashCode;
-
-  @override
-  String toString() => "IntRange(min: ${this.min}, max: ${this.max})";
-}
-
-abstract class $IntRangeCopyWith<O> {
-  factory $IntRangeCopyWith(IntRange value, O Function(IntRange) then) =
-      _$IntRangeCopyWithImpl<O>;
-  O call({int min, int max});
-}
-
-class _$IntRangeCopyWithImpl<O> implements $IntRangeCopyWith<O> {
-  final IntRange _value;
-  final O Function(IntRange) _then;
-  _$IntRangeCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(_value.copyWith(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
-  }
-}
-
-abstract class _$IntRangeCopyWith<O> implements $IntRangeCopyWith<O> {
-  factory _$IntRangeCopyWith(IntRange value, O Function(IntRange) then) =
-      __$IntRangeCopyWithImpl<O>;
-  O call({int min, int max});
-}
-
-class __$IntRangeCopyWithImpl<O> extends _$IntRangeCopyWithImpl<O>
-    implements _$IntRangeCopyWith<O> {
-  __$IntRangeCopyWithImpl(IntRange _value, O Function(IntRange) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  IntRange get _value => super._value;
-
-  @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(IntRange(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
-  }
-}
-
-@JsonSerializable()
-class AuthorPatch {
-  final String? name;
-
-  final List<dynamic>? posts;
-
-  final List<dynamic?>? friends;
-
-  final int? n;
-
-  @JsonKey(ignore: true)
-  _$AuthorPatchCopyWith<AuthorPatch> get copyWith =>
-      __$AuthorPatchCopyWithImpl<AuthorPatch>(this, IdentityFn);
-
-  const AuthorPatch({this.name, this.posts, this.friends, this.n});
-
-  factory AuthorPatch.fromJson(Map<String, dynamic> json) =>
-      _$AuthorPatchFromJson(json);
-
-  Map<String, dynamic> toJson() => _$AuthorPatchToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is AuthorPatch &&
-        o.name == name &&
-        o.posts == posts &&
-        o.friends == friends &&
-        o.n == n;
-  }
-
-  @override
-  int get hashCode =>
-      name.hashCode ^ posts.hashCode ^ friends.hashCode ^ n.hashCode;
-
-  @override
-  String toString() =>
-      "AuthorPatch(name: ${this.name}, posts: ${this.posts}, friends: ${this.friends}, n: ${this.n})";
-}
-
-abstract class $AuthorPatchCopyWith<O> {
-  factory $AuthorPatchCopyWith(
-          AuthorPatch value, O Function(AuthorPatch) then) =
-      _$AuthorPatchCopyWithImpl<O>;
-  O call({String? name, List<dynamic>? posts, List<dynamic?>? friends, int? n});
-}
-
-class _$AuthorPatchCopyWithImpl<O> implements $AuthorPatchCopyWith<O> {
-  final AuthorPatch _value;
-  final O Function(AuthorPatch) _then;
-  _$AuthorPatchCopyWithImpl(this._value, this._then);
-
-  @override
-  O call(
-      {Object? name = dimmutable,
-      Object? posts = dimmutable,
-      Object? friends = dimmutable,
-      Object? n = dimmutable}) {
-    return _then(_value.copyWith(
-        name: name == dimmutable ? _value.name : name as String?,
-        posts: posts == dimmutable ? _value.posts : posts as List<dynamic>?,
-        friends:
-            friends == dimmutable ? _value.friends : friends as List<dynamic?>?,
-        n: n == dimmutable ? _value.n : n as int?));
-  }
-}
-
-abstract class _$AuthorPatchCopyWith<O> implements $AuthorPatchCopyWith<O> {
-  factory _$AuthorPatchCopyWith(
-          AuthorPatch value, O Function(AuthorPatch) then) =
-      __$AuthorPatchCopyWithImpl<O>;
-  O call({String? name, List<dynamic>? posts, List<dynamic?>? friends, int? n});
-}
-
-class __$AuthorPatchCopyWithImpl<O> extends _$AuthorPatchCopyWithImpl<O>
-    implements _$AuthorPatchCopyWith<O> {
-  __$AuthorPatchCopyWithImpl(AuthorPatch _value, O Function(AuthorPatch) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  AuthorPatch get _value => super._value;
-
-  @override
-  O call(
-      {Object? name = dimmutable,
-      Object? posts = dimmutable,
-      Object? friends = dimmutable,
-      Object? n = dimmutable}) {
-    return _then(AuthorPatch(
-        name: name == dimmutable ? _value.name : name as String?,
-        posts: posts == dimmutable ? _value.posts : posts as List<dynamic>?,
-        friends:
-            friends == dimmutable ? _value.friends : friends as List<dynamic?>?,
-        n: n == dimmutable ? _value.n : n as int?));
   }
 }
 
@@ -4256,78 +4173,170 @@ class __$PostOrderCopyWithImpl<O> extends _$PostOrderCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class ContainsFilter {
-  final dynamic? point;
+class IntRange {
+  final int min;
 
-  final dynamic? polygon;
+  final int max;
 
   @JsonKey(ignore: true)
-  _$ContainsFilterCopyWith<ContainsFilter> get copyWith =>
-      __$ContainsFilterCopyWithImpl<ContainsFilter>(this, IdentityFn);
+  _$IntRangeCopyWith<IntRange> get copyWith =>
+      __$IntRangeCopyWithImpl<IntRange>(this, IdentityFn);
 
-  const ContainsFilter({this.point, this.polygon});
+  const IntRange({required this.min, required this.max});
 
-  factory ContainsFilter.fromJson(Map<String, dynamic> json) =>
-      _$ContainsFilterFromJson(json);
+  factory IntRange.fromJson(Map<String, dynamic> json) =>
+      _$IntRangeFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ContainsFilterToJson(this);
+  Map<String, dynamic> toJson() => _$IntRangeToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is ContainsFilter && o.point == point && o.polygon == polygon;
+    return o is IntRange && o.min == min && o.max == max;
   }
 
   @override
-  int get hashCode => point.hashCode ^ polygon.hashCode;
+  int get hashCode => min.hashCode ^ max.hashCode;
 
   @override
-  String toString() =>
-      "ContainsFilter(point: ${this.point}, polygon: ${this.polygon})";
+  String toString() => "IntRange(min: ${this.min}, max: ${this.max})";
 }
 
-abstract class $ContainsFilterCopyWith<O> {
-  factory $ContainsFilterCopyWith(
-          ContainsFilter value, O Function(ContainsFilter) then) =
-      _$ContainsFilterCopyWithImpl<O>;
-  O call({dynamic? point, dynamic? polygon});
+abstract class $IntRangeCopyWith<O> {
+  factory $IntRangeCopyWith(IntRange value, O Function(IntRange) then) =
+      _$IntRangeCopyWithImpl<O>;
+  O call({int min, int max});
 }
 
-class _$ContainsFilterCopyWithImpl<O> implements $ContainsFilterCopyWith<O> {
-  final ContainsFilter _value;
-  final O Function(ContainsFilter) _then;
-  _$ContainsFilterCopyWithImpl(this._value, this._then);
+class _$IntRangeCopyWithImpl<O> implements $IntRangeCopyWith<O> {
+  final IntRange _value;
+  final O Function(IntRange) _then;
+  _$IntRangeCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
     return _then(_value.copyWith(
-        point: point == dimmutable ? _value.point : point as dynamic?,
-        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
   }
 }
 
-abstract class _$ContainsFilterCopyWith<O>
-    implements $ContainsFilterCopyWith<O> {
-  factory _$ContainsFilterCopyWith(
-          ContainsFilter value, O Function(ContainsFilter) then) =
-      __$ContainsFilterCopyWithImpl<O>;
-  O call({dynamic? point, dynamic? polygon});
+abstract class _$IntRangeCopyWith<O> implements $IntRangeCopyWith<O> {
+  factory _$IntRangeCopyWith(IntRange value, O Function(IntRange) then) =
+      __$IntRangeCopyWithImpl<O>;
+  O call({int min, int max});
 }
 
-class __$ContainsFilterCopyWithImpl<O> extends _$ContainsFilterCopyWithImpl<O>
-    implements _$ContainsFilterCopyWith<O> {
-  __$ContainsFilterCopyWithImpl(
-      ContainsFilter _value, O Function(ContainsFilter) _then)
+class __$IntRangeCopyWithImpl<O> extends _$IntRangeCopyWithImpl<O>
+    implements _$IntRangeCopyWith<O> {
+  __$IntRangeCopyWithImpl(IntRange _value, O Function(IntRange) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  ContainsFilter get _value => super._value;
+  IntRange get _value => super._value;
 
   @override
-  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
-    return _then(ContainsFilter(
-        point: point == dimmutable ? _value.point : point as dynamic?,
-        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(IntRange(
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
+  }
+}
+
+@JsonSerializable()
+class AuthorPatch {
+  final String? name;
+
+  final List<dynamic>? posts;
+
+  final List<dynamic?>? friends;
+
+  final int? n;
+
+  @JsonKey(ignore: true)
+  _$AuthorPatchCopyWith<AuthorPatch> get copyWith =>
+      __$AuthorPatchCopyWithImpl<AuthorPatch>(this, IdentityFn);
+
+  const AuthorPatch({this.name, this.posts, this.friends, this.n});
+
+  factory AuthorPatch.fromJson(Map<String, dynamic> json) =>
+      _$AuthorPatchFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AuthorPatchToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is AuthorPatch &&
+        o.name == name &&
+        o.posts == posts &&
+        o.friends == friends &&
+        o.n == n;
+  }
+
+  @override
+  int get hashCode =>
+      name.hashCode ^ posts.hashCode ^ friends.hashCode ^ n.hashCode;
+
+  @override
+  String toString() =>
+      "AuthorPatch(name: ${this.name}, posts: ${this.posts}, friends: ${this.friends}, n: ${this.n})";
+}
+
+abstract class $AuthorPatchCopyWith<O> {
+  factory $AuthorPatchCopyWith(
+          AuthorPatch value, O Function(AuthorPatch) then) =
+      _$AuthorPatchCopyWithImpl<O>;
+  O call({String? name, List<dynamic>? posts, List<dynamic?>? friends, int? n});
+}
+
+class _$AuthorPatchCopyWithImpl<O> implements $AuthorPatchCopyWith<O> {
+  final AuthorPatch _value;
+  final O Function(AuthorPatch) _then;
+  _$AuthorPatchCopyWithImpl(this._value, this._then);
+
+  @override
+  O call(
+      {Object? name = dimmutable,
+      Object? posts = dimmutable,
+      Object? friends = dimmutable,
+      Object? n = dimmutable}) {
+    return _then(_value.copyWith(
+        name: name == dimmutable ? _value.name : name as String?,
+        posts: posts == dimmutable ? _value.posts : posts as List<dynamic>?,
+        friends:
+            friends == dimmutable ? _value.friends : friends as List<dynamic?>?,
+        n: n == dimmutable ? _value.n : n as int?));
+  }
+}
+
+abstract class _$AuthorPatchCopyWith<O> implements $AuthorPatchCopyWith<O> {
+  factory _$AuthorPatchCopyWith(
+          AuthorPatch value, O Function(AuthorPatch) then) =
+      __$AuthorPatchCopyWithImpl<O>;
+  O call({String? name, List<dynamic>? posts, List<dynamic?>? friends, int? n});
+}
+
+class __$AuthorPatchCopyWithImpl<O> extends _$AuthorPatchCopyWithImpl<O>
+    implements _$AuthorPatchCopyWith<O> {
+  __$AuthorPatchCopyWithImpl(AuthorPatch _value, O Function(AuthorPatch) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  AuthorPatch get _value => super._value;
+
+  @override
+  O call(
+      {Object? name = dimmutable,
+      Object? posts = dimmutable,
+      Object? friends = dimmutable,
+      Object? n = dimmutable}) {
+    return _then(AuthorPatch(
+        name: name == dimmutable ? _value.name : name as String?,
+        posts: posts == dimmutable ? _value.posts : posts as List<dynamic>?,
+        friends:
+            friends == dimmutable ? _value.friends : friends as List<dynamic?>?,
+        n: n == dimmutable ? _value.n : n as int?));
   }
 }
 
@@ -4406,6 +4415,82 @@ class __$NearFilterCopyWithImpl<O> extends _$NearFilterCopyWithImpl<O>
         coordinate: coordinate == dimmutable
             ? _value.coordinate
             : coordinate as dynamic));
+  }
+}
+
+@JsonSerializable()
+class ContainsFilter {
+  final dynamic? point;
+
+  final dynamic? polygon;
+
+  @JsonKey(ignore: true)
+  _$ContainsFilterCopyWith<ContainsFilter> get copyWith =>
+      __$ContainsFilterCopyWithImpl<ContainsFilter>(this, IdentityFn);
+
+  const ContainsFilter({this.point, this.polygon});
+
+  factory ContainsFilter.fromJson(Map<String, dynamic> json) =>
+      _$ContainsFilterFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ContainsFilterToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is ContainsFilter && o.point == point && o.polygon == polygon;
+  }
+
+  @override
+  int get hashCode => point.hashCode ^ polygon.hashCode;
+
+  @override
+  String toString() =>
+      "ContainsFilter(point: ${this.point}, polygon: ${this.polygon})";
+}
+
+abstract class $ContainsFilterCopyWith<O> {
+  factory $ContainsFilterCopyWith(
+          ContainsFilter value, O Function(ContainsFilter) then) =
+      _$ContainsFilterCopyWithImpl<O>;
+  O call({dynamic? point, dynamic? polygon});
+}
+
+class _$ContainsFilterCopyWithImpl<O> implements $ContainsFilterCopyWith<O> {
+  final ContainsFilter _value;
+  final O Function(ContainsFilter) _then;
+  _$ContainsFilterCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
+    return _then(_value.copyWith(
+        point: point == dimmutable ? _value.point : point as dynamic?,
+        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
+  }
+}
+
+abstract class _$ContainsFilterCopyWith<O>
+    implements $ContainsFilterCopyWith<O> {
+  factory _$ContainsFilterCopyWith(
+          ContainsFilter value, O Function(ContainsFilter) then) =
+      __$ContainsFilterCopyWithImpl<O>;
+  O call({dynamic? point, dynamic? polygon});
+}
+
+class __$ContainsFilterCopyWithImpl<O> extends _$ContainsFilterCopyWithImpl<O>
+    implements _$ContainsFilterCopyWith<O> {
+  __$ContainsFilterCopyWithImpl(
+      ContainsFilter _value, O Function(ContainsFilter) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  ContainsFilter get _value => super._value;
+
+  @override
+  O call({Object? point = dimmutable, Object? polygon = dimmutable}) {
+    return _then(ContainsFilter(
+        point: point == dimmutable ? _value.point : point as dynamic?,
+        polygon: polygon == dimmutable ? _value.polygon : polygon as dynamic?));
   }
 }
 
@@ -4646,6 +4731,77 @@ class __$UserPatchCopyWithImpl<O> extends _$UserPatchCopyWithImpl<O>
 }
 
 @JsonSerializable()
+class Int64Range {
+  final int min;
+
+  final int max;
+
+  @JsonKey(ignore: true)
+  _$Int64RangeCopyWith<Int64Range> get copyWith =>
+      __$Int64RangeCopyWithImpl<Int64Range>(this, IdentityFn);
+
+  const Int64Range({required this.min, required this.max});
+
+  factory Int64Range.fromJson(Map<String, dynamic> json) =>
+      _$Int64RangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$Int64RangeToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is Int64Range && o.min == min && o.max == max;
+  }
+
+  @override
+  int get hashCode => min.hashCode ^ max.hashCode;
+
+  @override
+  String toString() => "Int64Range(min: ${this.min}, max: ${this.max})";
+}
+
+abstract class $Int64RangeCopyWith<O> {
+  factory $Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
+      _$Int64RangeCopyWithImpl<O>;
+  O call({int min, int max});
+}
+
+class _$Int64RangeCopyWithImpl<O> implements $Int64RangeCopyWith<O> {
+  final Int64Range _value;
+  final O Function(Int64Range) _then;
+  _$Int64RangeCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(_value.copyWith(
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
+  }
+}
+
+abstract class _$Int64RangeCopyWith<O> implements $Int64RangeCopyWith<O> {
+  factory _$Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
+      __$Int64RangeCopyWithImpl<O>;
+  O call({int min, int max});
+}
+
+class __$Int64RangeCopyWithImpl<O> extends _$Int64RangeCopyWithImpl<O>
+    implements _$Int64RangeCopyWith<O> {
+  __$Int64RangeCopyWithImpl(Int64Range _value, O Function(Int64Range) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  Int64Range get _value => super._value;
+
+  @override
+  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+    return _then(Int64Range(
+        min: min == dimmutable ? _value.min : min as int,
+        max: max == dimmutable ? _value.max : max as int));
+  }
+}
+
+@JsonSerializable()
 class PolygonRef {
   final List<dynamic> coordinates;
 
@@ -4792,73 +4948,79 @@ class __$MultiPolygonRefCopyWithImpl<O> extends _$MultiPolygonRefCopyWithImpl<O>
 }
 
 @JsonSerializable()
-class Int64Range {
-  final int min;
+class StringHashFilter {
+  final String? eq;
 
-  final int max;
+  final List<String?>? d_in;
 
   @JsonKey(ignore: true)
-  _$Int64RangeCopyWith<Int64Range> get copyWith =>
-      __$Int64RangeCopyWithImpl<Int64Range>(this, IdentityFn);
+  _$StringHashFilterCopyWith<StringHashFilter> get copyWith =>
+      __$StringHashFilterCopyWithImpl<StringHashFilter>(this, IdentityFn);
 
-  const Int64Range({required this.min, required this.max});
+  const StringHashFilter({this.eq, this.d_in});
 
-  factory Int64Range.fromJson(Map<String, dynamic> json) =>
-      _$Int64RangeFromJson(json);
+  factory StringHashFilter.fromJson(Map<String, dynamic> json) =>
+      _$StringHashFilterFromJson(json);
 
-  Map<String, dynamic> toJson() => _$Int64RangeToJson(this);
+  Map<String, dynamic> toJson() => _$StringHashFilterToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is Int64Range && o.min == min && o.max == max;
+    return o is StringHashFilter && o.eq == eq && o.d_in == d_in;
   }
 
   @override
-  int get hashCode => min.hashCode ^ max.hashCode;
+  int get hashCode => eq.hashCode ^ d_in.hashCode;
 
   @override
-  String toString() => "Int64Range(min: ${this.min}, max: ${this.max})";
+  String toString() => "StringHashFilter(eq: ${this.eq}, d_in: ${this.d_in})";
 }
 
-abstract class $Int64RangeCopyWith<O> {
-  factory $Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
-      _$Int64RangeCopyWithImpl<O>;
-  O call({int min, int max});
+abstract class $StringHashFilterCopyWith<O> {
+  factory $StringHashFilterCopyWith(
+          StringHashFilter value, O Function(StringHashFilter) then) =
+      _$StringHashFilterCopyWithImpl<O>;
+  O call({String? eq, List<String?>? d_in});
 }
 
-class _$Int64RangeCopyWithImpl<O> implements $Int64RangeCopyWith<O> {
-  final Int64Range _value;
-  final O Function(Int64Range) _then;
-  _$Int64RangeCopyWithImpl(this._value, this._then);
+class _$StringHashFilterCopyWithImpl<O>
+    implements $StringHashFilterCopyWith<O> {
+  final StringHashFilter _value;
+  final O Function(StringHashFilter) _then;
+  _$StringHashFilterCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
+  O call({Object? eq = dimmutable, Object? d_in = dimmutable}) {
     return _then(_value.copyWith(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
+        eq: eq == dimmutable ? _value.eq : eq as String?,
+        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?));
   }
 }
 
-abstract class _$Int64RangeCopyWith<O> implements $Int64RangeCopyWith<O> {
-  factory _$Int64RangeCopyWith(Int64Range value, O Function(Int64Range) then) =
-      __$Int64RangeCopyWithImpl<O>;
-  O call({int min, int max});
+abstract class _$StringHashFilterCopyWith<O>
+    implements $StringHashFilterCopyWith<O> {
+  factory _$StringHashFilterCopyWith(
+          StringHashFilter value, O Function(StringHashFilter) then) =
+      __$StringHashFilterCopyWithImpl<O>;
+  O call({String? eq, List<String?>? d_in});
 }
 
-class __$Int64RangeCopyWithImpl<O> extends _$Int64RangeCopyWithImpl<O>
-    implements _$Int64RangeCopyWith<O> {
-  __$Int64RangeCopyWithImpl(Int64Range _value, O Function(Int64Range) _then)
+class __$StringHashFilterCopyWithImpl<O>
+    extends _$StringHashFilterCopyWithImpl<O>
+    implements _$StringHashFilterCopyWith<O> {
+  __$StringHashFilterCopyWithImpl(
+      StringHashFilter _value, O Function(StringHashFilter) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  Int64Range get _value => super._value;
+  StringHashFilter get _value => super._value;
 
   @override
-  O call({Object? min = dimmutable, Object? max = dimmutable}) {
-    return _then(Int64Range(
-        min: min == dimmutable ? _value.min : min as int,
-        max: max == dimmutable ? _value.max : max as int));
+  O call({Object? eq = dimmutable, Object? d_in = dimmutable}) {
+    return _then(StringHashFilter(
+        eq: eq == dimmutable ? _value.eq : eq as String?,
+        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?));
   }
 }
 
@@ -5005,173 +5167,6 @@ class __$WithinFilterCopyWithImpl<O> extends _$WithinFilterCopyWithImpl<O>
   }
 }
 
-@JsonSerializable()
-class StringHashFilter {
-  final String? eq;
-
-  final List<String?>? d_in;
-
-  @JsonKey(ignore: true)
-  _$StringHashFilterCopyWith<StringHashFilter> get copyWith =>
-      __$StringHashFilterCopyWithImpl<StringHashFilter>(this, IdentityFn);
-
-  const StringHashFilter({this.eq, this.d_in});
-
-  factory StringHashFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringHashFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringHashFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringHashFilter && o.eq == eq && o.d_in == d_in;
-  }
-
-  @override
-  int get hashCode => eq.hashCode ^ d_in.hashCode;
-
-  @override
-  String toString() => "StringHashFilter(eq: ${this.eq}, d_in: ${this.d_in})";
-}
-
-abstract class $StringHashFilterCopyWith<O> {
-  factory $StringHashFilterCopyWith(
-          StringHashFilter value, O Function(StringHashFilter) then) =
-      _$StringHashFilterCopyWithImpl<O>;
-  O call({String? eq, List<String?>? d_in});
-}
-
-class _$StringHashFilterCopyWithImpl<O>
-    implements $StringHashFilterCopyWith<O> {
-  final StringHashFilter _value;
-  final O Function(StringHashFilter) _then;
-  _$StringHashFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? eq = dimmutable, Object? d_in = dimmutable}) {
-    return _then(_value.copyWith(
-        eq: eq == dimmutable ? _value.eq : eq as String?,
-        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?));
-  }
-}
-
-abstract class _$StringHashFilterCopyWith<O>
-    implements $StringHashFilterCopyWith<O> {
-  factory _$StringHashFilterCopyWith(
-          StringHashFilter value, O Function(StringHashFilter) then) =
-      __$StringHashFilterCopyWithImpl<O>;
-  O call({String? eq, List<String?>? d_in});
-}
-
-class __$StringHashFilterCopyWithImpl<O>
-    extends _$StringHashFilterCopyWithImpl<O>
-    implements _$StringHashFilterCopyWith<O> {
-  __$StringHashFilterCopyWithImpl(
-      StringHashFilter _value, O Function(StringHashFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringHashFilter get _value => super._value;
-
-  @override
-  O call({Object? eq = dimmutable, Object? d_in = dimmutable}) {
-    return _then(StringHashFilter(
-        eq: eq == dimmutable ? _value.eq : eq as String?,
-        d_in: d_in == dimmutable ? _value.d_in : d_in as List<String?>?));
-  }
-}
-
-@JsonSerializable()
-class StringFullTextFilter {
-  final String? alloftext;
-
-  final String? anyoftext;
-
-  @JsonKey(ignore: true)
-  _$StringFullTextFilterCopyWith<StringFullTextFilter> get copyWith =>
-      __$StringFullTextFilterCopyWithImpl<StringFullTextFilter>(
-          this, IdentityFn);
-
-  const StringFullTextFilter({this.alloftext, this.anyoftext});
-
-  factory StringFullTextFilter.fromJson(Map<String, dynamic> json) =>
-      _$StringFullTextFilterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$StringFullTextFilterToJson(this);
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is StringFullTextFilter &&
-        o.alloftext == alloftext &&
-        o.anyoftext == anyoftext;
-  }
-
-  @override
-  int get hashCode => alloftext.hashCode ^ anyoftext.hashCode;
-
-  @override
-  String toString() =>
-      "StringFullTextFilter(alloftext: ${this.alloftext}, anyoftext: ${this.anyoftext})";
-}
-
-abstract class $StringFullTextFilterCopyWith<O> {
-  factory $StringFullTextFilterCopyWith(
-          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
-      _$StringFullTextFilterCopyWithImpl<O>;
-  O call({String? alloftext, String? anyoftext});
-}
-
-class _$StringFullTextFilterCopyWithImpl<O>
-    implements $StringFullTextFilterCopyWith<O> {
-  final StringFullTextFilter _value;
-  final O Function(StringFullTextFilter) _then;
-  _$StringFullTextFilterCopyWithImpl(this._value, this._then);
-
-  @override
-  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
-    return _then(_value.copyWith(
-        alloftext:
-            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
-        anyoftext:
-            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
-  }
-}
-
-abstract class _$StringFullTextFilterCopyWith<O>
-    implements $StringFullTextFilterCopyWith<O> {
-  factory _$StringFullTextFilterCopyWith(
-          StringFullTextFilter value, O Function(StringFullTextFilter) then) =
-      __$StringFullTextFilterCopyWithImpl<O>;
-  O call({String? alloftext, String? anyoftext});
-}
-
-class __$StringFullTextFilterCopyWithImpl<O>
-    extends _$StringFullTextFilterCopyWithImpl<O>
-    implements _$StringFullTextFilterCopyWith<O> {
-  __$StringFullTextFilterCopyWithImpl(
-      StringFullTextFilter _value, O Function(StringFullTextFilter) _then)
-      : super(_value, (v) => _then(v));
-
-  @override
-  StringFullTextFilter get _value => super._value;
-
-  @override
-  O call({Object? alloftext = dimmutable, Object? anyoftext = dimmutable}) {
-    return _then(StringFullTextFilter(
-        alloftext:
-            alloftext == dimmutable ? _value.alloftext : alloftext as String?,
-        anyoftext:
-            anyoftext == dimmutable ? _value.anyoftext : anyoftext as String?));
-  }
-}
-
-class Point {
-  void longitude({String? alias, String? directive}) {}
-  void latitude({String? alias, String? directive}) {}
-}
-
 class AddPostPayload {
   void post(Post post,
       {String? filter,
@@ -5183,23 +5178,17 @@ class AddPostPayload {
   void numUids({String? alias, String? directive}) {}
 }
 
+class Point {
+  void longitude({String? alias, String? directive}) {}
+  void latitude({String? alias, String? directive}) {}
+}
+
 class UserAggregateResult {
   void count({String? alias, String? directive}) {}
   void usernameMin({String? alias, String? directive}) {}
   void usernameMax({String? alias, String? directive}) {}
   void nameMin({String? alias, String? directive}) {}
   void nameMax({String? alias, String? directive}) {}
-}
-
-class Post {
-  void id({String? alias, String? directive}) {}
-  void title({String? alias, String? directive}) {}
-  void text({String? alias, String? directive}) {}
-  void score({String? alias, String? directive}) {}
-  void completed({String? alias, String? directive}) {}
-  void datePublished({String? alias, String? directive}) {}
-  void author(Author author,
-      {String? filter, String? alias, String? directive}) {}
 }
 
 class UpdateTaskPayload {
@@ -5211,6 +5200,17 @@ class UpdateTaskPayload {
       String? alias,
       String? directive}) {}
   void numUids({String? alias, String? directive}) {}
+}
+
+class Post {
+  void id({String? alias, String? directive}) {}
+  void title({String? alias, String? directive}) {}
+  void text({String? alias, String? directive}) {}
+  void score({String? alias, String? directive}) {}
+  void completed({String? alias, String? directive}) {}
+  void datePublished({String? alias, String? directive}) {}
+  void author(Author author,
+      {String? filter, String? alias, String? directive}) {}
 }
 
 class DeleteTaskPayload {
@@ -5261,13 +5261,6 @@ class UpdateUserPayload {
   void numUids({String? alias, String? directive}) {}
 }
 
-class Task {
-  void id({String? alias, String? directive}) {}
-  void title({String? alias, String? directive}) {}
-  void completed({String? alias, String? directive}) {}
-  void user(User user, {String? filter, String? alias, String? directive}) {}
-}
-
 class AddUserPayload {
   void user(User user,
       {String? filter,
@@ -5286,38 +5279,11 @@ class __InputValue {
   void defaultValue({String? alias, String? directive}) {}
 }
 
-class Author {
+class Task {
   void id({String? alias, String? directive}) {}
-  void name({String? alias, String? directive}) {}
-  void posts(Post posts,
-      {String? filter,
-      String? order,
-      String? first,
-      String? offset,
-      String? alias,
-      String? directive}) {}
-  void friends(Author friends,
-      {String? filter,
-      String? order,
-      String? first,
-      String? offset,
-      String? alias,
-      String? directive}) {}
-  void n({String? alias, String? directive}) {}
-  void postsAggregate(PostAggregateResult postsAggregate,
-      {String? filter, String? alias, String? directive}) {}
-  void friendsAggregate(AuthorAggregateResult friendsAggregate,
-      {String? filter, String? alias, String? directive}) {}
-}
-
-class AuthorAggregateResult {
-  void count({String? alias, String? directive}) {}
-  void nameMin({String? alias, String? directive}) {}
-  void nameMax({String? alias, String? directive}) {}
-  void nMin({String? alias, String? directive}) {}
-  void nMax({String? alias, String? directive}) {}
-  void nSum({String? alias, String? directive}) {}
-  void nAvg({String? alias, String? directive}) {}
+  void title({String? alias, String? directive}) {}
+  void completed({String? alias, String? directive}) {}
+  void user(User user, {String? filter, String? alias, String? directive}) {}
 }
 
 class Query {
@@ -5375,12 +5341,38 @@ class __Field {
   void deprecationReason({String? alias, String? directive}) {}
 }
 
-class __Directive {
+class Author {
+  void id({String? alias, String? directive}) {}
   void name({String? alias, String? directive}) {}
-  void description({String? alias, String? directive}) {}
-  void locations(__DirectiveLocation locations,
-      {String? alias, String? directive}) {}
-  void args(__InputValue args, {String? alias, String? directive}) {}
+  void posts(Post posts,
+      {String? filter,
+      String? order,
+      String? first,
+      String? offset,
+      String? alias,
+      String? directive}) {}
+  void friends(Author friends,
+      {String? filter,
+      String? order,
+      String? first,
+      String? offset,
+      String? alias,
+      String? directive}) {}
+  void n({String? alias, String? directive}) {}
+  void postsAggregate(PostAggregateResult postsAggregate,
+      {String? filter, String? alias, String? directive}) {}
+  void friendsAggregate(AuthorAggregateResult friendsAggregate,
+      {String? filter, String? alias, String? directive}) {}
+}
+
+class AuthorAggregateResult {
+  void count({String? alias, String? directive}) {}
+  void nameMin({String? alias, String? directive}) {}
+  void nameMax({String? alias, String? directive}) {}
+  void nMin({String? alias, String? directive}) {}
+  void nMax({String? alias, String? directive}) {}
+  void nSum({String? alias, String? directive}) {}
+  void nAvg({String? alias, String? directive}) {}
 }
 
 class __EnumValue {
@@ -5390,8 +5382,12 @@ class __EnumValue {
   void deprecationReason({String? alias, String? directive}) {}
 }
 
-class Polygon {
-  void coordinates(PointList coordinates, {String? alias, String? directive}) {}
+class __Directive {
+  void name({String? alias, String? directive}) {}
+  void description({String? alias, String? directive}) {}
+  void locations(__DirectiveLocation locations,
+      {String? alias, String? directive}) {}
+  void args(__InputValue args, {String? alias, String? directive}) {}
 }
 
 class __Type {
@@ -5410,8 +5406,8 @@ class __Type {
   void ofType(__Type ofType, {String? alias, String? directive}) {}
 }
 
-class PointList {
-  void points(Point points, {String? alias, String? directive}) {}
+class Polygon {
+  void coordinates(PointList coordinates, {String? alias, String? directive}) {}
 }
 
 class UpdateAuthorPayload {
@@ -5425,6 +5421,10 @@ class UpdateAuthorPayload {
   void numUids({String? alias, String? directive}) {}
 }
 
+class PointList {
+  void points(Point points, {String? alias, String? directive}) {}
+}
+
 class AddAuthorPayload {
   void author(Author author,
       {String? filter,
@@ -5433,18 +5433,6 @@ class AddAuthorPayload {
       String? offset,
       String? alias,
       String? directive}) {}
-  void numUids({String? alias, String? directive}) {}
-}
-
-class DeletePostPayload {
-  void post(Post post,
-      {String? filter,
-      String? order,
-      String? first,
-      String? offset,
-      String? alias,
-      String? directive}) {}
-  void msg({String? alias, String? directive}) {}
   void numUids({String? alias, String? directive}) {}
 }
 
@@ -5460,6 +5448,18 @@ class User {
       String? directive}) {}
   void tasksAggregate(TaskAggregateResult tasksAggregate,
       {String? filter, String? alias, String? directive}) {}
+}
+
+class DeletePostPayload {
+  void post(Post post,
+      {String? filter,
+      String? order,
+      String? first,
+      String? offset,
+      String? alias,
+      String? directive}) {}
+  void msg({String? alias, String? directive}) {}
+  void numUids({String? alias, String? directive}) {}
 }
 
 class DeleteUserPayload {
