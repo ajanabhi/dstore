@@ -55,7 +55,7 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
     return "";
   }
   final name = newName ?? ot.name;
-
+  final ctor = newName != null ? "$name([String? args]);" : "";
   final memebers = ot.fields.map((f) {
     final fn = f.name;
     final ft = getFieldMetadataFromFieldTypeInstance(f.type);
@@ -76,6 +76,7 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
 
   return """
     class $name {
+      $ctor
       $memebers
     }
   """;

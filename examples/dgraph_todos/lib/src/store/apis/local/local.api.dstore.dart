@@ -154,6 +154,7 @@ class Employee {
 }
 
 class Query {
+  Query([String? args]);
   void hello({String? alias, String? directive}) {}
   void hello1({String? alias, String? directive}) {}
   void ping({String? alias, String? directive}) {}
@@ -177,6 +178,7 @@ class Query {
 }
 
 class Subscription {
+  Subscription([String? args]);
   void messageAdded({String? alias, String? directive}) {}
 }
 
