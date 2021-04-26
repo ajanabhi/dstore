@@ -30,18 +30,58 @@ abstract class GraphqlAstUtils {
   }
 
   static String convertObjectDefnitionToQueryString(ObjectTypeDefinition otd) {
-    return otd.fields.map((e) {
-      final name = e.name;
-      final td = getTypeDefinitionFromGraphqlType(e.type);
-      if (td is ScalarTypeDefinition) {
-        return name;
-      } else if (td is ObjectTypeDefinition) {
-        return """$name {
+    return otd.fields.map((e) {}).join("\n");
+  }
+
+  static String convertFieldDefinitionToQueryString(FieldDefinition fd) {
+    final name = fd.name;
+    final td = getTypeDefinitionFromGraphqlType(fd.type);
+    if (td is ScalarTypeDefinition) {
+      return name;
+    } else if (td is ObjectTypeDefinition) {
+      return """$name {
              ${convertObjectDefnitionToQueryString(td)}
           } """;
-      } else {
-        return "";
-      }
-    }).join("\n");
+    } else if (td is UnionTypeDefinition) {
+      return """
+          $name {
+            ${convertUnionTypeDefnitionToQueryString(td)}
+          }
+        """;
+    } else if (td is InterfaceTypeDefinition) {
+      return """
+          $name {
+            ${convertInterfaceTypeDefinitionToQueryString(td)}
+          }
+        """;
+    } else {
+      return "";
+    }
+  }
+
+  static String convertUnionTypeDefnitionToQueryString(UnionTypeDefinition ud) {
+    final frags = ud.types.map((e) {
+      return """
+       on ${e.name} {
+         ${convertObjectDefnitionToQueryString(e)}
+       }
+      """;
+    });
+    return """
+       __typename
+       $frags
+     """;
+  }
+
+  static String convertInterfaceTypeDefinitionToQueryString(
+      InterfaceTypeDefinition id) {
+    final fields =
+        id.fields.map((e) => convertFieldDefinitionToQueryString(e)).join("\n");
+    //  final frags = id. //TODO may be get concrete types ?
+    return """
+     $fields
+     __typename
+
+    """;
   }
 }

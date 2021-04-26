@@ -91,7 +91,6 @@ String _convertUnionTypeToDSl(gschema.UnionTypeDefinition ut) {
    
    class $name {
      void d__typename;
-     
      $members
    }
   
