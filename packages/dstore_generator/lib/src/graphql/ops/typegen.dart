@@ -236,13 +236,15 @@ FieldG convertGraphqlFieldToField(
     } else {
       frags = gf.fragments;
     }
+    final fieldsG = gf.fields
+        .map((gf) => convertGraphqlFieldToField(gf, prefix, fragmentFieldsMap));
     final unions = frags.map((f) {
       final fields = getFieldsFromFragment([f], fragmentFieldsMap, prefix);
-      fields.add(FieldG(
-        name: "G__typeName",
-        type: "String",
-        jsonKey: "__typename",
-      ));
+      // fields.add(FieldG(
+      //   name: "G__typeName",
+      //   type: "String",
+      //   jsonKey: "__typename",
+      // ));
       String on;
       if (f.typeNode != null) {
         final tl = fragmentFieldsMap[f.typeNode]!;
@@ -251,6 +253,7 @@ FieldG convertGraphqlFieldToField(
         on = f.on!;
       }
       final name = "${type}_${on}";
+      fields.addAll(fieldsG);
       return GType(
         fields: fields,
         name: name,
@@ -267,6 +270,8 @@ FieldG convertGraphqlFieldToField(
   } else if (gf.isInterface) {
     final type = "${prefix}_${gf.name}";
     if (gf.fragments.isNotEmpty) {
+      final fieldsG = gf.fields.map(
+          (gf) => convertGraphqlFieldToField(gf, prefix, fragmentFieldsMap));
       final supertypes = gf.fragments.map((f) {
         final fields = getFieldsFromFragment([f], fragmentFieldsMap, prefix);
         fields.add(FieldG(
@@ -281,6 +286,7 @@ FieldG convertGraphqlFieldToField(
         } else {
           on = f.on!;
         }
+        fields.addAll(fieldsG);
         final name = "${type}_${on}";
         return GType(
           fields: fields,
