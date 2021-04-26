@@ -78,6 +78,7 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
     class $name {
       $ctor
       $memebers
+      void d__typename;
     }
   """;
 }

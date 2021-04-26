@@ -30,7 +30,9 @@ abstract class GraphqlAstUtils {
   }
 
   static String convertObjectDefnitionToQueryString(ObjectTypeDefinition otd) {
-    return otd.fields.map((e) {}).join("\n");
+    return otd.fields
+        .map((e) => convertFieldDefinitionToQueryString(e))
+        .join("\n");
   }
 
   static String convertFieldDefinitionToQueryString(FieldDefinition fd) {
