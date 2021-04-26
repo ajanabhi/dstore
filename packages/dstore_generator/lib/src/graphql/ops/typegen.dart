@@ -12,7 +12,6 @@ class GField {
   final List<GListType> listType;
   final String? type;
   final List<GField> fields;
-  // final List<String> enumValues;
   final List<GFragment> fragments;
   final String? defaultValue;
   final bool isUnion;
