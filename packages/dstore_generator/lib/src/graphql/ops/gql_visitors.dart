@@ -232,20 +232,17 @@ class OperationVisitor extends RecursiveVisitor {
       }
       var name = node.alias?.value ?? fieldName;
       String? jsonKey;
-      var isUnion = false;
-      if (fieldType is UnionTypeDefinition) {
-        isUnion = true;
-      }
+
       if (DART_RESERVED_KEYWORDS.contains(name) || name.startsWith("_")) {
         name = "g$name";
         jsonKey = name;
       }
-      logger.shout("isUnion $isUnion");
       _resultFieldElementStack.current.fields.add(GField(
           name: name,
           listType: fm.listType,
           type: type,
-          isUnion: isUnion,
+          isUnion: fieldType is UnionTypeDefinition,
+          isInterface: fieldType is InterfaceTypeDefinition,
           jsonKey: jsonKey,
           optional: !fm.strict,
           fields: fields,

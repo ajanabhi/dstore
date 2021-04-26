@@ -69,8 +69,8 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
         return result;
       }).join("\n");
       if (ops.isEmpty) {
-        final visitor = DSLFieldsVisitor(
-            className: element.name, schema: schema, apiUrl: apiUrl);
+        final visitor =
+            DSLFieldsVisitor(className: element.name, apiUrl: apiUrl);
         final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
         ast.visitChildren(visitor);
       }

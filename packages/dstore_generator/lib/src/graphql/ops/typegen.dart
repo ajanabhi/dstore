@@ -16,6 +16,7 @@ class GField {
   final List<GFragment> fragments;
   final String? defaultValue;
   final bool isUnion;
+  final bool isInterface;
 
   GField(
       {required this.name,
@@ -23,6 +24,7 @@ class GField {
       required this.listType,
       this.type,
       this.isUnion = false,
+      this.isInterface = false,
       this.jsonKey,
       this.defaultValue,
       this.fragments = const [],
@@ -205,11 +207,13 @@ class GType {
   final String name;
   final bool isOptional;
   final List<GType> unions;
+  final List<GType> supertypes;
   final Set<String> baseTypes;
   GType(
       {required this.fields,
       required this.name,
       this.unions = const [],
+      this.supertypes = const [],
       this.isOptional = false,
       this.baseTypes = const {}});
 
@@ -261,8 +265,50 @@ FieldG convertGraphqlFieldToField(
         type: getDType(gf, type),
         gType: GType(
             name: type, fields: {}, unions: unions, isOptional: gf.optional));
+  } else if (gf.isInterface) {
+    final type = "${prefix}_${gf.name}";
+    if (gf.fragments.isNotEmpty) {
+      final supertypes = gf.fragments.map((f) {
+        final fields = getFieldsFromFragment([f], fragmentFieldsMap, prefix);
+        fields.add(FieldG(
+          name: "G__typeName",
+          type: "String",
+          jsonKey: "__typename",
+        ));
+        String on;
+        if (f.typeNode != null) {
+          final tl = fragmentFieldsMap[f.typeNode]!;
+          on = tl.on;
+        } else {
+          on = f.on!;
+        }
+        final name = "${type}_${on}";
+        return GType(
+          fields: fields,
+          name: name,
+          baseTypes: {type},
+        );
+      }).toList();
+      return FieldG(
+          name: gf.name,
+          jsonKey: gf.jsonKey,
+          type: getDType(gf, type),
+          gType: GType(
+              name: type,
+              fields: {},
+              supertypes: supertypes,
+              isOptional: gf.optional));
+    } else {
+      final gt = getGType(gf.fields, gf.fragments, type, fragmentFieldsMap);
+
+      return FieldG(
+          name: gf.name,
+          jsonKey: gf.jsonKey,
+          type: getDType(gf, type),
+          gType: gt);
+    }
   } else if (gf.fields.isNotEmpty || gf.fragments.isNotEmpty) {
-    // object or interface
+    // object
     final type = "${prefix}_${gf.name}";
     final gt = getGType(gf.fields, gf.fragments, type, fragmentFieldsMap);
 
@@ -373,36 +419,75 @@ List<GType> getAllGTypes(Set<FieldG> fields) {
 
 String convertGTypeToString(GType gtype) {
   final name = gtype.name;
-  if (gtype.unions.isNotEmpty) {
-    final ctors = <String>[];
-    final getters = <String>[];
-    final fromJson = <String>[];
-    gtype.unions.forEach((e) {
-      final un = e.name;
-      final tn = un.substring(e.name.lastIndexOf("_") + 1);
-      ctors.add("${name}.${tn}(${un} value):_value = value;");
-      getters.add("$un? get ${tn} => _value is $un ? _value as $un : null;");
-      fromJson.add("""if(json["__typename"] == \"$tn\") {
+  if (gtype.unions.isNotEmpty || gtype.supertypes.isNotEmpty) {
+    return _covertUnionOrInterfaceToDartModel(gtype);
+  }
+  final fields = gtype.fields.map((f) {
+    final annotations = <String>[];
+    final jkFields = <String>[];
+    if (f.jsonKey != null) {
+      jkFields.add("name:\"${f.jsonKey}\"");
+    }
+    if (f.gType != null && f.gType!.unions.isNotEmpty) {
+      // union field we need special getter
+      final tn = f.gType!.name;
+      jkFields.add("fromJson: $tn.fromJson");
+      jkFields.add("toJson: ${tn}.toJson");
+    }
+
+    if (jkFields.isNotEmpty) {
+      annotations.add("@JsonKey(${jkFields.join(",")})");
+    }
+
+    return Field(name: f.name, type: f.type, annotations: annotations);
+  }).toList();
+  return ModelUtils.createDefaultDartModelFromFeilds(
+      fields: fields, className: name, isJsonSerializable: true);
+}
+
+String _covertUnionOrInterfaceToDartModel(GType gtype) {
+  final name = gtype.name;
+  final ctors = <String>[];
+  final getters = <String>[];
+  final fromJson = <String>[];
+
+  gtype.unions.forEach((e) {
+    final un = e.name;
+    final tn = un.substring(e.name.lastIndexOf("_") + 1);
+    ctors.add("${name}.${tn}(${un} value):_value = value;");
+    getters.add("$un? get ${tn} => _value is $un ? _value as $un : null;");
+    fromJson.add("""if(json["__typename"] == \"$tn\") {
           return $name.$tn(${un}.fromJson(json));
         }""");
-    });
-    final oq = gtype.isOptional ? "?" : "";
-    var nullCheckFrom = "";
-    var nullCheckTo = "";
-    if (oq.isNotEmpty) {
-      nullCheckFrom = """
+  });
+
+  gtype.supertypes.forEach((e) {
+    final un = e.name;
+    final tn = un.substring(e.name.lastIndexOf("_") + 1);
+    ctors.add("${name}.${tn}(${un} value):_value = value;");
+    getters.add("$un? get ${tn} => _value is $un ? _value as $un : null;");
+    fromJson.add("""if(json["__typename"] == \"$tn\") {
+          return $name.$tn(${un}.fromJson(json));
+        }""");
+  });
+
+  final oq = gtype.isOptional ? "?" : "";
+  var nullCheckFrom = "";
+  var nullCheckTo = "";
+  if (oq.isNotEmpty) {
+    nullCheckFrom = """
         if(json == null) {
           return null;
         }
       """;
 
-      nullCheckTo = """
+    nullCheckTo = """
         if(value == null) {
           return null;
         }
       """;
-    }
-    return """
+  }
+  return """
       class $name {
         final dynamic _value;
          ${ctors.join("\n")}
@@ -425,28 +510,4 @@ String convertGTypeToString(GType gtype) {
         
       }
     """;
-  }
-  final specialConverters = <String>[];
-
-  final fields = gtype.fields.map((f) {
-    final annotations = <String>[];
-    final jkFields = <String>[];
-    if (f.jsonKey != null) {
-      jkFields.add("name:\"${f.jsonKey}\"");
-    }
-    if (f.gType != null && f.gType!.unions.isNotEmpty) {
-      // union field we need special getter
-      final tn = f.gType!.name;
-      jkFields.add("fromJson: $tn.fromJson");
-      jkFields.add("toJson: ${tn}.toJson");
-    }
-
-    if (jkFields.isNotEmpty) {
-      annotations.add("@JsonKey(${jkFields.join(",")})");
-    }
-
-    return Field(name: f.name, type: f.type, annotations: annotations);
-  }).toList();
-  return ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: name, isJsonSerializable: true);
 }

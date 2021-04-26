@@ -1,9 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:gql/schema.dart';
 import 'package:tuple/tuple.dart';
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
