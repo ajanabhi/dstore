@@ -114,6 +114,11 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       }
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
+        objSpread = "__typename";
+      }
+      if (methodName.startsWith("interfacefrag_")) {
+        methodName = "... on ${methodName.replaceFirst("interfacefrag_", "")}";
+        objSpread = "__typename";
       }
       query += "$alias $methodName$args $directive $bracket \n $objSpread";
     } else if (nodeString.endsWith("()")) {
