@@ -1,5 +1,3 @@
-import "package:collection/collection.dart";
-
 class Selectors {
   const Selectors();
 }
