@@ -115,6 +115,7 @@ class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
 
 class Todo {
   void text({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Person {
@@ -125,32 +126,38 @@ class Person {
   void hello(HelloU hello, {String? alias, String? directive}) {}
   void helloa(HelloU helloa, {String? alias, String? directive}) {}
   void address(Address address, {String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Address {
   void street({String? alias, String? directive}) {}
   void zip({String? alias, String? directive}) {}
   void country(Country country, {String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Country {
   void code({String? alias, String? directive}) {}
   void name({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Hello1 {
   void name({String? alias, String? directive}) {}
   void one({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Hello2 {
   void name({String? alias, String? directive}) {}
   void two({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Employee {
   void name({String? max, String? alias, String? directive}) {}
   void salary({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class Query {
@@ -175,11 +182,13 @@ class Query {
       String? aa,
       String? alias,
       String? directive}) {}
+  void d__typename;
 }
 
 class Subscription {
   Subscription([String? args]);
   void messageAdded({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __Schema {
@@ -190,6 +199,7 @@ class __Schema {
   void subscriptionType(__Type subscriptionType,
       {String? alias, String? directive}) {}
   void directives(__Directive directives, {String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __Type {
@@ -207,6 +217,7 @@ class __Type {
   void inputFields(__InputValue inputFields,
       {String? includeDeprecated, String? alias, String? directive}) {}
   void ofType(__Type ofType, {String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __Field {
@@ -217,6 +228,7 @@ class __Field {
   void type(__Type type, {String? alias, String? directive}) {}
   void isDeprecated({String? alias, String? directive}) {}
   void deprecationReason({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __InputValue {
@@ -226,6 +238,7 @@ class __InputValue {
   void defaultValue({String? alias, String? directive}) {}
   void isDeprecated({String? alias, String? directive}) {}
   void deprecationReason({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __EnumValue {
@@ -233,6 +246,7 @@ class __EnumValue {
   void description({String? alias, String? directive}) {}
   void isDeprecated({String? alias, String? directive}) {}
   void deprecationReason({String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class __Directive {
@@ -242,11 +256,15 @@ class __Directive {
   void locations(__DirectiveLocation locations,
       {String? alias, String? directive}) {}
   void args(__InputValue args, {String? alias, String? directive}) {}
+  void d__typename;
 }
 
 class HelloU {
-  void d__typename;
-
   void unionfrag_Hello1(Hello1 value) {}
   void unionfrag_Hello2(Hello2 value) {}
+}
+
+class PersonI {
+  void name({String? max, String? alias, String? directive}) {}
+  void interfacefrag_Employee(Employee value) {}
 }

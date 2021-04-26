@@ -1,15 +1,23 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
+import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
+import 'package:dstore_generator/src/graphql/ops/gql_visitors.dart';
+import 'package:dstore_generator/src/graphql/ops/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
+import "package:gql/language.dart" as lang;
 
 class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final ops = <String>[];
   final String className;
-  final String apiUrl;
+  final GraphqlApi api;
+  final ClassElement element;
 
-  DSLFieldsVisitor({required this.className, required this.apiUrl});
+  DSLFieldsVisitor(
+      {required this.className, required this.element, required this.api});
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
     final field = node.fields.variables.first;
@@ -23,11 +31,32 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
         op.startsWith("Mutation(") ||
         op.startsWith("Subscription(")) {
       final visitor =
-          DSLVisitor(opName: "${className}_${name}", apiUrl: apiUrl);
+          DSLVisitor(opName: "${className}_${name}", apiUrl: api.apiUrl);
       field.initializer!.visitChildren(visitor);
       final op = "${visitor.query}\n }";
       ops.add(op);
       logger.shout("Query is $op");
+    } else if (field.isConst) {
+      final fe = element.fields.singleWhere((element) => element.name == name);
+      final v = fe.computeConstantValue()!;
+      if (v.type.toString() == "String") {
+        final query = v.toStringValue()!;
+        final doc = lang.parseString(query);
+        final schema = graphqlSchemaMap[api.apiUrl]!;
+        final dupOpsVisitor = DuplicateOperationVisitor(doc, schema);
+        doc.accept(dupOpsVisitor);
+        if (dupOpsVisitor.opType != null) {
+          if (dupOpsVisitor.isMultipleOpsExist) {
+            throw Exception(
+                " You should specify only single query or mutation or subscription , not combined ops");
+          }
+          final tn = "${element.name}_${name}";
+
+          final op = generateOpsTypeForQuery(
+              schema: schema, query: query, doc: doc, name: tn, api: api);
+          ops.add(op);
+        }
+      }
     }
   }
 }
@@ -114,11 +143,11 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       }
       if (methodName.startsWith("unionfrag_")) {
         methodName = "... on ${methodName.replaceFirst("unionfrag_", "")}";
-        objSpread = "__typename";
+        objSpread = "__typename\n";
       }
       if (methodName.startsWith("interfacefrag_")) {
         methodName = "... on ${methodName.replaceFirst("interfacefrag_", "")}";
-        objSpread = "__typename";
+        objSpread = "__typename\n";
       }
       query += "$alias $methodName$args $directive $bracket \n $objSpread";
     } else if (nodeString.endsWith("()")) {

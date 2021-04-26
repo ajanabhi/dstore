@@ -10,7 +10,6 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:source_gen/source_gen.dart';
-import "package:gql/language.dart" as lang;
 
 class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
   @override
@@ -30,50 +29,15 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
       final apiA = opsAnnotations?.getField("api")!;
       final gAPi = getGraphqlApi(apiA);
       final apiUrl = gAPi.apiUrl;
-      GraphQLSchema schema;
-
-      final eSchema = graphqlSchemaMap[apiUrl];
-      if (eSchema == null) {
-        schema = await getGraphqlSchemaFromApiUrl(gAPi);
-      } else {
-        schema = eSchema;
+      if (graphqlSchemaMap[apiUrl] == null) {
+        await getGraphqlSchemaFromApiUrl(gAPi);
       }
-      print("Api Type ${gAPi}");
-      final ops = element.fields.where((f) => f.isStatic && f.isConst).map((e) {
-        final v = e.computeConstantValue()!;
-        var result = "";
-        logger.shout("Value $v");
-        if (v.type.toString() == "String") {
-          final query = v.toStringValue();
-          final doc = lang.parseString(query);
-          final dupOpsVisitor = DuplicateOperationVisitor(doc, schema);
-          doc.accept(dupOpsVisitor);
-          if (dupOpsVisitor.opType != null) {
-            if (dupOpsVisitor.isMultipleOpsExist) {
-              throw Exception(
-                  " You should specify only single query or mutation or subscription , not combined ops");
-            }
-            final tn = "${name}_${e.name}";
-            logger.shout("TN $tn");
-            result = generateOpsTypeForQuery(
-                schema: schema,
-                query: "${element.name}.${e.name}",
-                doc: doc,
-                name: tn,
-                api: gAPi);
-          }
-        }
 
-        print("opsvalue $v ${v.type}");
-
-        return result;
-      }).join("\n");
-      if (ops.isEmpty) {
-        final visitor =
-            DSLFieldsVisitor(className: element.name, apiUrl: apiUrl);
-        final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
-        ast.visitChildren(visitor);
-      }
+      final visitor = DSLFieldsVisitor(
+          className: element.name, element: element, api: gAPi);
+      final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
+      ast.visitChildren(visitor);
+      final ops = visitor.ops.join("\n");
       return """
      $ops
     """;
@@ -94,29 +58,27 @@ String generateOpsTypeForQuery(
   doc.accept(visitor);
   final types = getTypes(visitor, name);
   var result = "";
-  if (visitor.opType == OperationType.query ||
-      visitor.opType == OperationType.mutation) {
-    final responseType = "${name}Data";
-    final responseSerializer = "${responseType}Serializer";
-    final responserDeserializer = "${responseType}Deserializer";
-    final responseSerializerFn = """
+  final responseType = "${name}Data";
+  final responseSerializer = "${responseType}Serializer";
+  final responserDeserializer = "${responseType}Deserializer";
+  final responseSerializerFn = """
       
       Map<String,dynamic> $responseSerializer(int status,$responseType resp) => resp.toJson();
     
     """;
 
-    final responseDeserializerFunction = """
+  final responseDeserializerFunction = """
       $responseType $responserDeserializer(int status,dynamic json) => $responseType.fromJson(json as Map<String,dynamic>);
     """;
-    final inputSerilizer = "GraphqlRequestInput.toJson";
-    final inputDeserializer = "${name}InputDeserializer";
+  final inputSerilizer = "GraphqlRequestInput.toJson";
+  final inputDeserializer = "${name}InputDeserializer";
 
-    var inputDeserializerFn = "";
-    final variablesName = "${name}Variables";
-    final inputType =
-        "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : "<Null>"}";
-    if (visitor.variables.isNotEmpty) {
-      inputDeserializerFn = """        
+  var inputDeserializerFn = "";
+  final variablesName = "${name}Variables";
+  final inputType =
+      "GraphqlRequestInput${visitor.variables.isNotEmpty ? "<$variablesName>" : "<Null>"}";
+  if (visitor.variables.isNotEmpty) {
+    inputDeserializerFn = """        
         $inputType $inputDeserializer(dynamic json) {
             json = json as Map<String,dynamic>;
              final query = json["query"] as String;
@@ -124,13 +86,16 @@ String generateOpsTypeForQuery(
              return GraphqlRequestInput(query,variables);
         }
       """;
-    } else {
-      inputDeserializerFn = """        
+  } else {
+    inputDeserializerFn = """        
         $inputType $inputDeserializer(dynamic json) {
              return GraphqlRequestInput.fromJson(json as Map<String,dynamic>);
         }
       """;
-    }
+  }
+
+  if (visitor.opType == OperationType.query ||
+      visitor.opType == OperationType.mutation) {
     final req = """
    @HttpRequest(
     method: "POST",
@@ -143,7 +108,6 @@ String generateOpsTypeForQuery(
     inputDeserializer: $inputDeserializer,
     responseDeserializer: $responserDeserializer)
   """;
-
     result = """
     $types    
     $inputDeserializerFn
@@ -155,7 +119,10 @@ String generateOpsTypeForQuery(
     $req
     class ${name}T<T> = HttpField<Null, $inputType, T, dynamic> with EmptyMixin;
   """;
-  } else {}
+  } else {
+    // subscription
+
+  }
 
   return result;
 }

@@ -9,10 +9,9 @@ class _HelloDSL {
     ..hello1
     ..todo(Todo()..text)
     ..todo(Todo())
+    ..users(Person(), alias: "users3")
     ..users(Person()
       ..name
       ..tags
-      ..hello(HelloU()
-        ..d__typename
-        ..unionfrag_Hello1(Hello1()..name)));
+      ..hello(HelloU()..unionfrag_Hello1(Hello1()..name)));
 }

@@ -64,11 +64,11 @@ abstract class GraphqlAstUtils {
   static String convertUnionTypeDefnitionToQueryString(UnionTypeDefinition ud) {
     final frags = ud.types.map((e) {
       return """
-       on ${e.name} {
+       ... on ${e.name} {
          ${convertObjectDefnitionToQueryString(e)}
        }
       """;
-    });
+    }).join("\n");
     return """
        __typename
        $frags

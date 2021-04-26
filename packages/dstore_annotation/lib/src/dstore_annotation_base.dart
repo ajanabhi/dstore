@@ -126,11 +126,11 @@ class HttpRequestExtension<T> {
   const HttpRequestExtension({this.transformer});
 }
 
-class WebSocketRequest<I, R> {
+class WebSocketRequest {
   final String url;
   final String? graphqlQuery;
-  final dynamic Function(I)? inputSerializer;
-  final R Function(dynamic) responseDeserializer;
+  final Function? inputSerializer;
+  final Function responseDeserializer;
 
   const WebSocketRequest(
       {required this.url,
