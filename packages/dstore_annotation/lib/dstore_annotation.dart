@@ -3,6 +3,5 @@
 /// More dartdocs go here.
 library dstore_annotation;
 
+export "src/graphql.dart";
 export 'src/dstore_annotation_base.dart';
-
-// TODO: Export any libraries intended for clients of this package.
