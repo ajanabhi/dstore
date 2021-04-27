@@ -25,18 +25,25 @@ class GraphqlOps {
 
 enum GraphqlDatabase { dgraph }
 
-typedef SchemaUploadFn = Future<String> Function();
+typedef SchemaUploadFn = Future<String> Function(String schema);
 
 class GraphqlSchema {
   final String path;
   final GraphqlDatabase database;
-  final SchemaUploadFn? schemaUplodFn;
+  final SchemaUploadRequest? schemaUplodDetails;
   final bool uploadSchema;
   const GraphqlSchema(
       {required this.path,
       required this.database,
-      this.schemaUplodFn,
+      this.schemaUplodDetails,
       this.uploadSchema = false});
+}
+
+class SchemaUploadRequest {
+  final String url;
+  final Map<String, String>? headers;
+
+  const SchemaUploadRequest({required this.url, this.headers});
 }
 
 abstract class GraphqlSchemaI {

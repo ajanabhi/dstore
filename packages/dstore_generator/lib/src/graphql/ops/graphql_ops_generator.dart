@@ -58,6 +58,7 @@ String generateOpsTypeForQuery(
   doc.accept(visitor);
   final types = getTypes(visitor, name);
   var result = "";
+  final gq = "\"\"\"$query\"\"\"";
   final responseType = "${name}Data";
   final responseSerializer = "${responseType}Serializer";
   final responserDeserializer = "${responseType}Deserializer";
@@ -100,7 +101,7 @@ String generateOpsTypeForQuery(
    @HttpRequest(
     method: "POST",
     url: "${api.apiUrl}",
-    graphqlQuery: $query,
+    graphqlQuery: $gq,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type":"applications/josn"},
     responseSerializer : $responseSerializer,

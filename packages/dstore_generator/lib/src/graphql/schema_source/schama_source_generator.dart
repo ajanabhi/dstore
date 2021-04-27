@@ -14,7 +14,7 @@ class SchemaSourceGenerator extends GeneratorForAnnotation<GraphqlSchema> {
         throw UnsupportedError(
             "You should use GraphqlSchema annotation on classes only ");
       }
-      generateSchema(element: element, buildStep: buildStep);
+      await generateSchema(element: element, buildStep: buildStep);
       return """""";
     } catch (e, st) {
       logger.error("Error genrating graphql schema for ${element.name}", e, st);

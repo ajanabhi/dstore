@@ -6,6 +6,7 @@ import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/ops/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
 import 'package:dstore_generator/src/dimmutable/immutable_generator.dart';
+import 'package:dstore_generator/src/graphql/schema_source/schama_source_generator.dart';
 import 'package:dstore_generator/src/open_api/open_api_generator.dart';
 import 'package:dstore_generator/src/pstate/pstate_generator.dart';
 import 'package:dstore_generator/src/selectors/selectors_generator.dart';
@@ -40,6 +41,7 @@ Builder dstoreGen(BuilderOptions options) {
         UnionGenerator(),
         AppStateGenerator(),
         SelectorsGenerator(),
+        SchemaSourceGenerator(),
         DEnumGenerator(),
         DImmutableGenerator(),
       ],
