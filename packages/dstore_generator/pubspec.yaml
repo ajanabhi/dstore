@@ -25,6 +25,8 @@ dependencies:
   json_annotation: ^4.0.1
   dstore_annotation:
     path: ../dstore_annotation
+  dstore_dgraph:
+    path: ../dgraph 
 
 dev_dependencies:
   pedantic: 1.10.0

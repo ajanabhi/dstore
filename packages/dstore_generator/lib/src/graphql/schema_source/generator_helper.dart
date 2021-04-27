@@ -59,8 +59,16 @@ String getFieldsFromClassElement(
   return element.fields.map((e) {
     final type = getGraphqlType(e.type);
     final name = e.name;
-    return "$type $name;";
+    return "$name: $type ";
   }).join("\n");
+}
+
+String getAnnotationsForField(
+    {required FieldElement fe, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphFieldAnnotations(fe: fe);
+  }
+  return "";
 }
 
 String getGraphqlType(DartType type) {
