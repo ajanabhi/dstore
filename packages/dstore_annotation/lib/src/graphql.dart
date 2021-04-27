@@ -48,7 +48,7 @@ class SchemaUploadRequest {
 
 abstract class GraphqlSchemaI {
   Type? interfaces;
-  Type? objects;
+  dynamic? objects;
   Type? unions;
   Type? directives;
   Type? query;

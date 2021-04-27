@@ -7,7 +7,17 @@ import 'package:source_gen/source_gen.dart';
 Future<void> generateSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
   final schemaMeta = _getGraphqlSchema(element);
+  element.fields.forEach((fe) {
+    logger.shout(
+        "name ${fe.name} type ${fe.type} type element  : ${fe.type.element}");
+    (fe.type.element as ClassElement).allSupertypes.forEach((st) {
+      print(st.getDisplayString(withNullability: true));
+      print(st.element.fields);
+    });
+  });
 }
+
+// String getObjects() {}
 
 GraphqlSchema _getGraphqlSchema(ClassElement element) {
   final annot = element.annotationFromType(GraphqlSchema)!;
