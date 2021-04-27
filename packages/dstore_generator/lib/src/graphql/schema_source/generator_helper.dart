@@ -11,7 +11,11 @@ Future<void> generateSchema(
   var schemaStr = "";
   element.fields.forEach((fe) {
     logger.shout(
-        "name ${fe.name} type ${fe.type} type element  : ${fe.type.element}");
+        "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element}");
+    final type = fe.type;
+    if (type is InterfaceType) {
+      type.typeArguments.first;
+    }
     if (fe.name.toLowerCase() == "objects") {
       schemaStr += getObjects(element: element, schema: schemaMeta);
     }
@@ -25,7 +29,7 @@ Future<void> generateSchema(
 String getObjects(
     {required ClassElement element, required GraphqlSchema schema}) {
   return element.allSupertypes
-      .where((e) => e.getDisplayString(withNullability: false) != "Object")
+      .where((e) => !e.isDartCoreObject)
       .map((e) {})
       .join("\n");
 }
@@ -36,7 +40,7 @@ String convertInterfaceTypeToObject(
   final name = element.name;
 
   final interfaces = element.allSupertypes
-      .where((e) => e.element.name != "Object")
+      .where((e) => !e.isDartCoreObject)
       .map((e) => e.element.name)
       .join(", ");
   final impl = interfaces.isEmpty ? "" : "implements $interfaces";
@@ -44,13 +48,37 @@ String convertInterfaceTypeToObject(
 
   return """
    type $name $impl {
-    ${getFieldsFromClassElement(element: it.element)}
+    ${getFieldsFromClassElement(element: it.element, database: database)}
+    $interfacesFields
    }
   """;
 }
 
-String getFieldsFromClassElement({required ClassElement element}) {
-  return element.fields.map((e) {}).join("\n");
+String getFieldsFromClassElement(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  return element.fields.map((e) {
+    final type = getGraphqlType(e.type);
+    final name = e.name;
+    return "$type $name;";
+  }).join("\n");
+}
+
+String getGraphqlType(DartType type) {
+  final req =
+      type.getDisplayString(withNullability: true).endsWith("?") ? "" : "!";
+  if (type.isDartCoreList) {
+    return "[${getGraphqlType((type as InterfaceType).typeArguments.first)}]$req";
+  } else if (type.isDartCoreInt) {
+    return "Int$req";
+  } else if (type.isDartCoreBool) {
+    return "Boolean$req";
+  } else if (type.isDartCoreDouble) {
+    return "Float$req";
+  } else if (type.isDartCoreNum) {
+    return "Float$req";
+  } else {
+    return type.toString();
+  }
 }
 
 GraphqlSchema _getGraphqlSchema(ClassElement element) {

@@ -6,6 +6,7 @@ import 'package:dstore/dstore.dart';
 )
 class LearnSchema {
   late Objects objects;
+  late List<String> o1;
 }
 
 abstract class Node {
