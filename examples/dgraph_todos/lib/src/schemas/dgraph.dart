@@ -8,10 +8,17 @@ class LearnSchema {
   late Objects objects;
 }
 
-class Task {
+abstract class Node {
   late ID id;
+}
+
+class Task implements Node {
+  // late ID id;
   late String text;
   late bool completed;
+
+  @override
+  late ID id;
 }
 
 class Objects with Task {}
