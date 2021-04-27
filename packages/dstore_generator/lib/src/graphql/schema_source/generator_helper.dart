@@ -77,7 +77,7 @@ String getGraphqlType(DartType type) {
   } else if (type.isDartCoreNum) {
     return "Float$req";
   } else {
-    return type.toString();
+    return "${type.getDisplayString(withNullability: false)}$req";
   }
 }
 
