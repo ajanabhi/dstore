@@ -29,11 +29,13 @@ class GraphqlSource {
 }
 
 abstract class GraphqlSourceI {
-  List<Type>? interfaces;
-  List<Type>? objects;
-  List<Type>? unions;
-  List<Type>? directives;
+  Type? interfaces;
+  Type? objects;
+  Type? unions;
+  Type? directives;
   Type? query;
   Type? mutation;
   Type? subscription;
 }
+
+class ID {}
