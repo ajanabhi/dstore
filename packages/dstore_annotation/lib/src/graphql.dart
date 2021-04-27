@@ -23,9 +23,20 @@ class GraphqlOps {
   const GraphqlOps(this.api);
 }
 
+enum Database { dgraph }
+
+typedef SchemaUploadFn = Future<String> Function();
+
 class GraphqlSource {
   final String path;
-  const GraphqlSource({required this.path});
+  final Database? database;
+  final SchemaUploadFn? schemaUplodFn;
+  final bool uploadSchema;
+  const GraphqlSource(
+      {required this.path,
+      this.database,
+      this.schemaUplodFn,
+      this.uploadSchema = false});
 }
 
 abstract class GraphqlSourceI {
