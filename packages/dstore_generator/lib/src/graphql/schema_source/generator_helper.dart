@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -27,6 +28,29 @@ String getObjects(
       .where((e) => e.getDisplayString(withNullability: false) != "Object")
       .map((e) {})
       .join("\n");
+}
+
+String convertInterfaceTypeToObject(
+    {required InterfaceType it, required GraphqlDatabase database}) {
+  final element = it.element;
+  final name = element.name;
+
+  final interfaces = element.allSupertypes
+      .where((e) => e.element.name != "Object")
+      .map((e) => e.element.name)
+      .join(", ");
+  final impl = interfaces.isEmpty ? "" : "implements $interfaces";
+  var interfacesFields = "";
+
+  return """
+   type $name $impl {
+    ${getFieldsFromClassElement(element: it.element)}
+   }
+  """;
+}
+
+String getFieldsFromClassElement({required ClassElement element}) {
+  return element.fields.map((e) {}).join("\n");
 }
 
 GraphqlSchema _getGraphqlSchema(ClassElement element) {
