@@ -23,13 +23,13 @@ class GraphqlOps {
   const GraphqlOps(this.api);
 }
 
-enum Database { dgraph }
+enum GraphqlDatabase { dgraph }
 
 typedef SchemaUploadFn = Future<String> Function();
 
 class GraphqlSchema {
   final String path;
-  final Database database;
+  final GraphqlDatabase database;
   final SchemaUploadFn? schemaUplodFn;
   final bool uploadSchema;
   const GraphqlSchema(

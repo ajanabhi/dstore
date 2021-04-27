@@ -1,6 +1,7 @@
 import 'package:build/src/builder/build_step.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/graphql/schema_source/generator_helper.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -10,9 +11,10 @@ class SchemaSourceGenerator extends GeneratorForAnnotation<GraphqlSchema> {
       Element element, ConstantReader annotation, BuildStep buildStep) async {
     try {
       if (!(element is ClassElement)) {
-        throw UnsupportedError("You should use GraphqlSource at ");
+        throw UnsupportedError(
+            "You should use GraphqlSchema annotation on classes only ");
       }
-
+      generateSchema(element: element, buildStep: buildStep);
       return """""";
     } catch (e, st) {
       logger.error("Error genrating graphql schema for ${element.name}", e, st);
