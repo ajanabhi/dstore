@@ -12,13 +12,9 @@ abstract class Node {
   late ID id;
 }
 
-class Task implements Node {
-  // late ID id;
+abstract class Task implements Node {
   late String text;
   late bool completed;
-
-  @override
-  late ID id;
 }
 
-class Objects with Task {}
+abstract class Objects implements Task {}
