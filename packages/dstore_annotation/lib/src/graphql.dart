@@ -27,19 +27,19 @@ enum Database { dgraph }
 
 typedef SchemaUploadFn = Future<String> Function();
 
-class GraphqlSource {
+class GraphqlSchema {
   final String path;
-  final Database? database;
+  final Database database;
   final SchemaUploadFn? schemaUplodFn;
   final bool uploadSchema;
-  const GraphqlSource(
+  const GraphqlSchema(
       {required this.path,
-      this.database,
+      required this.database,
       this.schemaUplodFn,
       this.uploadSchema = false});
 }
 
-abstract class GraphqlSourceI {
+abstract class GraphqlSchemaI {
   Type? interfaces;
   Type? objects;
   Type? unions;
