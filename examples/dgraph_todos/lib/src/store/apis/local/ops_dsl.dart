@@ -17,7 +17,7 @@ class _HelloDSL {
 
   final s = Query()
     ..inputArgsQ(
-        nameR: "n22",
+        nameR: "n222",
         idsN: [],
         count: 3,
         percent: 3.5,

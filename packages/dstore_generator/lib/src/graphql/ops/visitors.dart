@@ -224,7 +224,6 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
 
 class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
   var arg = "{ ";
-  var _addList = false;
   var _addPrefixIdentifier = false;
   @override
   Object? visitMethodInvocation(MethodInvocation node) {
@@ -269,15 +268,11 @@ class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
     } else if (valueE is MethodInvocation) {
       value = "";
     } else if (_isEnumOrObjectList(valueE)) {
-      _addList = true;
       if ((valueE as ListLiteral).elements.firstOrNull is PrefixedIdentifier) {
         _addPrefixIdentifier = true;
       }
       value = "";
     } else {
-      if (valueE is ListLiteral) {
-        _addList = false;
-      }
       value = valueStr;
     }
     arg += "$name: $value${value.isEmpty ? "" : ", "}";
