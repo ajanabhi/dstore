@@ -9,6 +9,13 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   if (hasI != null) {
     annotations.add("hasInverse(field: ${hasI.field})");
   }
+  final searchD = getSearchDirective(element);
+  if (searchD != null) {
+    final by = searchD.by != null
+        ? "(by: [${searchD.by!.map((e) => e.toString().split(".").last).join(", ")}])"
+        : "";
+    annotations.add("search$by");
+  }
   return "";
 }
 
