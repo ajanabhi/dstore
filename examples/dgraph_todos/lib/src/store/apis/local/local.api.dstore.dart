@@ -47,11 +47,28 @@ class Input1 {
 
   final List<Input1?>? inputs;
 
+  final int? count;
+
+  final double? percent;
+
+  final List<int>? counts;
+
+  final List<Enum1>? enums;
+
+  final Enum1? d$_enum;
+
   @JsonKey(ignore: true)
   _$Input1CopyWith<Input1> get copyWith =>
       __$Input1CopyWithImpl<Input1>(this, IdentityFn);
 
-  const Input1({this.name, this.inputs});
+  const Input1(
+      {this.name,
+      this.inputs,
+      this.count,
+      this.percent,
+      this.counts,
+      this.enums,
+      this.d$_enum});
 
   factory Input1.fromJson(Map<String, dynamic> json) => _$Input1FromJson(json);
 
@@ -60,20 +77,42 @@ class Input1 {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is Input1 && o.name == name && o.inputs == inputs;
+    return o is Input1 &&
+        o.name == name &&
+        o.inputs == inputs &&
+        o.count == count &&
+        o.percent == percent &&
+        o.counts == counts &&
+        o.enums == enums &&
+        o.d$_enum == d$_enum;
   }
 
   @override
-  int get hashCode => name.hashCode ^ inputs.hashCode;
+  int get hashCode =>
+      name.hashCode ^
+      inputs.hashCode ^
+      count.hashCode ^
+      percent.hashCode ^
+      counts.hashCode ^
+      enums.hashCode ^
+      d$_enum.hashCode;
 
   @override
-  String toString() => "Input1(name: ${this.name}, inputs: ${this.inputs})";
+  String toString() =>
+      "Input1(name: ${this.name}, inputs: ${this.inputs}, count: ${this.count}, percent: ${this.percent}, counts: ${this.counts}, enums: ${this.enums}, d$_enum: ${this.d$_enum})";
 }
 
 abstract class $Input1CopyWith<O> {
   factory $Input1CopyWith(Input1 value, O Function(Input1) then) =
       _$Input1CopyWithImpl<O>;
-  O call({String? name, List<Input1?>? inputs});
+  O call(
+      {String? name,
+      List<Input1?>? inputs,
+      int? count,
+      double? percent,
+      List<int>? counts,
+      List<Enum1>? enums,
+      Enum1? d$_enum});
 }
 
 class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
@@ -82,18 +121,36 @@ class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
   _$Input1CopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? name = dimmutable, Object? inputs = dimmutable}) {
+  O call(
+      {Object? name = dimmutable,
+      Object? inputs = dimmutable,
+      Object? count = dimmutable,
+      Object? percent = dimmutable,
+      Object? counts = dimmutable,
+      Object? enums = dimmutable,
+      Object? d$_enum = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String?,
-        inputs:
-            inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?));
+        inputs: inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?,
+        count: count == dimmutable ? _value.count : count as int?,
+        percent: percent == dimmutable ? _value.percent : percent as double?,
+        counts: counts == dimmutable ? _value.counts : counts as List<int>?,
+        enums: enums == dimmutable ? _value.enums : enums as List<Enum1>?,
+        d$_enum: d$_enum == dimmutable ? _value.d$_enum : d$_enum as Enum1?));
   }
 }
 
 abstract class _$Input1CopyWith<O> implements $Input1CopyWith<O> {
   factory _$Input1CopyWith(Input1 value, O Function(Input1) then) =
       __$Input1CopyWithImpl<O>;
-  O call({String? name, List<Input1?>? inputs});
+  O call(
+      {String? name,
+      List<Input1?>? inputs,
+      int? count,
+      double? percent,
+      List<int>? counts,
+      List<Enum1>? enums,
+      Enum1? d$_enum});
 }
 
 class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
@@ -105,11 +162,22 @@ class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
   Input1 get _value => super._value;
 
   @override
-  O call({Object? name = dimmutable, Object? inputs = dimmutable}) {
+  O call(
+      {Object? name = dimmutable,
+      Object? inputs = dimmutable,
+      Object? count = dimmutable,
+      Object? percent = dimmutable,
+      Object? counts = dimmutable,
+      Object? enums = dimmutable,
+      Object? d$_enum = dimmutable}) {
     return _then(Input1(
         name: name == dimmutable ? _value.name : name as String?,
-        inputs:
-            inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?));
+        inputs: inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?,
+        count: count == dimmutable ? _value.count : count as int?,
+        percent: percent == dimmutable ? _value.percent : percent as double?,
+        counts: counts == dimmutable ? _value.counts : counts as List<int>?,
+        enums: enums == dimmutable ? _value.enums : enums as List<Enum1>?,
+        d$_enum: d$_enum == dimmutable ? _value.d$_enum : d$_enum as Enum1?));
   }
 }
 
@@ -155,7 +223,7 @@ class Hello2 {
 }
 
 class Employee {
-  void name({String? max, String? alias, String? directive}) {}
+  void name({bool? max, String? alias, String? directive}) {}
   void salary({String? alias, String? directive}) {}
   void d__typename;
 }
@@ -172,17 +240,17 @@ class Query {
   void hellou(HelloU hellou, {String? alias, String? directive}) {}
   void inputArgsQ(
       {String? name,
-      String nameR,
+      required String nameR,
       Input1? input1,
-      String? input1_$,
-      String? ids,
-      String idsN,
-      String idsN2,
-      Enum1 eR,
-      String? eR_$,
+      List<String?>? ids,
+      int? count,
+      double? percent,
+      List<int>? counts,
+      required List<String?> idsN,
+      required List<String> idsN2,
+      required Enum1 eR,
       Enum1? e,
-      String? e_$,
-      String? aa,
+      List<List<String?>>? aa,
       String? alias,
       String? directive}) {}
   void d__typename;
@@ -211,14 +279,14 @@ class __Type {
   void description({String? alias, String? directive}) {}
   void specifiedByUrl({String? alias, String? directive}) {}
   void fields(__Field fields,
-      {String? includeDeprecated, String? alias, String? directive}) {}
+      {bool? includeDeprecated, String? alias, String? directive}) {}
   void interfaces(__Type interfaces, {String? alias, String? directive}) {}
   void possibleTypes(__Type possibleTypes,
       {String? alias, String? directive}) {}
   void enumValues(__EnumValue enumValues,
-      {String? includeDeprecated, String? alias, String? directive}) {}
+      {bool? includeDeprecated, String? alias, String? directive}) {}
   void inputFields(__InputValue inputFields,
-      {String? includeDeprecated, String? alias, String? directive}) {}
+      {bool? includeDeprecated, String? alias, String? directive}) {}
   void ofType(__Type ofType, {String? alias, String? directive}) {}
   void d__typename;
 }
@@ -227,7 +295,7 @@ class __Field {
   void name({String? alias, String? directive}) {}
   void description({String? alias, String? directive}) {}
   void args(__InputValue args,
-      {String? includeDeprecated, String? alias, String? directive}) {}
+      {bool? includeDeprecated, String? alias, String? directive}) {}
   void type(__Type type, {String? alias, String? directive}) {}
   void isDeprecated({String? alias, String? directive}) {}
   void deprecationReason({String? alias, String? directive}) {}
@@ -268,6 +336,6 @@ class HelloU {
 }
 
 class PersonI {
-  void name({String? max, String? alias, String? directive}) {}
+  void name({bool? max, String? alias, String? directive}) {}
   void interfacefrag_Employee(Employee value) {}
 }

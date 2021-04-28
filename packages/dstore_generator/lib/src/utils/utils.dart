@@ -58,7 +58,7 @@ String replaceEndStar(String input) {
 }
 
 String getDNameForIdentifier(String name) {
-  return DART_RESERVED_KEYWORDS.contains(name) ? "d_$name" : "$name";
+  return DART_RESERVED_KEYWORDS.contains(name) ? "d\$_$name" : "$name";
 }
 
 String convertEnumToString(Object enumEntry) {

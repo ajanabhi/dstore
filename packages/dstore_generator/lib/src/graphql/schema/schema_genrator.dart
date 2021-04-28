@@ -76,15 +76,11 @@ String _convertFieldDefinitionToDSL(
   final ft = getFieldMetadataFromFieldTypeInstance(f.type);
   final type = f.type.baseTypeName;
   final isScalar = ft.fieldType is gschema.ScalarTypeDefinition;
-  final args = f.args.expand((a) {
+  final args = f.args.map((a) {
     final an = a.name;
     final type = _getInputTypeFromGraphqlType(a.type, scalaraMap);
-    final td = GraphqlAstUtils.getTypeDefinitionFromGraphqlType(a.type);
-    if (td is gschema.ScalarTypeDefinition) {
-      final op = a.type.isNonNull ? "" : "?";
-      return ["String$op $an"];
-    }
-    return ["$type $an", "String? ${an}_\$"];
+    final req = type.endsWith("?") ? "" : "required ";
+    return "$req $type $an";
   }).toList();
   args.add("String? alias");
   args.add("String? directive");

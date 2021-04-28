@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -165,34 +167,150 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
   Tuple3<String?, String?, String?> _getAliasArgsAndDirective(
       List<Expression> argsList) {
     String? alias;
-    String? args;
+    final args = <String>[];
     String? directive;
     argsList.forEach((e) {
       if (e is NamedExpression) {
         final name = e.name.label.name;
+        logger.shout("Arg Type ${e.expression.runtimeType}");
         var value = e.expression.toString();
-        value = value.substring(1, value.length - 1);
         if (name == "alias") {
-          alias = value;
+          alias = value.substring(1, value.length - 1);
         } else if (name == "directive") {
-          directive = value;
+          directive = value.substring(1, value.length - 1);
         } else {
-          if (args == null) {
-            args = "$name: $value";
-          } else {
-            args = "$args,$name: $value";
-          }
+          args.add(_getFieldArg(e));
         }
       }
     });
 
-    return Tuple3(alias, args, directive);
+    return Tuple3(alias, args.isEmpty ? null : args.join(", "), directive);
+  }
+
+  String _getFieldArg(NamedExpression e) {
+    final name = e.name.label.name;
+    final valueE = e.expression;
+    var value = "";
+    final valueStr = e.expression.toString();
+    if (valueStr.startsWith("\"\\\$")) {
+      // query variable
+      value = valueStr.substring(2, valueStr.substring(1).indexOf("\""));
+    } else if (valueE is PrefixedIdentifier) {
+      // enum
+      value = valueStr.split(".").last;
+    } else if (valueE is MethodInvocation) {
+      logger.shout("Input object $valueStr");
+      // input object
+      final visitor = ObjectArgVisitor();
+      valueE.visitChildren(visitor);
+      value = visitor.arg + " } ";
+    } else {
+      value = valueStr;
+    }
+    return "$name: $value";
   }
 
   @override
   Object? visitPrefixedIdentifier(PrefixedIdentifier node) {
     print("Prefix Identifier $node");
     return super.visitPrefixedIdentifier(node);
+  }
+
+  @override
+  Object? visitSimpleIdentifier(SimpleIdentifier node) {
+    return super.visitSimpleIdentifier(node);
+  }
+}
+
+class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
+  var arg = "{ ";
+  var _addList = false;
+  var _addPrefixIdentifier = false;
+  @override
+  Object? visitMethodInvocation(MethodInvocation node) {
+    print("visitMethodInvocation enter $node");
+
+    arg += "{ ";
+    super.visitMethodInvocation(node);
+    print("visitMethodInvocation leave $node");
+    arg += " }, ";
+  }
+
+  @override
+  Object? visitPrefixedIdentifier(PrefixedIdentifier node) {
+    if (_addPrefixIdentifier) {
+      arg += "${node.name.split(".").last},";
+    }
+    return super.visitPrefixedIdentifier(node);
+  }
+
+  @override
+  Object? visitArgumentList(ArgumentList node) {
+    return super.visitArgumentList(node);
+  }
+
+  @override
+  Object? visitNamedExpression(NamedExpression node) {
+    print("visitNamedExpression $node");
+    _addPrefixIdentifier = false;
+    var name = node.name.label.name;
+    if (name.startsWith("d\$_")) {
+      name = name.substring(3);
+    }
+    final valueE = node.expression;
+    var value = "";
+    final valueStr = node.expression.toString();
+    if (valueStr.startsWith("\"\\\$")) {
+      // query variable
+      value = valueStr.substring(2, valueStr.substring(1).indexOf("\""));
+    } else if (valueE is PrefixedIdentifier) {
+      // enum
+      value = valueStr.split(".").last;
+    } else if (valueE is MethodInvocation) {
+      value = "";
+    } else if (_isEnumOrObjectList(valueE)) {
+      _addList = true;
+      if ((valueE as ListLiteral).elements.firstOrNull is PrefixedIdentifier) {
+        _addPrefixIdentifier = true;
+      }
+      value = "";
+    } else {
+      if (valueE is ListLiteral) {
+        _addList = false;
+      }
+      value = valueStr;
+    }
+    arg += "$name: $value${value.isEmpty ? "" : ", "}";
+    return super.visitNamedExpression(node);
+  }
+
+  bool _isEnumOrObjectList(Expression e) {
+    var result = false;
+    if (e is ListLiteral) {
+      final f = e.elements.firstOrNull;
+      if (f is MethodInvocation || f is PrefixedIdentifier) {
+        result = true;
+      }
+    }
+    return result;
+  }
+
+  @override
+  Object? visitSimpleStringLiteral(SimpleStringLiteral node) {
+    // TODO: implement visitSimpleStringLiteral
+    return super.visitSimpleStringLiteral(node);
+  }
+
+  @override
+  Object? visitListLiteral(ListLiteral node) {
+    final addList = _isEnumOrObjectList(node);
+    if (addList) {
+      arg += "[ ";
+    }
+    super.visitListLiteral(node);
+    if (addList) {
+      arg += " ],";
+    }
   }
 
   @override
