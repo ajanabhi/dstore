@@ -194,7 +194,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     final valueStr = e.expression.toString();
     if (valueStr.startsWith("\"\\\$")) {
       // query variable
-      value = valueStr.substring(2, valueStr.substring(1).indexOf("\""));
+      value = valueStr.substring(2, valueStr.substring(1).indexOf("\"") + 1);
     } else if (valueE is PrefixedIdentifier) {
       // enum
       value = valueStr.split(".").last;
@@ -204,6 +204,20 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       final visitor = ObjectArgVisitor();
       valueE.visitChildren(visitor);
       value = visitor.arg + " } ";
+    } else if (_isEnumList(valueE)) {
+      final ve = valueE as ListLiteral;
+      final vls =
+          ve.elements.map((e) => e.toString().split(".").last).join(", ");
+      value = "[$vls]";
+    } else if (_isObjectList(valueE)) {
+      final ve = valueE as ListLiteral;
+      final vls = ve.elements.map((e) {
+        final visitor = ObjectArgVisitor();
+        valueE.visitChildren(visitor);
+        value = visitor.arg + " } ";
+        return value;
+      }).join(", ");
+      value = "[$vls]";
     } else {
       value = valueStr;
     }
@@ -220,6 +234,28 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
   Object? visitSimpleIdentifier(SimpleIdentifier node) {
     return super.visitSimpleIdentifier(node);
   }
+}
+
+bool _isEnumList(Expression e) {
+  var result = false;
+  if (e is ListLiteral) {
+    final f = e.elements.firstOrNull;
+    if (f is MethodInvocation || f is PrefixedIdentifier) {
+      result = true;
+    }
+  }
+  return result;
+}
+
+bool _isObjectList(Expression e) {
+  var result = false;
+  if (e is ListLiteral) {
+    final f = e.elements.firstOrNull;
+    if (f is MethodInvocation) {
+      result = true;
+    }
+  }
+  return result;
 }
 
 class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
@@ -261,14 +297,14 @@ class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
     final valueStr = node.expression.toString();
     if (valueStr.startsWith("\"\\\$")) {
       // query variable
-      value = valueStr.substring(2, valueStr.substring(1).indexOf("\""));
+      value = valueStr.substring(2, valueStr.substring(1).indexOf("\"") + 1);
     } else if (valueE is PrefixedIdentifier) {
       // enum
       value = valueStr.split(".").last;
     } else if (valueE is MethodInvocation) {
       value = "";
-    } else if (_isEnumOrObjectList(valueE)) {
-      if ((valueE as ListLiteral).elements.firstOrNull is PrefixedIdentifier) {
+    } else if (_isEnumList(valueE) || _isObjectList(valueE)) {
+      if (_isEnumList(valueE)) {
         _addPrefixIdentifier = true;
       }
       value = "";
@@ -279,26 +315,9 @@ class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
     return super.visitNamedExpression(node);
   }
 
-  bool _isEnumOrObjectList(Expression e) {
-    var result = false;
-    if (e is ListLiteral) {
-      final f = e.elements.firstOrNull;
-      if (f is MethodInvocation || f is PrefixedIdentifier) {
-        result = true;
-      }
-    }
-    return result;
-  }
-
-  @override
-  Object? visitSimpleStringLiteral(SimpleStringLiteral node) {
-    // TODO: implement visitSimpleStringLiteral
-    return super.visitSimpleStringLiteral(node);
-  }
-
   @override
   Object? visitListLiteral(ListLiteral node) {
-    final addList = _isEnumOrObjectList(node);
+    final addList = _isEnumList(node) || _isObjectList(node);
     if (addList) {
       arg += "[ ";
     }

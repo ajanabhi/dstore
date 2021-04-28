@@ -5,19 +5,26 @@ import 'local.dart';
 @GraphqlOps(api)
 class _HelloDSL {
   final todo = Query()
-    ..hello(alias: "ho")
+    ..hello(alias: "h1o")
     ..hello1
     ..todo(Todo()..text)
     ..todo(Todo())
-    ..users(Person(), alias: "users3")
+    ..input2(Todo()..text, i2: Input1(name: "n2", counts: [3]))
+    ..inputArgsQ(
+        nameR: "namR",
+        idsN: [],
+        idsN2: [],
+        eR: Enum1.HIGH,
+        input1: Input1(name: "i2"))
     ..users(Person()
       ..name
       ..tags
       ..hello(HelloU()..unionfrag_Hello1(Hello1()..name)));
 
   final s = Query()
+    ..todo(Todo()..text)
     ..inputArgsQ(
-        nameR: "n222",
+        nameR: "n22",
         idsN: [],
         count: 3,
         percent: 3.5,

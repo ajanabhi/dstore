@@ -238,6 +238,7 @@ class Query {
   void todo(Todo todo, {String? alias, String? directive}) {}
   void a({String? value, String? alias, String? directive}) {}
   void hellou(HelloU hellou, {String? alias, String? directive}) {}
+  void input2(Todo input2, {Input1? i2, String? alias, String? directive}) {}
   void inputArgsQ(
       {String? name,
       required String nameR,
