@@ -2,6 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/graphql/schema_source/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -12,10 +13,6 @@ Future<void> generateSchema(
   element.fields.forEach((fe) {
     logger.shout(
         "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element}");
-    final type = fe.type;
-    if (type is InterfaceType) {
-      type.typeArguments.first;
-    }
     if (fe.name.toLowerCase() == "objects") {
       schemaStr += getObjects(element: element, schema: schemaMeta);
     }
@@ -66,7 +63,7 @@ String getFieldsFromClassElement(
 String getAnnotationsForField(
     {required FieldElement fe, required GraphqlDatabase database}) {
   if (database == GraphqlDatabase.dgraph) {
-    return getDGraphFieldAnnotations(fe: fe);
+    return getDGraphFieldAnnotations(element: fe);
   }
   return "";
 }

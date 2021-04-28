@@ -6,6 +6,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:dio/dio.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
+import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
 import 'package:dstore_generator/src/graphql/schema/introspection.dart';
 
@@ -31,7 +32,7 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
       final inputs = schema.inputObjectTypes
           .map((e) => _convertGInputTypeToDType(e, gApi.scalarMap))
           .join("\n");
-      final dslTypes = getDslTypes(schema);
+      final dslTypes = getDslTypes(schema, gApi.scalarMap);
       return """
       
       $enums 
@@ -50,14 +51,14 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
 }
 
 String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
-    {String? newName}) {
+    {String? newName, Map<String, String>? scalarMap}) {
   if (ot == null) {
     return "";
   }
   final name = newName ?? ot.name;
   final ctor = newName != null ? "$name([String? args]);" : "";
   final memebers = ot.fields.map((f) {
-    return _convertFieldDefinitionToDSL(f);
+    return _convertFieldDefinitionToDSL(f, scalarMap);
   }).join("\n ");
 
   return """
@@ -69,14 +70,21 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
   """;
 }
 
-String _convertFieldDefinitionToDSL(gschema.FieldDefinition f) {
+String _convertFieldDefinitionToDSL(
+    gschema.FieldDefinition f, Map<String, String>? scalaraMap) {
   final fn = f.name;
   final ft = getFieldMetadataFromFieldTypeInstance(f.type);
   final type = f.type.baseTypeName;
   final isScalar = ft.fieldType is gschema.ScalarTypeDefinition;
-  final args = f.args.map((a) {
+  final args = f.args.expand((a) {
     final an = a.name;
-    return "String? $an";
+    final type = _getInputTypeFromGraphqlType(a.type, scalaraMap);
+    final td = GraphqlAstUtils.getTypeDefinitionFromGraphqlType(a.type);
+    if (td is gschema.ScalarTypeDefinition) {
+      final op = a.type.isNonNull ? "" : "?";
+      return ["String$op $an"];
+    }
+    return ["$type $an", "String? ${an}_\$"];
   }).toList();
   args.add("String? alias");
   args.add("String? directive");
@@ -87,14 +95,14 @@ String _convertFieldDefinitionToDSL(gschema.FieldDefinition f) {
   return "void $fn($reqArgs{${args.join(", ")}}) { }";
 }
 
-String _convertInterfaceTypeToDSL(
-    gschema.InterfaceTypeDefinition? itd, gschema.GraphQLSchema schema) {
+String _convertInterfaceTypeToDSL(gschema.InterfaceTypeDefinition? itd,
+    gschema.GraphQLSchema schema, Map<String, String>? scalarMap) {
   if (itd == null) {
     return "";
   }
   final name = itd.name;
   final memebers = itd.fields.map((f) {
-    return _convertFieldDefinitionToDSL(f);
+    return _convertFieldDefinitionToDSL(f, scalarMap);
   }).join("\n ");
   final concreteTypes = schema.objectTypes
       .where((ot) => itd.isImplementedBy(ot))
@@ -126,7 +134,8 @@ String _convertUnionTypeToDSl(gschema.UnionTypeDefinition ut) {
   """;
 }
 
-String getDslTypes(gschema.GraphQLSchema schema) {
+String getDslTypes(
+    gschema.GraphQLSchema schema, Map<String, String>? scalarMap) {
   String? getNewNameForObjectType(gschema.ObjectTypeDefinition ot) {
     final name = ot.name;
     if (name == schema.query?.name) {
@@ -143,11 +152,11 @@ String getDslTypes(gschema.GraphQLSchema schema) {
 
   final types = <String>[];
 
-  types.addAll(schema.objectTypes.map(
-      (e) => _convertObjectTypeToDSl(e, newName: getNewNameForObjectType(e))));
+  types.addAll(schema.objectTypes.map((e) => _convertObjectTypeToDSl(e,
+      newName: getNewNameForObjectType(e), scalarMap: scalarMap)));
   types.addAll(schema.unions.map((e) => _convertUnionTypeToDSl(e)));
-  types.addAll(
-      schema.interaces.map((e) => _convertInterfaceTypeToDSL(e, schema)));
+  types.addAll(schema.interaces
+      .map((e) => _convertInterfaceTypeToDSL(e, schema, scalarMap)));
   return """
    ${types.join("\n")}
   
@@ -180,39 +189,43 @@ String _convertGEnumToDEnum(gschema.EnumTypeDefinition genum) {
   return result;
 }
 
+String _getInputTypeFromGraphqlType(
+    gschema.GraphQLType gtype, Map<String, String>? scalarMap) {
+  String getNamedType(gschema.NamedType gtype2) {
+    final gschema.TypeDefinition td = gtype2.type;
+    var type = gtype.baseTypeName;
+    if (td is gschema.ScalarTypeDefinition) {
+      type = getScalarTypeFromString(type, scalarMap: scalarMap);
+    }
+    return type;
+  }
+
+  if (gtype.isNonNull) {
+    if (gtype is gschema.NamedType) {
+      return getNamedType(gtype);
+    } else {
+      return "List<${_getInputTypeFromGraphqlType((gtype as gschema.ListType).type, scalarMap)}>";
+    }
+  } else {
+    if (gtype is gschema.NamedType) {
+      return "${getNamedType(gtype)}?";
+    } else {
+      return "List<${_getInputTypeFromGraphqlType((gtype as gschema.ListType).type, scalarMap)}>?";
+    }
+  }
+}
+
 String _convertGInputTypeToDType(
     gschema.InputObjectTypeDefinition it, Map<String, String>? scalarMap) {
   final name = it.name;
   final fields = it.fields.map((gf) {
     final name = gf.name;
     final gtype = gf.type;
-    var type =
-        getScalarTypeFromString(gtype.baseTypeName, scalarMap: scalarMap);
-    var isOptional = false;
-    if (gtype.isNonNull) {
-      if (gtype is gschema.ListType) {
-        final lit = gtype.type;
-        if (lit.isNonNull) {
-          type = "List<$type>";
-        } else {
-          type = "List<$type?>";
-        }
-      }
-    } else {
-      isOptional = true;
-      if (gtype is gschema.ListType) {
-        final lit = gtype.type;
-        if (lit.isNonNull) {
-          type = "List<$type>";
-        } else {
-          type = "List<$type?>";
-        }
-      }
-    }
+    var type = _getInputTypeFromGraphqlType(gtype, scalarMap);
     return Field(
       name: name,
       type: type,
-      isOptional: isOptional,
+      isOptional: !gtype.isNonNull,
     );
   }).toList();
 

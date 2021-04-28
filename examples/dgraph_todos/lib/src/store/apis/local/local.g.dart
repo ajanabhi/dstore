@@ -9,7 +9,10 @@ part of 'local.dart';
 Input1 _$Input1FromJson(Map<String, dynamic> json) {
   return Input1(
     name: json['name'] as String?,
-    inputs: json['inputs'] as List<dynamic>?,
+    inputs: (json['inputs'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : Input1.fromJson(e as Map<String, dynamic>))
+        .toList(),
   );
 }
 

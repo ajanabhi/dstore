@@ -45,7 +45,7 @@ enum __DirectiveLocation {
 class Input1 {
   final String? name;
 
-  final List<dynamic?>? inputs;
+  final List<Input1?>? inputs;
 
   @JsonKey(ignore: true)
   _$Input1CopyWith<Input1> get copyWith =>
@@ -73,7 +73,7 @@ class Input1 {
 abstract class $Input1CopyWith<O> {
   factory $Input1CopyWith(Input1 value, O Function(Input1) then) =
       _$Input1CopyWithImpl<O>;
-  O call({String? name, List<dynamic?>? inputs});
+  O call({String? name, List<Input1?>? inputs});
 }
 
 class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
@@ -86,14 +86,14 @@ class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String?,
         inputs:
-            inputs == dimmutable ? _value.inputs : inputs as List<dynamic?>?));
+            inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?));
   }
 }
 
 abstract class _$Input1CopyWith<O> implements $Input1CopyWith<O> {
   factory _$Input1CopyWith(Input1 value, O Function(Input1) then) =
       __$Input1CopyWithImpl<O>;
-  O call({String? name, List<dynamic?>? inputs});
+  O call({String? name, List<Input1?>? inputs});
 }
 
 class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
@@ -109,7 +109,7 @@ class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
     return _then(Input1(
         name: name == dimmutable ? _value.name : name as String?,
         inputs:
-            inputs == dimmutable ? _value.inputs : inputs as List<dynamic?>?));
+            inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?));
   }
 }
 
@@ -172,13 +172,16 @@ class Query {
   void hellou(HelloU hellou, {String? alias, String? directive}) {}
   void inputArgsQ(
       {String? name,
-      String? nameR,
-      String? input1,
+      String nameR,
+      Input1? input1,
+      String? input1_$,
       String? ids,
-      String? idsN,
-      String? idsN2,
-      String? eR,
-      String? e,
+      String idsN,
+      String idsN2,
+      Enum1 eR,
+      String? eR_$,
+      Enum1? e,
+      String? e_$,
       String? aa,
       String? alias,
       String? directive}) {}
