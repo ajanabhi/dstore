@@ -43,6 +43,8 @@ class search {
 
 class id {
   const id();
+  @override
+  String toString() => "@id";
 }
 
 class dgraph {
@@ -66,6 +68,8 @@ class dgraph {
 
 class withSubscription {
   const withSubscription();
+  @override
+  String toString() => "@withSubscription";
 }
 
 class secret {
@@ -73,6 +77,15 @@ class secret {
   final String? pred;
 
   secret({required this.field, this.pred});
+
+  @override
+  String toString() {
+    final params = <String>["field: \"$field\""];
+    if (pred != null) {
+      params.add("pred: \"$pred\"");
+    }
+    return "@secret(${params.join(", ")})";
+  }
 }
 
 class AuthRule {
@@ -82,6 +95,24 @@ class AuthRule {
   final String? rule;
 
   const AuthRule({this.and, this.or, this.not, this.rule});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (rule != null) {
+      params.add("rule: \"\"\" $rule \"\"\"");
+    }
+    if (not != null) {
+      params.add("not: ${not}");
+    }
+    if (and != null) {
+      params.add("and: ${and!.map((e) => e.toString()).toList()}");
+    }
+    if (or != null) {
+      params.add("or: ${or!.map((e) => e.toString()).toList()}");
+    }
+    return '{${params.join(", ")}}';
+  }
 }
 
 class auth {
@@ -91,6 +122,12 @@ class auth {
   final AuthRule? delete;
 
   const auth({this.query, this.add, this.update, this.delete});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    return 'auth(query: $query, add: $add, update: $update, delete: $delete)';
+  }
 }
 
 enum HTTPMethod { GET, POST, PUT, PATCH, DELETE }
@@ -167,10 +204,14 @@ class custom {
 
 class remote {
   const remote();
+  @override
+  String toString() => "@remote";
 }
 
 class lambda {
   const lambda();
+  @override
+  String toString() => "@lambda";
 }
 
 class cascade {

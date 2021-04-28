@@ -29,7 +29,6 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   if (lambdaD != null) {
     annotations.add("@lambda");
   }
-
   return annotations.join(" ");
 }
 
@@ -125,5 +124,52 @@ CustomHTTP? getCustomHttp(DartObject? obj) {
         forwardHeaders: forwardHeaders,
         skipIntrospection: skipIntrospection,
         introspectionHeaders: introspectionHeaders);
+  }
+}
+
+withSubscription? getWithSubscriptionDirective(Element element) {
+  final annot =
+      element.annotationFromType(withSubscription)?.computeConstantValue();
+  if (annot != null) {
+    return withSubscription();
+  }
+}
+
+secret? getSecretDirective(Element element) {
+  final annot = element.annotationFromType(secret)?.computeConstantValue();
+  if (annot != null) {
+    final field = annot.getField("field")?.toStringValue();
+    final pred = annot.getField("pred")?.toStringValue();
+
+    return secret(field: field!, pred: pred);
+  }
+}
+
+auth? getAuthDirective(Element element) {
+  final annot = element.annotationFromType(auth)?.computeConstantValue();
+  if (annot != null) {
+    final query = getAuthRuleFromObject(annot.getField("query"));
+    final add = getAuthRuleFromObject(annot.getField("add"));
+    final update = getAuthRuleFromObject(annot.getField("update"));
+    final delete = getAuthRuleFromObject(annot.getField("delete"));
+    return auth(query: query, add: add, update: update, delete: delete);
+  }
+}
+
+AuthRule? getAuthRuleFromObject(DartObject? obj) {
+  if (obj != null) {
+    final rule = obj.getField("rule")?.toStringValue();
+    final not = getAuthRuleFromObject(obj.getField("not"));
+    final and = obj
+        .getField("and")
+        ?.toListValue()
+        ?.map((e) => getAuthRuleFromObject(e)!)
+        .toList();
+    final or = obj
+        .getField("or")
+        ?.toListValue()
+        ?.map((e) => getAuthRuleFromObject(e)!)
+        .toList();
+    return AuthRule(rule: rule, not: not, and: and, or: or);
   }
 }
