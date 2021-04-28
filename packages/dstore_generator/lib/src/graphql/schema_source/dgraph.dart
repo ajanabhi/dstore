@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -9,25 +7,15 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   final annotations = <String>[];
   final hasI = getHasInverseDirective(element);
   if (hasI != null) {
-    annotations.add("hasInverse(field: ${hasI.field})");
+    annotations.add(hasI.toString());
   }
   final searchD = getSearchDirective(element);
   if (searchD != null) {
-    final by = searchD.by != null
-        ? "(by: [${searchD.by!.map((e) => e.toString().split(".").last).join(", ")}])"
-        : "";
-    annotations.add("search$by");
+    annotations.add(searchD.toString());
   }
   final dgraphD = getDGraphDirective(element);
   if (dgraphD != null) {
-    final params = <String>[];
-    if (dgraphD.type != null) {
-      params.add("type: \"${dgraphD.type}\"");
-    }
-    if (dgraphD.pred != null) {
-      params.add("pred: \"${dgraphD.pred}\"");
-    }
-    annotations.add("@dgraph(${params.join(", ")})");
+    annotations.add(dgraphD.toString());
   }
   final idD = getIdDirective(element);
   if (idD != null) {
@@ -35,41 +23,13 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   }
   final customD = getCustomDirective(element);
   if (customD != null) {
-    final params = <String>[];
-    if (customD.dql != null) {
-      params.add("dql: ${customD.dql}");
-    }
-    if (customD.http != null) {
-      final http = customD.http!;
-      final cParams = <String>[];
-      cParams.add("url: \"${http.url}\"");
-      cParams.add("method: ${http.method.toString().split(".").last}");
-      if (http.introspectionHeaders != null) {
-        cParams.add(
-            "introspectionHeaders: ${jsonEncode(http.introspectionHeaders)}");
-      }
-      if (http.secretHeaders != null) {
-        cParams.add("secretHeaders: ${jsonEncode(http.secretHeaders)}");
-      }
-      if (http.forwardHeaders != null) {
-        cParams.add("forwardHeaders: ${jsonEncode(http.forwardHeaders)}");
-      }
-      if (http.graphql != null) {
-        cParams.add("graphql: \"\"\"${http.graphql}\"\"\"");
-      }
-
-      if (http.skipIntrospection != null) {
-        cParams.add("skipIntrospection: ${http.skipIntrospection}");
-      }
-
-      if (http.mode != null) {
-        cParams.add("mode: ${http.mode.toString().split(".").last}");
-      }
-
-      params.add("http: {${cParams.join(", ")}}");
-    }
-    annotations.add("@custom(${params.join(", ")})");
+    annotations.add(customD.toString());
   }
+  final lambdaD = getLambdaDirective(element);
+  if (lambdaD != null) {
+    annotations.add("@lambda");
+  }
+
   return annotations.join(" ");
 }
 

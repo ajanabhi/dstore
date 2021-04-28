@@ -1,7 +1,12 @@
+import 'dart:convert';
+
 class hasInverse {
   final String field;
 
   const hasInverse(this.field);
+
+  @override
+  String toString() => "hasInverse(field: ${field})";
 }
 
 enum DgraphIndex {
@@ -26,6 +31,14 @@ class search {
   final List<DgraphIndex>? by;
 
   const search(this.by);
+
+  @override
+  String toString() {
+    final bys = by != null
+        ? "(by: [${by!.map((e) => e.toString().split(".").last).join(", ")}])"
+        : "";
+    return "@search$bys";
+  }
 }
 
 class id {
@@ -37,6 +50,18 @@ class dgraph {
   final String? pred;
 
   const dgraph({this.type, this.pred});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (type != null) {
+      params.add("type: \"${type}\"");
+    }
+    if (pred != null) {
+      params.add("pred: \"${pred}\"");
+    }
+    return "@dgraph(${params.join(", ")})";
+  }
 }
 
 class withSubscription {
@@ -100,6 +125,44 @@ class custom {
   final String? dql;
 
   const custom({this.http, this.dql});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (dql != null) {
+      params.add("dql: ${dql}");
+    }
+    if (this.http != null) {
+      final http = this.http!;
+      final cParams = <String>[];
+      cParams.add("url: \"${http.url}\"");
+      cParams.add("method: ${http.method.toString().split(".").last}");
+      if (http.introspectionHeaders != null) {
+        cParams.add(
+            "introspectionHeaders: ${jsonEncode(http.introspectionHeaders)}");
+      }
+      if (http.secretHeaders != null) {
+        cParams.add("secretHeaders: ${jsonEncode(http.secretHeaders)}");
+      }
+      if (http.forwardHeaders != null) {
+        cParams.add("forwardHeaders: ${jsonEncode(http.forwardHeaders)}");
+      }
+      if (http.graphql != null) {
+        cParams.add("graphql: \"\"\"${http.graphql}\"\"\"");
+      }
+
+      if (http.skipIntrospection != null) {
+        cParams.add("skipIntrospection: ${http.skipIntrospection}");
+      }
+
+      if (http.mode != null) {
+        cParams.add("mode: ${http.mode.toString().split(".").last}");
+      }
+
+      params.add("http: {${cParams.join(", ")}}");
+    }
+    return "@custom(${params.join(", ")})";
+  }
 }
 
 class remote {
