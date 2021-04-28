@@ -19,7 +19,7 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   }
   final idD = getIdDirective(element);
   if (idD != null) {
-    annotations.add("@id");
+    annotations.add(idD.toString());
   }
   final customD = getCustomDirective(element);
   if (customD != null) {
@@ -27,7 +27,7 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   }
   final lambdaD = getLambdaDirective(element);
   if (lambdaD != null) {
-    annotations.add("@lambda");
+    annotations.add(lambdaD.toString());
   }
   return annotations.join(" ");
 }
