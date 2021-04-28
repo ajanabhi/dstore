@@ -106,7 +106,8 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       var objSpread = "";
       if (argsList.isNotEmpty &&
           (argsList.first is CascadeExpression ||
-              argsList.first is MethodInvocation)) {
+              argsList.first is MethodInvocation ||
+              argsList.first is PropertyAccess)) {
         _propsForType.clear(); // its object field
         isObject = true;
         print("Arg First ${argsList.first.runtimeType}");

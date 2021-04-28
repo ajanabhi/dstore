@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
@@ -9,6 +8,7 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:source_gen/src/constants/revive.dart';
 import 'package:tuple/tuple.dart';
 import './utils.dart';
 import "package:collection/collection.dart";
@@ -332,15 +332,34 @@ extension DartObjectExt on DartObject {
     return m?.map((key, value) =>
         MapEntry(key!.toStringValue()!, value!.toStringValue()!));
   }
+
+  T? getEnumField<T>(String name, List<T> values) {
+    final field = getField(name);
+    if (field != null) {
+      final v = reviveInstance(field).accessor;
+      return values.singleWhereOrNull((element) => element.toString() == v);
+    }
+  }
+
+  T? getEnumValue<T>(List<T> values) {
+    final i = reviveInstance(this);
+    if (i != null) {
+      final v = i.accessor;
+      return values.singleWhereOrNull((element) => element.toString() == v);
+    }
+  }
+
+  String? get accesor {
+    final i = reviveInstance(this);
+    if (i != null) {
+      return i.accessor;
+    }
+  }
 }
 
 extension ConstReadExt on ConstantReader {
   T? getEnumField<T>(String name, List<T> values) {
-    final field = peek(name);
-    if (field != null) {
-      final v = field.revive().accessor;
-      return values.singleWhereOrNull((element) => element.toString() == v);
-    }
+    return objectValue.getEnumField(name, values);
   }
 
   String? functionNameForField(String name,
