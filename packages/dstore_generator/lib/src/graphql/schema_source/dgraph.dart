@@ -173,3 +173,10 @@ AuthRule? getAuthRuleFromObject(DartObject? obj) {
     return AuthRule(rule: rule, not: not, and: and, or: or);
   }
 }
+
+remote? getRemoteDirective(Element element) {
+  final annot = element.annotationFromType(auth)?.computeConstantValue();
+  if (annot != null) {
+    return remote();
+  }
+}
