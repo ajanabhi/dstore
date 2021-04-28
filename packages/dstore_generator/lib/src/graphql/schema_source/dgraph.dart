@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -16,7 +18,59 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
         : "";
     annotations.add("search$by");
   }
-  return "";
+  final dgraphD = getDGraphDirective(element);
+  if (dgraphD != null) {
+    final params = <String>[];
+    if (dgraphD.type != null) {
+      params.add("type: \"${dgraphD.type}\"");
+    }
+    if (dgraphD.pred != null) {
+      params.add("pred: \"${dgraphD.pred}\"");
+    }
+    annotations.add("@dgraph(${params.join(", ")})");
+  }
+  final idD = getIdDirective(element);
+  if (idD != null) {
+    annotations.add("@id");
+  }
+  final customD = getCustomDirective(element);
+  if (customD != null) {
+    final params = <String>[];
+    if (customD.dql != null) {
+      params.add("dql: ${customD.dql}");
+    }
+    if (customD.http != null) {
+      final http = customD.http!;
+      final cParams = <String>[];
+      cParams.add("url: \"${http.url}\"");
+      cParams.add("method: ${http.method.toString().split(".").last}");
+      if (http.introspectionHeaders != null) {
+        cParams.add(
+            "introspectionHeaders: ${jsonEncode(http.introspectionHeaders)}");
+      }
+      if (http.secretHeaders != null) {
+        cParams.add("secretHeaders: ${jsonEncode(http.secretHeaders)}");
+      }
+      if (http.forwardHeaders != null) {
+        cParams.add("forwardHeaders: ${jsonEncode(http.forwardHeaders)}");
+      }
+      if (http.graphql != null) {
+        cParams.add("graphql: \"\"\"${http.graphql}\"\"\"");
+      }
+
+      if (http.skipIntrospection != null) {
+        cParams.add("skipIntrospection: ${http.skipIntrospection}");
+      }
+
+      if (http.mode != null) {
+        cParams.add("mode: ${http.mode.toString().split(".").last}");
+      }
+
+      params.add("http: {${cParams.join(", ")}}");
+    }
+    annotations.add("@custom(${params.join(", ")})");
+  }
+  return annotations.join(" ");
 }
 
 hasInverse? getHasInverseDirective(Element element) {
