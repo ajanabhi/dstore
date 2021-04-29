@@ -9,6 +9,13 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:tuple/tuple.dart';
 
+const navStateFeilds = [
+  "page",
+  "redirectToAction",
+  "beforeLeave",
+  "historyUpdate"
+];
+
 Future<String> generatePStateNavForClassElement(
     ClassElement element, BuildStep buildStep) async {
   if (!_isNavPState(element)) {
@@ -30,7 +37,9 @@ Future<String> generatePStateNavForClassElement(
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
   final methods = visitor.methods.where((m) => m.name != "buildPages").toList();
-  var fields = visitor.fields;
+  var fields = visitor.fields
+      .where((element) => !navStateFeilds.contains(element.name))
+      .toList();
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
       name: m.name,
       type: "AsyncActionField",

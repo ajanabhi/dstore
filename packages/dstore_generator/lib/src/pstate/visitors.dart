@@ -28,6 +28,12 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       required this.historyEnabled}) {
     if (isNav) {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
+      fields.add(
+          Field(name: "beforeLeave", type: "BeforeLeaveFn?", isOptional: true));
+      fields.add(
+          Field(name: "redirectToAction", type: "Action?", isOptional: true));
+      fields.add(Field(
+          name: "historyUpdate", type: "HistoryUpdate?", isOptional: true));
     }
   }
 
@@ -111,7 +117,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     }
     if (node.body is BlockFunctionBody) {
       final ex = node.body as BlockFunctionBody;
-      final bodyVisitor = MethodAstVisitor(element);
+      final bodyVisitor = MethodAstVisitor(element: element, isNav: isNav);
       node.body.visitChildren(bodyVisitor);
       ex.block.statements.forEach((statement) {
         print(
@@ -610,11 +616,15 @@ Tuple2<String, Set<String>> processMethodStatements(
 
 class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   final ClassElement element;
+  final bool isNav;
+  final List<String> navFields = [];
 
-  MethodAstVisitor(
-    this.element,
-  );
-  // viAs
+  MethodAstVisitor({required this.element, required this.isNav}) {
+    if (isNav) {
+      navFields.addAll(navStateFeilds);
+    }
+  }
+
   @override
   dynamic visitSimpleIdentifier(SimpleIdentifier node) {
     final name = node.name;
@@ -636,7 +646,8 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   // }
 
   bool _isClassMemeber(String name) =>
-      element.fields.where((element) => element.name == name).isNotEmpty;
+      element.fields.where((element) => element.name == name).isNotEmpty ||
+      navFields.contains(name);
 
   bool _isThisParent(AstNode? node) {
     if (node == null) {
