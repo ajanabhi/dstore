@@ -6,7 +6,7 @@ import "configuration/confiure_native.dart"
 export "router_deleagte.dart";
 export "route_information_parser.dart";
 
-typedef BeforeLeaveFn = bool Function(NavStateI);
+typedef BeforeLeaveFn = bool Function(AppStateI);
 
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
