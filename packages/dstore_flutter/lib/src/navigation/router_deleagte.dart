@@ -60,7 +60,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           },
           builder: (context, state) {
             return Navigator(
-              pages: state.buildPages(),
+              pages: state.page != null ? [state.page!] : state.buildPages(),
               onPopPage: (route, dynamic result) {
                 print("on Pop Page");
                 return false;

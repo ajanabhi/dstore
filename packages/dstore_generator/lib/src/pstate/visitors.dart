@@ -25,7 +25,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       required this.isPersitable,
       this.isNav = false,
       this.historyLimit,
-      required this.historyEnabled});
+      required this.historyEnabled}) {
+    if (isNav) {
+      fields.add(Field(name: "page", type: "Page"));
+    }
+  }
 
   @override
   dynamic visitMethodDeclaration(MethodDeclaration node) {
