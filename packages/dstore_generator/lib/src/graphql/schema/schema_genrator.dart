@@ -6,7 +6,6 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:dio/dio.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/globals.dart';
-import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
 import 'package:dstore_generator/src/graphql/schema/introspection.dart';
 
