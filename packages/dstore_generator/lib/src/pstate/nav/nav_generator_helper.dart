@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
@@ -12,14 +11,9 @@ import 'package:tuple/tuple.dart';
 
 Future<String> generatePStateNavForClassElement(
     ClassElement element, BuildStep buildStep) async {
-  final isNavInterfaceImplemented =
-      AstUtils.isSubTypeof(element.thisType, "NavStateI");
-  final isNestedNavInterfaceImplemented =
-      AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
-  if (isNavInterfaceImplemented == null &&
-      isNestedNavInterfaceImplemented == null) {
+  if (!_isNavPState(element)) {
     throw InvalidSignatureError(
-        "PState ${element.name} should extend NavStateI / NestedNavStateI ");
+        "PState ${element.name} should extend NavStateI / NavStateStackI / NestedNavStateI / NestedNavStateStackI");
   }
 
   final typeParamsTuple =
@@ -46,7 +40,7 @@ Future<String> generatePStateNavForClassElement(
   final psDeps = visitor.psDeps;
 
   final buildPages =
-      visitor.methods.where((m) => m.name == "buildPages").first.body;
+      visitor.methods.where((m) => m.name == "buildPages").firstOrNull?.body;
   final typePath = getFullTypeName(element);
   final typeVariable = "_${name}_FullPath";
   final pStateMeta = getPStateMeta(
@@ -65,11 +59,22 @@ Future<String> generatePStateNavForClassElement(
       methods: methods);
   return """
     
-    ${_createPStateNavModel(fields: fields, psDeps: psDeps, name: name, annotations: [], buildPages: buildPages, typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
+    ${_createPStateNavModel(fields: fields, psDeps: psDeps, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
   """;
+}
+
+bool _isNavPState(ClassElement element) {
+  final isNavInterfaceImplemented =
+      AstUtils.isSubTypeof(element.thisType, "NavStateI");
+
+  final isNestedNavInterfaceImplemented =
+      AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
+
+  return isNavInterfaceImplemented != null ||
+      isNestedNavInterfaceImplemented != null;
 }
 
 String _getNavStaticMeta(

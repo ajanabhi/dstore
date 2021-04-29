@@ -7,7 +7,8 @@ export "router_deleagte.dart";
 export "route_information_parser.dart";
 
 abstract class NavStateI<M> extends PStateModel<M> {
-  List<Page> buildPages();
+  Page? page;
+  List<Page> buildPages() => [];
   String? _url;
   Action? redirectToAction;
   HistoryUpdate? historyUpdate;
