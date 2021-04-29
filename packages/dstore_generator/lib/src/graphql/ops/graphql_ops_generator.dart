@@ -122,11 +122,6 @@ String generateOpsTypeForQuery(
   """;
   } else {
     // subscription
-    //   final String url;
-    // final String? graphqlQuery;
-    // final Function? inputSerializer;
-    // final Function responseDeserializer;
-    //
     if (api.wsUrl == null) {
       throw ArgumentError.value(
           "You should provide websocket url in u r GraphqlApi config inorder to use subscriptions ");

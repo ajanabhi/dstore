@@ -95,6 +95,35 @@ extension StringExt on String {
       return this.replaceFirst(match, "");
     }
   }
+
+  String get addDName {
+    if (startsWith("_")) {
+      return "d\$_$this";
+    } else if (DART_RESERVED_KEYWORDS.contains(this)) {
+      return "${this}_\$d";
+    } else {
+      return this;
+    }
+  }
+
+  String get removeDName {
+    final value = this;
+    if (value.startsWith("d\$_")) {
+      final v = value.substring(3);
+      if (v.startsWith("_")) {
+        return v;
+      }
+      return value;
+    } else if (value.endsWith("_\$d")) {
+      final v = value.substring(0, value.length - 3);
+      if (DART_RESERVED_KEYWORDS.contains(v)) {
+        return v;
+      }
+      return value;
+    } else {
+      return value;
+    }
+  }
 }
 
 extension IterableMapIndex<T> on Iterable<T> {

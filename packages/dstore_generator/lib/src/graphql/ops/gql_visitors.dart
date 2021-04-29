@@ -196,7 +196,7 @@ class OperationVisitor extends RecursiveVisitor {
     if (fieldName == "__typename") {
       print("typename found");
       _resultFieldElementStack.current.fields.add(GField(
-        name: "G__typeName",
+        name: "d\$___typeName",
         optional: false,
         type: "String",
         listType: [],
@@ -232,9 +232,9 @@ class OperationVisitor extends RecursiveVisitor {
       }
       var name = node.alias?.value ?? fieldName;
       String? jsonKey;
-
-      if (DART_RESERVED_KEYWORDS.contains(name) || name.startsWith("_")) {
-        name = "g$name";
+      final dname = name.addDName;
+      if (dname != name) {
+        name = dname;
         jsonKey = name;
       }
       _resultFieldElementStack.current.fields.add(GField(

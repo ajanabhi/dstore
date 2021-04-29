@@ -274,11 +274,11 @@ FieldG convertGraphqlFieldToField(
           (gf) => convertGraphqlFieldToField(gf, prefix, fragmentFieldsMap));
       final supertypes = gf.fragments.map((f) {
         final fields = getFieldsFromFragment([f], fragmentFieldsMap, prefix);
-        fields.add(FieldG(
-          name: "G__typeName",
-          type: "String",
-          jsonKey: "__typename",
-        ));
+        // fields.add(FieldG(
+        //   name: "G__typeName",
+        //   type: "String",
+        //   jsonKey: "__typename",
+        // ));
         String on;
         if (f.typeNode != null) {
           final tl = fragmentFieldsMap[f.typeNode]!;

@@ -19,7 +19,7 @@ abstract class ModelUtils {
   static List<Field> processFields(List<Field> fields,
       {bool addJsonKey = false}) {
     return fields.map((f) {
-      final name = getDNameForIdentifier(f.name);
+      final name = f.name.addDName;
       var annotations = f.annotations;
       if (addJsonKey && name != f.name) {
         if (f.annotations
