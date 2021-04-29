@@ -13,13 +13,13 @@ enum HistoryUpdate { push, replace }
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
-  String? _url;
+  String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
   HistoryUpdate? historyUpdate;
-  String? get dontTouchMeUrl => _url;
+  String? get dontTouchMeUrl => _dontTouchMeUrl;
   set dontTouchMeUrl(String? value) {
-    _url = value;
+    _dontTouchMeUrl = value;
   }
 
   late final Map<String, UrlToAction> dontTouchMeStaticMeta;

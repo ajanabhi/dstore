@@ -48,6 +48,12 @@ Future<String> generatePStateNavForClassElement(
 
   final buildPages =
       visitor.methods.where((m) => m.name == "buildPages").firstOrNull?.body;
+  final isPageUsed = visitor.methods.singleWhereOrNull(
+      (m) => m.keysModified.where((f) => f.name == "page").isNotEmpty);
+  if (isPageUsed != null && buildPages != null) {
+    throw NotAllowedError(
+        "You are setting page field and implemented buildPages , which is anot allowed, use only one method");
+  }
   final typePath = getFullTypeName(element);
   final typeVariable = "_${name}_FullPath";
   final pStateMeta = getPStateMeta(
