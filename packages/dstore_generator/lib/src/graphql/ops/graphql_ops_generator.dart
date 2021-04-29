@@ -122,7 +122,35 @@ String generateOpsTypeForQuery(
   """;
   } else {
     // subscription
+    //   final String url;
+    // final String? graphqlQuery;
+    // final Function? inputSerializer;
+    // final Function responseDeserializer;
+    //
+    if (api.wsUrl == null) {
+      throw ArgumentError.value(
+          "You should provide websocket url in u r GraphqlApi config inorder to use subscriptions ");
+    }
+    final responseDeserializerFunction = """
+      $responseType $responserDeserializer(dynamic value) => $responseType.fromJson(value as Map<String,dynamic>);
+    """;
+    final req = """
+   @WebSocketRequest(
+    ,
+    url: "${api.wsUrl}",
+    graphqlQuery: $gq,
+    inputSerializer: $inputSerilizer,
+    responseDeserializer: $responserDeserializer)
+  """;
+    result = """
+    $types    
+    $responseDeserializerFunction
+    $req
+    class $name = WebSocketField<$inputType, $responseType, dynamic> with EmptyMixin;
 
+    $req
+    class ${name}T<T> = WebSocketField<$inputType, T, dynamic> with EmptyMixin;
+  """;
   }
 
   return result;

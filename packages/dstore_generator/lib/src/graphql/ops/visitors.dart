@@ -32,10 +32,14 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
     if (op.startsWith("Query(") ||
         op.startsWith("Mutation(") ||
         op.startsWith("Subscription(")) {
-      final visitor =
-          DSLVisitor(opName: "${className}_${name}", apiUrl: api.apiUrl);
+      final tn = "${className}_${name}";
+      final visitor = DSLVisitor(opName: tn, apiUrl: api.apiUrl);
       field.initializer!.visitChildren(visitor);
-      final op = "${visitor.query}\n }";
+      final query = "${visitor.query}\n }";
+      final doc = lang.parseString(query);
+      final schema = graphqlSchemaMap[api.apiUrl]!;
+      final op = generateOpsTypeForQuery(
+          schema: schema, query: query, doc: doc, name: tn, api: api);
       ops.add(op);
       logger.shout("Query is $op");
     } else if (field.isConst) {
