@@ -11,10 +11,10 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
   late final History history;
-  late NavStateI _navState;
+  NavStateI? _navState;
   late Dispatch _dispatch;
   bool _triggerFromHistory = false;
-  late String _initialUrl;
+  bool _preparedState = false;
   DRouterDelegate({required this.selector}) {
     history = createHistory();
     history.listen(handleUriChange);
@@ -24,7 +24,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     print("Uri Changed3 ${uri.path}");
     UrlToAction? fn;
     final path = uri.path;
-    fn = _navState.dontTouchMeStaticMeta[path];
+    fn = _navState!.dontTouchMeStaticMeta[path];
     print("Url to Action2 $fn");
     if (fn != null) {
       _triggerFromHistory = true;
@@ -38,14 +38,16 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   @override
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
-    print("Builder router");
     return NavigationProvider(
         history: history,
         child: SelectorBuilder<S, NavStateI>(
           selector: selector,
           onInitState: (context, state) {
             _navState = state;
-            handleUriChange(Uri.parse(_initialUrl));
+          },
+          onInitialBuild: (context, state) {
+            _preparedState = true;
+            handleUriChange(Uri.parse(history.url));
           },
           shouldRebuild: (context, prevState, newState) {
             if (newState.redirectToAction != null) {
@@ -63,18 +65,16 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             }
           },
           builder: (context, state) {
-            print("Page : ${state.page}");
-            final pages =
-                state.page != null ? [state.page!] : state.buildPages();
-            return pages.isEmpty
-                ? Container()
-                : Navigator(
-                    pages: pages,
+            return _preparedState
+                ? Navigator(
+                    pages:
+                        state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
                       print("on Pop Page");
                       return false;
                     },
-                  );
+                  )
+                : SizedBox.shrink();
           },
         ));
   }
@@ -114,7 +114,6 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Future<void> setInitialRoutePath(String url) async {
     print("setInitialRoutePath config $url");
     history.setInitialUrl(url);
-    _initialUrl = url;
   }
 
   @override

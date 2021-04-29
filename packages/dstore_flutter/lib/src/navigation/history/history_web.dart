@@ -39,4 +39,7 @@ class HistoryImpl extends History {
 
   @override
   void setInitialUrl(String url) {}
+
+  @override
+  String get url => window.location.href;
 }
