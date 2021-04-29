@@ -27,7 +27,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       this.historyLimit,
       required this.historyEnabled}) {
     if (isNav) {
-      fields.add(Field(name: "page", type: "Page"));
+      fields.add(Field(name: "page", type: "Page?", isOptional: true));
     }
   }
 

@@ -14,16 +14,18 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   late NavStateI _navState;
   late Dispatch _dispatch;
   bool _triggerFromHistory = false;
+  late String _initialUrl;
   DRouterDelegate({required this.selector}) {
     history = createHistory();
     history.listen(handleUriChange);
   }
 
   void handleUriChange(Uri uri) {
-    print("Uri Changed2 ${uri.path}");
+    print("Uri Changed3 ${uri.path}");
     UrlToAction? fn;
     final path = uri.path;
     fn = _navState.dontTouchMeStaticMeta[path];
+    print("Url to Action2 $fn");
     if (fn != null) {
       _triggerFromHistory = true;
       fn(uri, _dispatch);
@@ -36,12 +38,14 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   @override
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
+    print("Builder router");
     return NavigationProvider(
         history: history,
         child: SelectorBuilder<S, NavStateI>(
           selector: selector,
           onInitState: (context, state) {
             _navState = state;
+            handleUriChange(Uri.parse(_initialUrl));
           },
           shouldRebuild: (context, prevState, newState) {
             if (newState.redirectToAction != null) {
@@ -59,13 +63,18 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             }
           },
           builder: (context, state) {
-            return Navigator(
-              pages: state.page != null ? [state.page!] : state.buildPages(),
-              onPopPage: (route, dynamic result) {
-                print("on Pop Page");
-                return false;
-              },
-            );
+            print("Page : ${state.page}");
+            final pages =
+                state.page != null ? [state.page!] : state.buildPages();
+            return pages.isEmpty
+                ? Container()
+                : Navigator(
+                    pages: pages,
+                    onPopPage: (route, dynamic result) {
+                      print("on Pop Page");
+                      return false;
+                    },
+                  );
           },
         ));
   }
@@ -105,6 +114,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Future<void> setInitialRoutePath(String url) async {
     print("setInitialRoutePath config $url");
     history.setInitialUrl(url);
+    _initialUrl = url;
   }
 
   @override

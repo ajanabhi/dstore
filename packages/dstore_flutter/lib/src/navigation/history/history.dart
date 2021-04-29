@@ -12,6 +12,7 @@ abstract class History {
   String goBack();
   String go(int number);
   void setInitialUrl(String url);
+  String get url;
 }
 
 History createHistory() => HistoryImpl();

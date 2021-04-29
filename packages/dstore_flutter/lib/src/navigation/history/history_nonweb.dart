@@ -41,4 +41,7 @@ class HistoryImpl extends History {
   void setInitialUrl(String url) {
     _source.add(url);
   }
+
+  @override
+  String get url => _source.last;
 }

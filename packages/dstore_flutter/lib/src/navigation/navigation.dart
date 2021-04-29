@@ -6,10 +6,13 @@ import "configuration/confiure_native.dart"
 export "router_deleagte.dart";
 export "route_information_parser.dart";
 
+typedef BeforeLeaveFn = bool Function(NavStateI);
+
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
   String? _url;
+  BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
   HistoryUpdate? historyUpdate;
   String? get dontTouchMeUrl => _url;
