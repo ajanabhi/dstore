@@ -8,6 +8,8 @@ export "route_information_parser.dart";
 
 typedef BeforeLeaveFn = bool Function(AppStateI);
 
+enum HistoryUpdate { push, replace }
+
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];

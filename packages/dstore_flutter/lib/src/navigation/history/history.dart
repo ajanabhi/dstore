@@ -16,5 +16,3 @@ abstract class History {
 }
 
 History createHistory() => HistoryImpl();
-
-enum HistoryUpdate { push, replace }

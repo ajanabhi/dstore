@@ -20,7 +20,7 @@ Future<String> generatePStateNavForClassElement(
     ClassElement element, BuildStep buildStep) async {
   if (!_isNavPState(element)) {
     throw InvalidSignatureError(
-        "PState ${element.name} should extend NavStateI / NavStateStackI / NestedNavStateI / NestedNavStateStackI");
+        "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
   }
 
   final typeParamsTuple =
@@ -37,9 +37,7 @@ Future<String> generatePStateNavForClassElement(
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
   final methods = visitor.methods.where((m) => m.name != "buildPages").toList();
-  var fields = visitor.fields
-      .where((element) => !navStateFeilds.contains(element.name))
-      .toList();
+  var fields = visitor.fields;
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
       name: m.name,
       type: "AsyncActionField",
