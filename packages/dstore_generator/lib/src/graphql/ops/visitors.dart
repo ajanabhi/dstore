@@ -78,10 +78,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
   @override
   Object? visitPropertyAccess(PropertyAccess node) {
     print("Peroperty access $node");
-    var name = node.propertyName.name;
-    if (name == "d__typename") {
-      name = "__typename";
-    }
+    var name = node.propertyName.name.removeDName;
     _propsForType.add(name);
     query += "$name\n";
     return super.visitPropertyAccess(node);
@@ -90,7 +87,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
   @override
   Object? visitMethodInvocation(MethodInvocation node) {
     print("Method invocation enter $node ${node.methodName}");
-    var methodName = node.methodName.name;
+    var methodName = node.methodName.name.removeDName;
     final nodeString = node.toString();
     var isObject = false;
 
@@ -192,7 +189,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
   }
 
   String _getFieldArg(NamedExpression e) {
-    final name = e.name.label.name;
+    final name = e.name.label.name.removeDName;
     final valueE = e.expression;
     var value = "";
     final valueStr = e.expression.toString();
@@ -292,10 +289,7 @@ class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
   Object? visitNamedExpression(NamedExpression node) {
     print("visitNamedExpression $node");
     _addPrefixIdentifier = false;
-    var name = node.name.label.name;
-    if (name.startsWith("d\$_")) {
-      name = name.substring(3);
-    }
+    var name = node.name.label.name.removeDName;
     final valueE = node.expression;
     var value = "";
     final valueStr = node.expression.toString();
