@@ -167,7 +167,8 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
   }
   final apiUrl = gApi.getField("apiUrl")!.toStringValue()!;
   final schemaPath = gApi.getField("schemaPath")?.toStringValue();
-  final cacheOnlineApi = gApi.getField("cacheOnlineApi")?.toStringValue();
+  final cacheOnlineApiSchema =
+      gApi.getField("cacheOnlineApiSchema")?.toStringValue();
   final wsUrl = gApi.getField("wsUrl")?.toStringValue();
   final scalarMap = gApi.getField("scalarMap")?.toMapValue()?.map(
       (key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
@@ -176,7 +177,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
       apiUrl: apiUrl,
       scalarMap: scalarMap,
       schemaPath: schemaPath,
-      cacheOnlineApi: cacheOnlineApi,
+      cacheOnlineApiSchema: cacheOnlineApiSchema,
       wsUrl: wsUrl);
 }
 
@@ -238,7 +239,7 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
   late gschema.GraphQLSchema schema;
   final url = graphqlApi.apiUrl;
   final schemaPath = graphqlApi.schemaPath;
-  final cacheOnlineApi = graphqlApi.cacheOnlineApi;
+  final cacheOnlineApi = graphqlApi.cacheOnlineApiSchema;
   print("Trying to get schema from url $url");
   try {
     final dio = Dio();
@@ -277,6 +278,7 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
 
 String _getPathForCacheOffline(String cacheOnlineApi) {
   var path = cacheOnlineApi;
+
   if (!path.endsWith(".json")) {
     path = "$path.json";
   }

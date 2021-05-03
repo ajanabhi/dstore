@@ -1,12 +1,12 @@
 class GraphqlApi {
   final String apiUrl;
   final String? schemaPath;
-  final String? cacheOnlineApi;
+  final String? cacheOnlineApiSchema;
   final String? wsUrl;
   final Map<String, String>? scalarMap;
   const GraphqlApi(
       {required this.apiUrl,
-      this.cacheOnlineApi,
+      this.cacheOnlineApiSchema,
       this.schemaPath,
       this.wsUrl,
       this.scalarMap});
