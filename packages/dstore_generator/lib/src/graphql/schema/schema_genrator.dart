@@ -238,19 +238,17 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
   late gschema.GraphQLSchema schema;
   final url = graphqlApi.apiUrl;
   final schemaPath = graphqlApi.schemaPath;
+  final cacheOnlineApi = graphqlApi.cacheOnlineApi;
   print("Trying to get schema from url $url");
   try {
     final dio = Dio();
     final resp =
         await dio.post<dynamic>(url, data: {"query": getIntrospectionQuery()});
     final respStr = jsonEncode(resp.data);
-    if (graphqlApi.cacheOnlineApi != null) {
+    if (cacheOnlineApi != null) {
       // cache api schema in local disk for offline usage
-      var path = graphqlApi.cacheOnlineApi!;
-      if (!path.endsWith(".json")) {
-        path = "$path.json";
-      }
-      await File("./schema.json").writeAsString(respStr);
+      final path = _getPathForCacheOffline(cacheOnlineApi);
+      await File(path).writeAsString(respStr);
     }
 
     schema = buildSchemaFromIntrospection(
@@ -260,6 +258,14 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
       print(
           "Error getting schema from apiUrl $e , Try to get schema from file $schemaPath");
       schema = await getSchemaFromPath(schemaPath);
+    } else if (cacheOnlineApi != null) {
+      final path = _getPathForCacheOffline(cacheOnlineApi);
+      print(
+          "Error getting schema from apiUrl $e , Try to get schema from cached file $path");
+      final content = File(path).readAsStringSync();
+      final dynamic cResp = jsonDecode(content);
+      schema = buildSchemaFromIntrospection(
+          IntrospectionQuery.fromJson(cResp["data"] as Map<String, dynamic>));
     } else {
       throw Exception(
           "Error while getting graphql schema from api url $url $e ");
@@ -267,6 +273,14 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
   }
   graphqlSchemaMap[url] = schema;
   return schema;
+}
+
+String _getPathForCacheOffline(String cacheOnlineApi) {
+  var path = cacheOnlineApi;
+  if (!path.endsWith(".json")) {
+    path = "$path.json";
+  }
+  return path;
 }
 
 Future<gschema.GraphQLSchema> getSchemaFromPath(String schemaPath) async {
