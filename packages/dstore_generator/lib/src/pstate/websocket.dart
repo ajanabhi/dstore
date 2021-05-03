@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_generator/src/pstate/http.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
@@ -50,7 +51,8 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
     responseDeserializer =
         responseDeserizerField.objectValue.toFunctionValue()!.name;
   }
-  final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
+  final graphqlQuery = getGraphqlRequestPartFromDartObj(
+      reader.peek("graphqlQuery")?.objectValue);
   final wseAnnot = element.annotationFromType(WebSocketRequestExtension);
   String? transofrmer;
   if (wseAnnot != null) {
@@ -79,16 +81,27 @@ String convertWebSocketFieldInfoToAction(
 
   if (wsi.inputType.startsWith("GraphqlRequestInput")) {
     final it = wsi.inputType;
-    final query = wsi.graphqlQuery!;
-    final variableType = it.contains("<")
-        ? it.substring(it.indexOf("<"), it.indexOf(">"))
-        : null;
-    if (variableType != null) {
-      params.add("required ${variableType} variables");
-      payloadParams.add("data: GraphqlRequestInput(\"$query\",variables)");
-    } else {
-      payloadParams.add("data: GraphqlRequestInput(\"$query\",null)");
+    final graphqlQueryPart = wsi.graphqlQuery!;
+    final gparams = <String>["query: ${graphqlQueryPart.query}"];
+    if (graphqlQueryPart.hash != null) {
+      final extensions = {
+        "persistedQuery": {"sha256Hash": graphqlQueryPart.hash}
+      };
+      gparams.add("extensions: ${extensions}");
     }
+    if (graphqlQueryPart.useGetForPersist) {
+      gparams.add("useGetForPersitent: true");
+    }
+    final variableType = it.contains("<")
+        ? it.substring(it.indexOf("<") + 1, it.indexOf(">"))
+        : null;
+    if (variableType != null &&
+        variableType != "dynamic" &&
+        variableType != "Null") {
+      params.add("required ${variableType} variables");
+      gparams.add("variables: variables");
+    }
+    payloadParams.add("data: GraphqlRequestInput(${gparams.join(", ")})");
   } else {
     params.add("${wsi.inputType} data");
     payloadParams.add("data: data");

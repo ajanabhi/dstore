@@ -68,7 +68,7 @@ String generateOpsTypeForQuery(
     hash = CryptoUtils.getSHA256Hash(query);
     useGetPersitant = api.enablePersitantQueries == PersitantQueryMode.GET;
   }
-  final graphqlQuery = HttpRequestGraphqlPart(
+  final graphqlQuery = GraphqlRequestPart(
       query: gq, hash: hash, useGetForPersist: useGetPersitant);
   final responseType = "${name}Data";
   final responseSerializer = "${responseType}Serializer";
@@ -143,7 +143,7 @@ String generateOpsTypeForQuery(
    @WebSocketRequest(
     ,
     url: "${api.wsUrl}",
-    graphqlQuery: $gq,
+    graphqlQuery: $graphqlQuery,
     inputSerializer: $inputSerilizer,
     responseDeserializer: $responserDeserializer)
   """;

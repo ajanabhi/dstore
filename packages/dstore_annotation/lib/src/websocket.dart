@@ -1,6 +1,8 @@
+import 'package:dstore_annotation/dstore_annotation.dart';
+
 class WebSocketRequest {
   final String url;
-  final String? graphqlQuery;
+  final GraphqlRequestPart? graphqlQuery;
   final Function? inputSerializer;
   final Function responseDeserializer;
 

@@ -30,7 +30,7 @@ class HttpFieldInfo {
   final String errorDeserializer;
   final String method;
   final String? queryParamsType;
-  final HttpRequestGraphqlPart? graphqlQuery;
+  final GraphqlRequestPart? graphqlQuery;
   final String responseType;
 
   HttpFieldInfo({
@@ -58,7 +58,7 @@ class HttpFieldInfo {
 class WebSocketFieldInfo {
   final String url;
   final String name;
-  final String? graphqlQuery;
+  final GraphqlRequestPart? graphqlQuery;
   final String? inputSerializer;
   final String? responseDeserializer;
   final String? transformer;

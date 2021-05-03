@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
@@ -74,16 +75,8 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       reader.functionNameForField("responseDeserializer") ?? "IdentifyFn";
   var errorDeserializer =
       reader.functionNameForField("errorDeserializer") ?? "IdentifyFn";
-  final graphqlQueryObj = reader.peek("graphqlQuery")?.objectValue;
-  HttpRequestGraphqlPart? graphqlQuery;
-  if (graphqlQueryObj != null) {
-    final query = graphqlQueryObj.getField("query")!.toStringValue()!;
-    final hash = graphqlQueryObj.getField("hash")?.toStringValue();
-    final useGetForPersist =
-        graphqlQueryObj.getField("useGetForPersist")?.toBoolValue();
-    graphqlQuery = HttpRequestGraphqlPart(
-        query: query, hash: hash, useGetForPersist: useGetForPersist ?? false);
-  }
+  final graphqlQuery = getGraphqlRequestPartFromDartObj(
+      reader.peek("graphqlQuery")?.objectValue);
   final inputSerializer = reader.functionNameForField("inputSerializer");
   final responseSerializer = reader.functionNameForField("responseSerializer");
   final inputDeserializer = reader.functionNameForField("inputDeserializer");
@@ -118,6 +111,18 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       graphqlQuery: graphqlQuery);
 }
 
+GraphqlRequestPart? getGraphqlRequestPartFromDartObj(
+    DartObject? graphqlQueryObj) {
+  if (graphqlQueryObj != null) {
+    final query = graphqlQueryObj.getField("query")!.toStringValue()!;
+    final hash = graphqlQueryObj.getField("hash")?.toStringValue();
+    final useGetForPersist =
+        graphqlQueryObj.getField("useGetForPersist")?.toBoolValue();
+    return GraphqlRequestPart(
+        query: query, hash: hash, useGetForPersist: useGetForPersist ?? false);
+  }
+}
+
 String convertHttpFieldInfoToAction(
     {required HttpFieldInfo hf,
     required String type,
@@ -133,8 +138,17 @@ String convertHttpFieldInfoToAction(
     if (hf.inputType!.startsWith("GraphqlRequestInput")) {
       final it = hf.inputType!;
 
-      final query = hf.graphqlQuery!;
-      final gq = "\"\"\"$query\"\"\"";
+      final graphqlQueryPart = hf.graphqlQuery!;
+      final gparams = <String>["query: ${graphqlQueryPart.query}"];
+      if (graphqlQueryPart.hash != null) {
+        final extensions = {
+          "persistedQuery": {"sha256Hash": graphqlQueryPart.hash}
+        };
+        gparams.add("extensions: ${extensions}");
+      }
+      if (graphqlQueryPart.useGetForPersist) {
+        gparams.add("useGetForPersitent: true");
+      }
       final variableType = it.contains("<")
           ? it.substring(it.indexOf("<") + 1, it.indexOf(">"))
           : null;
@@ -142,10 +156,9 @@ String convertHttpFieldInfoToAction(
           variableType != "dynamic" &&
           variableType != "Null") {
         params.add("required ${variableType} variables");
-        payloadFields.add("data: GraphqlRequestInput($gq,variables)");
-      } else {
-        payloadFields.add("data: GraphqlRequestInput($gq,null)");
+        gparams.add("variables: variables");
       }
+      payloadFields.add("data: GraphqlRequestInput(${gparams.join(", ")})");
     } else {
       params.add("required ${hf.inputType} input");
       payloadFields.add("data:input");

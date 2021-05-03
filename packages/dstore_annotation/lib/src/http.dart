@@ -46,7 +46,7 @@ class HttpRequest {
   final Function? inputDeserializer;
   final Function? errorDeserializer;
   final HttpResponseType? responseType;
-  final HttpRequestGraphqlPart? graphqlQuery;
+  final GraphqlRequestPart? graphqlQuery;
   final Map<String, String>? headers;
 
   const HttpRequest({
@@ -63,12 +63,12 @@ class HttpRequest {
   });
 }
 
-class HttpRequestGraphqlPart {
+class GraphqlRequestPart {
   final String query;
   final String? hash;
   final bool useGetForPersist;
 
-  const HttpRequestGraphqlPart(
+  const GraphqlRequestPart(
       {required this.query, this.hash, this.useGetForPersist = false});
   @override
   String toString() =>
