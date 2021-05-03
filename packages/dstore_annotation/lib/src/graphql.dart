@@ -4,11 +4,13 @@ class GraphqlApi {
   final String? cacheOnlineApiSchema;
   final String? wsUrl;
   final Map<String, String>? scalarMap;
+  final PersitantQueryMode? enablePersitantQueries;
   const GraphqlApi(
       {required this.apiUrl,
       this.cacheOnlineApiSchema,
       this.schemaPath,
       this.wsUrl,
+      this.enablePersitantQueries,
       this.scalarMap});
 
   @override
@@ -22,6 +24,8 @@ class GraphqlApi {
     return apiUrl.hashCode;
   }
 }
+
+enum PersitantQueryMode { GET, POST }
 
 class GraphqlOps {
   final GraphqlApi api;

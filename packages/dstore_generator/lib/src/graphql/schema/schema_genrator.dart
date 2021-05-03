@@ -167,6 +167,8 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
   }
   final apiUrl = gApi.getField("apiUrl")!.toStringValue()!;
   final schemaPath = gApi.getField("schemaPath")?.toStringValue();
+  final enablePersitantQueries =
+      gApi.getEnumField("enablePersitantQueries", PersitantQueryMode.values);
   final cacheOnlineApiSchema =
       gApi.getField("cacheOnlineApiSchema")?.toStringValue();
   final wsUrl = gApi.getField("wsUrl")?.toStringValue();
@@ -178,6 +180,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
       scalarMap: scalarMap,
       schemaPath: schemaPath,
       cacheOnlineApiSchema: cacheOnlineApiSchema,
+      enablePersitantQueries: enablePersitantQueries,
       wsUrl: wsUrl);
 }
 

@@ -30,7 +30,7 @@ class HttpFieldInfo {
   final String errorDeserializer;
   final String method;
   final String? queryParamsType;
-  final String? graphqlQuery;
+  final HttpRequestGraphqlPart? graphqlQuery;
   final String responseType;
 
   HttpFieldInfo({

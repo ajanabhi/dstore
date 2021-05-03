@@ -6,10 +6,12 @@ import 'package:dstore_generator/src/graphql/ops/gql_visitors.dart';
 import 'package:dstore_generator/src/graphql/ops/typegen.dart';
 import 'package:dstore_generator/src/graphql/ops/visitors.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
+import 'package:dstore_generator/src/utils/crypto_utils.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:crypto/crypto.dart';
 
 class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
   @override
@@ -57,8 +59,17 @@ String generateOpsTypeForQuery(
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
   doc.accept(visitor);
   final types = getTypes(visitor, name);
+  query = query.trim();
   var result = "";
   final gq = "\"\"\"$query\"\"\"";
+  String? hash;
+  var useGetPersitant = false;
+  if (api.enablePersitantQueries != null) {
+    hash = CryptoUtils.getSHA256Hash(query);
+    useGetPersitant = api.enablePersitantQueries == PersitantQueryMode.GET;
+  }
+  final graphqlQuery = HttpRequestGraphqlPart(
+      query: gq, hash: hash, useGetForPersist: useGetPersitant);
   final responseType = "${name}Data";
   final responseSerializer = "${responseType}Serializer";
   final responserDeserializer = "${responseType}Deserializer";
@@ -81,10 +92,9 @@ String generateOpsTypeForQuery(
   if (visitor.variables.isNotEmpty) {
     inputDeserializerFn = """        
         $inputType $inputDeserializer(dynamic json) {
-            json = json as Map<String,dynamic>;
-             final query = json["query"] as String;
+             json = json as Map<String,dynamic>;
              final variables = $variablesName.fromJon(json["variables"] as Map<String,dynamic>);
-             return GraphqlRequestInput(query,variables);
+             return GraphqlRequestInput.fromJson(json,variables:variables);
         }
       """;
   } else {
@@ -101,7 +111,7 @@ String generateOpsTypeForQuery(
    @HttpRequest(
     method: "POST",
     url: "${api.apiUrl}",
-    graphqlQuery: $gq,
+    graphqlQuery: $graphqlQuery,
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type":"applications/josn"},
     responseSerializer : $responseSerializer,

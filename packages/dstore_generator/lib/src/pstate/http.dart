@@ -74,7 +74,16 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       reader.functionNameForField("responseDeserializer") ?? "IdentifyFn";
   var errorDeserializer =
       reader.functionNameForField("errorDeserializer") ?? "IdentifyFn";
-  final graphqlQuery = reader.peek("graphqlQuery")?.stringValue;
+  final graphqlQueryObj = reader.peek("graphqlQuery")?.objectValue;
+  HttpRequestGraphqlPart? graphqlQuery;
+  if (graphqlQueryObj != null) {
+    final query = graphqlQueryObj.getField("query")!.toStringValue()!;
+    final hash = graphqlQueryObj.getField("hash")?.toStringValue();
+    final useGetForPersist =
+        graphqlQueryObj.getField("useGetForPersist")?.toBoolValue();
+    graphqlQuery = HttpRequestGraphqlPart(
+        query: query, hash: hash, useGetForPersist: useGetForPersist ?? false);
+  }
   final inputSerializer = reader.functionNameForField("inputSerializer");
   final responseSerializer = reader.functionNameForField("responseSerializer");
   final inputDeserializer = reader.functionNameForField("inputDeserializer");

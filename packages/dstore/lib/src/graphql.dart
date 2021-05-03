@@ -1,20 +1,35 @@
 class GraphqlRequestInput<V> {
   final String query;
   final V? variables;
+  final Map<String, dynamic>? extensions;
+  final bool useGetForPersitent;
 
-  GraphqlRequestInput(this.query, this.variables);
+  GraphqlRequestInput(
+      {required this.query,
+      this.variables,
+      this.extensions,
+      this.useGetForPersitent = false});
 
   static Map<String, dynamic> toJson<V>(GraphqlRequestInput<V> req) {
     return <String, dynamic>{
       "query": req.query,
       "variables":
-          req.variables != null ? (req.variables as dynamic).toJson() : null
+          req.variables != null ? (req.variables as dynamic).toJson() : null,
+      "extensions": req.extensions,
+      "useGetForPersitent": req.useGetForPersitent
     };
   }
 
-  static GraphqlRequestInput<Null> fromJson(Map<String, dynamic> json) {
+  static GraphqlRequestInput<V> fromJson<V>(Map<String, dynamic> json,
+      {V? variables}) {
     final query = json["query"]! as String;
-    return GraphqlRequestInput(query, null);
+    final extensions = json["extensions"] as Map<String, dynamic>?;
+    final useGetForPersitent = json["useGetForPersitent"] as bool?;
+    return GraphqlRequestInput(
+        query: query,
+        variables: variables,
+        extensions: extensions,
+        useGetForPersitent: useGetForPersitent ?? false);
   }
 }
 
