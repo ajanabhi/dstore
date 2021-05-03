@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
@@ -17,7 +18,7 @@ const navStateFeilds = [
 ];
 
 Future<String> generatePStateNavForClassElement(
-    ClassElement element, BuildStep buildStep) async {
+    ClassElement element, PState pstate, BuildStep buildStep) async {
   if (!_isNavPState(element)) {
     throw InvalidSignatureError(
         "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
@@ -43,6 +44,10 @@ Future<String> generatePStateNavForClassElement(
       type: "AsyncActionField",
       value: "AsyncActionField()",
       param: null)));
+  fields.add(Field(
+    name: "dontTouchMeBlockSameUrl",
+    type: "bool?",
+  ));
   fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
 

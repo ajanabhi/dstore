@@ -97,12 +97,13 @@ extension StringExt on String {
   }
 
   String get addDName {
+    final value = this;
     if (startsWith("_")) {
-      return "d\$_$this";
-    } else if (DART_RESERVED_KEYWORDS.contains(this)) {
-      return "${this}_\$d";
+      return "d\$_$value";
+    } else if (DART_RESERVED_KEYWORDS.contains(value)) {
+      return "${value}_\$d";
     } else {
-      return this;
+      return value;
     }
   }
 

@@ -26,6 +26,7 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
       }
 
       final gApi = getGraphqlApi(element.metadata.first.computeConstantValue());
+      print("generating for API $gApi");
       final schema = await getGraphqlSchemaFromApiUrl(gApi);
       final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
       final inputs = schema.inputObjectTypes
@@ -225,7 +226,7 @@ String _convertGInputTypeToDType(
   }).toList();
 
   return ModelUtils.createDefaultDartModelFromFeilds(
-      fields: ModelUtils.processFields(fields),
+      fields: ModelUtils.processFields(fields, addJsonKey: true),
       className: name,
       isJsonSerializable: true);
 }

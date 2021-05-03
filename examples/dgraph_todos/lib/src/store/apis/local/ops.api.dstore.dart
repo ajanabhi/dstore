@@ -313,7 +313,7 @@ class Hello_utData_hellou_Hello1 {
   final String one;
 
   @JsonKey(name: "__typename")
-  final String G__typeName;
+  final String d$___typeName;
 
   @JsonKey(ignore: true)
   _$Hello_utData_hellou_Hello1CopyWith<Hello_utData_hellou_Hello1>
@@ -322,7 +322,7 @@ class Hello_utData_hellou_Hello1 {
               this, IdentityFn);
 
   const Hello_utData_hellou_Hello1(
-      {required this.one, required this.G__typeName});
+      {required this.one, required this.d$___typeName});
 
   factory Hello_utData_hellou_Hello1.fromJson(Map<String, dynamic> json) =>
       _$Hello_utData_hellou_Hello1FromJson(json);
@@ -334,22 +334,22 @@ class Hello_utData_hellou_Hello1 {
     if (identical(this, o)) return true;
     return o is Hello_utData_hellou_Hello1 &&
         o.one == one &&
-        o.G__typeName == G__typeName;
+        o.d$___typeName == d$___typeName;
   }
 
   @override
-  int get hashCode => one.hashCode ^ G__typeName.hashCode;
+  int get hashCode => one.hashCode ^ d$___typeName.hashCode;
 
   @override
   String toString() =>
-      "Hello_utData_hellou_Hello1(one: ${this.one}, G__typeName: ${this.G__typeName})";
+      "Hello_utData_hellou_Hello1(one: ${this.one}, d\$___typeName: ${this.d$___typeName})";
 }
 
 abstract class $Hello_utData_hellou_Hello1CopyWith<O> {
   factory $Hello_utData_hellou_Hello1CopyWith(Hello_utData_hellou_Hello1 value,
           O Function(Hello_utData_hellou_Hello1) then) =
       _$Hello_utData_hellou_Hello1CopyWithImpl<O>;
-  O call({String one, String G__typeName});
+  O call({String one, String d$___typeName});
 }
 
 class _$Hello_utData_hellou_Hello1CopyWithImpl<O>
@@ -359,12 +359,12 @@ class _$Hello_utData_hellou_Hello1CopyWithImpl<O>
   _$Hello_utData_hellou_Hello1CopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? one = dimmutable, Object? G__typeName = dimmutable}) {
+  O call({Object? one = dimmutable, Object? d$___typeName = dimmutable}) {
     return _then(_value.copyWith(
         one: one == dimmutable ? _value.one : one as String,
-        G__typeName: G__typeName == dimmutable
-            ? _value.G__typeName
-            : G__typeName as String));
+        d$___typeName: d$___typeName == dimmutable
+            ? _value.d$___typeName
+            : d$___typeName as String));
   }
 }
 
@@ -373,7 +373,7 @@ abstract class _$Hello_utData_hellou_Hello1CopyWith<O>
   factory _$Hello_utData_hellou_Hello1CopyWith(Hello_utData_hellou_Hello1 value,
           O Function(Hello_utData_hellou_Hello1) then) =
       __$Hello_utData_hellou_Hello1CopyWithImpl<O>;
-  O call({String one, String G__typeName});
+  O call({String one, String d$___typeName});
 }
 
 class __$Hello_utData_hellou_Hello1CopyWithImpl<O>
@@ -387,12 +387,12 @@ class __$Hello_utData_hellou_Hello1CopyWithImpl<O>
   Hello_utData_hellou_Hello1 get _value => super._value;
 
   @override
-  O call({Object? one = dimmutable, Object? G__typeName = dimmutable}) {
+  O call({Object? one = dimmutable, Object? d$___typeName = dimmutable}) {
     return _then(Hello_utData_hellou_Hello1(
         one: one == dimmutable ? _value.one : one as String,
-        G__typeName: G__typeName == dimmutable
-            ? _value.G__typeName
-            : G__typeName as String));
+        d$___typeName: d$___typeName == dimmutable
+            ? _value.d$___typeName
+            : d$___typeName as String));
   }
 }
 

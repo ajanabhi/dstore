@@ -55,7 +55,8 @@ class Input1 {
 
   final List<Enum1>? enums;
 
-  final Enum1? d$_enum;
+  @JsonKey(name: 'enum')
+  final Enum1? enum_$d;
 
   @JsonKey(ignore: true)
   _$Input1CopyWith<Input1> get copyWith =>
@@ -68,7 +69,7 @@ class Input1 {
       this.percent,
       this.counts,
       this.enums,
-      this.d$_enum});
+      this.enum_$d});
 
   factory Input1.fromJson(Map<String, dynamic> json) => _$Input1FromJson(json);
 
@@ -84,7 +85,7 @@ class Input1 {
         o.percent == percent &&
         o.counts == counts &&
         o.enums == enums &&
-        o.d$_enum == d$_enum;
+        o.enum_$d == enum_$d;
   }
 
   @override
@@ -95,11 +96,11 @@ class Input1 {
       percent.hashCode ^
       counts.hashCode ^
       enums.hashCode ^
-      d$_enum.hashCode;
+      enum_$d.hashCode;
 
   @override
   String toString() =>
-      "Input1(name: ${this.name}, inputs: ${this.inputs}, count: ${this.count}, percent: ${this.percent}, counts: ${this.counts}, enums: ${this.enums}, d$_enum: ${this.d$_enum})";
+      "Input1(name: ${this.name}, inputs: ${this.inputs}, count: ${this.count}, percent: ${this.percent}, counts: ${this.counts}, enums: ${this.enums}, enum_\$d: ${this.enum_$d})";
 }
 
 abstract class $Input1CopyWith<O> {
@@ -112,7 +113,7 @@ abstract class $Input1CopyWith<O> {
       double? percent,
       List<int>? counts,
       List<Enum1>? enums,
-      Enum1? d$_enum});
+      Enum1? enum_$d});
 }
 
 class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
@@ -128,7 +129,7 @@ class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
       Object? percent = dimmutable,
       Object? counts = dimmutable,
       Object? enums = dimmutable,
-      Object? d$_enum = dimmutable}) {
+      Object? enum_$d = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String?,
         inputs: inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?,
@@ -136,7 +137,7 @@ class _$Input1CopyWithImpl<O> implements $Input1CopyWith<O> {
         percent: percent == dimmutable ? _value.percent : percent as double?,
         counts: counts == dimmutable ? _value.counts : counts as List<int>?,
         enums: enums == dimmutable ? _value.enums : enums as List<Enum1>?,
-        d$_enum: d$_enum == dimmutable ? _value.d$_enum : d$_enum as Enum1?));
+        enum_$d: enum_$d == dimmutable ? _value.enum_$d : enum_$d as Enum1?));
   }
 }
 
@@ -150,7 +151,7 @@ abstract class _$Input1CopyWith<O> implements $Input1CopyWith<O> {
       double? percent,
       List<int>? counts,
       List<Enum1>? enums,
-      Enum1? d$_enum});
+      Enum1? enum_$d});
 }
 
 class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
@@ -169,7 +170,7 @@ class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
       Object? percent = dimmutable,
       Object? counts = dimmutable,
       Object? enums = dimmutable,
-      Object? d$_enum = dimmutable}) {
+      Object? enum_$d = dimmutable}) {
     return _then(Input1(
         name: name == dimmutable ? _value.name : name as String?,
         inputs: inputs == dimmutable ? _value.inputs : inputs as List<Input1?>?,
@@ -177,7 +178,7 @@ class __$Input1CopyWithImpl<O> extends _$Input1CopyWithImpl<O>
         percent: percent == dimmutable ? _value.percent : percent as double?,
         counts: counts == dimmutable ? _value.counts : counts as List<int>?,
         enums: enums == dimmutable ? _value.enums : enums as List<Enum1>?,
-        d$_enum: d$_enum == dimmutable ? _value.d$_enum : d$_enum as Enum1?));
+        enum_$d: enum_$d == dimmutable ? _value.enum_$d : enum_$d as Enum1?));
   }
 }
 

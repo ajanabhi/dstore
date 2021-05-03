@@ -47,7 +47,7 @@ Hello_utData_hellou_Hello1 _$Hello_utData_hellou_Hello1FromJson(
     Map<String, dynamic> json) {
   return Hello_utData_hellou_Hello1(
     one: json['one'] as String,
-    G__typeName: json['__typename'] as String,
+    d$___typeName: json['__typename'] as String,
   );
 }
 
@@ -55,5 +55,5 @@ Map<String, dynamic> _$Hello_utData_hellou_Hello1ToJson(
         Hello_utData_hellou_Hello1 instance) =>
     <String, dynamic>{
       'one': instance.one,
-      '__typename': instance.G__typeName,
+      '__typename': instance.d$___typeName,
     };

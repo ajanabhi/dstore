@@ -5,14 +5,11 @@ part 'nav.ps.dstore.dart';
 
 @PState(nav: true)
 class $_NavState extends NavStateI<dynamic> {
-  String page = "";
   @override
   List<Page> buildPages() {
     return [];
   }
 
   @Url("/")
-  void home() {
-    page = "home2";
-  }
+  void home() {}
 }

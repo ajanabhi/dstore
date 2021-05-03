@@ -17,7 +17,7 @@ Future<String> generatePStateForClassElement(
     ClassElement element, BuildStep buildStep) async {
   final pstate = element.getPState();
   if (pstate.nav == true) {
-    return await generatePStateNavForClassElement(element, buildStep);
+    return await generatePStateNavForClassElement(element, pstate, buildStep);
   }
   final typeParamsTuple =
       AstUtils.getTypeParamsAndBounds(element.typeParameters);
@@ -239,11 +239,13 @@ extension PStateExtension on ClassElement {
     final enableHistory = reader.peek("enableHistory")?.boolValue;
     final historyLimit = reader.peek("historyLimit")?.intValue;
     final nav = reader.peek("nav")?.boolValue;
+    final navBlockSameUrl = reader.peek("navBlockSameUrl")?.boolValue;
     return PState(
         persist: persit,
         enableHistory: enableHistory ?? false,
         nav: nav,
-        historyLimit: historyLimit);
+        historyLimit: historyLimit,
+        navBlockSameUrl: navBlockSameUrl);
   }
 }
 

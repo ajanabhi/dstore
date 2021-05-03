@@ -19,30 +19,38 @@ abstract class ModelUtils {
   static List<Field> processFields(List<Field> fields,
       {bool addJsonKey = false}) {
     return fields.map((f) {
-      final name = f.name.addDName;
-      var annotations = f.annotations;
-      if (addJsonKey && name != f.name) {
-        if (f.annotations
-            .where((element) => element.startsWith("@JsonKey"))
-            .isNotEmpty) {
-          annotations = annotations.map((e) {
-            if (e.startsWith("@JsonKey(")) {
-              if (e.contains("name:")) {
-                return e;
+      var name = f.name;
+      var annotations = [...f.annotations];
+      if (addJsonKey) {
+        if (name == "enum") {
+          print("enum field mod");
+        }
+        name = name.addDName;
+        print(name);
+        if (name != f.name) {
+          if (f.annotations
+              .where((element) => element.startsWith("@JsonKey"))
+              .isNotEmpty) {
+            annotations = annotations.map((e) {
+              if (e.startsWith("@JsonKey(")) {
+                if (e.contains("name:")) {
+                  return e;
+                } else {
+                  return "@JsonKey(name: $name,${e.substring("@JsonKey(".length)}";
+                }
               } else {
-                return "@JsonKey(name: $name,${e.substring("@JsonKey(".length)}";
+                return e;
               }
-            } else {
-              return e;
-            }
-          }).toList();
-        } else {
-          f.annotations.add("@JsonKey(name: '${f.name}')");
+            }).toList();
+          } else {
+            annotations.add("@JsonKey(name: '${f.name}')");
+          }
         }
       }
       return f.copyWith(
           type: _getFinalTypeOfField(f),
           name: name,
+          annotations: annotations,
           isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?"));
     }).toList();
   }
@@ -188,7 +196,7 @@ abstract class ModelUtils {
   static String createToStringFromFieldsList(String name, List<Field> fields) {
     return """
   @override
-  String toString() => "${name}(${fields.map((f) => "${f.name}: \${this.${f.name}}").join(", ")})";
+  String toString() => "${name}(${fields.map((f) => "${f.name.replaceAll("\$", "\\\$")}: \${this.${f.name}}").join(", ")})";
    """;
   }
 
@@ -239,7 +247,7 @@ abstract class ModelUtils {
 
      ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
-     ${ModelUtils.createToStringFromFieldsList(className, fields)}
+     ${createToStringFromFieldsList(className, fields)}
     }
 
     ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "")}

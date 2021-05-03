@@ -19,7 +19,7 @@ Input1 _$Input1FromJson(Map<String, dynamic> json) {
     enums: (json['enums'] as List<dynamic>?)
         ?.map((e) => _$enumDecode(_$Enum1EnumMap, e))
         .toList(),
-    d$_enum: _$enumDecodeNullable(_$Enum1EnumMap, json[r'd$_enum']),
+    enum_$d: _$enumDecodeNullable(_$Enum1EnumMap, json['enum']),
   );
 }
 
@@ -30,7 +30,7 @@ Map<String, dynamic> _$Input1ToJson(Input1 instance) => <String, dynamic>{
       'percent': instance.percent,
       'counts': instance.counts,
       'enums': instance.enums?.map((e) => _$Enum1EnumMap[e]).toList(),
-      r'd$_enum': _$Enum1EnumMap[instance.d$_enum],
+      'enum': _$Enum1EnumMap[instance.enum_$d],
     };
 
 K _$enumDecode<K, V>(
