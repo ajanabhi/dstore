@@ -22,6 +22,12 @@ abstract class NavStateI<M> extends PStateModel<M> {
     _dontTouchMeUrl = value;
   }
 
+  History? _dontTouchMeHistory;
+  History get dontTouchMeHistory => _dontTouchMeHistory!;
+  set dontTouchMeHistory(History? history) {
+    _dontTouchMeHistory = history;
+  }
+
   late final Map<String, UrlToAction> dontTouchMeStaticMeta;
   late final Map<String, UrlToAction> dontTouchMeDynamicMeta;
 

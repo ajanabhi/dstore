@@ -44,4 +44,7 @@ class HistoryImpl extends History {
 
   @override
   String get url => _source.last;
+
+  @override
+  bool blockSameUrl = false;
 }

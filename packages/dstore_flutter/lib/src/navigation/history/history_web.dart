@@ -42,4 +42,7 @@ class HistoryImpl extends History {
 
   @override
   String get url => window.location.href;
+
+  @override
+  bool blockSameUrl = false;
 }

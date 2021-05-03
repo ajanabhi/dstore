@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 typedef HistoryListener = void Function(Uri uri);
 
 abstract class History {
+  abstract bool blockSameUrl;
   VoidCallback listen(HistoryListener listener);
   bool urlChangedInSystem = false;
   void push(String url);
