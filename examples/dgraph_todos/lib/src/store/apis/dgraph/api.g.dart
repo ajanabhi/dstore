@@ -6,487 +6,6 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-FloatFilter _$FloatFilterFromJson(Map<String, dynamic> json) {
-  return FloatFilter(
-    eq: (json['eq'] as num?)?.toDouble(),
-    le: (json['le'] as num?)?.toDouble(),
-    lt: (json['lt'] as num?)?.toDouble(),
-    ge: (json['ge'] as num?)?.toDouble(),
-    gt: (json['gt'] as num?)?.toDouble(),
-    between: json['between'] == null
-        ? null
-        : FloatRange.fromJson(json['between'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$FloatFilterToJson(FloatFilter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'le': instance.le,
-      'lt': instance.lt,
-      'ge': instance.ge,
-      'gt': instance.gt,
-      'between': instance.between,
-    };
-
-HelloI _$HelloIFromJson(Map<String, dynamic> json) {
-  return HelloI(
-    n: json['n'] as int?,
-  );
-}
-
-Map<String, dynamic> _$HelloIToJson(HelloI instance) => <String, dynamic>{
-      'n': instance.n,
-    };
-
-TaskFilter _$TaskFilterFromJson(Map<String, dynamic> json) {
-  return TaskFilter(
-    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
-    completed: json['completed'] as bool?,
-    has: _$enumDecodeNullable(_$TaskHasFilterEnumMap, json['has']),
-    and: (json['and'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : TaskFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    or: (json['or'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : TaskFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    not: json['not'] == null
-        ? null
-        : TaskFilter.fromJson(json['not'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$TaskFilterToJson(TaskFilter instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'completed': instance.completed,
-      'has': _$TaskHasFilterEnumMap[instance.has],
-      'and': instance.and,
-      'or': instance.or,
-      'not': instance.not,
-    };
-
-K _$enumDecode<K, V>(
-  Map<K, V> enumValues,
-  Object? source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    throw ArgumentError(
-      'A value must be provided. Supported values: '
-      '${enumValues.values.join(', ')}',
-    );
-  }
-
-  return enumValues.entries.singleWhere(
-    (e) => e.value == source,
-    orElse: () {
-      if (unknownValue == null) {
-        throw ArgumentError(
-          '`$source` is not one of the supported values: '
-          '${enumValues.values.join(', ')}',
-        );
-      }
-      return MapEntry(unknownValue, enumValues.values.first);
-    },
-  ).key;
-}
-
-K? _$enumDecodeNullable<K, V>(
-  Map<K, V> enumValues,
-  dynamic source, {
-  K? unknownValue,
-}) {
-  if (source == null) {
-    return null;
-  }
-  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
-}
-
-const _$TaskHasFilterEnumMap = {
-  TaskHasFilter.title: 'title',
-  TaskHasFilter.completed: 'completed',
-  TaskHasFilter.user: 'user',
-};
-
-AuthorOrder _$AuthorOrderFromJson(Map<String, dynamic> json) {
-  return AuthorOrder(
-    asc: _$enumDecodeNullable(_$AuthorOrderableEnumMap, json['asc']),
-    desc: _$enumDecodeNullable(_$AuthorOrderableEnumMap, json['desc']),
-    then: json['then'] == null
-        ? null
-        : AuthorOrder.fromJson(json['then'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$AuthorOrderToJson(AuthorOrder instance) =>
-    <String, dynamic>{
-      'asc': _$AuthorOrderableEnumMap[instance.asc],
-      'desc': _$AuthorOrderableEnumMap[instance.desc],
-      'then': instance.then,
-    };
-
-const _$AuthorOrderableEnumMap = {
-  AuthorOrderable.name: 'name',
-  AuthorOrderable.n: 'n',
-};
-
-PointRef _$PointRefFromJson(Map<String, dynamic> json) {
-  return PointRef(
-    longitude: (json['longitude'] as num).toDouble(),
-    latitude: (json['latitude'] as num).toDouble(),
-  );
-}
-
-Map<String, dynamic> _$PointRefToJson(PointRef instance) => <String, dynamic>{
-      'longitude': instance.longitude,
-      'latitude': instance.latitude,
-    };
-
-AddAuthorInput _$AddAuthorInputFromJson(Map<String, dynamic> json) {
-  return AddAuthorInput(
-    name: json['name'] as String,
-    posts: (json['posts'] as List<dynamic>?)
-        ?.map((e) => PostRef.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    friends: (json['friends'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : AuthorRef.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    n: json['n'] as int?,
-  );
-}
-
-Map<String, dynamic> _$AddAuthorInputToJson(AddAuthorInput instance) =>
-    <String, dynamic>{
-      'name': instance.name,
-      'posts': instance.posts,
-      'friends': instance.friends,
-      'n': instance.n,
-    };
-
-PostFilter _$PostFilterFromJson(Map<String, dynamic> json) {
-  return PostFilter(
-    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
-    title: json['title'] == null
-        ? null
-        : StringTermFilter.fromJson(json['title'] as Map<String, dynamic>),
-    score: json['score'] == null
-        ? null
-        : FloatFilter.fromJson(json['score'] as Map<String, dynamic>),
-    completed: json['completed'] as bool?,
-    datePublished: json['datePublished'] == null
-        ? null
-        : DateTimeFilter.fromJson(
-            json['datePublished'] as Map<String, dynamic>),
-    has: _$enumDecodeNullable(_$PostHasFilterEnumMap, json['has']),
-    and: (json['and'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : PostFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    or: (json['or'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : PostFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    not: json['not'] == null
-        ? null
-        : PostFilter.fromJson(json['not'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$PostFilterToJson(PostFilter instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'score': instance.score,
-      'completed': instance.completed,
-      'datePublished': instance.datePublished,
-      'has': _$PostHasFilterEnumMap[instance.has],
-      'and': instance.and,
-      'or': instance.or,
-      'not': instance.not,
-    };
-
-const _$PostHasFilterEnumMap = {
-  PostHasFilter.title: 'title',
-  PostHasFilter.text: 'text',
-  PostHasFilter.score: 'score',
-  PostHasFilter.completed: 'completed',
-  PostHasFilter.datePublished: 'datePublished',
-  PostHasFilter.author: 'author',
-};
-
-TaskRef _$TaskRefFromJson(Map<String, dynamic> json) {
-  return TaskRef(
-    id: json['id'] as String?,
-    title: json['title'] as String?,
-    completed: json['completed'] as bool?,
-    user: json['user'] == null
-        ? null
-        : UserRef.fromJson(json['user'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$TaskRefToJson(TaskRef instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'completed': instance.completed,
-      'user': instance.user,
-    };
-
-DateTimeRange _$DateTimeRangeFromJson(Map<String, dynamic> json) {
-  return DateTimeRange(
-    min: json['min'],
-    max: json['max'],
-  );
-}
-
-Map<String, dynamic> _$DateTimeRangeToJson(DateTimeRange instance) =>
-    <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
-    };
-
-PointListRef _$PointListRefFromJson(Map<String, dynamic> json) {
-  return PointListRef(
-    points: (json['points'] as List<dynamic>)
-        .map((e) => PointRef.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$PointListRefToJson(PointListRef instance) =>
-    <String, dynamic>{
-      'points': instance.points,
-    };
-
-Int64Filter _$Int64FilterFromJson(Map<String, dynamic> json) {
-  return Int64Filter(
-    eq: json['eq'] as int?,
-    le: json['le'] as int?,
-    lt: json['lt'] as int?,
-    ge: json['ge'] as int?,
-    gt: json['gt'] as int?,
-    between: json['between'] == null
-        ? null
-        : Int64Range.fromJson(json['between'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$Int64FilterToJson(Int64Filter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'le': instance.le,
-      'lt': instance.lt,
-      'ge': instance.ge,
-      'gt': instance.gt,
-      'between': instance.between,
-    };
-
-UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
-  return UpdateUserInput(
-    filter: UserFilter.fromJson(json['filter'] as Map<String, dynamic>),
-    set: json['set'] == null
-        ? null
-        : UserPatch.fromJson(json['set'] as Map<String, dynamic>),
-    remove: json['remove'] == null
-        ? null
-        : UserPatch.fromJson(json['remove'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
-    <String, dynamic>{
-      'filter': instance.filter,
-      'set': instance.set,
-      'remove': instance.remove,
-    };
-
-AuthorFilter _$AuthorFilterFromJson(Map<String, dynamic> json) {
-  return AuthorFilter(
-    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
-    name: json['name'] == null
-        ? null
-        : StringTermFilter.fromJson(json['name'] as Map<String, dynamic>),
-    has: _$enumDecodeNullable(_$AuthorHasFilterEnumMap, json['has']),
-    and: (json['and'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : AuthorFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    or: (json['or'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : AuthorFilter.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    not: json['not'] == null
-        ? null
-        : AuthorFilter.fromJson(json['not'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$AuthorFilterToJson(AuthorFilter instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-      'has': _$AuthorHasFilterEnumMap[instance.has],
-      'and': instance.and,
-      'or': instance.or,
-      'not': instance.not,
-    };
-
-const _$AuthorHasFilterEnumMap = {
-  AuthorHasFilter.name: 'name',
-  AuthorHasFilter.posts: 'posts',
-  AuthorHasFilter.friends: 'friends',
-  AuthorHasFilter.n: 'n',
-};
-
-DateTimeFilter _$DateTimeFilterFromJson(Map<String, dynamic> json) {
-  return DateTimeFilter(
-    eq: json['eq'],
-    le: json['le'],
-    lt: json['lt'],
-    ge: json['ge'],
-    gt: json['gt'],
-    between: json['between'] == null
-        ? null
-        : DateTimeRange.fromJson(json['between'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$DateTimeFilterToJson(DateTimeFilter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'le': instance.le,
-      'lt': instance.lt,
-      'ge': instance.ge,
-      'gt': instance.gt,
-      'between': instance.between,
-    };
-
-StringExactFilter _$StringExactFilterFromJson(Map<String, dynamic> json) {
-  return StringExactFilter(
-    eq: json['eq'] as String?,
-    in_$d: (json['in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
-    le: json['le'] as String?,
-    lt: json['lt'] as String?,
-    ge: json['ge'] as String?,
-    gt: json['gt'] as String?,
-    between: json['between'] == null
-        ? null
-        : StringRange.fromJson(json['between'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$StringExactFilterToJson(StringExactFilter instance) =>
-    <String, dynamic>{
-      'eq': instance.eq,
-      'in': instance.in_$d,
-      'le': instance.le,
-      'lt': instance.lt,
-      'ge': instance.ge,
-      'gt': instance.gt,
-      'between': instance.between,
-    };
-
-PostRef _$PostRefFromJson(Map<String, dynamic> json) {
-  return PostRef(
-    id: json['id'] as String?,
-    title: json['title'] as String?,
-    text: json['text'] as String?,
-    score: (json['score'] as num?)?.toDouble(),
-    completed: json['completed'] as bool?,
-    datePublished: json['datePublished'],
-    author: json['author'] == null
-        ? null
-        : AuthorRef.fromJson(json['author'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'text': instance.text,
-      'score': instance.score,
-      'completed': instance.completed,
-      'datePublished': instance.datePublished,
-      'author': instance.author,
-    };
-
-UserOrder _$UserOrderFromJson(Map<String, dynamic> json) {
-  return UserOrder(
-    asc: _$enumDecodeNullable(_$UserOrderableEnumMap, json['asc']),
-    desc: _$enumDecodeNullable(_$UserOrderableEnumMap, json['desc']),
-    then: json['then'] == null
-        ? null
-        : UserOrder.fromJson(json['then'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UserOrderToJson(UserOrder instance) => <String, dynamic>{
-      'asc': _$UserOrderableEnumMap[instance.asc],
-      'desc': _$UserOrderableEnumMap[instance.desc],
-      'then': instance.then,
-    };
-
-const _$UserOrderableEnumMap = {
-  UserOrderable.username: 'username',
-  UserOrderable.name: 'name',
-};
-
-UpdateAuthorInput _$UpdateAuthorInputFromJson(Map<String, dynamic> json) {
-  return UpdateAuthorInput(
-    filter: AuthorFilter.fromJson(json['filter'] as Map<String, dynamic>),
-    set: json['set'] == null
-        ? null
-        : AuthorPatch.fromJson(json['set'] as Map<String, dynamic>),
-    remove: json['remove'] == null
-        ? null
-        : AuthorPatch.fromJson(json['remove'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$UpdateAuthorInputToJson(UpdateAuthorInput instance) =>
-    <String, dynamic>{
-      'filter': instance.filter,
-      'set': instance.set,
-      'remove': instance.remove,
-    };
-
-AddTaskInput _$AddTaskInputFromJson(Map<String, dynamic> json) {
-  return AddTaskInput(
-    title: json['title'] as String,
-    completed: json['completed'] as bool,
-    user: UserRef.fromJson(json['user'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$AddTaskInputToJson(AddTaskInput instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'completed': instance.completed,
-      'user': instance.user,
-    };
-
-IntersectsFilter _$IntersectsFilterFromJson(Map<String, dynamic> json) {
-  return IntersectsFilter(
-    polygon: json['polygon'] == null
-        ? null
-        : PolygonRef.fromJson(json['polygon'] as Map<String, dynamic>),
-    multiPolygon: json['multiPolygon'] == null
-        ? null
-        : MultiPolygonRef.fromJson(
-            json['multiPolygon'] as Map<String, dynamic>),
-  );
-}
-
-Map<String, dynamic> _$IntersectsFilterToJson(IntersectsFilter instance) =>
-    <String, dynamic>{
-      'polygon': instance.polygon,
-      'multiPolygon': instance.multiPolygon,
-    };
-
 AddPostInput _$AddPostInputFromJson(Map<String, dynamic> json) {
   return AddPostInput(
     title: json['title'] as String,
@@ -559,6 +78,32 @@ Map<String, dynamic> _$CustomHTTPToJson(CustomHTTP instance) =>
       'skipIntrospection': instance.skipIntrospection,
     };
 
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
+  }
+
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
+
 const _$HTTPMethodEnumMap = {
   HTTPMethod.GET: 'GET',
   HTTPMethod.POST: 'POST',
@@ -567,10 +112,39 @@ const _$HTTPMethodEnumMap = {
   HTTPMethod.DELETE: 'DELETE',
 };
 
+K? _$enumDecodeNullable<K, V>(
+  Map<K, V> enumValues,
+  dynamic source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    return null;
+  }
+  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
+}
+
 const _$ModeEnumMap = {
   Mode.BATCH: 'BATCH',
   Mode.SINGLE: 'SINGLE',
 };
+
+IntersectsFilter _$IntersectsFilterFromJson(Map<String, dynamic> json) {
+  return IntersectsFilter(
+    polygon: json['polygon'] == null
+        ? null
+        : PolygonRef.fromJson(json['polygon'] as Map<String, dynamic>),
+    multiPolygon: json['multiPolygon'] == null
+        ? null
+        : MultiPolygonRef.fromJson(
+            json['multiPolygon'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$IntersectsFilterToJson(IntersectsFilter instance) =>
+    <String, dynamic>{
+      'polygon': instance.polygon,
+      'multiPolygon': instance.multiPolygon,
+    };
 
 TaskOrder _$TaskOrderFromJson(Map<String, dynamic> json) {
   return TaskOrder(
@@ -591,24 +165,6 @@ Map<String, dynamic> _$TaskOrderToJson(TaskOrder instance) => <String, dynamic>{
 const _$TaskOrderableEnumMap = {
   TaskOrderable.title: 'title',
 };
-
-GenerateQueryParams _$GenerateQueryParamsFromJson(Map<String, dynamic> json) {
-  return GenerateQueryParams(
-    get: json['get'] as bool?,
-    query: json['query'] as bool?,
-    password: json['password'] as bool?,
-    aggregate: json['aggregate'] as bool?,
-  );
-}
-
-Map<String, dynamic> _$GenerateQueryParamsToJson(
-        GenerateQueryParams instance) =>
-    <String, dynamic>{
-      'get': instance.get,
-      'query': instance.query,
-      'password': instance.password,
-      'aggregate': instance.aggregate,
-    };
 
 PolygonGeoFilter _$PolygonGeoFilterFromJson(Map<String, dynamic> json) {
   return PolygonGeoFilter(
@@ -633,6 +189,24 @@ Map<String, dynamic> _$PolygonGeoFilterToJson(PolygonGeoFilter instance) =>
       'within': instance.within,
       'contains': instance.contains,
       'intersects': instance.intersects,
+    };
+
+GenerateQueryParams _$GenerateQueryParamsFromJson(Map<String, dynamic> json) {
+  return GenerateQueryParams(
+    get: json['get'] as bool?,
+    query: json['query'] as bool?,
+    password: json['password'] as bool?,
+    aggregate: json['aggregate'] as bool?,
+  );
+}
+
+Map<String, dynamic> _$GenerateQueryParamsToJson(
+        GenerateQueryParams instance) =>
+    <String, dynamic>{
+      'get': instance.get,
+      'query': instance.query,
+      'password': instance.password,
+      'aggregate': instance.aggregate,
     };
 
 StringTermFilter _$StringTermFilterFromJson(Map<String, dynamic> json) {
@@ -668,6 +242,30 @@ Map<String, dynamic> _$PostPatchToJson(PostPatch instance) => <String, dynamic>{
       'completed': instance.completed,
       'datePublished': instance.datePublished,
       'author': instance.author,
+    };
+
+AuthRule _$AuthRuleFromJson(Map<String, dynamic> json) {
+  return AuthRule(
+    and: (json['and'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : AuthRule.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    or: (json['or'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : AuthRule.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    not: json['not'] == null
+        ? null
+        : AuthRule.fromJson(json['not'] as Map<String, dynamic>),
+    rule: json['rule'] as String?,
+  );
+}
+
+Map<String, dynamic> _$AuthRuleToJson(AuthRule instance) => <String, dynamic>{
+      'and': instance.and,
+      'or': instance.or,
+      'not': instance.not,
+      'rule': instance.rule,
     };
 
 GenerateMutationParams _$GenerateMutationParamsFromJson(
@@ -709,30 +307,6 @@ Map<String, dynamic> _$IntFilterToJson(IntFilter instance) => <String, dynamic>{
       'between': instance.between,
     };
 
-AuthRule _$AuthRuleFromJson(Map<String, dynamic> json) {
-  return AuthRule(
-    and: (json['and'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : AuthRule.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    or: (json['or'] as List<dynamic>?)
-        ?.map((e) =>
-            e == null ? null : AuthRule.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    not: json['not'] == null
-        ? null
-        : AuthRule.fromJson(json['not'] as Map<String, dynamic>),
-    rule: json['rule'] as String?,
-  );
-}
-
-Map<String, dynamic> _$AuthRuleToJson(AuthRule instance) => <String, dynamic>{
-      'and': instance.and,
-      'or': instance.or,
-      'not': instance.not,
-      'rule': instance.rule,
-    };
-
 UserFilter _$UserFilterFromJson(Map<String, dynamic> json) {
   return UserFilter(
     username: json['username'] == null
@@ -767,6 +341,18 @@ const _$UserHasFilterEnumMap = {
   UserHasFilter.name: 'name',
   UserHasFilter.tasks: 'tasks',
 };
+
+IntRange _$IntRangeFromJson(Map<String, dynamic> json) {
+  return IntRange(
+    min: json['min'] as int,
+    max: json['max'] as int,
+  );
+}
+
+Map<String, dynamic> _$IntRangeToJson(IntRange instance) => <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
+    };
 
 AuthorPatch _$AuthorPatchFromJson(Map<String, dynamic> json) {
   return AuthorPatch(
@@ -835,18 +421,6 @@ const _$PostOrderableEnumMap = {
   PostOrderable.score: 'score',
   PostOrderable.datePublished: 'datePublished',
 };
-
-IntRange _$IntRangeFromJson(Map<String, dynamic> json) {
-  return IntRange(
-    min: json['min'] as int,
-    max: json['max'] as int,
-  );
-}
-
-Map<String, dynamic> _$IntRangeToJson(IntRange instance) => <String, dynamic>{
-      'min': instance.min,
-      'max': instance.max,
-    };
 
 NearFilter _$NearFilterFromJson(Map<String, dynamic> json) {
   return NearFilter(
@@ -929,19 +503,6 @@ Map<String, dynamic> _$UserPatchToJson(UserPatch instance) => <String, dynamic>{
       'tasks': instance.tasks,
     };
 
-MultiPolygonRef _$MultiPolygonRefFromJson(Map<String, dynamic> json) {
-  return MultiPolygonRef(
-    polygons: (json['polygons'] as List<dynamic>)
-        .map((e) => PolygonRef.fromJson(e as Map<String, dynamic>))
-        .toList(),
-  );
-}
-
-Map<String, dynamic> _$MultiPolygonRefToJson(MultiPolygonRef instance) =>
-    <String, dynamic>{
-      'polygons': instance.polygons,
-    };
-
 Int64Range _$Int64RangeFromJson(Map<String, dynamic> json) {
   return Int64Range(
     min: json['min'] as int,
@@ -966,6 +527,19 @@ PolygonRef _$PolygonRefFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$PolygonRefToJson(PolygonRef instance) =>
     <String, dynamic>{
       'coordinates': instance.coordinates,
+    };
+
+MultiPolygonRef _$MultiPolygonRefFromJson(Map<String, dynamic> json) {
+  return MultiPolygonRef(
+    polygons: (json['polygons'] as List<dynamic>)
+        .map((e) => PolygonRef.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$MultiPolygonRefToJson(MultiPolygonRef instance) =>
+    <String, dynamic>{
+      'polygons': instance.polygons,
     };
 
 StringRange _$StringRangeFromJson(Map<String, dynamic> json) {
@@ -1093,4 +667,430 @@ Map<String, dynamic> _$FloatRangeToJson(FloatRange instance) =>
     <String, dynamic>{
       'min': instance.min,
       'max': instance.max,
+    };
+
+FloatFilter _$FloatFilterFromJson(Map<String, dynamic> json) {
+  return FloatFilter(
+    eq: (json['eq'] as num?)?.toDouble(),
+    le: (json['le'] as num?)?.toDouble(),
+    lt: (json['lt'] as num?)?.toDouble(),
+    ge: (json['ge'] as num?)?.toDouble(),
+    gt: (json['gt'] as num?)?.toDouble(),
+    between: json['between'] == null
+        ? null
+        : FloatRange.fromJson(json['between'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$FloatFilterToJson(FloatFilter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'le': instance.le,
+      'lt': instance.lt,
+      'ge': instance.ge,
+      'gt': instance.gt,
+      'between': instance.between,
+    };
+
+HelloI _$HelloIFromJson(Map<String, dynamic> json) {
+  return HelloI(
+    n: json['n'] as int?,
+  );
+}
+
+Map<String, dynamic> _$HelloIToJson(HelloI instance) => <String, dynamic>{
+      'n': instance.n,
+    };
+
+TaskFilter _$TaskFilterFromJson(Map<String, dynamic> json) {
+  return TaskFilter(
+    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    completed: json['completed'] as bool?,
+    has: _$enumDecodeNullable(_$TaskHasFilterEnumMap, json['has']),
+    and: (json['and'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : TaskFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    or: (json['or'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : TaskFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    not: json['not'] == null
+        ? null
+        : TaskFilter.fromJson(json['not'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$TaskFilterToJson(TaskFilter instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'completed': instance.completed,
+      'has': _$TaskHasFilterEnumMap[instance.has],
+      'and': instance.and,
+      'or': instance.or,
+      'not': instance.not,
+    };
+
+const _$TaskHasFilterEnumMap = {
+  TaskHasFilter.title: 'title',
+  TaskHasFilter.completed: 'completed',
+  TaskHasFilter.user: 'user',
+};
+
+PointRef _$PointRefFromJson(Map<String, dynamic> json) {
+  return PointRef(
+    longitude: (json['longitude'] as num).toDouble(),
+    latitude: (json['latitude'] as num).toDouble(),
+  );
+}
+
+Map<String, dynamic> _$PointRefToJson(PointRef instance) => <String, dynamic>{
+      'longitude': instance.longitude,
+      'latitude': instance.latitude,
+    };
+
+AuthorOrder _$AuthorOrderFromJson(Map<String, dynamic> json) {
+  return AuthorOrder(
+    asc: _$enumDecodeNullable(_$AuthorOrderableEnumMap, json['asc']),
+    desc: _$enumDecodeNullable(_$AuthorOrderableEnumMap, json['desc']),
+    then: json['then'] == null
+        ? null
+        : AuthorOrder.fromJson(json['then'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AuthorOrderToJson(AuthorOrder instance) =>
+    <String, dynamic>{
+      'asc': _$AuthorOrderableEnumMap[instance.asc],
+      'desc': _$AuthorOrderableEnumMap[instance.desc],
+      'then': instance.then,
+    };
+
+const _$AuthorOrderableEnumMap = {
+  AuthorOrderable.name: 'name',
+  AuthorOrderable.n: 'n',
+};
+
+TaskRef _$TaskRefFromJson(Map<String, dynamic> json) {
+  return TaskRef(
+    id: json['id'] as String?,
+    title: json['title'] as String?,
+    completed: json['completed'] as bool?,
+    user: json['user'] == null
+        ? null
+        : UserRef.fromJson(json['user'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$TaskRefToJson(TaskRef instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'completed': instance.completed,
+      'user': instance.user,
+    };
+
+DateTimeRange _$DateTimeRangeFromJson(Map<String, dynamic> json) {
+  return DateTimeRange(
+    min: json['min'],
+    max: json['max'],
+  );
+}
+
+Map<String, dynamic> _$DateTimeRangeToJson(DateTimeRange instance) =>
+    <String, dynamic>{
+      'min': instance.min,
+      'max': instance.max,
+    };
+
+PointListRef _$PointListRefFromJson(Map<String, dynamic> json) {
+  return PointListRef(
+    points: (json['points'] as List<dynamic>)
+        .map((e) => PointRef.fromJson(e as Map<String, dynamic>))
+        .toList(),
+  );
+}
+
+Map<String, dynamic> _$PointListRefToJson(PointListRef instance) =>
+    <String, dynamic>{
+      'points': instance.points,
+    };
+
+AddAuthorInput _$AddAuthorInputFromJson(Map<String, dynamic> json) {
+  return AddAuthorInput(
+    name: json['name'] as String,
+    posts: (json['posts'] as List<dynamic>?)
+        ?.map((e) => PostRef.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    friends: (json['friends'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : AuthorRef.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    n: json['n'] as int?,
+  );
+}
+
+Map<String, dynamic> _$AddAuthorInputToJson(AddAuthorInput instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'posts': instance.posts,
+      'friends': instance.friends,
+      'n': instance.n,
+    };
+
+PostFilter _$PostFilterFromJson(Map<String, dynamic> json) {
+  return PostFilter(
+    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    title: json['title'] == null
+        ? null
+        : StringTermFilter.fromJson(json['title'] as Map<String, dynamic>),
+    score: json['score'] == null
+        ? null
+        : FloatFilter.fromJson(json['score'] as Map<String, dynamic>),
+    completed: json['completed'] as bool?,
+    datePublished: json['datePublished'] == null
+        ? null
+        : DateTimeFilter.fromJson(
+            json['datePublished'] as Map<String, dynamic>),
+    has: _$enumDecodeNullable(_$PostHasFilterEnumMap, json['has']),
+    and: (json['and'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : PostFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    or: (json['or'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : PostFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    not: json['not'] == null
+        ? null
+        : PostFilter.fromJson(json['not'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$PostFilterToJson(PostFilter instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'score': instance.score,
+      'completed': instance.completed,
+      'datePublished': instance.datePublished,
+      'has': _$PostHasFilterEnumMap[instance.has],
+      'and': instance.and,
+      'or': instance.or,
+      'not': instance.not,
+    };
+
+const _$PostHasFilterEnumMap = {
+  PostHasFilter.title: 'title',
+  PostHasFilter.text: 'text',
+  PostHasFilter.score: 'score',
+  PostHasFilter.completed: 'completed',
+  PostHasFilter.datePublished: 'datePublished',
+  PostHasFilter.author: 'author',
+};
+
+Int64Filter _$Int64FilterFromJson(Map<String, dynamic> json) {
+  return Int64Filter(
+    eq: json['eq'] as int?,
+    le: json['le'] as int?,
+    lt: json['lt'] as int?,
+    ge: json['ge'] as int?,
+    gt: json['gt'] as int?,
+    between: json['between'] == null
+        ? null
+        : Int64Range.fromJson(json['between'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$Int64FilterToJson(Int64Filter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'le': instance.le,
+      'lt': instance.lt,
+      'ge': instance.ge,
+      'gt': instance.gt,
+      'between': instance.between,
+    };
+
+UpdateUserInput _$UpdateUserInputFromJson(Map<String, dynamic> json) {
+  return UpdateUserInput(
+    filter: UserFilter.fromJson(json['filter'] as Map<String, dynamic>),
+    set: json['set'] == null
+        ? null
+        : UserPatch.fromJson(json['set'] as Map<String, dynamic>),
+    remove: json['remove'] == null
+        ? null
+        : UserPatch.fromJson(json['remove'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateUserInputToJson(UpdateUserInput instance) =>
+    <String, dynamic>{
+      'filter': instance.filter,
+      'set': instance.set,
+      'remove': instance.remove,
+    };
+
+DateTimeFilter _$DateTimeFilterFromJson(Map<String, dynamic> json) {
+  return DateTimeFilter(
+    eq: json['eq'],
+    le: json['le'],
+    lt: json['lt'],
+    ge: json['ge'],
+    gt: json['gt'],
+    between: json['between'] == null
+        ? null
+        : DateTimeRange.fromJson(json['between'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$DateTimeFilterToJson(DateTimeFilter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'le': instance.le,
+      'lt': instance.lt,
+      'ge': instance.ge,
+      'gt': instance.gt,
+      'between': instance.between,
+    };
+
+AuthorFilter _$AuthorFilterFromJson(Map<String, dynamic> json) {
+  return AuthorFilter(
+    id: (json['id'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    name: json['name'] == null
+        ? null
+        : StringTermFilter.fromJson(json['name'] as Map<String, dynamic>),
+    has: _$enumDecodeNullable(_$AuthorHasFilterEnumMap, json['has']),
+    and: (json['and'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : AuthorFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    or: (json['or'] as List<dynamic>?)
+        ?.map((e) =>
+            e == null ? null : AuthorFilter.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    not: json['not'] == null
+        ? null
+        : AuthorFilter.fromJson(json['not'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AuthorFilterToJson(AuthorFilter instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+      'has': _$AuthorHasFilterEnumMap[instance.has],
+      'and': instance.and,
+      'or': instance.or,
+      'not': instance.not,
+    };
+
+const _$AuthorHasFilterEnumMap = {
+  AuthorHasFilter.name: 'name',
+  AuthorHasFilter.posts: 'posts',
+  AuthorHasFilter.friends: 'friends',
+  AuthorHasFilter.n: 'n',
+};
+
+PostRef _$PostRefFromJson(Map<String, dynamic> json) {
+  return PostRef(
+    id: json['id'] as String?,
+    title: json['title'] as String?,
+    text: json['text'] as String?,
+    score: (json['score'] as num?)?.toDouble(),
+    completed: json['completed'] as bool?,
+    datePublished: json['datePublished'],
+    author: json['author'] == null
+        ? null
+        : AuthorRef.fromJson(json['author'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$PostRefToJson(PostRef instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'text': instance.text,
+      'score': instance.score,
+      'completed': instance.completed,
+      'datePublished': instance.datePublished,
+      'author': instance.author,
+    };
+
+StringExactFilter _$StringExactFilterFromJson(Map<String, dynamic> json) {
+  return StringExactFilter(
+    eq: json['eq'] as String?,
+    in_$d: (json['in'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+    le: json['le'] as String?,
+    lt: json['lt'] as String?,
+    ge: json['ge'] as String?,
+    gt: json['gt'] as String?,
+    between: json['between'] == null
+        ? null
+        : StringRange.fromJson(json['between'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$StringExactFilterToJson(StringExactFilter instance) =>
+    <String, dynamic>{
+      'eq': instance.eq,
+      'in': instance.in_$d,
+      'le': instance.le,
+      'lt': instance.lt,
+      'ge': instance.ge,
+      'gt': instance.gt,
+      'between': instance.between,
+    };
+
+UserOrder _$UserOrderFromJson(Map<String, dynamic> json) {
+  return UserOrder(
+    asc: _$enumDecodeNullable(_$UserOrderableEnumMap, json['asc']),
+    desc: _$enumDecodeNullable(_$UserOrderableEnumMap, json['desc']),
+    then: json['then'] == null
+        ? null
+        : UserOrder.fromJson(json['then'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UserOrderToJson(UserOrder instance) => <String, dynamic>{
+      'asc': _$UserOrderableEnumMap[instance.asc],
+      'desc': _$UserOrderableEnumMap[instance.desc],
+      'then': instance.then,
+    };
+
+const _$UserOrderableEnumMap = {
+  UserOrderable.username: 'username',
+  UserOrderable.name: 'name',
+};
+
+UpdateAuthorInput _$UpdateAuthorInputFromJson(Map<String, dynamic> json) {
+  return UpdateAuthorInput(
+    filter: AuthorFilter.fromJson(json['filter'] as Map<String, dynamic>),
+    set: json['set'] == null
+        ? null
+        : AuthorPatch.fromJson(json['set'] as Map<String, dynamic>),
+    remove: json['remove'] == null
+        ? null
+        : AuthorPatch.fromJson(json['remove'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$UpdateAuthorInputToJson(UpdateAuthorInput instance) =>
+    <String, dynamic>{
+      'filter': instance.filter,
+      'set': instance.set,
+      'remove': instance.remove,
+    };
+
+AddTaskInput _$AddTaskInputFromJson(Map<String, dynamic> json) {
+  return AddTaskInput(
+    title: json['title'] as String,
+    completed: json['completed'] as bool,
+    user: UserRef.fromJson(json['user'] as Map<String, dynamic>),
+  );
+}
+
+Map<String, dynamic> _$AddTaskInputToJson(AddTaskInput instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'completed': instance.completed,
+      'user': instance.user,
     };
