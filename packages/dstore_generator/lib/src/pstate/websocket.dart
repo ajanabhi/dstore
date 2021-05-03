@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
