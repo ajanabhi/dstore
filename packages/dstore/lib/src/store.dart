@@ -190,11 +190,7 @@ class Store<S extends AppStateI<S>> {
   }
 
   dynamic _defaultDispatch(Action<dynamic> action) {
-    final sk = _pStateTypeToStateKeyMap[action.type];
-    if (sk == null) {
-      throw ArgumentError.value(
-          "There is no pstate registered for ${action.type} make sure you add pstate in AppState function");
-    }
+    final sk = getStateKeyForPstateType(action.type);
     final psm = internalMeta[sk]!;
     final gsMap = _state.toMap();
     final currentS = gsMap[sk]!;
@@ -525,12 +521,17 @@ class Store<S extends AppStateI<S>> {
 
   /* public methods  */
 
-  String getStateKeyForPstateType(String key) {
-    return _pStateTypeToStateKeyMap[key]!;
+  String getStateKeyForPstateType(String psType) {
+    final sk = _pStateTypeToStateKeyMap[psType];
+    if (sk == null) {
+      throw ArgumentError.value(
+          "You already selected same PState before with key ${psType}  ");
+    }
+    return sk;
   }
 
   PStateModel<dynamic> getPStateModelFromAction(Action<dynamic> action) {
-    final sk = _pStateTypeToStateKeyMap[action.type]!;
+    final sk = getStateKeyForPstateType(action.type);
     final gsMap = state.toMap();
     return gsMap[sk]!;
   }
@@ -541,7 +542,7 @@ class Store<S extends AppStateI<S>> {
   }
 
   PStateMeta getPStateMetaFromAction(Action<dynamic> action) {
-    final sk = _pStateTypeToStateKeyMap[action.type];
+    final sk = getStateKeyForPstateType(action.type);
     return internalMeta[sk]!;
   }
 
