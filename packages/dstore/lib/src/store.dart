@@ -190,7 +190,11 @@ class Store<S extends AppStateI<S>> {
   }
 
   dynamic _defaultDispatch(Action<dynamic> action) {
-    final sk = _pStateTypeToStateKeyMap[action.type]!;
+    final sk = _pStateTypeToStateKeyMap[action.type];
+    if (sk == null) {
+      throw ArgumentError.value(
+          "There is no pstate registered for ${action.type} make sure you add pstate in AppState function");
+    }
     final psm = internalMeta[sk]!;
     final gsMap = _state.toMap();
     final currentS = gsMap[sk]!;
@@ -542,6 +546,7 @@ class Store<S extends AppStateI<S>> {
   }
 
   dynamic dispatch(Action<dynamic> action) {
+    print("Dispatching Action $action");
     _dispatchers[0](action);
   }
 

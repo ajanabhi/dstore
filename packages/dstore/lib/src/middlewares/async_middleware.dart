@@ -5,6 +5,7 @@ import 'package:dstore/src/store.dart';
 
 dynamic asyncMiddleware<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) async {
+  print("Async middleware $action next $next store $store ");
   if (action.isProcessed || !action.isAsync) {
     next(action);
   } else {

@@ -48,9 +48,11 @@ Future<String> generatePStateNavForClassElement(
 
   final buildPages =
       visitor.methods.where((m) => m.name == "buildPages").firstOrNull?.body;
-  final isPageUsed = visitor.methods.singleWhereOrNull(
-      (m) => m.keysModified.where((f) => f.name == "page").isNotEmpty);
-  if (isPageUsed != null && buildPages != null) {
+  print("methods : ${methods.map((e) => e.keysModified)}");
+  final isPageUsed = visitor.methods
+      .where((m) => m.keysModified.where((f) => f.name == "page").isNotEmpty);
+  logger.shout("buidlPages $buildPages isPageUsed $isPageUsed");
+  if (isPageUsed.isNotEmpty && buildPages != null) {
     throw NotAllowedError(
         "You are setting page field and implemented buildPages , which is anot allowed, use only one method");
   }

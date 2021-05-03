@@ -70,8 +70,15 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
-                      print("on Pop Page");
-                      return false;
+                      final url = history.goBack();
+                      print("Navigator pop : $url");
+                      if (url.isEmpty) {
+                        return false;
+                      }
+                      scheduleMicrotask(() {
+                        handleUriChange(Uri.parse(url));
+                      });
+                      return true;
                     },
                   )
                 : SizedBox.shrink();
