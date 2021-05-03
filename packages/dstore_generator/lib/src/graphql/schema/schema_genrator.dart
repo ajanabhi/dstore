@@ -167,6 +167,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
   }
   final apiUrl = gApi.getField("apiUrl")!.toStringValue()!;
   final schemaPath = gApi.getField("schemaPath")?.toStringValue();
+  final cacheOnlineApi = gApi.getField("cacheOnlineApi")?.toStringValue();
   final wsUrl = gApi.getField("wsUrl")?.toStringValue();
   final scalarMap = gApi.getField("scalarMap")?.toMapValue()?.map(
       (key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
@@ -175,6 +176,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
       apiUrl: apiUrl,
       scalarMap: scalarMap,
       schemaPath: schemaPath,
+      cacheOnlineApi: cacheOnlineApi,
       wsUrl: wsUrl);
 }
 
@@ -242,7 +244,15 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
     final resp =
         await dio.post<dynamic>(url, data: {"query": getIntrospectionQuery()});
     final respStr = jsonEncode(resp.data);
-    await File("./schema.json").writeAsString(respStr);
+    if (graphqlApi.cacheOnlineApi != null) {
+      // cache api schema in local disk for offline usage
+      var path = graphqlApi.cacheOnlineApi!;
+      if (!path.endsWith(".json")) {
+        path = "$path.json";
+      }
+      await File("./schema.json").writeAsString(respStr);
+    }
+
     schema = buildSchemaFromIntrospection(
         IntrospectionQuery.fromJson(resp.data["data"] as Map<String, dynamic>));
   } catch (e) {

@@ -1,10 +1,15 @@
 class GraphqlApi {
   final String apiUrl;
   final String? schemaPath;
+  final String? cacheOnlineApi;
   final String? wsUrl;
   final Map<String, String>? scalarMap;
   const GraphqlApi(
-      {required this.apiUrl, this.schemaPath, this.wsUrl, this.scalarMap});
+      {required this.apiUrl,
+      this.cacheOnlineApi,
+      this.schemaPath,
+      this.wsUrl,
+      this.scalarMap});
 
   @override
   bool operator ==(Object other) {
