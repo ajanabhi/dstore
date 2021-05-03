@@ -249,7 +249,9 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
     if (cacheOnlineApi != null) {
       // cache api schema in local disk for offline usage
       final path = _getPathForCacheOffline(cacheOnlineApi);
-      await File(path).writeAsString(respStr);
+      final file = File(path);
+      file.createSync(recursive: true);
+      file.writeAsStringSync(respStr);
     }
 
     schema = buildSchemaFromIntrospection(
@@ -263,10 +265,15 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
       final path = _getPathForCacheOffline(cacheOnlineApi);
       print(
           "Error getting schema from apiUrl $e , Try to get schema from cached file $path");
-      final content = File(path).readAsStringSync();
-      final dynamic cResp = jsonDecode(content);
-      schema = buildSchemaFromIntrospection(
-          IntrospectionQuery.fromJson(cResp["data"] as Map<String, dynamic>));
+
+      try {
+        final content = File(path).readAsStringSync();
+        final dynamic cResp = jsonDecode(content);
+        schema = buildSchemaFromIntrospection(
+            IntrospectionQuery.fromJson(cResp["data"] as Map<String, dynamic>));
+      } catch (e) {
+        throw Exception("Error getting graphql schema from cached path $path");
+      }
     } else {
       throw Exception(
           "Error while getting graphql schema from api url $url $e ");
