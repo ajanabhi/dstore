@@ -22,11 +22,7 @@ abstract class ModelUtils {
       var name = f.name;
       var annotations = [...f.annotations];
       if (addJsonKey) {
-        if (name == "enum") {
-          print("enum field mod");
-        }
         name = name.addDName;
-        print(name);
         if (name != f.name) {
           if (f.annotations
               .where((element) => element.startsWith("@JsonKey"))
