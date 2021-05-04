@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-class DgraphAuthorization {
+class DgraphAuthorizationComment {
   final String header;
   final String namespace;
   final String algo;
@@ -10,7 +10,7 @@ class DgraphAuthorization {
   final List<String> audience;
   final bool closedByDefault;
 
-  DgraphAuthorization(
+  const DgraphAuthorizationComment(
       {required this.header,
       required this.namespace,
       required this.algo,
@@ -27,14 +27,14 @@ class DgraphAuthorization {
     params.add('"Namespace":"$namespace"');
     params.add('"Algo":"$algo"');
     params.add('"VerificationKey":"$verificationKey"');
-    params.add('"Audience":"${jsonEncode(audience)}"');
+    params.add('"Audience":${jsonEncode(audience)}');
     if (closedByDefault) {
       params.add('"ClosedByDefault":true');
     }
     if (jwkurl != null) {
       params.add('"jwkurl":"$jwkurl"');
     } else if (jwkurls != null) {
-      params.add('"jwkurls":"${jsonEncode(jwkurls)}"');
+      params.add('"jwkurls":${jsonEncode(jwkurls)}');
     }
     return '# Dgraph.Authorization {${params.join(", ")}}';
   }

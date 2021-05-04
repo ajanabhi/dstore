@@ -41,10 +41,12 @@ class GraphqlSchema {
   final GraphqlDatabase database;
   final SchemaUploadRequest? schemaUplodDetails;
   final bool uploadSchema;
+  final String? comments;
   const GraphqlSchema(
       {required this.path,
       required this.database,
       this.schemaUplodDetails,
+      this.comments,
       this.uploadSchema = false});
 }
 

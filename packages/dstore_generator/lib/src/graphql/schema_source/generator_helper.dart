@@ -14,7 +14,7 @@ Future<void> generateSchema(
   var enums = "";
   var inputs = "";
   var unions = "";
-  var comments = "";
+  final comments = schemaMeta.comments;
   element.fields.forEach((fe) {
     logger.shout(
         "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element} eleemnttype ${fe.type.element.runtimeType}");
@@ -270,6 +270,10 @@ GraphqlSchema _getGraphqlSchema(ClassElement element) {
   print("database ${reader.peek("database")}");
   final database = reader.getEnumField("database", GraphqlDatabase.values)!;
   final uploadSchema = reader.peek("uploadSchema")?.boolValue ?? false;
+  final comments = reader.peek("comments")?.stringValue ?? "";
   return GraphqlSchema(
-      path: path, database: database, uploadSchema: uploadSchema);
+      path: path,
+      database: database,
+      uploadSchema: uploadSchema,
+      comments: comments);
 }
