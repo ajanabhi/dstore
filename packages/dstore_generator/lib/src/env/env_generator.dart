@@ -31,8 +31,7 @@ abstract class EnvGenerator {
         }; // system vars should take high priority
         if (envVars.isNotEmpty) {
           final fields = envVars.entries
-              .map((e) =>
-                  'static const ${e.key} =  ${(e.value.startsWith('"') || e.value.startsWith("'")) ? e.value : "${e.value}"} ;')
+              .map((e) => 'static const ${e.key} =  ${e.value} ;')
               .join("\n");
           final content = """"
            // File is automatically generrated on ${DateTime.now().toIso8601String()} , dont modify it directly
