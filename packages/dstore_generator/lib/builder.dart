@@ -2,6 +2,7 @@ import 'package:build/build.dart';
 import 'package:dstore_generator/src/appstate/app_state_generator.dart';
 import 'package:dstore_generator/src/denum/denum_generator.dart';
 import 'package:dstore_generator/src/dunion/union_generator.dart';
+import 'package:dstore_generator/src/env/env_generator.dart';
 import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/ops/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
@@ -17,7 +18,8 @@ var lDebugMode = true;
 
 /// Builds generators for `build_runner` to run
 Builder dstorePSGen(BuilderOptions options) {
-  print("************************* options ${options.config}");
+  print("dstorePSGen ************************* options ${options.config}");
+  EnvGenerator.generate();
   PStateGeneratorBuildOptions.fromOptions(options.config);
   return PartBuilder(
     [PStateGenerator()],
@@ -26,8 +28,8 @@ Builder dstorePSGen(BuilderOptions options) {
 }
 
 Builder dstoreApiGen(BuilderOptions options) {
-  print("************************* options ${options.config}");
-
+  print(" dstoreApiGen ************************* options ${options.config}");
+  EnvGenerator.generate();
   return PartBuilder(
     [GraphqlSchemaGenerator(), GraphqlOpsGenerator(), OpenApiGenerator()],
     '.api.dstore.dart',
@@ -35,6 +37,8 @@ Builder dstoreApiGen(BuilderOptions options) {
 }
 
 Builder dstoreGen(BuilderOptions options) {
+  print("dstoreGen Options $options");
+  EnvGenerator.generate();
   return PartBuilder(
       [
         FormModelGenerator(),

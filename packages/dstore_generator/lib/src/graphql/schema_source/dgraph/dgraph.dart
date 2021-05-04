@@ -1,5 +1,7 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dio/dio.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:dstore_dgraph/dgraph.dart';
 
@@ -296,5 +298,21 @@ remote? getRemoteDirective(Element element) {
   final annot = element.annotationFromType(auth)?.computeConstantValue();
   if (annot != null) {
     return remote();
+  }
+}
+
+Future<void> validateAndUploadDGraphSchema(
+    {required GraphqlSchema meta, required String schema}) async {
+  final dio = Dio();
+  final ud = meta.schemaUplodDetails!;
+  final url = ud.url;
+  final headers = ud.headers;
+  final validateUrl = "$url/validate";
+  try {
+    final resp = await dio.post<String>(validateUrl,
+        options: Options(headers: headers), data: schema);
+    print("Validate Resp $resp");
+  } catch (e) {
+    rethrow;
   }
 }

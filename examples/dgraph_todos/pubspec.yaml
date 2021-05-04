@@ -37,7 +37,9 @@ dependencies:
   json_annotation:
   middleware_dio:
     path: ../../packages/middleware_dio/ 
-  meta: 
+  meta:
+  dstore_dgraph:
+    path: ../../packages/dgraph/    
 
 dev_dependencies:
   flutter_test:

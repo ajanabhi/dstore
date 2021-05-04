@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:dio/dio.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -57,6 +60,28 @@ Future<void> generateSchema(
    $comments
   
   """;
+
+  _saveSchemaToFile(schemaMeta, schema);
+  if (schemaMeta.uploadSchema) {
+    await _uploadSchema(schemaMeta, schema);
+  }
+}
+
+void _saveSchemaToFile(GraphqlSchema meta, String schema) {
+  final file = File(meta.path);
+  file.createSync(recursive: true);
+  file.writeAsStringSync(schema);
+}
+
+Future<void> _uploadSchema(GraphqlSchema meta, String schema) async {
+  final uploadDetails = meta.schemaUplodDetails;
+  if (uploadDetails == null) {
+    throw ArgumentError.value(
+        "You should provide schemaUplodDetails while defining graphqlschema if you want to upload");
+  }
+  if (meta.database == GraphqlDatabase.dgraph) {
+    await validateAndUploadDGraphSchema(meta: meta, schema: schema);
+  }
 }
 
 String getObjects(
@@ -271,9 +296,17 @@ GraphqlSchema _getGraphqlSchema(ClassElement element) {
   final database = reader.getEnumField("database", GraphqlDatabase.values)!;
   final uploadSchema = reader.peek("uploadSchema")?.boolValue ?? false;
   final comments = reader.peek("comments")?.stringValue ?? "";
+  final schemaUplodDetailsObj = reader.peek("schemaUplodDetails");
+  SchemaUploadRequest? schemaUplodDetails;
+  if (schemaUplodDetailsObj != null) {
+    final url = schemaUplodDetailsObj.peek("url")?.stringValue;
+    final headers = schemaUplodDetailsObj.getStringMapForField("headers");
+    schemaUplodDetails = SchemaUploadRequest(url: url!, headers: headers);
+  }
   return GraphqlSchema(
       path: path,
       database: database,
       uploadSchema: uploadSchema,
+      schemaUplodDetails: schemaUplodDetails,
       comments: comments);
 }
