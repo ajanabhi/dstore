@@ -31,7 +31,8 @@ abstract class EnvGenerator {
         }; // system vars should take high priority
         if (envVars.isNotEmpty) {
           final fields = envVars.entries
-              .map((e) => 'static const ${e.key} =  "${e.value}";')
+              .map((e) =>
+                  'static const ${e.key} =  ${(e.value.startsWith('"') || e.value.startsWith("'")) ? e.value : "${e.value}"} ;')
               .join("\n");
           final content = """"
            // File is automatically generrated on ${DateTime.now().toIso8601String()} , dont modify it directly
@@ -43,6 +44,7 @@ abstract class EnvGenerator {
         }
       } catch (e, st) {
         logger.error("Error while generating env file ", e, st);
+        rethrow;
       } finally {
         isGenerated = true;
       }
