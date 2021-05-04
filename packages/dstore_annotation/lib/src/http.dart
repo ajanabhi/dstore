@@ -72,7 +72,7 @@ class GraphqlRequestPart {
       {required this.query, this.hash, this.useGetForPersist = false});
   @override
   String toString() =>
-      'HttpRequestGraphqlPart(query: $query, hash: $hash, useGetForPersist: $useGetForPersist)';
+      'GraphqlRequestPart(query: $query, hash: $hash, useGetForPersist: $useGetForPersist)';
 }
 
 class HttpRequestExtension<T> {

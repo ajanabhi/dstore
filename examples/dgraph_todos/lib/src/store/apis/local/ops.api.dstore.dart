@@ -164,13 +164,11 @@ Hello_todoData Hello_todoDataDeserializer(int status, dynamic json) =>
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query todo{
+    graphqlQuery: GraphqlRequestPart(query: """query todo{
       todo {
         text
       } 
-    }
-  
-  """,
+    }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_todoDataSerializer,
@@ -183,13 +181,11 @@ class Hello_todo = HttpField<Null, GraphqlRequestInput<Null>, Hello_todoData,
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query todo{
+    graphqlQuery: GraphqlRequestPart(query: """query todo{
       todo {
         text
       } 
-    }
-  
-  """,
+    }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_todoDataSerializer,
@@ -409,15 +405,14 @@ Hello_utData Hello_utDataDeserializer(int status, dynamic json) =>
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query hu{
+    graphqlQuery: GraphqlRequestPart(query: """query hu{
       hellou {
         __typename
         ... on Hello1 {
           one
         }
       }
-    }
-  """,
+    }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_utDataSerializer,
@@ -430,15 +425,14 @@ class Hello_ut = HttpField<Null, GraphqlRequestInput<Null>, Hello_utData,
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/",
-    graphqlQuery: """    query hu{
+    graphqlQuery: GraphqlRequestPart(query: """query hu{
       hellou {
         __typename
         ... on Hello1 {
           one
         }
       }
-    }
-  """,
+    }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: Hello_utDataSerializer,

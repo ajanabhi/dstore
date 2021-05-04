@@ -125,6 +125,10 @@ extension StringExt on String {
       return value;
     }
   }
+
+  String get addTripleQuotes {
+    return "\"\"\"$this\"\"\"";
+  }
 }
 
 extension IterableMapIndex<T> on Iterable<T> {

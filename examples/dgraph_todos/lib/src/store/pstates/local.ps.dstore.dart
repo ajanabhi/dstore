@@ -93,13 +93,11 @@ abstract class LocalActions {
         type: _Local_FullPath,
         http: HttpPayload<GraphqlRequestInput<Null>, Hello_todoData, dynamic,
                 dynamic>(
-            data: GraphqlRequestInput("""    query todo{
+            data: GraphqlRequestInput(query: """query todo{
       todo {
         text
       } 
-    }
-  
-  """, null),
+    }"""),
             abortable: abortable,
             offline: offline,
             headers: headers,

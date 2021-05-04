@@ -335,7 +335,8 @@ extension DartObjectExt on DartObject {
 
   T? getEnumField<T>(String name, List<T> values) {
     final field = getField(name);
-    if (field != null) {
+    print("Enum Field $field ${field.runtimeType}");
+    if (field != null && !field.isNull) {
       final v = reviveInstance(field).accessor;
       return values.singleWhereOrNull((element) => element.toString() == v);
     }

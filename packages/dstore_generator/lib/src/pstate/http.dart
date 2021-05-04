@@ -49,6 +49,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
     throw ArgumentError.value(
         "You should anotate type ${type} with HttpRequest");
   }
+  print("HttpRequest Anotation ${anot.toSource()}");
   final value = anot.computeConstantValue();
   final reader = ConstantReader(value);
   final url = reader.read("url").stringValue;
@@ -139,7 +140,9 @@ String convertHttpFieldInfoToAction(
       final it = hf.inputType!;
 
       final graphqlQueryPart = hf.graphqlQuery!;
-      final gparams = <String>["query: ${graphqlQueryPart.query}"];
+      final gparams = <String>[
+        "query: ${graphqlQueryPart.query.addTripleQuotes}"
+      ];
       if (graphqlQueryPart.hash != null) {
         final extensions = {
           "persistedQuery": {"sha256Hash": graphqlQueryPart.hash}
