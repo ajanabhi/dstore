@@ -82,7 +82,7 @@ String getEnums(
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
-          convertDartInterfaceTypeToUnions(it: e, database: schema.database))
+          convertDartInterfaceTypeToEnum(it: e, database: schema.database))
       .join("\n");
 }
 
