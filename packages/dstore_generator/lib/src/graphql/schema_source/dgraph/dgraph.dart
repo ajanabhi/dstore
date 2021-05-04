@@ -302,7 +302,7 @@ remote? getRemoteDirective(Element element) {
 }
 
 Future<void> validateAndUploadDGraphSchema(
-    {required GraphqlSchema meta, required String schema}) async {
+    {required GraphqlSchemaSource meta, required String schema}) async {
   final dio = Dio();
   final ud = meta.schemaUplodDetails!;
   final url = ud.url;

@@ -67,13 +67,13 @@ Future<void> generateSchema(
   }
 }
 
-void _saveSchemaToFile(GraphqlSchema meta, String schema) {
+void _saveSchemaToFile(GraphqlSchemaSource meta, String schema) {
   final file = File(meta.path);
   file.createSync(recursive: true);
   file.writeAsStringSync(schema);
 }
 
-Future<void> _uploadSchema(GraphqlSchema meta, String schema) async {
+Future<void> _uploadSchema(GraphqlSchemaSource meta, String schema) async {
   final uploadDetails = meta.schemaUplodDetails;
   if (uploadDetails == null) {
     throw ArgumentError.value(
@@ -85,7 +85,7 @@ Future<void> _uploadSchema(GraphqlSchema meta, String schema) async {
 }
 
 String getObjects(
-    {required ClassElement element, required GraphqlSchema schema}) {
+    {required ClassElement element, required GraphqlSchemaSource schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -94,7 +94,7 @@ String getObjects(
 }
 
 String getUnions(
-    {required ClassElement element, required GraphqlSchema schema}) {
+    {required ClassElement element, required GraphqlSchemaSource schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -103,7 +103,7 @@ String getUnions(
 }
 
 String getEnums(
-    {required ClassElement element, required GraphqlSchema schema}) {
+    {required ClassElement element, required GraphqlSchemaSource schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -112,7 +112,7 @@ String getEnums(
 }
 
 String getInterfaces(
-    {required ClassElement element, required GraphqlSchema schema}) {
+    {required ClassElement element, required GraphqlSchemaSource schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -121,7 +121,7 @@ String getInterfaces(
 }
 
 String getInputs(
-    {required ClassElement element, required GraphqlSchema schema}) {
+    {required ClassElement element, required GraphqlSchemaSource schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -288,8 +288,8 @@ String getGraphqlType(DartType type) {
   }
 }
 
-GraphqlSchema _getGraphqlSchema(ClassElement element) {
-  final annot = element.annotationFromType(GraphqlSchema)!;
+GraphqlSchemaSource _getGraphqlSchema(ClassElement element) {
+  final annot = element.annotationFromType(GraphqlSchemaSource)!;
   final reader = ConstantReader(annot.computeConstantValue());
   final path = reader.peek("path")!.stringValue;
   print("database ${reader.peek("database")}");
@@ -303,7 +303,7 @@ GraphqlSchema _getGraphqlSchema(ClassElement element) {
     final headers = schemaUplodDetailsObj.getStringMapForField("headers");
     schemaUplodDetails = SchemaUploadRequest(url: url!, headers: headers);
   }
-  return GraphqlSchema(
+  return GraphqlSchemaSource(
       path: path,
       database: database,
       uploadSchema: uploadSchema,

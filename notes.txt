@@ -36,3 +36,8 @@ https://raw.githubusercontent.com/OpenBankingUK/read-write-api-specs/master/dist
 Testing : 
 
 https://applitools.com/event/let-the-robots-test-your-flutter-app/
+
+
+DGraph : 
+
+https://dgraph.io/docs/cloud/cloud-api/lambda/

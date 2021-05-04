@@ -5,7 +5,8 @@ import 'package:dstore_generator/src/graphql/schema_source/generator_helper.dart
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
-class SchemaSourceGenerator extends GeneratorForAnnotation<GraphqlSchema> {
+class SchemaSourceGenerator
+    extends GeneratorForAnnotation<GraphqlSchemaSource> {
   @override
   Future<String> generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) async {

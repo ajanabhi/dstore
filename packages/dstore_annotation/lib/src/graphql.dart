@@ -36,13 +36,13 @@ enum GraphqlDatabase { dgraph }
 
 typedef SchemaUploadFn = Future<String> Function(String schema);
 
-class GraphqlSchema {
+class GraphqlSchemaSource {
   final String path;
   final GraphqlDatabase database;
   final SchemaUploadRequest? schemaUplodDetails;
   final bool uploadSchema;
   final String? comments;
-  const GraphqlSchema(
+  const GraphqlSchemaSource(
       {required this.path,
       required this.database,
       this.schemaUplodDetails,
@@ -55,16 +55,6 @@ class SchemaUploadRequest {
   final Map<String, String>? headers;
 
   const SchemaUploadRequest({required this.url, this.headers});
-}
-
-abstract class GraphqlSchemaI {
-  Type? interfaces;
-  dynamic? objects;
-  Type? unions;
-  Type? directives;
-  Type? query;
-  Type? mutation;
-  Type? subscription;
 }
 
 class ID {}
