@@ -2,7 +2,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
-import 'package:dstore_generator/src/graphql/schema_source/dgraph.dart';
+import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -31,7 +31,7 @@ String getObjects(
       .join("\n");
 }
 
-String convertInterfaceTypeToObject(
+String convertDartInterfaceTypeToObject(
     {required InterfaceType it, required GraphqlDatabase database}) {
   final element = it.element;
   final name = element.name;
@@ -45,6 +45,21 @@ String convertInterfaceTypeToObject(
 
   return """
    type $name $impl {
+    ${getFieldsFromClassElement(element: it.element, database: database)}
+    $interfacesFields
+   }
+  """;
+}
+
+String convertDartInterfaceTypeToInterface(
+    {required InterfaceType it, required GraphqlDatabase database}) {
+  final element = it.element;
+  final name = element.name;
+
+  var interfacesFields = "";
+
+  return """
+   interface $name  {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
    }
