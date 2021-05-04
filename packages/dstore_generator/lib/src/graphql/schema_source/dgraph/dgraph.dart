@@ -32,6 +32,91 @@ String getDGraphFieldAnnotations({required FieldElement element}) {
   return annotations.join(" ");
 }
 
+String getDGraphObjectAnnotations({required ClassElement element}) {
+  final annotations = <String>[];
+  final remoteD = getRemoteDirective(element);
+  if (remoteD != null) {
+    annotations.add(remoteD.toString());
+  }
+  final dgraphD = getDGraphDirective(element);
+  if (dgraphD != null) {
+    annotations.add(dgraphD.toString());
+  }
+  final withSubscriptionD = getWithSubscriptionDirective(element);
+  if (withSubscriptionD != null) {
+    annotations.add(withSubscriptionD.toString());
+  }
+  final secretD = getSecretDirective(element);
+  if (secretD != null) {
+    annotations.add(secretD.toString());
+  }
+  final authD = getAuthDirective(element);
+  if (authD != null) {
+    annotations.add(authD.toString());
+  }
+  final generateD = getGenerateDirective(element);
+  if (generateD != null) {
+    annotations.add(generateD.toString());
+  }
+  return annotations.join(" ");
+}
+
+String getDGraphInterfaceAnnotations({required ClassElement element}) {
+  final annotations = <String>[];
+  final remoteD = getRemoteDirective(element);
+  if (remoteD != null) {
+    annotations.add(remoteD.toString());
+  }
+  final dgraphD = getDGraphDirective(element);
+  if (dgraphD != null) {
+    annotations.add(dgraphD.toString());
+  }
+
+  final withSubscriptionD = getWithSubscriptionDirective(element);
+  if (withSubscriptionD != null) {
+    annotations.add(withSubscriptionD.toString());
+  }
+
+  final secretD = getSecretDirective(element);
+  if (secretD != null) {
+    annotations.add(secretD.toString());
+  }
+
+  final generateD = getGenerateDirective(element);
+  if (generateD != null) {
+    annotations.add(generateD.toString());
+  }
+
+  return annotations.join(" ");
+}
+
+String getDGraphInputAnnotations({required ClassElement element}) {
+  final annotations = <String>[];
+  final remoteD = getRemoteDirective(element);
+  if (remoteD != null) {
+    annotations.add(remoteD.toString());
+  }
+  return annotations.join(" ");
+}
+
+String getDGraphEnumAnnotations({required ClassElement element}) {
+  final annotations = <String>[];
+  final remoteD = getRemoteDirective(element);
+  if (remoteD != null) {
+    annotations.add(remoteD.toString());
+  }
+  return annotations.join(" ");
+}
+
+String getDGraphUnionAnnotations({required ClassElement element}) {
+  final annotations = <String>[];
+  final remoteD = getRemoteDirective(element);
+  if (remoteD != null) {
+    annotations.add(remoteD.toString());
+  }
+  return annotations.join(" ");
+}
+
 hasInverse? getHasInverseDirective(Element element) {
   final annot = element.annotationFromType(hasInverse)?.computeConstantValue();
   if (annot != null) {
@@ -153,6 +238,39 @@ auth? getAuthDirective(Element element) {
     final update = getAuthRuleFromObject(annot.getField("update"));
     final delete = getAuthRuleFromObject(annot.getField("delete"));
     return auth(query: query, add: add, update: update, delete: delete);
+  }
+}
+
+GenerateQueryParams? getGenerateQueryParamsFromDartObject(DartObject? obj) {
+  if (obj != null) {
+    final get = obj.getField("get")?.toBoolValue();
+    final query = obj.getField("query")?.toBoolValue();
+    final password = obj.getField("password")?.toBoolValue();
+    final aggregate = obj.getField("aggregate")?.toBoolValue();
+    return GenerateQueryParams(
+        get: get, query: query, password: password, aggregate: aggregate);
+  }
+}
+
+GenerateMutationParams? getGenerateMutationParamsFromDartObject(
+    DartObject? obj) {
+  if (obj != null) {
+    final add = obj.getField("add")?.toBoolValue();
+    final update = obj.getField("update")?.toBoolValue();
+    final delete = obj.getField("delete")?.toBoolValue();
+    return GenerateMutationParams(add: add, update: update, delete: delete);
+  }
+}
+
+generate? getGenerateDirective(Element element) {
+  final annot = element.annotationFromType(auth)?.computeConstantValue();
+  if (annot != null) {
+    final query = getGenerateQueryParamsFromDartObject(annot.getField("query"));
+    final mutation =
+        getGenerateMutationParamsFromDartObject(annot.getField("mutation"));
+    final subscription = annot.getField("subscription")?.toBoolValue();
+    return generate(
+        query: query, mutation: mutation, subscription: subscription);
   }
 }
 

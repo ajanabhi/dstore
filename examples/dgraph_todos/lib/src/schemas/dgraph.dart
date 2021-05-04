@@ -7,7 +7,10 @@ import 'package:dstore/dstore.dart';
 class LearnSchema {
   late Objects objects;
   late List<String> o1;
+  late Enum1 e2;
 }
+
+enum Enum1 { h }
 
 abstract class Node {
   late ID id;

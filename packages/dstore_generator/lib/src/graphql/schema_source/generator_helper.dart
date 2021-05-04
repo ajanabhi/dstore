@@ -9,25 +9,98 @@ import 'package:source_gen/source_gen.dart';
 Future<void> generateSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
   final schemaMeta = _getGraphqlSchema(element);
-  var schemaStr = "";
+  var objects = "";
+  var interfaces = "";
+  var enums = "";
+  var inputs = "";
+  var unions = "";
+  var comments = "";
   element.fields.forEach((fe) {
     logger.shout(
-        "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element}");
-    if (fe.name.toLowerCase() == "objects") {
-      schemaStr += getObjects(element: element, schema: schemaMeta);
+        "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element} eleemnttype ${fe.type.element.runtimeType}");
+    final name = fe.name.toLowerCase();
+    if (name == "objects") {
+      objects = getObjects(element: element, schema: schemaMeta);
+    }
+    if (name == "interfaces") {
+      interfaces = getInterfaces(element: element, schema: schemaMeta);
+    }
+    if (name == "inputs") {
+      inputs = getInputs(element: element, schema: schemaMeta);
+    }
+
+    if (name == "unions") {
+      inputs = getUnions(element: element, schema: schemaMeta);
+    }
+
+    if (name == "enums") {
+      enums = getEnums(element: element, schema: schemaMeta);
     }
     (fe.type.element as ClassElement).allSupertypes.forEach((st) {
       print(st.getDisplayString(withNullability: true));
       print(st.element.fields);
     });
   });
+
+  final schema = """
+   
+   $enums 
+
+   $interfaces
+
+   $objects
+   
+   $unions
+
+   $inputs
+
+   $comments
+  
+  """;
 }
 
 String getObjects(
     {required ClassElement element, required GraphqlSchema schema}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
-      .map((e) {})
+      .map((e) =>
+          convertDartInterfaceTypeToObject(it: e, database: schema.database))
+      .join("\n");
+}
+
+String getUnions(
+    {required ClassElement element, required GraphqlSchema schema}) {
+  return element.allSupertypes
+      .where((e) => !e.isDartCoreObject)
+      .map((e) =>
+          convertDartInterfaceTypeToUnions(it: e, database: schema.database))
+      .join("\n");
+}
+
+String getEnums(
+    {required ClassElement element, required GraphqlSchema schema}) {
+  return element.allSupertypes
+      .where((e) => !e.isDartCoreObject)
+      .map((e) =>
+          convertDartInterfaceTypeToUnions(it: e, database: schema.database))
+      .join("\n");
+}
+
+String getInterfaces(
+    {required ClassElement element, required GraphqlSchema schema}) {
+  return element.allSupertypes
+      .where((e) => !e.isDartCoreObject)
+      .map((e) =>
+          convertDartInterfaceTypeToInterface(it: e, database: schema.database))
+      .join("\n");
+}
+
+String getInputs(
+    {required ClassElement element, required GraphqlSchema schema}) {
+  return element.allSupertypes
+      .where((e) => !e.isDartCoreObject)
+      .map((e) =>
+          convertDartInterfaceTypeToInput(it: e, database: schema.database))
       .join("\n");
 }
 
@@ -43,10 +116,57 @@ String convertDartInterfaceTypeToObject(
   final impl = interfaces.isEmpty ? "" : "implements $interfaces";
   var interfacesFields = "";
 
+  final directives =
+      getAnnotationForObject(element: element, database: database);
+
   return """
-   type $name $impl {
+   type $name $impl $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
+   }
+  """;
+}
+
+String convertDartInterfaceTypeToUnions(
+    {required InterfaceType it, required GraphqlDatabase database}) {
+  final element = it.element;
+  final name = element.name;
+
+  final objects = element.allSupertypes
+      .where((e) => !e.isDartCoreObject)
+      .map((e) => e.element.name)
+      .join(" | ");
+
+  final directives =
+      getAnnotationForUnion(element: element, database: database);
+
+  return """
+   union $name = $objects $directives
+  """;
+}
+
+String convertDartInterfaceTypeToEnum(
+    {required InterfaceType it, required GraphqlDatabase database}) {
+  final element = it.element;
+  final name = element.name;
+  final members = element.fields.map((e) => e.name).join("\n");
+  final directives = getAnnotationForEnum(element: element, database: database);
+  return """
+   enum $name $directives {
+     $members
+   }
+  """;
+}
+
+String convertDartInterfaceTypeToInput(
+    {required InterfaceType it, required GraphqlDatabase database}) {
+  final element = it.element;
+  final name = element.name;
+  final directives =
+      getAnnotationForInput(element: element, database: database);
+  return """
+   input $name $directives  {
+    ${getFieldsFromClassElement(element: it.element, database: database)}
    }
   """;
 }
@@ -57,9 +177,10 @@ String convertDartInterfaceTypeToInterface(
   final name = element.name;
 
   var interfacesFields = "";
-
+  final directives =
+      getAnnotationForInterface(element: element, database: database);
   return """
-   interface $name  {
+   interface $name  $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
    }
@@ -71,7 +192,8 @@ String getFieldsFromClassElement(
   return element.fields.map((e) {
     final type = getGraphqlType(e.type);
     final name = e.name;
-    return "$name: $type ";
+    final directives = getAnnotationsForField(fe: e, database: database);
+    return "$name: $type $directives";
   }).join("\n");
 }
 
@@ -79,6 +201,46 @@ String getAnnotationsForField(
     {required FieldElement fe, required GraphqlDatabase database}) {
   if (database == GraphqlDatabase.dgraph) {
     return getDGraphFieldAnnotations(element: fe);
+  }
+  return "";
+}
+
+String getAnnotationForObject(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphObjectAnnotations(element: element);
+  }
+  return "";
+}
+
+String getAnnotationForInterface(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphInterfaceAnnotations(element: element);
+  }
+  return "";
+}
+
+String getAnnotationForUnion(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphUnionAnnotations(element: element);
+  }
+  return "";
+}
+
+String getAnnotationForInput(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphInputAnnotations(element: element);
+  }
+  return "";
+}
+
+String getAnnotationForEnum(
+    {required ClassElement element, required GraphqlDatabase database}) {
+  if (database == GraphqlDatabase.dgraph) {
+    return getDGraphEnumAnnotations(element: element);
   }
   return "";
 }

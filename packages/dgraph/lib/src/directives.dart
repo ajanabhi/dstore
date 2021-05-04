@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:dstore_dgraph/dgraph.dart';
+
 class hasInverse {
   final String field;
 
@@ -217,4 +219,78 @@ class lambda {
 class cascade {
   final List<String>? fields;
   const cascade([this.fields]);
+}
+
+class GenerateQueryParams {
+  final bool? get;
+  final bool? query;
+  final bool? password;
+  final bool? aggregate;
+
+  const GenerateQueryParams(
+      {this.get, this.query, this.password, this.aggregate});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (get != null) {
+      params.add("get: $get");
+    }
+    if (query != null) {
+      params.add("query: $query");
+    }
+    if (password != null) {
+      params.add("password: $password");
+    }
+    if (aggregate != null) {
+      params.add("aggregate: $aggregate");
+    }
+    return '{${params.join(", ")}}';
+  }
+}
+
+class GenerateMutationParams {
+  final bool? add;
+  final bool? update;
+  final bool? delete;
+
+  const GenerateMutationParams({this.add, this.update, this.delete});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (add != null) {
+      params.add("add: $add");
+    }
+    if (update != null) {
+      params.add("update: $update");
+    }
+    if (delete != null) {
+      params.add("delete: $delete");
+    }
+    return "{${params.join(", ")}}";
+  }
+}
+
+class generate {
+  final GenerateQueryParams? query;
+  final GenerateMutationParams? mutation;
+  final bool? subscription;
+
+  const generate({this.query, this.mutation, this.subscription});
+
+  @override
+  String toString() {
+    final params = <String>[];
+    if (query != null) {
+      params.add("query: $query");
+    }
+    if (mutation != null) {
+      params.add("mutation: $mutation");
+    }
+    if (subscription != null) {
+      params.add("subscription: $subscription");
+    }
+    return "{${params.join(", ")}}";
+  }
 }
