@@ -38,15 +38,19 @@ typedef SchemaUploadFn = Future<String> Function(String schema);
 
 class GraphqlSchemaSource {
   final String path;
+  final String? lambdaSourceFile;
   final GraphqlDatabase database;
   final SchemaUploadRequest? schemaUplodDetails;
   final bool uploadSchema;
+  final bool uploadLambda;
   final String? comments;
   const GraphqlSchemaSource(
       {required this.path,
       required this.database,
       this.schemaUplodDetails,
       this.comments,
+      this.uploadLambda = false,
+      this.lambdaSourceFile,
       this.uploadSchema = false});
 }
 

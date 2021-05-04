@@ -292,9 +292,11 @@ GraphqlSchemaSource _getGraphqlSchema(ClassElement element) {
   final annot = element.annotationFromType(GraphqlSchemaSource)!;
   final reader = ConstantReader(annot.computeConstantValue());
   final path = reader.peek("path")!.stringValue;
+  final lambdaSourceFile = reader.peek("lambdaSourceFile")?.stringValue;
   print("database ${reader.peek("database")}");
   final database = reader.getEnumField("database", GraphqlDatabase.values)!;
   final uploadSchema = reader.peek("uploadSchema")?.boolValue ?? false;
+  final uploadLambda = reader.peek("uploadLambda")?.boolValue ?? false;
   final comments = reader.peek("comments")?.stringValue ?? "";
   final schemaUplodDetailsObj = reader.peek("schemaUplodDetails");
   SchemaUploadRequest? schemaUplodDetails;
@@ -307,6 +309,8 @@ GraphqlSchemaSource _getGraphqlSchema(ClassElement element) {
       path: path,
       database: database,
       uploadSchema: uploadSchema,
+      uploadLambda: uploadLambda,
+      lambdaSourceFile: lambdaSourceFile,
       schemaUplodDetails: schemaUplodDetails,
       comments: comments);
 }
