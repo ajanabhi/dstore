@@ -1,8 +1,6 @@
 @JS()
 library dgraph_lambda;
 
-import 'dart:js';
-
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 
@@ -32,13 +30,6 @@ abstract class GraphQLEventWithParent {
       mutate: (s: string) => Promise<GraphQLResponse>
     }*/
       get dql;
-  external set dql(
-      dynamic
-          /*{
-      query: (s: string, vars: Record<string, any> | undefined) => Promise<GraphQLResponse>
-      mutate: (s: string) => Promise<GraphQLResponse>
-    }*/
-          v);
 }
 
 @JS()
