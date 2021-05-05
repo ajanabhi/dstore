@@ -20,11 +20,7 @@ class GraphqlOpsJSGenerator extends GeneratorForAnnotation<GraphqlOpsJS> {
         throw Exception(
             "GraphqlopsJs annotation should should only be applied on abstract classes");
       }
-      final name = element.name;
-      print("OpsName $name fields ${element.fields}");
-      element.fields.forEach((f) {
-        print("${f.name} ${f.isStatic} ${f.isConst}");
-      });
+
       final opsAnnotations = element.metadata.first.computeConstantValue();
       final apiA = opsAnnotations?.getField("api")!;
       final gAPi = getGraphqlApi(apiA);
