@@ -386,7 +386,7 @@ String getTypes(OperationVisitor visitor, String name) {
   list.addAll(getAllGTypes(gt.fields));
   print(gt);
 
-  final response = list.map((e) => convertGTypeToString(e)).join("\n");
+  final response = list.map((e) => convertGTypeToDartType(e)).join("\n");
   final variables = visitor.variables.isEmpty
       ? ""
       : createVariableType(visitor.variables, "${name}Variables");
@@ -422,7 +422,7 @@ List<GType> getAllGTypes(Set<FieldG> fields) {
   return result;
 }
 
-String convertGTypeToString(GType gtype) {
+String convertGTypeToDartType(GType gtype) {
   final name = gtype.name;
   if (gtype.unions.isNotEmpty || gtype.supertypes.isNotEmpty) {
     return _covertUnionOrInterfaceToDartModel(gtype);

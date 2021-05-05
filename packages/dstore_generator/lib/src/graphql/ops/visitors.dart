@@ -8,6 +8,7 @@ import 'package:dstore_generator/src/graphql/globals.dart';
 import 'package:dstore_generator/src/graphql/graphql_ast_utils.dart';
 import 'package:dstore_generator/src/graphql/ops/gql_visitors.dart';
 import 'package:dstore_generator/src/graphql/ops/graphql_ops_generator.dart';
+import 'package:dstore_generator/src/graphql/ops_js/graphs_opsjs_generator.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 import "package:gql/language.dart" as lang;
@@ -17,9 +18,13 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
   final String className;
   final GraphqlApi api;
   final ClassElement element;
+  final bool isJS;
 
   DSLFieldsVisitor(
-      {required this.className, required this.element, required this.api});
+      {required this.className,
+      required this.element,
+      required this.api,
+      this.isJS = false});
   @override
   dynamic visitFieldDeclaration(FieldDeclaration node) {
     final field = node.fields.variables.first;
@@ -38,8 +43,11 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
       final query = "${visitor.query}\n }";
       final doc = lang.parseString(query);
       final schema = graphqlSchemaMap[api.apiUrl]!;
-      final op = generateOpsTypeForQuery(
-          schema: schema, query: query, doc: doc, name: tn, api: api);
+      final op = isJS
+          ? getJSOp(
+              schema: schema, query: query, doc: doc, api: api, name: name)
+          : generateOpsTypeForQuery(
+              schema: schema, query: query, doc: doc, name: tn, api: api);
       ops.add(op);
       logger.shout("Query is $op");
     } else if (field.isConst) {
@@ -58,8 +66,11 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
           }
           final tn = "${element.name}_${name}";
 
-          final op = generateOpsTypeForQuery(
-              schema: schema, query: query, doc: doc, name: tn, api: api);
+          final op = isJS
+              ? getJSOp(
+                  schema: schema, query: query, doc: doc, api: api, name: name)
+              : generateOpsTypeForQuery(
+                  schema: schema, query: query, doc: doc, name: tn, api: api);
           ops.add(op);
         }
       }

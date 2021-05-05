@@ -50,12 +50,13 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
   }
 }
 
-String generateOpsTypeForQuery(
-    {required GraphQLSchema schema,
-    required String query,
-    required DocumentNode doc,
-    required GraphqlApi api,
-    required String name}) {
+String generateOpsTypeForQuery({
+  required GraphQLSchema schema,
+  required String query,
+  required DocumentNode doc,
+  required GraphqlApi api,
+  required String name,
+}) {
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
   doc.accept(visitor);
   final types = getTypes(visitor, name);

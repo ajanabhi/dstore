@@ -32,6 +32,11 @@ class GraphqlOps {
   const GraphqlOps(this.api);
 }
 
+class GraphqlOpsJS {
+  final GraphqlApi api;
+  const GraphqlOpsJS(this.api);
+}
+
 enum GraphqlDatabase { dgraph }
 
 typedef SchemaUploadFn = Future<String> Function(String schema);

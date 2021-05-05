@@ -8,8 +8,8 @@ import 'package:js/js_util.dart';
 
 @anonymous
 @JS()
-abstract class GraphQLResponse {
-  external dynamic /*Record<Stringdynamic>*/ get data;
+abstract class GraphQLResponse<R /* R should be JSObject  */ > {
+  external R /*Record<Stringdynamic>*/ get data;
   external set data(dynamic /*Record<Stringdynamic>*/ v);
   external List<dynamic /*{ message: string }*/ > get errors;
   external set errors(List<dynamic /*{ message: string }*/ > v);
@@ -26,7 +26,7 @@ abstract class GraphQLEventWithParent {
   external dynamic /*Record<Stringdynamic>*/ get args;
   external set args(dynamic /*Record<Stringdynamic>*/ v);
 
-  external dynamic
+  external GraphQLEventWithParentDQL
       /*{
       query: (s: string, vars: Record<string, any> | undefined) => Promise<GraphQLResponse>
       mutate: (s: string) => Promise<GraphQLResponse>
@@ -42,6 +42,33 @@ abstract class GraphQLEventWithParent {
 }
 
 @JS()
+@anonymous
+abstract class GraphQLEventWithParentDQL {}
+
+@JS()
+@anonymous
+abstract class _GraphQLEventWithParentDQL {
+  external Promise<GraphQLResponse> query(
+      String s, dynamic vars /*Record<string, any> | undefined*/);
+  external Promise<GraphQLResponse> mutate(String s);
+}
+
+extension GraphQLEventWithParentDQLExt on GraphQLEventWithParentDQL {
+  Future<GraphQLResponse<R>> query<R, V>(
+      String s, V? vars /* It should be a JS Object*/) {
+    Object t = this;
+    final tt = t as _GraphQLEventWithParentDQL;
+    return promiseToFuture(tt.query(s, vars));
+  }
+
+  Future<GraphQLResponse<R>> mutate<R>(String s) {
+    Object t = this;
+    final tt = t as _GraphQLEventWithParentDQL;
+    return promiseToFuture(tt.mutate(s));
+  }
+}
+
+@JS()
 abstract class Promise<T> {}
 
 @JS()
@@ -52,25 +79,12 @@ abstract class _GraphQLEventWithParent {
 }
 
 extension GraphQLEventWithParentExt on GraphQLEventWithParent {
-  Future<GraphQLResponse> graphql(String query, Map<String, dynamic>? vars) {
+  Future<GraphQLResponse<R>> graphql<R, V>(String query,
+      [V? vars /*it hsould be a JSObject */]) {
     Object t = this;
     final tt = t as _GraphQLEventWithParent;
-    return promiseToFuture(
-        tt.graphql(query, vars != null ? convertMapToJSObject(vars) : null));
+    return promiseToFuture(tt.graphql(query, vars));
   }
-}
-
-dynamic convertMapToJSObject(Map map) {
-  final jsObj = newObject() as Object;
-  map.forEach((dynamic key, dynamic value) {
-    final name = key.toString();
-    if (value is Map) {
-      setProperty(jsObj, name, convertMapToJSObject(value));
-    } else {
-      setProperty(jsObj, name, value);
-    }
-  });
-  return jsObj;
 }
 
 @JS()

@@ -249,4 +249,39 @@ abstract class ModelUtils {
     ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "")}
     """;
   }
+
+  static String convertFieldsToJSFields(List<Field> fields) {
+    return fields.map((f) {
+      final getter = "external ${f.type} get ${f.name};";
+      final setter = "external  set ${f.name}(${f.type} value);";
+      return """
+        $getter
+        $setter
+      """;
+    }).join("\n");
+  }
+
+  static String createJSConstructor(List<Field> fields, String name) {
+    final params = fields.map((f) {
+      final req = f.type.endsWith("?") ? "" : "required";
+      return "$req ${f.type} ${f.name}";
+    });
+    return """
+       external factory $name({${params.join(", ")}});
+     """;
+  }
+
+  static String createDefaultDartJSModelFromFeilds({
+    required List<Field> fields,
+    required String className,
+  }) {
+    return """
+   @JS()
+   @annotations
+   abstract class $className {
+      ${convertFieldsToJSFields(fields)}
+      ${createJSConstructor(fields, className)}
+    }
+    """;
+  }
 }
