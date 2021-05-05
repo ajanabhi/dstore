@@ -30,7 +30,7 @@ class GraphqlOpsJSGenerator extends GeneratorForAnnotation<GraphqlOpsJS> {
       }
 
       final visitor = DSLFieldsVisitor(
-          className: element.name, element: element, api: gAPi);
+          className: element.name, element: element, api: gAPi, isJS: true);
       final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
       ast.visitChildren(visitor);
       final ops = visitor.ops.join("\n");
@@ -72,11 +72,18 @@ String getJSTypes(OperationVisitor visitor, String name) {
   final response = list.map((e) => convertGTypeToDartJSType(e)).join("\n");
   final variables = visitor.variables.isEmpty
       ? ""
-      : createVariableType(visitor.variables, "${name}Variables");
+      : createVariableJSType(visitor.variables, "${name}Variables");
   return """
     $response
     $variables
   """;
+}
+
+String createVariableJSType(List<GField> gFields, String name) {
+  final fields = gFields.map(converGFieldToField).toList();
+
+  return ModelUtils.createDefaultDartJSModelFromFeilds(
+      fields: fields, className: name);
 }
 
 String convertGTypeToDartJSType(GType gtype) {
