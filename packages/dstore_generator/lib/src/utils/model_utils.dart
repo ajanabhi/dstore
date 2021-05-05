@@ -277,7 +277,7 @@ abstract class ModelUtils {
   }) {
     return """
    @JS()
-   @annotations
+   @anonymous
    abstract class $className {
       ${convertFieldsToJSFields(fields)}
       ${createJSConstructor(fields, className)}

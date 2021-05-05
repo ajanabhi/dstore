@@ -56,7 +56,11 @@ String getJSOp(
     required String name}) {
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
   doc.accept(visitor);
-  return """""";
+  final types = getJSTypes(visitor, name);
+  return """   
+   const $name = ${query.addTripleQuotes};
+   $types
+  """;
 }
 
 String getJSTypes(OperationVisitor visitor, String name) {
@@ -82,7 +86,7 @@ String getJSTypes(OperationVisitor visitor, String name) {
 String convertGTypeToDartJSType(GType gtype) {
   final name = gtype.name;
   if (gtype.unions.isNotEmpty || gtype.supertypes.isNotEmpty) {
-    return _covertUnionOrInterfaceToDartModel(gtype);
+    return _convertUnionOrInterfaceGTypeToDartJSType(gtype);
   }
   final fields = gtype.fields.map((f) {
     final annotations = <String>[];
@@ -105,4 +109,38 @@ String convertGTypeToDartJSType(GType gtype) {
   }).toList();
   return ModelUtils.createDefaultDartModelFromFeilds(
       fields: fields, className: name, isJsonSerializable: true);
+}
+
+String _convertUnionOrInterfaceGTypeToDartJSType(GType gtype) {
+  final name = gtype.name;
+  final getters = <String>[];
+
+  gtype.unions.forEach((e) {
+    final un = e.name;
+    final tn = un.substring(e.name.lastIndexOf("_") + 1);
+    getters.add("$un? get ${tn} => typename == '$tn' ? this as $un : null;");
+  });
+
+  gtype.supertypes.forEach((e) {
+    final un = e.name;
+    final tn = un.substring(e.name.lastIndexOf("_") + 1);
+    getters.add("$un? get ${tn} => typename == '$tn' ? this as $un : null;");
+  });
+
+  return """
+   @JS()
+   @anonymous
+   abstract class $name{
+
+   }
+
+   extension ${name}Ext on $name {
+     
+     String get typename => getProperty(this,"__typename");
+
+     ${getters.join("\n")}
+
+   }
+  
+  """;
 }
