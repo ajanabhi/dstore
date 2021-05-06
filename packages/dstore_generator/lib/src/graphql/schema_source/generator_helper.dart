@@ -76,7 +76,8 @@ Future<String> generateSchema(
 
 String _createLambdasObject(String name) {
   final params = lambdaFields
-      .map((f) => "required ResolverEntryFn ${f.replaceFirst('.', '_')}")
+      .map((f) =>
+          "required ResolverEntryFn<${f.split(".").first},dynamic> ${f.replaceFirst('.', '_')}")
       .join(", ");
   final objectSetters = lambdaFields
       .map((f) =>
@@ -167,12 +168,14 @@ String convertDartInterfaceTypeToObject(
 
   final directives =
       getAnnotationForObject(element: element, database: database);
+  final fields = ModelUtils.convertFieldElementsToFields(element.fields);
 
   return """
    type $name $impl $directives {
     ${getFieldsFromClassElement(element: element, database: database)}
     $interfacesFields
    }
+   ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
   """;
 }
 
@@ -228,11 +231,13 @@ String convertDartInterfaceTypeToInterface(
   var interfacesFields = "";
   final directives =
       getAnnotationForInterface(element: element, database: database);
+  final fields = ModelUtils.convertFieldElementsToFields(element.fields);
   return """
    interface $name  $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
    }
+   ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
   """;
 }
 

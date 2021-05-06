@@ -1,8 +1,6 @@
 @JS()
 library dgraph_lambda;
 
-import 'dart:js';
-
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 
@@ -76,7 +74,7 @@ extension GraphQLEventWithParentExt on GraphQLEventWithParent {
   }
 }
 
-typedef ResolverEntryFn = dynamic Function<P, A>(
+typedef ResolverEntryFn<P, A> = dynamic Function(
     GraphQLEventWithParent<P, A> e);
 @JS()
 external void addGraphQLResolvers(

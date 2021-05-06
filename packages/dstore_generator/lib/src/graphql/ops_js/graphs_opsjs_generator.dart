@@ -110,8 +110,8 @@ String convertGTypeToDartJSType(GType gtype) {
 
     return Field(name: f.name, type: f.type, annotations: annotations);
   }).toList();
-  return ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: name, isJsonSerializable: true);
+  return ModelUtils.createDefaultDartJSModelFromFeilds(
+      fields: fields, className: name);
 }
 
 String _convertUnionOrInterfaceGTypeToDartJSType(GType gtype) {

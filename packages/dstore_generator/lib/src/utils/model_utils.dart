@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
 abstract class ModelUtils {
@@ -67,6 +68,15 @@ abstract class ModelUtils {
     @override 
     int get hashCode => ${fields.map((f) => "${f.name}.hashCode").join(" ^ ")};
   """;
+  }
+
+  static List<Field> convertFieldElementsToFields(List<FieldElement> fields) {
+    return fields.map((f) {
+      final name = f.name;
+      final type = f.type.toString();
+      final isOptional = type.endsWith("?");
+      return Field(name: name, type: type, isOptional: isOptional);
+    }).toList();
   }
 
   static String createCopyWithClasses(
@@ -352,17 +362,16 @@ abstract class ModelUtils {
       final ctorFields =
           fields.where((f) => f.name == f.name.addDName).toList();
       ctor = createJSConstructor(ctorFields, className);
-      final eParams = fields.map((f) {
+      final eParams = fields.where((f) => f.name != f.name.addDName).map((f) {
         final req = f.type.endsWith("?") ? "" : "required";
         return "$req ${f.type} ${f.name}";
       });
-      final cParams = ctorFields.map((f) => "${f.name}: ${f.name}").join(",");
       final eFields = fields.where((f) => f.name != f.name.addDName).map((f) {
         return "setProperty(obj,'${f.name.removeDName}',${f.name});";
       }).join("\n");
       extensionCtor = """
-        $className createInstance({${eParams.join(", ")}}) {
-           final obj = $className($cParams);
+        $className addExtraFeilds({${eParams.join(", ")}}) {
+           final obj = this;
            $eFields  
            return obj;
         }
