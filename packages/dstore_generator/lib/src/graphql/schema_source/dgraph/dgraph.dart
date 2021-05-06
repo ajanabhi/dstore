@@ -309,10 +309,44 @@ Future<void> validateAndUploadDGraphSchema(
   final headers = ud.headers;
   final validateUrl = "$url/validate";
   try {
-    final resp = await dio.post<String>(validateUrl,
-        options: Options(headers: headers), data: schema);
-    print("Validate Resp $resp");
+    final existingSchema = await _getSchema(url, headers);
+    if (existingSchema != schema) {
+      final resp = await dio.post<String>(validateUrl,
+          options: Options(headers: headers), data: schema);
+      print("Validate Resp $resp");
+    }
   } catch (e) {
     rethrow;
+  }
+}
+
+Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
+  if (!url.endsWith("/admin")) {
+    if (url.contains("/admin")) {
+      url = url.substring(0, url.indexOf("/admin") + 5);
+    } else {
+      url = "$url/admin";
+    }
+  }
+  final dio = Dio();
+  final resp = await dio.post<Map<String, dynamic>>(url,
+      options: Options(
+          headers: headers,
+          contentType: "application/json",
+          responseType: ResponseType.json),
+      data: {
+        "query": """
+    { getGQLSchema {
+       schema
+     }
+     }
+  """
+      });
+  if (resp.data != null && resp.data!.containsKey("data")) {
+    // success response
+    return resp.data!["data"]!["getGQLSchema"]!["schema"]! as String;
+  } else {
+    throw Exception(
+        "Error getting schema Status : ${resp.statusCode} Response :  ${resp.data}");
   }
 }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -56,7 +57,8 @@ Future<String> generateSchema(
 
    $comments
   
-  """;
+  """
+      .trim();
 
   _saveSchemaToFile(schemaMeta, schema);
   if (schemaMeta.uploadSchema) {

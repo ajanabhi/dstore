@@ -46,6 +46,7 @@ class GraphqlSchemaSource {
   final String? lambdaSourceFile;
   final GraphqlDatabase database;
   final SchemaUploadRequest? schemaUplodDetails;
+  final LambdasUploadDetails? lambdaUploadDetails;
   final bool uploadSchema;
   final bool uploadLambda;
   final String? comments;
@@ -54,6 +55,7 @@ class GraphqlSchemaSource {
       required this.database,
       this.schemaUplodDetails,
       this.comments,
+      this.lambdaUploadDetails,
       this.uploadLambda = false,
       this.lambdaSourceFile,
       this.uploadSchema = false});
@@ -64,6 +66,15 @@ class SchemaUploadRequest {
   final Map<String, String>? headers;
 
   const SchemaUploadRequest({required this.url, this.headers});
+}
+
+class LambdasUploadDetails {
+  final String sourceEntryFile;
+  final String uid; // project uid in case of dgraph
+  final String url;
+
+  LambdasUploadDetails(
+      {required this.sourceEntryFile, required this.uid, required this.url});
 }
 
 class ID {}
