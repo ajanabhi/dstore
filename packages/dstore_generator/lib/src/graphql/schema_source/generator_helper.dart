@@ -68,7 +68,19 @@ Future<String> generateSchema(
     await _uploadSchema(schemaMeta, schema);
   }
 
+  if (lambdaFields.isNotEmpty) {}
+
   return "";
+}
+
+String _createLambdasObject(String name) {
+  return """
+   class $name {
+
+
+   }
+  
+  """;
 }
 
 void _saveSchemaToFile(GraphqlSchemaSource meta, String schema) {
