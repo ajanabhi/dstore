@@ -1,5 +1,7 @@
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:meta/meta.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
@@ -251,14 +253,68 @@ abstract class ModelUtils {
   }
 
   static String convertFieldsToJSFields(List<Field> fields) {
-    return fields.map((f) {
-      final getter = "external ${f.type} get ${f.name};";
+    return fields.where((f) => f.name == f.name.addDName).map((f) {
+      final type = f.type.startsWith("List<")
+          ? "List<dynamic>${f.isOptional ? "?" : ""}"
+          : f.type;
+      final getter = "external ${type} get ${f.name};";
       final setter = "external  set ${f.name}(${f.type} value);";
       return """
         $getter
         $setter
       """;
     }).join("\n");
+  }
+
+  static String getExtensionJSFields(List<Field> fields) {
+    final fieldsJS = <String>[];
+    fields.forEach((f) {
+      final name = f.name;
+      final type = f.type;
+      final dNmae = f.name.addDName;
+      final isAlaised = name != dNmae;
+      final isList = type.startsWith("?");
+      var getter = "";
+      var setter = "";
+      if (isAlaised && isList) {
+        final op = type.endsWith("?") ? "?" : "";
+        getter = """ 
+         $type get $dNmae {
+          final lits = getProperty(this,'$name') as List<dynamic>$op;
+          return list$op.map(l => l as $type).toList();
+         }
+        """;
+        setter =
+            " set $dNmae($type value) => setProperty(this,'$name',value); ";
+      } else if (isAlaised) {
+        getter = """ 
+         $type get $dNmae => getProperty(this,'$name');
+        """;
+        setter =
+            " set $dNmae($type value) => setProperty(this,'$name',value); ";
+      } else if (isList) {
+        getter = """ 
+         $type get $dNmae {
+          final lits = getProperty(this,'$name') as List<dynamic>;
+          return list.map(l => l as $type).toList();
+         }
+        """;
+        setter =
+            " set $dNmae($type value) => setProperty(this,'$name',value); ";
+      }
+      if (getter.isNotEmpty) {
+        fieldsJS.add("""
+          $getter
+          $setter
+         """);
+      }
+    });
+
+    return fieldsJS.join("\n");
+  }
+
+  static String getPrivateJSFields(List<Field> fields) {
+    return "";
   }
 
   static String createJSConstructor(List<Field> fields, String name) {
@@ -275,13 +331,68 @@ abstract class ModelUtils {
     required List<Field> fields,
     required String className,
   }) {
+    final privateFields = getPrivateJSFields(fields);
+
+    final privateClass = privateFields.isEmpty
+        ? ""
+        : """
+     @JS()
+     @anonymous
+     abstract class _$className {
+       $privateFields
+     }
+    
+    """;
+
+    var ctor = "";
+    if (fields.where((f) => f.name == f.name.addDName).length ==
+        fields.length) {
+      ctor = createJSConstructor(fields, className);
+    }
+    var extensionCtor = "";
+    if (ctor.isEmpty) {
+      // aliased feilds lets add extension constructor for aliased
+      final ctorFields =
+          fields.where((f) => f.name == f.name.addDName).toList();
+      ctor = createJSConstructor(ctorFields, className);
+      final eParams = fields.map((f) {
+        final req = f.type.endsWith("?") ? "" : "required";
+        return "$req ${f.type} ${f.name}";
+      });
+      final cParams = ctorFields.map((f) => "${f.name}: ${f.name}").join(",");
+      final eFields = fields.where((f) => f.name != f.name.addDName).map((f) {
+        return "setProperty(obj,'${f.name.removeDName}',${f.name});";
+      }).join("\n");
+      extensionCtor = """
+        $className createInstance({${eParams.join(", ")}}) {
+           final obj = $className($cParams);
+           $eFields  
+           return obj;
+        }
+      """;
+    }
+    final extensionFields = getExtensionJSFields(fields);
+    final extensionClass =
+        (extensionCtor.isNotEmpty || extensionFields.isNotEmpty)
+            ? """
+          extension ${className}Ext on $className {
+              $extensionCtor
+              $extensionFields
+           }
+        """
+            : "";
     return """
    @JS()
    @anonymous
    abstract class $className {
       ${convertFieldsToJSFields(fields)}
-      ${createJSConstructor(fields, className)}
+      $ctor 
     }
+    
+    $privateClass
+  
+    $extensionClass
+
     """;
   }
 }
