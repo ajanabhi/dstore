@@ -73,11 +73,13 @@ class LambdasUploadDetails {
   final String uid; // project uid in case of dgraph
   final String url;
   final String dart2jsBinaryPath;
+  final String dart2jsOptLevel; // default to -O4
 
   LambdasUploadDetails(
       {required this.sourceEntryFile,
       required this.uid,
       required this.url,
+      this.dart2jsOptLevel = "-O4",
       required this.dart2jsBinaryPath});
 }
 
