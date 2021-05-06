@@ -72,9 +72,13 @@ class LambdasUploadDetails {
   final String sourceEntryFile;
   final String uid; // project uid in case of dgraph
   final String url;
+  final String dart2jsBinaryPath;
 
   LambdasUploadDetails(
-      {required this.sourceEntryFile, required this.uid, required this.url});
+      {required this.sourceEntryFile,
+      required this.uid,
+      required this.url,
+      required this.dart2jsBinaryPath});
 }
 
 class ID {}

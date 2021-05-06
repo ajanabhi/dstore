@@ -306,14 +306,31 @@ Future<void> validateAndUploadDGraphSchema(
   final dio = Dio();
   final ud = meta.schemaUplodDetails!;
   final url = ud.url;
+  if (!url.endsWith("/admin")) {
+    throw ArgumentError.value("All dgraph urls should end with /admin");
+  }
   final headers = ud.headers;
-  final validateUrl = "$url/validate";
   try {
     final existingSchema = await _getSchema(url, headers);
     if (existingSchema != schema) {
-      final resp = await dio.post<String>(validateUrl,
-          options: Options(headers: headers), data: schema);
-      print("Validate Resp $resp");
+      final resp = await dio.post<Map<String, dynamic>>(
+        url,
+        options: Options(headers: headers),
+        data: {
+          "query": """
+            mutation {
+  updateGQLSchema(
+    input: { set: { schema: $schema}})
+  {
+    gqlSchema {
+      schema
+      generatedSchema
+    }
+  }
+}
+            """
+        },
+      );
     }
   } catch (e) {
     rethrow;
@@ -321,13 +338,6 @@ Future<void> validateAndUploadDGraphSchema(
 }
 
 Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
-  if (!url.endsWith("/admin")) {
-    if (url.contains("/admin")) {
-      url = url.substring(0, url.indexOf("/admin") + 5);
-    } else {
-      url = "$url/admin";
-    }
-  }
   final dio = Dio();
   final resp = await dio.post<Map<String, dynamic>>(url,
       options: Options(
@@ -350,3 +360,5 @@ Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
         "Error getting schema Status : ${resp.statusCode} Response :  ${resp.data}");
   }
 }
+
+Future<void> uploadLambdas(GraphqlSchemaSource meta) {}
