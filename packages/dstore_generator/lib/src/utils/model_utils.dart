@@ -1,7 +1,4 @@
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
-import 'package:tuple/tuple.dart';
 
 abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
@@ -388,7 +385,7 @@ abstract class ModelUtils {
       ${convertFieldsToJSFields(fields)}
       $ctor 
     }
-    
+
     $privateClass
   
     $extensionClass
