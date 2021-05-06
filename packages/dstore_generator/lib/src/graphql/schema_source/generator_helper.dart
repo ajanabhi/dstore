@@ -9,7 +9,8 @@ import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
-Future<void> generateSchema(
+final lambdaFields = <String>[];
+Future<String> generateSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
   final schemaMeta = _getGraphqlSchema(element);
   var objects = "";
@@ -18,6 +19,7 @@ Future<void> generateSchema(
   var inputs = "";
   var unions = "";
   final comments = schemaMeta.comments;
+
   element.fields.forEach((fe) {
     logger.shout(
         "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element} eleemnttype ${fe.type.element.runtimeType}");
@@ -65,6 +67,8 @@ Future<void> generateSchema(
   if (schemaMeta.uploadSchema) {
     await _uploadSchema(schemaMeta, schema);
   }
+
+  return "";
 }
 
 void _saveSchemaToFile(GraphqlSchemaSource meta, String schema) {
@@ -146,7 +150,7 @@ String convertDartInterfaceTypeToObject(
 
   return """
    type $name $impl $directives {
-    ${getFieldsFromClassElement(element: it.element, database: database)}
+    ${getFieldsFromClassElement(element: element, database: database)}
     $interfacesFields
    }
   """;
@@ -218,6 +222,11 @@ String getFieldsFromClassElement(
     final type = getGraphqlType(e.type);
     final name = e.name;
     final directives = getAnnotationsForField(fe: e, database: database);
+    if (database == GraphqlDatabase.dgraph) {
+      if (directives.contains("@lambda")) {
+        lambdaFields.add("${element.name}_${name}");
+      }
+    }
     return "$name: $type $directives";
   }).join("\n");
 }

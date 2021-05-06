@@ -1,6 +1,8 @@
 @JS()
 library dgraph_lambda;
 
+import 'dart:js';
+
 import 'package:js/js.dart';
 import 'package:js/js_util.dart';
 
@@ -18,18 +20,14 @@ abstract class GraphQLResponse<R /* R should be JSObject  */ > {
 
 @anonymous
 @JS()
-abstract class GraphQLEventWithParent {
-  external dynamic /*Record<Stringdynamic>|Null*/ get parent;
-  external set parent(dynamic /*Record<Stringdynamic>|Null*/ v);
-  external dynamic /*Record<Stringdynamic>*/ get args;
-  external set args(dynamic /*Record<Stringdynamic>*/ v);
+abstract class GraphQLEventWithParent<P /* it should be JSObject */,
+    A /* it should be JSObject */ > {
+  external P? get parent;
+  external set parent(P? v);
+  external A /*JS Object*/ get args;
+  external set args(A v);
 
-  external GraphQLEventWithParentDQL
-      /*{
-      query: (s: string, vars: Record<string, any> | undefined) => Promise<GraphQLResponse>
-      mutate: (s: string) => Promise<GraphQLResponse>
-    }*/
-      get dql;
+  external GraphQLEventWithParentDQL get dql;
 }
 
 @JS()
@@ -78,6 +76,8 @@ extension GraphQLEventWithParentExt on GraphQLEventWithParent {
   }
 }
 
+typedef ResolverEntryFn = dynamic Function<P, A>(
+    GraphQLEventWithParent<P, A> e);
 @JS()
 external void addGraphQLResolvers(
     dynamic /*JSMap of <String,dynamic Function(GraphQLEventWithParent)>*/ resolvers);
