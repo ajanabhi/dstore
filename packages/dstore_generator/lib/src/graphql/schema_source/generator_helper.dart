@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
-import 'package:dio/dio.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -41,10 +40,6 @@ Future<String> generateSchema(
     if (name == "enums") {
       enums = getEnums(element: element, schema: schemaMeta);
     }
-    (fe.type.element as ClassElement).allSupertypes.forEach((st) {
-      print(st.getDisplayString(withNullability: true));
-      print(st.element.fields);
-    });
   });
 
   final schema = """
@@ -67,19 +62,30 @@ Future<String> generateSchema(
   if (schemaMeta.uploadSchema) {
     await _uploadSchema(schemaMeta, schema);
   }
+  var lambdas = "";
+  if (lambdaFields.isNotEmpty) {
+    lambdas = _createLambdasObject(element.name);
+  }
 
-  if (lambdaFields.isNotEmpty) {}
-
-  return "";
+  return """
+   $lambdas
+  """;
 }
 
 String _createLambdasObject(String name) {
+  final params = lambdaFields
+      .map((f) => "required ResolverEntryFn ${f.replaceFirst('.', '_')}")
+      .join(", ");
+  final objectSetters = lambdaFields
+      .map((f) =>
+          "setProperty(obj,'$f',allowInterop(${f.replaceFirst('.', '_')}));")
+      .join("\n");
   return """
-   class $name {
-
-
+   dynamic ${name}LambdasSetup({$params}) {
+     final obj = newObject();
+     $objectSetters
+     addGraphQLResolvers(obj);
    }
-  
   """;
 }
 
