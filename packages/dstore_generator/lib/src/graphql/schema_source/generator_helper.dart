@@ -8,6 +8,7 @@ import 'package:dstore_dgraph/dgraph.dart';
 import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:tuple/tuple.dart';
 
 const _LAMBDA_ARGS_SUFFIX = "\$dArgs";
 final lambdaFields = <String>[];
@@ -15,10 +16,15 @@ Future<String> generateSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
   final schemaMeta = _getGraphqlSchema(element);
   var objects = "";
+  var jsObjects = "";
   var interfaces = "";
+  var jsInterfaces = "";
   var enums = "";
+  var jsEnums = "";
   var inputs = "";
+  var jsInputs = "";
   var unions = "";
+  var jsUnions = "";
   final comments = schemaMeta.comments;
 
   final enumF = element.fields
@@ -38,25 +44,35 @@ Future<String> generateSchema(
         "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element} eleemnttype ${fe.type.element.runtimeType}");
     final name = fe.name.toLowerCase();
     if (name == "objects") {
-      objects = getObjects(
+      final tuple = getObjects(
           element: element, schema: schemaMeta, enumNames: enumNames);
+      objects = tuple.item1;
+      jsObjects = tuple.item2;
     }
     if (name == "interfaces") {
-      interfaces = getInterfaces(
+      final tuple = getInterfaces(
           element: element, schema: schemaMeta, enumNames: enumNames);
+      interfaces = tuple.item1;
+      jsObjects = tuple.item2;
     }
     if (name == "inputs") {
-      inputs =
+      final tuple =
           getInputs(element: element, schema: schemaMeta, enumNames: enumNames);
+      inputs = tuple.item1;
+      jsInputs = tuple.item2;
     }
 
     if (name == "unions") {
-      inputs = getUnions(element: element, schema: schemaMeta);
+      final tuple = getUnions(element: element, schema: schemaMeta);
+      unions = tuple.item1;
+      jsUnions = tuple.item2;
     }
 
     if (name == "enums") {
-      enums =
+      final tuple =
           getEnums(element: element, schema: schemaMeta, enumNames: enumNames);
+      enums = tuple.item1;
+      jsEnums = tuple.item2;
     }
   });
 
@@ -88,6 +104,17 @@ Future<String> generateSchema(
 
   return """
    $lambdas
+
+   $jsObjects
+
+   $jsUnions
+
+   $jsInputs
+
+   $jsEnums 
+
+   $jsInterfaces 
+   
   """;
 }
 
@@ -129,60 +156,67 @@ Future<void> _uploadSchema(GraphqlSchemaSource meta, String schema) async {
   }
 }
 
-String getObjects(
+Tuple2<String, String> getObjects(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return element.allSupertypes
+  return _getFinalTuple(element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) => convertDartInterfaceTypeToObject(
-          it: e, database: schema.database, enumNames: enumNames))
-      .join("\n");
+          it: e, database: schema.database, enumNames: enumNames)));
 }
 
-String getUnions(
+Tuple2<String, String> getUnions(
     {required ClassElement element, required GraphqlSchemaSource schema}) {
-  return element.allSupertypes
+  return _getFinalTuple(element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
-          convertDartInterfaceTypeToUnions(it: e, database: schema.database))
-      .join("\n");
+          convertDartInterfaceTypeToUnions(it: e, database: schema.database)));
 }
 
-String getEnums(
+Tuple2<String, String> getEnums(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return element.allSupertypes
+  return _getFinalTuple(element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
-          convertDartInterfaceTypeToEnum(it: e, database: schema.database))
-      .join("\n");
+          convertDartInterfaceTypeToEnum(it: e, database: schema.database)));
 }
 
-String getInterfaces(
+Tuple2<String, String> getInterfaces(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return element.allSupertypes
-      .where((e) => !e.isDartCoreObject)
-      .map((e) => convertDartInterfaceTypeToInterface(
-          it: e, database: schema.database, enumNames: enumNames))
-      .join("\n");
+  return _getFinalTuple(
+      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+    return convertDartInterfaceTypeToInterface(
+        it: e, database: schema.database, enumNames: enumNames);
+  }));
 }
 
-String getInputs(
+Tuple2<String, String> _getFinalTuple(Iterable<Tuple2<String, String>> tuples) {
+  final schmas = <String>[];
+  final jsTypes = <String>[];
+  tuples.forEach((tuple2) {
+    schmas.add(tuple2.item1);
+    jsTypes.add(tuple2.item2);
+  });
+  return Tuple2(schmas.join("\n"), jsTypes.join("\n"));
+}
+
+Tuple2<String, String> getInputs(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return element.allSupertypes
-      .where((e) => !e.isDartCoreObject)
-      .map((e) => convertDartInterfaceTypeToInput(
-          it: e, database: schema.database, enumNames: enumNames))
-      .join("\n");
+  return _getFinalTuple(
+      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+    return convertDartInterfaceTypeToInput(
+        it: e, database: schema.database, enumNames: enumNames);
+  }));
 }
 
-String convertDartInterfaceTypeToObject(
+Tuple2<String, String> convertDartInterfaceTypeToObject(
     {required InterfaceType it,
     required GraphqlDatabase database,
     required List<String> enumNames}) {
@@ -201,15 +235,17 @@ String convertDartInterfaceTypeToObject(
   var fields = ModelUtils.convertFieldElementsToFields(element.fields);
   fields.addAll(ModelUtils.convertMethodElementsToFields(element.methods));
   fields = _replaceEnumNames(fields, enumNames);
-  return """
-   type $name $impl $directives {
+  final s = """
+     type $name $impl $directives {
     ${getFieldsFromClassElement(element: element, database: database)}
     $interfacesFields
    }
-   ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
-
+  """;
+  final jsTypes = """
+ ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
    ${_getArgs(element)}
   """;
+  return Tuple2(s, jsTypes);
 }
 
 List<Field> _replaceEnumNames(List<Field> fields, List<String> enumNames) {
@@ -223,7 +259,7 @@ List<Field> _replaceEnumNames(List<Field> fields, List<String> enumNames) {
   }).toList();
 }
 
-String convertDartInterfaceTypeToUnions(
+Tuple2<String, String> convertDartInterfaceTypeToUnions(
     {required InterfaceType it, required GraphqlDatabase database}) {
   final element = it.element;
   final name = element.name;
@@ -242,9 +278,10 @@ String convertDartInterfaceTypeToUnions(
   final directives =
       getAnnotationForUnion(element: element, database: database);
 
-  return """
+  final s = """
    union $name = $objects $directives
-
+  """;
+  final jsTypes = """"
    @JS()
    @anonymous
    abstract class $name {
@@ -255,9 +292,10 @@ String convertDartInterfaceTypeToUnions(
      $unionGetters
    }
   """;
+  return Tuple2(s, jsTypes);
 }
 
-String convertDartInterfaceTypeToEnum(
+Tuple2<String, String> convertDartInterfaceTypeToEnum(
     {required InterfaceType it, required GraphqlDatabase database}) {
   final element = it.element;
   final name = element.name;
@@ -266,18 +304,20 @@ String convertDartInterfaceTypeToEnum(
       .map((e) => "static const ${e.name} = '${e.name}';")
       .join("\n");
   final directives = getAnnotationForEnum(element: element, database: database);
-  return """
+  final s = """
    enum $name $directives {
      $members
    }
-
+  """;
+  final jsType = """
    abstract class $name {
        $jsMemebers
    }
   """;
+  return Tuple2(s, jsType);
 }
 
-String convertDartInterfaceTypeToInput(
+Tuple2<String, String> convertDartInterfaceTypeToInput(
     {required InterfaceType it,
     required GraphqlDatabase database,
     required List<String> enumNames}) {
@@ -287,15 +327,18 @@ String convertDartInterfaceTypeToInput(
       getAnnotationForInput(element: element, database: database);
   var fields = ModelUtils.convertFieldElementsToFields(element.fields);
   fields = _replaceEnumNames(fields, enumNames);
-  return """
+  final s = """
    input $name $directives  {
     ${getFieldsFromClassElement(element: it.element, database: database)}
    }
+  """;
+  final jsType = """
    ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
   """;
+  return Tuple2(s, jsType);
 }
 
-String convertDartInterfaceTypeToInterface(
+Tuple2<String, String> convertDartInterfaceTypeToInterface(
     {required InterfaceType it,
     required GraphqlDatabase database,
     required List<String> enumNames}) {
@@ -309,15 +352,17 @@ String convertDartInterfaceTypeToInterface(
   fields.addAll(ModelUtils.convertMethodElementsToFields(element.methods));
   fields = _replaceEnumNames(fields, enumNames);
 
-  return """
+  final s = """
    interface $name  $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
    }
-   ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
-
+  """;
+  final jsTypes = """
+  ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
    ${_getArgs(element)}
   """;
+  return Tuple2(s, jsTypes);
 }
 
 String _getArgs(ClassElement element) {
