@@ -322,9 +322,9 @@ Future<void> validateAndUploadDGraphSchema(
         options: Options(headers: headers),
         data: {
           "query": """
-            mutation {
+            mutation ug(\$schema: String!){
   updateGQLSchema(
-    input: { set: { schema: $schema}})
+    input: { set: { schema: \$schema}})
   {
     gqlSchema {
       schema
@@ -332,9 +332,19 @@ Future<void> validateAndUploadDGraphSchema(
     }
   }
 }
-            """
+            """,
+          "variables": {"schema": schema}
         },
       );
+
+      if (resp.data != null &&
+          resp.data!.containsKey("data") &&
+          resp.statusCode == 200) {
+        print("Successfully uploaded schema");
+      } else {
+        throw Exception(
+            "Error uploading schema to $url , responded with ${resp.data} status : ${resp.statusCode} ");
+      }
     }
   } catch (e) {
     rethrow;
