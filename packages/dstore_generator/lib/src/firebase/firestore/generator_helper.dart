@@ -27,11 +27,17 @@ String getModelsFromCollections({required ClassElement element}) {
 }
 
 String convertCollectionModelToDartModel({required ClassElement element}) {
-  final fields = element.fields.map((f) {
+  final fields = element.fields
+      .where((f) =>
+          f.type.element?.annotationFromType(collection) ==
+          null) // subcollection are shallow
+      .map((f) {
     final name = f.name;
     final type = f.type.toString();
-    final isSubCollection =
-        f.type.element?.annotationFromType(collection) != null;
+    final annotations = <String>[];
+    if (type.startsWith("DocumentReference<")) {
+      annotations.add(value)
+    }
     final isCollectionNestedObj =
         f.type.element?.annotationFromType(collectionNestedObject);
   });

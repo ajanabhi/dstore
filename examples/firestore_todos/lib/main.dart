@@ -36,9 +36,15 @@ class HomePage extends StatelessWidget {
                 onPressed: () async {
                   try {
                     print("Hello");
+                    final ref = FirebaseFirestore.instance
+                        .collection("attendees")
+                        .doc("jUlqrzD1QtfHFDtVuc2KFgQhS0a2");
                     final collRef =
-                        FirebaseFirestore.instance.collection("rooms");
-                    final data = await collRef.doc("roomA").get();
+                        FirebaseFirestore.instance.collection("refs");
+                    await collRef
+                        .doc("ref3")
+                        .set(<String, dynamic>{"name": "ref3", "a3": ref});
+                    final data = await collRef.doc("ref3").get();
                     print("done ${data.data()} ${data.id}");
                   } catch (e) {
                     print("Error $e");
