@@ -28,6 +28,7 @@ Future<String> generateSchema(
   var enumNames = <String>[];
   if (enumF != null && enumF is ClassElement) {
     enumNames = enumF.allSupertypes
+        .where((element) => !element.isDartCoreObject)
         .map((e) => e.getDisplayString(withNullability: false))
         .toList();
   }
@@ -45,7 +46,8 @@ Future<String> generateSchema(
           element: element, schema: schemaMeta, enumNames: enumNames);
     }
     if (name == "inputs") {
-      inputs = getInputs(element: element, schema: schemaMeta);
+      inputs =
+          getInputs(element: element, schema: schemaMeta, enumNames: enumNames);
     }
 
     if (name == "unions") {
@@ -167,11 +169,13 @@ String getInterfaces(
 }
 
 String getInputs(
-    {required ClassElement element, required GraphqlSchemaSource schema}) {
+    {required ClassElement element,
+    required GraphqlSchemaSource schema,
+    required List<String> enumNames}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
-      .map((e) =>
-          convertDartInterfaceTypeToInput(it: e, database: schema.database))
+      .map((e) => convertDartInterfaceTypeToInput(
+          it: e, database: schema.database, enumNames: enumNames))
       .join("\n");
 }
 
@@ -200,6 +204,8 @@ String convertDartInterfaceTypeToObject(
     $interfacesFields
    }
    ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
+
+   ${_getArgs(element)}
   """;
 }
 
@@ -223,12 +229,28 @@ String convertDartInterfaceTypeToUnions(
       .where((e) => !e.isDartCoreObject)
       .map((e) => e.element.name)
       .join(" | ");
+  final unionGetters =
+      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+    final name = e.getDisplayString(withNullability: false);
+    final gname = "${name.substring(0, 1)}${name.substring(1)}";
+    return "$name? get $gname => typename == '$name' ? this as $name : null; ";
+  }).join("\n");
 
   final directives =
       getAnnotationForUnion(element: element, database: database);
 
   return """
    union $name = $objects $directives
+
+   @JS()
+   @anonymous
+   abstract class $name {
+    
+   }
+   extension ${name}Ext on $name {
+     String get typename => getProperty(this,"__typename");
+     $unionGetters
+   }
   """;
 }
 
@@ -237,24 +259,36 @@ String convertDartInterfaceTypeToEnum(
   final element = it.element;
   final name = element.name;
   final members = element.fields.map((e) => e.name).join("\n");
+  final jsMemebers = element.fields
+      .map((e) => "static const ${e.name} = '${e.name}';")
+      .join("\n");
   final directives = getAnnotationForEnum(element: element, database: database);
   return """
    enum $name $directives {
      $members
    }
+
+   abstract class $name {
+       $jsMemebers
+   }
   """;
 }
 
 String convertDartInterfaceTypeToInput(
-    {required InterfaceType it, required GraphqlDatabase database}) {
+    {required InterfaceType it,
+    required GraphqlDatabase database,
+    required List<String> enumNames}) {
   final element = it.element;
   final name = element.name;
   final directives =
       getAnnotationForInput(element: element, database: database);
+  var fields = ModelUtils.convertFieldElementsToFields(element.fields);
+  fields = _replaceEnumNames(fields, enumNames);
   return """
    input $name $directives  {
     ${getFieldsFromClassElement(element: it.element, database: database)}
    }
+   ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
   """;
 }
 
@@ -271,16 +305,15 @@ String convertDartInterfaceTypeToInterface(
   var fields = ModelUtils.convertFieldElementsToFields(element.fields);
   fields.addAll(ModelUtils.convertMethodElementsToFields(element.methods));
   fields = _replaceEnumNames(fields, enumNames);
-  final args = element.methods.map((m) {
-    final an = "${name}_${m.name.cpatialize}Args";
-    final fields = ModelUtils.convertParameterElementsToFields(m.parameters);
-  });
+
   return """
    interface $name  $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
     $interfacesFields
    }
    ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
+
+   ${_getArgs(element)}
   """;
 }
 
@@ -291,6 +324,8 @@ String _getArgs(ClassElement element) {
       .map((m) {
     final an = "${className}_${m.name.cpatialize}Args";
     final fields = ModelUtils.convertParameterElementsToFields(m.parameters);
+    return ModelUtils.createDefaultDartJSModelFromFeilds(
+        fields: fields, className: an);
   }).join("\n");
 }
 
@@ -321,7 +356,7 @@ String getFieldsFromClassElement(
     final directives = getAnnotationsForField(fe: m, database: database);
     if (database == GraphqlDatabase.dgraph) {
       if (directives.contains("@lambda")) {
-        lambdaFields.add("${element.name}_${name}");
+        lambdaFields.add("${element.name}_${name}\$dArgs");
       }
     }
     final args = m.parameters.map((e) {
