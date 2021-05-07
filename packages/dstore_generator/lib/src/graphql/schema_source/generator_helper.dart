@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
@@ -10,6 +9,7 @@ import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 
+const _LAMBDA_ARGS_SUFFIX = "\$dArgs";
 final lambdaFields = <String>[];
 Future<String> generateSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
@@ -92,14 +92,17 @@ Future<String> generateSchema(
 }
 
 String _createLambdasObject(String name) {
-  final params = lambdaFields
-      .map((f) =>
-          "required ResolverEntryFn<${f.split(".").first},dynamic> ${f.replaceFirst('.', '_')}")
-      .join(", ");
-  final objectSetters = lambdaFields
-      .map((f) =>
-          "setProperty(obj,'$f',allowInterop(${f.replaceFirst('.', '_')}));")
-      .join("\n");
+  final params = lambdaFields.map((f) {
+    final pType = f.split(".").first;
+    final argsType = f.endsWith(_LAMBDA_ARGS_SUFFIX)
+        ? "$pType${f.split(".")[1].replaceFirst(_LAMBDA_ARGS_SUFFIX, "").cpatialize}Args"
+        : dynamic;
+    return "required ResolverEntryFn<$pType,$argsType> ${f.replaceFirst('.', '_').replaceFirst(_LAMBDA_ARGS_SUFFIX, "")}";
+  }).join(", ");
+  final objectSetters = lambdaFields.map((f) {
+    final n = f.replaceFirst(_LAMBDA_ARGS_SUFFIX, "");
+    return "setProperty(obj,'$n',allowInterop(${n.replaceFirst('.', '_')}));";
+  }).join("\n");
   return """
    dynamic ${name}LambdasSetup({$params}) {
      final obj = newObject();
@@ -356,7 +359,7 @@ String getFieldsFromClassElement(
     final directives = getAnnotationsForField(fe: m, database: database);
     if (database == GraphqlDatabase.dgraph) {
       if (directives.contains("@lambda")) {
-        lambdaFields.add("${element.name}_${name}\$dArgs");
+        lambdaFields.add("${element.name}_${name}$_LAMBDA_ARGS_SUFFIX");
       }
     }
     final args = m.parameters.map((e) {
