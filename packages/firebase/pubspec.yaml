@@ -12,7 +12,9 @@ dependencies:
   dstore_flutter: 
     path: ../dstore_flutter/
   firebase_auth:
-  meta:     
+  cloud_firestore:   
+  meta:
+  json_annotation:       
 
 dev_dependencies:
   test: ^1.14.4
