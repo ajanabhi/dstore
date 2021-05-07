@@ -39,7 +39,9 @@ dependencies:
     path: ../../packages/middleware_dio/ 
   meta:
   dstore_dgraph:
-    path: ../../packages/dgraph/    
+    path: ../../packages/dgraph/
+  firebase_core:
+  cloud_firestore:    
 
 dev_dependencies:
   flutter_test:
