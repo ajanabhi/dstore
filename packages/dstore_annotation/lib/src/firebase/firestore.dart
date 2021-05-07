@@ -4,5 +4,10 @@ class FireStoreSchema {
 
 class collection {
   final String name;
-  const collection(this.name);
+  final bool sub;
+  const collection({required this.name, this.sub = false});
+}
+
+class collectionNestedObject {
+  const collectionNestedObject();
 }
