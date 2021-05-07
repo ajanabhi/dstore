@@ -3,6 +3,8 @@ import 'package:dstore_generator/src/appstate/app_state_generator.dart';
 import 'package:dstore_generator/src/denum/denum_generator.dart';
 import 'package:dstore_generator/src/dunion/union_generator.dart';
 import 'package:dstore_generator/src/env/env_generator.dart';
+import 'package:dstore_generator/src/firebase/firestore/firestore_schema_generator.dart';
+import 'package:dstore_generator/src/firebase/firestore/ops/firestore_ops_generator.dart';
 import 'package:dstore_generator/src/form/form_model_generator.dart';
 import 'package:dstore_generator/src/graphql/ops/graphql_ops_generator.dart';
 import 'package:dstore_generator/src/graphql/schema/schema_genrator.dart';
@@ -47,6 +49,8 @@ Builder dstoreGen(BuilderOptions options) {
         SelectorsGenerator(),
         SchemaSourceGenerator(),
         DEnumGenerator(),
+        FireStoreSchemaGenerator(),
+        FireStoreOpsGenerator(),
         DImmutableGenerator(),
       ],
       '.dstore.dart',

@@ -1,7 +1,10 @@
+import 'package:dstore/dstore.dart';
+
 abstract class User {
   late String name;
 }
 
+@collection(name: "movies")
 abstract class Movie {
   late String poster;
   late int likes;
@@ -11,3 +14,5 @@ abstract class Movie {
   late String rated;
   late List<String> genre;
 }
+
+abstract class FCollections implements Movie {}
