@@ -16,6 +16,15 @@ abstract class ModelUtils {
     }).join("\n ");
   }
 
+  static List<Field> convertParameterElementsToFields(
+      List<ParameterElement> pe) {
+    return pe.map((p) {
+      final name = p.name;
+      final type = p.type.toString();
+      return Field(name: name, type: type, isOptional: type.endsWith("?"));
+    }).toList();
+  }
+
   static List<Field> processFields(List<Field> fields,
       {bool addJsonKey = false}) {
     return fields.map((f) {
@@ -74,6 +83,15 @@ abstract class ModelUtils {
     return fields.map((f) {
       final name = f.name;
       final type = f.type.toString();
+      final isOptional = type.endsWith("?");
+      return Field(name: name, type: type, isOptional: isOptional);
+    }).toList();
+  }
+
+  static List<Field> convertMethodElementsToFields(List<MethodElement> fields) {
+    return fields.map((f) {
+      final name = f.name;
+      final type = f.returnType.toString();
       final isOptional = type.endsWith("?");
       return Field(name: name, type: type, isOptional: isOptional);
     }).toList();

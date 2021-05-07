@@ -5,6 +5,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_dgraph/dgraph.dart';
 import 'package:dstore_generator/src/graphql/schema_source/dgraph/dgraph.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
@@ -20,15 +21,28 @@ Future<String> generateSchema(
   var unions = "";
   final comments = schemaMeta.comments;
 
+  final enumF = element.fields
+      .singleWhereOrNull((f) => f.name.toLowerCase() == "enums")
+      ?.type
+      .element;
+  var enumNames = <String>[];
+  if (enumF != null && enumF is ClassElement) {
+    enumNames = enumF.allSupertypes
+        .map((e) => e.getDisplayString(withNullability: false))
+        .toList();
+  }
+
   element.fields.forEach((fe) {
     logger.shout(
         "name ${fe.name} type ${fe.type} ${fe.type.runtimeType} type element  : ${fe.type.element} eleemnttype ${fe.type.element.runtimeType}");
     final name = fe.name.toLowerCase();
     if (name == "objects") {
-      objects = getObjects(element: element, schema: schemaMeta);
+      objects = getObjects(
+          element: element, schema: schemaMeta, enumNames: enumNames);
     }
     if (name == "interfaces") {
-      interfaces = getInterfaces(element: element, schema: schemaMeta);
+      interfaces = getInterfaces(
+          element: element, schema: schemaMeta, enumNames: enumNames);
     }
     if (name == "inputs") {
       inputs = getInputs(element: element, schema: schemaMeta);
@@ -39,7 +53,8 @@ Future<String> generateSchema(
     }
 
     if (name == "enums") {
-      enums = getEnums(element: element, schema: schemaMeta);
+      enums =
+          getEnums(element: element, schema: schemaMeta, enumNames: enumNames);
     }
   });
 
@@ -110,11 +125,13 @@ Future<void> _uploadSchema(GraphqlSchemaSource meta, String schema) async {
 }
 
 String getObjects(
-    {required ClassElement element, required GraphqlSchemaSource schema}) {
+    {required ClassElement element,
+    required GraphqlSchemaSource schema,
+    required List<String> enumNames}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
-      .map((e) =>
-          convertDartInterfaceTypeToObject(it: e, database: schema.database))
+      .map((e) => convertDartInterfaceTypeToObject(
+          it: e, database: schema.database, enumNames: enumNames))
       .join("\n");
 }
 
@@ -128,7 +145,9 @@ String getUnions(
 }
 
 String getEnums(
-    {required ClassElement element, required GraphqlSchemaSource schema}) {
+    {required ClassElement element,
+    required GraphqlSchemaSource schema,
+    required List<String> enumNames}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
@@ -137,11 +156,13 @@ String getEnums(
 }
 
 String getInterfaces(
-    {required ClassElement element, required GraphqlSchemaSource schema}) {
+    {required ClassElement element,
+    required GraphqlSchemaSource schema,
+    required List<String> enumNames}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
-      .map((e) =>
-          convertDartInterfaceTypeToInterface(it: e, database: schema.database))
+      .map((e) => convertDartInterfaceTypeToInterface(
+          it: e, database: schema.database, enumNames: enumNames))
       .join("\n");
 }
 
@@ -155,7 +176,9 @@ String getInputs(
 }
 
 String convertDartInterfaceTypeToObject(
-    {required InterfaceType it, required GraphqlDatabase database}) {
+    {required InterfaceType it,
+    required GraphqlDatabase database,
+    required List<String> enumNames}) {
   final element = it.element;
   final name = element.name;
 
@@ -168,8 +191,9 @@ String convertDartInterfaceTypeToObject(
 
   final directives =
       getAnnotationForObject(element: element, database: database);
-  final fields = ModelUtils.convertFieldElementsToFields(element.fields);
-
+  var fields = ModelUtils.convertFieldElementsToFields(element.fields);
+  fields.addAll(ModelUtils.convertMethodElementsToFields(element.methods));
+  fields = _replaceEnumNames(fields, enumNames);
   return """
    type $name $impl $directives {
     ${getFieldsFromClassElement(element: element, database: database)}
@@ -177,6 +201,17 @@ String convertDartInterfaceTypeToObject(
    }
    ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
   """;
+}
+
+List<Field> _replaceEnumNames(List<Field> fields, List<String> enumNames) {
+  return fields.map((f) {
+    if (enumNames.contains(f.type)) {
+      final op = f.type.endsWith("?") ? "?" : "";
+      return f.copyWith(type: "String$op/* ${f.type} */");
+    } else {
+      return f;
+    }
+  }).toList();
 }
 
 String convertDartInterfaceTypeToUnions(
@@ -224,14 +259,22 @@ String convertDartInterfaceTypeToInput(
 }
 
 String convertDartInterfaceTypeToInterface(
-    {required InterfaceType it, required GraphqlDatabase database}) {
+    {required InterfaceType it,
+    required GraphqlDatabase database,
+    required List<String> enumNames}) {
   final element = it.element;
   final name = element.name;
 
   var interfacesFields = "";
   final directives =
       getAnnotationForInterface(element: element, database: database);
-  final fields = ModelUtils.convertFieldElementsToFields(element.fields);
+  var fields = ModelUtils.convertFieldElementsToFields(element.fields);
+  fields.addAll(ModelUtils.convertMethodElementsToFields(element.methods));
+  fields = _replaceEnumNames(fields, enumNames);
+  final args = element.methods.map((m) {
+    final an = "${name}_${m.name.cpatialize}Args";
+    final fields = ModelUtils.convertParameterElementsToFields(m.parameters);
+  });
   return """
    interface $name  $directives {
     ${getFieldsFromClassElement(element: it.element, database: database)}
@@ -241,9 +284,19 @@ String convertDartInterfaceTypeToInterface(
   """;
 }
 
+String _getArgs(ClassElement element) {
+  final className = element.name;
+  return element.methods
+      .where((m) => m.annotationFromType(lambda) != null)
+      .map((m) {
+    final an = "${className}_${m.name.cpatialize}Args";
+    final fields = ModelUtils.convertParameterElementsToFields(m.parameters);
+  }).join("\n");
+}
+
 String getFieldsFromClassElement(
     {required ClassElement element, required GraphqlDatabase database}) {
-  return element.fields.map((e) {
+  final fields = element.fields.map((e) {
     final type = getGraphqlType(e.type);
     final name = e.name;
     final directives = getAnnotationsForField(fe: e, database: database);
@@ -253,11 +306,37 @@ String getFieldsFromClassElement(
       }
     }
     return "$name: $type $directives";
-  }).join("\n");
+  }).toList();
+  final fieldsWithArgs = element.methods.map((m) {
+    if (m.parameters.isEmpty) {
+      throw ArgumentError.value("Fields with args must have params");
+    }
+    final rt = m.returnType.toString();
+    if (rt == "dynamic" || rt == "void") {
+      throw ArgumentError.value(
+          "You should provide return type for fields(methods) with args, $m");
+    }
+    final type = getGraphqlType(m.returnType);
+    final name = m.name;
+    final directives = getAnnotationsForField(fe: m, database: database);
+    if (database == GraphqlDatabase.dgraph) {
+      if (directives.contains("@lambda")) {
+        lambdaFields.add("${element.name}_${name}");
+      }
+    }
+    final args = m.parameters.map((e) {
+      final name = e.name;
+      final type = getGraphqlType(e.type);
+      return "$name: $type";
+    });
+    return "$name(${args.join(", ")}): $type $directives";
+  });
+  fields.addAll(fieldsWithArgs);
+  return fields.join("\n");
 }
 
 String getAnnotationsForField(
-    {required FieldElement fe, required GraphqlDatabase database}) {
+    {required Element fe, required GraphqlDatabase database}) {
   if (database == GraphqlDatabase.dgraph) {
     return getDGraphFieldAnnotations(element: fe);
   }

@@ -5,7 +5,11 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:dstore_dgraph/dgraph.dart';
 
-String getDGraphFieldAnnotations({required FieldElement element}) {
+String getDGraphFieldAnnotations({required Element element}) {
+  if (!(element is FieldElement) && !(element is MethodElement)) {
+    throw ArgumentError.value(
+        "You should provide only FieldElement or MethodElement");
+  }
   final annotations = <String>[];
   final hasI = getHasInverseDirective(element);
   if (hasI != null) {
