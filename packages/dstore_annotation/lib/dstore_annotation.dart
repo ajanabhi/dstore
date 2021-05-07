@@ -7,3 +7,4 @@ export "src/websocket.dart";
 export "src/nav.dart";
 export "src/openapi.dart";
 export 'src/generic.dart';
+export "src/firebase/firestore.dart";

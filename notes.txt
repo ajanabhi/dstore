@@ -41,3 +41,8 @@ https://applitools.com/event/let-the-robots-test-your-flutter-app/
 DGraph : 
 
 https://dgraph.io/docs/cloud/cloud-api/lambda/
+
+Firebase : 
+
+https://dev.to/rbt/firestore-data-validation-3k85
+
