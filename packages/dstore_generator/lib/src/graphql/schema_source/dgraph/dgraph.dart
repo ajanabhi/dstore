@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dio/dio.dart';
@@ -375,4 +378,51 @@ Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
   }
 }
 
-// Future<void> uploadLambdas(GraphqlSchemaSource meta) {}
+Future<void> uploadLambdas(GraphqlSchemaSource meta) async {
+  if (meta.lambdaUploadDetails == null) {
+    throw ArgumentError.value(
+        "Inorder to upload lambda you should provide lambdaUploadDetails ");
+  }
+  try {
+    final lambdaUploadDetails = meta.lambdaUploadDetails!;
+    final sourceFile = lambdaUploadDetails.sourceEntryFile;
+    final dir = lambdaUploadDetails.dart2jsBinaryPath;
+    final optLevel = lambdaUploadDetails.dart2jsOptLevel;
+    final outputFile = lambdaUploadDetails.saveJSFileToPath;
+    final bin = "$dir/./dart2js";
+    await Process.run(
+      bin,
+      [optLevel, "-o", outputFile, sourceFile],
+    );
+
+    final content = await File(outputFile).readAsString();
+    final base64 = base64Encode(utf8.encode(content));
+    final url = lambdaUploadDetails.url;
+    final uid = lambdaUploadDetails.uid;
+    final headers = lambdaUploadDetails.headers;
+    final query = {
+      "query":
+          "mutation UpdateDeployment(\$input: UpdateDeploymentInput!) {\n updateDeployment(input: \$input)\n}",
+      "variables": {
+        "input": {"uid": uid, "lambdaScript": base64}
+      }
+    };
+    final dio = Dio();
+    final resp = await dio.post<Map<String, dynamic>>(url,
+        options: Options(
+          headers: headers,
+          responseType: ResponseType.json,
+        ),
+        data: query);
+    if (resp.data != null &&
+        resp.data!.containsKey("data") &&
+        resp.statusCode == 200) {
+      print("Successfully uploaded lambda script to  $url");
+    } else {
+      throw Exception(
+          "Error while uploading lambda script, server responded with resp ${resp.data} , status : ${resp.statusCode}");
+    }
+  } catch (e) {
+    rethrow;
+  }
+}

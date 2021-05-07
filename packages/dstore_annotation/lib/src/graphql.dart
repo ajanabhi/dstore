@@ -70,15 +70,19 @@ class SchemaUploadRequest {
 
 class LambdasUploadDetails {
   final String sourceEntryFile;
+  final String saveJSFileToPath;
   final String uid; // project uid in case of dgraph
   final String url;
   final String dart2jsBinaryPath;
   final String dart2jsOptLevel; // default to -O4
+  final Map<String, String> headers;
 
   LambdasUploadDetails(
       {required this.sourceEntryFile,
       required this.uid,
       required this.url,
+      required this.saveJSFileToPath,
+      required this.headers,
       this.dart2jsOptLevel = "-O4",
       required this.dart2jsBinaryPath});
 }
