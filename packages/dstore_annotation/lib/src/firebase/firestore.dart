@@ -16,4 +16,5 @@ class collectionNestedObject {
   const collectionNestedObject();
 }
 
-class FireStoreRef {}
+// firestore ref T should be a class with @collection annotation
+class FireStoreRef<T> {}

@@ -1,13 +1,17 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/constants.dart';
+import 'package:dstore_generator/src/firebase/firestore/ops/visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 Future<String> generateFireStoreSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
   var collectionModels = "";
   var collectionDsl = "";
+  var collectionsRefs = "";
   element.fields.forEach((f) {
     final name = f.name.toLowerCase();
     if (name == "collections") {
@@ -24,6 +28,29 @@ Future<String> generateFireStoreSchema(
   """;
 }
 
+String getDefaultCollectionRefs({required ClassElement element}) {
+  final colRefs =
+      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+    final element = e.element;
+    final annot = element.annotationFromType(collection);
+    if (annot == null) {
+      throw ArgumentError.value(
+          "All collection classes should add @collection annotation, there is no collection annotion for class ${element.name}");
+    }
+    final ca = getCollectionAnnotation(annot);
+    final cname = ca.name;
+    final cMethod = ca.sub ? "collectionGroup" : "collection";
+    return """static final ${ca.name} = 
+     FirebaseFireStore.instance.$cMethod('$cname').${getWithConverter(element.name)};
+     """;
+  }).join("\n");
+  return """
+     class CollectionRefs {
+       $colRefs
+     }
+    """;
+}
+
 String getModelsFromCollections({required ClassElement element}) {
   return element.allSupertypes
       .where((e) => !e.isDartCoreObject)
@@ -32,30 +59,96 @@ String getModelsFromCollections({required ClassElement element}) {
 }
 
 String convertCollectionModelToDartModel({required ClassElement element}) {
-  final fields = element.fields
+  final className = element.name;
+  final regularFields = <Field>[];
+  final updateFields = <Field>[];
+  element.fields
       .where((f) =>
           f.type.element?.annotationFromType(collection) ==
           null) // subcollections are shallow
-      .map((f) {
+      .forEach((f) {
     final name = f.name;
-    var type = f.type.toString();
+    final type = f.type;
+    var typeStr = type.toString();
     final annotations = <String>[];
-    if (type.startsWith("FireStoreRef")) {
-      type = "DocumentReference";
-      annotations.add("@DocumentReferenceConverter()");
+    final updateAnnotations = <String>[];
+    if (typeStr.startsWith("FireStoreRef")) {
+      if (!typeStr.startsWith("FireStoreRef<")) {
+        throw ArgumentError.value(
+            "FireStoreRef field ${name} should provide generic type of collection");
+      }
+      final cType =
+          typeStr.substring(typeStr.indexOf("<") + 1).replaceAll(">", "");
+      if (cType == "dynamic") {
+        throw ArgumentError.value(
+            "FireStoreRef fields should provide generic type of collection class not dynamic");
+      }
+      var op = "";
+      var optional = "";
+      if (typeStr.endsWith("?")) {
+        op = "?";
+        optional = "Optional";
+      }
+      final refName = "${cType}Reference";
+      typeStr = "$refName$op";
+      annotations.add(
+          "@JsonKey(fromJson: ${refName}.fromJson${optional} ,toJson: ${refName}.toJson$optional)");
+      updateAnnotations.add(
+          "@JsonKey(fromJson: ${refName}.fromJsonOptional ,toJson: ${refName}.toJsonOptional)");
     }
-    return Field(
+    final rf = Field(
         name: name,
-        type: type,
-        isOptional: type.endsWith("?"),
+        type: typeStr,
+        isOptional: typeStr.endsWith("?"),
         annotations: annotations);
-  }).toList();
-  return ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: element.name, isJsonSerializable: true);
+    regularFields.add(rf);
+    updateFields.add(rf.copyWith(
+        type: rf.type.endsWith("?") ? rf.type : rf.type + "?",
+        isOptional: true,
+        annotations: updateAnnotations));
+  });
+
+  final updateClassName = className + "Update";
+  return """
+   ${_createReferenceClass(className)}
+  ${ModelUtils.createDefaultDartUpdateModelFromFeilds(fields: updateFields, className: updateClassName, isJsonSerializable: true)} 
+  ${ModelUtils.createDefaultDartModelFromFeilds(fields: regularFields, className: className, isJsonSerializable: true)} 
+  
+  """;
+}
+
+String _createReferenceClass(String name) {
+  final refName = "${name}Reference";
+  return """
+    class $refName {
+      
+       final DocumentReference docRef;
+       $refName(this.docRef);
+
+    static $refName fromJson(dynamic docRef) =>
+      $refName(docRef as DocumentReference);
+
+     static dynamic toJson($refName mref) => mref.docRef;
+  
+     static $refName? fromJsonOptional(dynamic? docRef) =>
+       docRef != null ? $refName(docRef as DocumentReference) : null;
+
+     static dynamic toJsonOptional($refName? mref) => mref?.docRef;
+  
+      Future<$name?> get([GetOptions? options]) async {
+        final snapshot = await docRef.get(options);
+        var data = snapshot.data();
+        if(data != null) {
+          return $name.fromJson(data as Map<String,dynamic>); 
+        } 
+      }
+    }
+  """;
 }
 
 String getDslFromCollections({required ClassElement element}) {
   final queryItems = <String>[];
+  final groupedQueryItems = <String>[];
   final types = <String>[];
   final mutationItems = <String>[];
   element.allSupertypes.where((e) => !e.isDartCoreObject).forEach((e) {
@@ -69,12 +162,21 @@ String getDslFromCollections({required ClassElement element}) {
     final name = "${ca.name}_${element.name}";
     types.add(
         convertCollectionModelToDartDSLQuery(element: element, name: name));
-    queryItems.add("${name}Query $name() { throw Error();}");
+    final qfn = "static ${name}Query $name() { throw Error();}";
+    if (ca.sub) {
+      groupedQueryItems.add(qfn);
+    } else {
+      queryItems.add(qfn);
+    }
   });
   return """
    
-   class FireStoreQuery {
+   abstract class FireStoreQuery {
      ${queryItems.join("\n")}
+   }
+   
+   abstract class FireStoreGroupQuery {
+     ${groupedQueryItems.join("\n")}
    }
 
    ${types.join("\n")}
@@ -85,20 +187,23 @@ String getDslFromCollections({required ClassElement element}) {
 collection getCollectionAnnotation(ElementAnnotation annot) {
   final reader = ConstantReader(annot.computeConstantValue());
   final name = reader.peek("name")?.stringValue;
-  return collection(name: name!);
+  final sub = reader.peek("sub")?.boolValue ?? false;
+  return collection(name: name!, sub: sub);
 }
 
 String convertCollectionModelToDartDSLQuery(
     {required ClassElement element, required String name}) {
-  // final name = element.name;
   final genericQueryFields = <String>[];
+  final queryClassName = "${name}Query";
 
-  genericQueryFields.add("void limit(int limit) {}");
-  genericQueryFields.add("void limitToLast(int limit) {}");
   genericQueryFields
-      .add("void orderBy(Object field,{bool descending = false}) {}");
+      .add("$queryClassName limit(int limit) { $CompileTimeError }");
+  genericQueryFields
+      .add("$queryClassName limitToLast(int limit) { $CompileTimeError}");
+  genericQueryFields.add(
+      "$queryClassName orderBy(Object field,{bool descending = false}) { $CompileTimeError}");
   genericQueryFields.add("""
-      void where(
+      $queryClassName where(
           Object field, {
     Object? isEqualTo,
     Object? isNotEqualTo,
@@ -111,43 +216,53 @@ String convertCollectionModelToDartDSLQuery(
     List<Object?>? whereIn,
     List<Object?>? whereNotIn,
     bool? isNull,}
-      ) {}
+      ) { $CompileTimeError}
       """);
 
+  genericQueryFields.add(
+      "$queryClassName endAtDocument(DocumentSnapshot documentSnapshot) { $CompileTimeError }");
+
+  genericQueryFields.add(
+      "$queryClassName startAtDocument(DocumentSnapshot documentSnapshot) {  $CompileTimeError }");
+  genericQueryFields.add(
+      "$queryClassName startAfterDocument(DocumentSnapshot documentSnapshot) {  $CompileTimeError }");
+
+  genericQueryFields.add(
+      "$queryClassName startAfter(List<Object?> values) { $CompileTimeError }");
+  genericQueryFields
+      .add("$queryClassName endAt(List<Object?> values) { $CompileTimeError }");
+  genericQueryFields.add(
+      "$queryClassName endBefore(List<Object?> values) { $CompileTimeError }");
+  final subCollectionFields = <FieldElement>[];
   final fields = element.fields.map((f) {
     final name = f.name;
     final type = f.type;
     final typeStr = type.toString();
     final sca = f.type.element?.annotationFromType(collection);
+
     if (sca != null) {
       // sub collection field
-      final sce = f.type.element!;
-      final scec = getCollectionAnnotation(sca);
-      final name2 = "${scec.name}_${sce.name}";
-      return """
-        $name2 ${name}_subcoll() {
-          throw Error();
-        }
-      """;
+      subCollectionFields.add(f);
+      return "";
     } else if (type.isDartCoreList) {
       //
       return """
-        void where_$name({ Object? arrayContains,
-    List<Object?>? arrayContainsAny,}) {}
+        $queryClassName where_$name({ Object? arrayContains,
+    List<Object?>? arrayContainsAny,}) { $CompileTimeError }
       """;
     } else if (type.isDartCoreMap) {
     } else if (type.isDartCoreBool) {
       return """
-       void where_$name(
+       $queryClassName where_$name(
           $type? isEqualTo,
     $type? isNotEqualTo,
     $type? whereIn,
     $type? whereNotIn,
        ) {
-
+$CompileTimeError
        }
-      void orderBy_$name({bool descending = false}) {
-
+      $queryClassName orderBy_$name({bool descending = false}) {
+    $CompileTimeError
       }
       """;
     } else if (type.isDartCoreDouble ||
@@ -156,7 +271,7 @@ String convertCollectionModelToDartDSLQuery(
         type.isDartCoreString) {
       return """
        
-       void where_$name(
+       $queryClassName where_$name(
           $type? isEqualTo,
     $type? isNotEqualTo,
     $type? isLessThan,
@@ -166,10 +281,10 @@ String convertCollectionModelToDartDSLQuery(
     $type? whereIn,
     $type? whereNotIn,
        ) {
-
+$CompileTimeError
        }
-      void orderBy_$name({bool descending = false}) {
-
+      $queryClassName orderBy_$name({bool descending = false}) {
+$CompileTimeError
       }
       """;
     } else {}
@@ -178,14 +293,34 @@ String convertCollectionModelToDartDSLQuery(
       annotations.add("@DocumentReferenceConverter()");
     }
     return "";
-  });
+  }).toList();
+  var docClass = "";
+  var pDocField = "";
+  print("subCollection Fields $subCollectionFields");
+  if (subCollectionFields.isNotEmpty) {
+    final docName = "${name}QueryDoc";
+    final docFields = subCollectionFields.map((f) {
+      final annot = f.type.element?.annotationFromType(collection);
+      final col = getCollectionAnnotation(annot!);
+      final name = "${col.name}_${f.type}";
+      return "${name}Query ${f.name}_${f.type}subcol() { $CompileTimeError }";
+    }).join("\n");
+    docClass = """
+      class $docName {
+        $docFields
+      }
+    """;
+    pDocField = "$docName doc(String id) { throw Error();}";
+  }
 
   return """
    
-   class ${name}Query {
+   class $queryClassName {
       ${genericQueryFields.join("\n")}
       ${fields.join("\n")}
+      $pDocField
    }
   
+   $docClass
   """;
 }

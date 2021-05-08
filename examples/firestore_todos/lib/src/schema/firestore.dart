@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dstore/dstore.dart';
+import 'package:dstore_firebase/firebase.dart';
 import 'collections.dart';
 import "package:json_annotation/json_annotation.dart";
 

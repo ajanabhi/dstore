@@ -13,6 +13,14 @@ abstract class Movie {
   late String runtime;
   late String rated;
   late List<String> genre;
+  late Message messages;
+  late FireStoreRef<Message> mRef;
 }
 
-abstract class FCollections implements Movie {}
+@collection(name: "messages", sub: true)
+abstract class Message {
+  late String createdAt;
+  late String author;
+}
+
+abstract class FCollections implements Movie, Message {}

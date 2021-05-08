@@ -277,6 +277,28 @@ abstract class ModelUtils {
     """;
   }
 
+  static String createDefaultDartUpdateModelFromFeilds(
+      {required List<Field> fields,
+      required String className,
+      String annotations = "",
+      bool isJsonSerializable = false,
+      bool addOverrideAnnotation = false}) {
+    if (annotations.isEmpty && isJsonSerializable) {
+      annotations = "@JsonSerializable(createFactory: false)";
+    }
+    return """
+   $annotations 
+   class $className {
+         
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)}
+     
+     ${ModelUtils.createConstructorFromFieldsList(className, fields)}
+
+     ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
+    }
+    """;
+  }
+
   static String convertFieldsToJSFields(List<Field> fields) {
     return fields.where((f) => f.name == f.name.addDName).map((f) {
       final type = f.type.startsWith("List<")

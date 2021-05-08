@@ -41,3 +41,6 @@ const DART_RESERVED_KEYWORDS = <String>[
   "List",
   "Set",
 ];
+
+const CompileTimeError =
+    "throw UnimplementedError('This method is only used at compile');";
