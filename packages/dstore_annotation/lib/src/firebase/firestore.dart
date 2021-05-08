@@ -1,12 +1,77 @@
 class FireStoreSchema {
   final List<Security>? rules; // global rules
+  final String rulesPath;
   const FireStoreSchema({
     this.rules,
+    required this.rulesPath,
   });
 }
 
 class FireStoreOps {
   const FireStoreOps();
+}
+
+class DefautSecurityFunctions {
+  final bool addContainsRequiredFieldsFn;
+  final bool addHasAllAttributesFn;
+
+  DefautSecurityFunctions(
+      {this.addContainsRequiredFieldsFn = false,
+      this.addHasAllAttributesFn = false});
+}
+
+// Rules Doc : https://firebase.google.com/docs/reference/rules
+// functions exist ,
+abstract class GlobalSecurityOrValidationFunctions {
+  static const _DB_PREFIX = "/databases/\$(database)/documents/";
+
+  static const _incomingData = "request.resource.data";
+
+  static const _auth = "request.auth";
+  static const _authToken = "$_auth.token";
+
+  static const hasOnlyProps = "hasOnlyProps";
+
+  // useful when you want to check incoming request constains all props of model
+  static const hasOnlyPropsFn = """
+    function hasOnlyProps(props) {
+      return $_incomingData.keys.hasOnly(props);
+    }
+  """;
+
+  static const hasAllProps = "hasAllProps";
+
+  // useful when you want to make sure all required fields present in incoming request
+  static const hasAllPropsFn = """
+    function hasAllProps(props) {
+      return $_incomingData.keys.hasAll(props);
+    }
+  """;
+
+  static const isLoggedIn = "isLoggedIn";
+
+  static const isLoggedInFn = """
+    function isLoggedIn() {
+      return request.auth != null;
+    }
+  """;
+
+  static const authEmailVerified = "authEmailVerified";
+
+  static const authEmailVerifiedFn = """
+    function authEmailVerified() {
+      return $_authToken.email_verified;
+    }
+  """;
+
+  //TODO test this collection should be escaped or not
+  static const userExistsInCollection = """
+    function userExistsInCollection(collection) {
+      return exists(${_DB_PREFIX}collection/\$(request.auth.uid));
+    }
+  """;
+
+  // static const
 }
 
 class collection {
