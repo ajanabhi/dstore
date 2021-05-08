@@ -4,7 +4,6 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/constants.dart';
 import 'package:dstore_generator/src/firebase/firestore/ops/visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 Future<String> generateFireStoreSchema(
@@ -12,20 +11,48 @@ Future<String> generateFireStoreSchema(
   var collectionModels = "";
   var collectionDsl = "";
   var collectionsRefs = "";
+  var nestedObjects = "";
   element.fields.forEach((f) {
     final name = f.name.toLowerCase();
     if (name == "collections") {
-      collectionModels =
-          getModelsFromCollections(element: f.type.element as ClassElement);
-      collectionDsl =
-          getDslFromCollections(element: f.type.element as ClassElement);
+      final ce = f.type.element as ClassElement;
+      collectionModels = getModelsFromCollections(element: ce);
+      collectionDsl = getDslFromCollections(element: ce);
+      collectionsRefs = getDefaultCollectionRefs(element: ce);
+    }
+    if (name == "nestedObjects") {
+      final ce = f.type.element as ClassElement;
+      nestedObjects = getNestedObjects(element: ce);
     }
   });
 
   return """
     $collectionModels
     $collectionDsl 
+    $collectionsRefs
+    $nestedObjects
   """;
+}
+
+String getNestedObjects({required ClassElement element}) {
+  return element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+    final element = e.element;
+    final className = element.name;
+    final fields = ModelUtils.convertFieldElementsToFields(element.fields);
+    var updateClass = "";
+    if (!fields.every((f) => f.type.endsWith("?"))) {
+      final updateFields = fields
+          .map((f) => f.copyWith(type: f.type.addQuestionMarkAtEnd))
+          .toList();
+      updateClass = ModelUtils.createDefaultDartUpdateModelFromFeilds(
+          fields: updateFields, className: className, isJsonSerializable: true);
+    }
+
+    return """
+     ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, className: className, isJsonSerializable: true)}
+     ${updateClass}
+     """;
+  }).join("\n");
 }
 
 String getDefaultCollectionRefs({required ClassElement element}) {
@@ -103,15 +130,23 @@ String convertCollectionModelToDartModel({required ClassElement element}) {
         annotations: annotations);
     regularFields.add(rf);
     updateFields.add(rf.copyWith(
-        type: rf.type.endsWith("?") ? rf.type : rf.type + "?",
+        type: rf.type.addQuestionMarkAtEnd,
         isOptional: true,
         annotations: updateAnnotations));
   });
+  var updateClass = "";
+  if (!regularFields.every((f) => f.type.endsWith("?"))) {
+    final updateClassName = className + "Update";
 
-  final updateClassName = className + "Update";
+    updateClass = ModelUtils.createDefaultDartUpdateModelFromFeilds(
+        fields: updateFields,
+        className: updateClassName,
+        isJsonSerializable: true);
+  }
+
   return """
    ${_createReferenceClass(className)}
-  ${ModelUtils.createDefaultDartUpdateModelFromFeilds(fields: updateFields, className: updateClassName, isJsonSerializable: true)} 
+  ${updateClass} 
   ${ModelUtils.createDefaultDartModelFromFeilds(fields: regularFields, className: className, isJsonSerializable: true)} 
   
   """;

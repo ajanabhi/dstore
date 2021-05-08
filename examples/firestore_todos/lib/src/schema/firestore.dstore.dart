@@ -598,3 +598,17 @@ class messages_MessageQuery {
     throw UnimplementedError('This method is only used at compile');
   }
 }
+
+class CollectionRefs {
+  static final movies = FirebaseFireStore.instance
+      .collection('movies')
+      .withConverter<Movie>(
+          fromFirestore: (snapshots, _) => Movie.fromJson(snapshots.data()!),
+          toFirestore: (movie, _) => movie.toJson());
+
+  static final messages = FirebaseFireStore.instance
+      .collectionGroup('messages')
+      .withConverter<Message>(
+          fromFirestore: (snapshots, _) => Message.fromJson(snapshots.data()!),
+          toFirestore: (message, _) => message.toJson());
+}

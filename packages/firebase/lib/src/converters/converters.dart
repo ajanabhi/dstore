@@ -40,18 +40,3 @@ class TimestampConverter implements JsonConverter<Timestamp, Timestamp> {
     return object;
   }
 }
-
-class Ref<T> {
-  final DocumentReference docRef;
-
-  Ref(this.docRef);
-
-  factory Ref.fromJson(dynamic docRef) => Ref(docRef as DocumentReference);
-
-  DocumentReference toJson() => this.docRef;
-
-  Future<void> get([GetOptions? options]) async {
-    final snapshot = await docRef.get(options);
-    return name.fromJson(snapshot.data());
-  }
-}

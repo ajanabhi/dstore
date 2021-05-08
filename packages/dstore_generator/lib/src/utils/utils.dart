@@ -129,6 +129,11 @@ extension StringExt on String {
   String get addTripleQuotes {
     return "\"\"\"$this\"\"\"";
   }
+
+  String get addQuestionMarkAtEnd {
+    final value = this;
+    return value.endsWith("?") ? value : "$value?";
+  }
 }
 
 extension IterableMapIndex<T> on Iterable<T> {
