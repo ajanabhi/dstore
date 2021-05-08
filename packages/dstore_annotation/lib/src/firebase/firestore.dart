@@ -1,5 +1,8 @@
 class FireStoreSchema {
-  const FireStoreSchema();
+  final List<Security>? rules; // global rules
+  const FireStoreSchema({
+    this.rules,
+  });
 }
 
 class FireStoreOps {
@@ -9,7 +12,31 @@ class FireStoreOps {
 class collection {
   final String name;
   final bool sub;
-  const collection({required this.name, this.sub = false});
+  final List<Security>? rules; // collection rules
+  const collection({required this.name, this.sub = false, this.rules});
+}
+
+class Security {
+  final String? read;
+  final String? match;
+  final String? write;
+  final String? update;
+  final String? create;
+  final String? get;
+  final String? list;
+  final String? delete;
+  final String? functions;
+
+  const Security(
+      {this.read,
+      this.write,
+      this.update,
+      this.list,
+      this.match,
+      this.get,
+      this.create,
+      this.delete,
+      this.functions});
 }
 
 class collectionNestedObject {
