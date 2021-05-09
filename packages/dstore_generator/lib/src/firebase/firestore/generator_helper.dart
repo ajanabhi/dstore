@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
@@ -15,13 +17,14 @@ Future<String> generateFireStoreSchema(
   var collectionsRefs = "";
   var nestedObjects = "";
   final schemaMeta = getFireStoreSchemaFromAnnotation(element);
-  final securityRules = <String>[];
+  final collectionSecurityRules = <String>[];
   element.fields.forEach((f) {
     final name = f.name.toLowerCase();
     if (name == "collections") {
       final ce = f.type.element as ClassElement;
       collectionModels = getModelsFromCollections(element: ce);
-      collectionDsl = getDslFromCollections(element: ce);
+      collectionDsl = getDslFromCollections(
+          element: ce, securityRules: collectionSecurityRules);
       collectionsRefs = getDefaultCollectionRefs(element: ce);
     }
     if (name == "nestedObjects") {
@@ -30,6 +33,8 @@ Future<String> generateFireStoreSchema(
     }
   });
 
+  await saveSecurityRulesToFile(
+      schemaMeta: schemaMeta, collectionSecurityRules: collectionSecurityRules);
   return """
     $collectionModels
     $collectionDsl 
@@ -40,50 +45,51 @@ Future<String> generateFireStoreSchema(
 
 Future<void> saveSecurityRulesToFile(
     {required FireStoreSchema schemaMeta,
-    required List<String> securityRules}) {
+    required List<String> collectionSecurityRules}) async {
   final path = schemaMeta.rulesPath;
-  final globalRules = convertSecurityRulesToString(schemaMeta.rules);
+  final globalRules = schemaMeta.rules
+          ?.map((r) => convertSecurityRuleToString(rule: r))
+          .join("\n") ??
+      "";
+  final rules = """
+     $globalRules 
+     ${collectionSecurityRules.join("\n")}
+  """;
+
+  await File(path).writeAsString(rules);
 }
 
-List<String> convertGlobalSecurityRulesToString(List<SecurityRule>? rules) {
-  if (rules == null) {
-    return [];
+String convertSecurityRuleToString(
+    {required SecurityRule? rule, ClassElement? element}) {
+  final collectionName = element?.collectionAnnotation.name;
+  final functions = rule?.functions ?? "";
+  final match = rule?.match != null
+      ? rule!.match
+      : collectionName != null
+          ? "match /${collectionName}/{document}"
+          : ""; // probbaly throw error
+  final read = rule?.read != null ? "allow read: ${rule!.read};" : "";
+  final write = rule?.write != null ? "allow write: ${rule!.write};" : "";
+  final update = rule?.update != null ? "allow update: ${rule!.update};" : "";
+  final create = rule?.create != null ? "allow create: ${rule!.create};" : "";
+  final get = rule?.get != null ? "allow get: ${rule!.get};" : "";
+  final list = rule?.list != null ? "allow list: ${rule!.list};" : "";
+  final delete = rule?.delete != null ? "allow delete: ${rule!.delete};" : "";
+  var defaultFunctions = "";
+  var subCollectionRules = "";
+  if (element != null) {
+    // for now lets do collections
+    final tuple = getDefaultSecurityFunctions(element: element);
+    defaultFunctions = tuple.item1;
+    subCollectionRules = tuple.item2.map((fe) {
+      final element = fe.type.element! as ClassElement;
+      final ca = element.collectionAnnotation;
+      return convertSecurityRuleToString(rule: ca.rules, element: element);
+    }).join("\n");
   }
-  return rules.map((s) {
-    final functions 
-    return """
-      
-    """;
-  }).toList();
-}
-
-
-// final String? read;
-//   final String? match;
-//   final String? write;
-//   final String? update;
-//   final String? create;
-//   final String? get;
-//   final String? list;
-//   final String? delete;
-String convertSecurityRuleToString({required SecurityRule rule,ClassElement? element}){
-   final functions = rule.functions ?? "";
-   final match = rule.match ?? "";
-   final read = rule.read != null ? "allow read: ${rule.read};" : "";
-   final write = rule.write != null ? "allow write: ${rule.write};" : "";
-   final update = rule.update != null ? "allow update: ${rule.update};" : "";
-   final create = rule.create != null ? "allow create: ${rule.create};" : "";
-   final get = rule.get != null ? "allow get: ${rule.get};" : "";
-   final list = rule.list != null ? "allow list: ${rule.list};" : "";
-   final delete = rule.delete != null ? "allow delete: ${rule.delete};" : "";
-   var defaultFunctions = "";
-   if(element != null) { // for now lets do collections 
-       final dfRuls = rule.defaultFunctions;
-       final dfFunctions = <String>[];
-
-   }
-   return """
+  return """
      $functions
+     $defaultFunctions
      match $match {
        $read 
        $write
@@ -92,33 +98,46 @@ String convertSecurityRuleToString({required SecurityRule rule,ClassElement? ele
        $get 
        $list
        $delete
+
+       $subCollectionRules
      }
    """;
 }
 
-String getDefaultSecurityFunctions({required ClassElement element, DefautSecurityOrValidateFunctions? df,  }) {
-  if(df == null) {
-    return "";
-  }
+Tuple2<String, List<FieldElement>> getDefaultSecurityFunctions({
+  required ClassElement element,
+  DefautSecurityOrValidateFunctions? df,
+}) {
+  final subCollFields = <FieldElement>[];
   final reqProps = <String>[];
   final allProps = <String>[];
   element.fields.forEach((element) {
-     final ca = element.type.element?.annotationFromType(collection);
-     final type = element.type.toString();
-     final name = element.name;
-     if(ca == null) { // care about only non sub collection fields
-         if(!type.endsWith("?")) {
-           reqProps.add(name);
-         }
-         allProps.add(name);
-     }
+    final ca = element.type.element?.annotationFromType(collection);
+    final type = element.type.toString();
+    final name = element.name;
+    if (ca == null) {
+      // care about only non sub collection fields
+      if (!type.endsWith("?")) {
+        reqProps.add(name);
+      }
+      allProps.add(name);
+    } else {
+      subCollFields.add(element);
+    }
   });
-  final collectionName = element.name;
-  final fns = <String>[];
-  if(df.validFieldNames) {
-     fns.add(FireStoreGlobalSecurityOrValidationFunctionsMeta.validFieldNamesForCollection(collectionName: collectionName, requiredProps: reqProps, allProps: allProps));
+  if (df == null) {
+    return Tuple2("", subCollFields);
   }
-  return fns.join("\n");
+  final collectionName = element.collectionAnnotation.name;
+  final fns = <String>[];
+  if (df.validFieldNames) {
+    fns.add(FireStoreGlobalSecurityOrValidationFunctionsMeta
+        .validFieldNamesForCollection(
+            collectionName: collectionName,
+            requiredProps: reqProps,
+            allProps: allProps));
+  }
+  return Tuple2(fns.join("\n"), subCollFields);
 }
 
 String getNestedObjects({required ClassElement element}) {
@@ -146,12 +165,7 @@ String getDefaultCollectionRefs({required ClassElement element}) {
   final colRefs =
       element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
     final element = e.element;
-    final annot = element.annotationFromType(collection);
-    if (annot == null) {
-      throw ArgumentError.value(
-          "All collection classes should add @collection annotation, there is no collection annotion for class ${element.name}");
-    }
-    final ca = getCollectionAnnotation(annot);
+    final ca = element.collectionAnnotation;
     final cname = ca.name;
     final cMethod = ca.sub ? "collectionGroup" : "collection";
     final converter = ca.sub ? "" : ".${getWithConverter(element.name)}";
@@ -269,26 +283,24 @@ String _createReferenceClass(String name) {
   """;
 }
 
-String getDslFromCollections({required ClassElement element}) {
+String getDslFromCollections(
+    {required ClassElement element, required List<String> securityRules}) {
   final queryItems = <String>[];
   final groupedQueryItems = <String>[];
   final types = <String>[];
   element.allSupertypes.where((e) => !e.isDartCoreObject).forEach((e) {
-    final element = e.element;
-    final annot = element.annotationFromType(collection);
-    if (annot == null) {
-      throw ArgumentError.value(
-          "You should add collection annotation for a class ${element.name}");
-    }
-    final ca = getCollectionAnnotation(annot);
-    final name = "${ca.name}_${element.name}";
+    final cElement = e.element;
+    final ca = cElement.collectionAnnotation;
+    final name = "${ca.name}_${cElement.name}";
     types.add(
-        convertCollectionModelToDartDSLQuery(element: element, name: name));
+        convertCollectionModelToDartDSLQuery(element: cElement, name: name));
     final qfn = "static ${name}Query $name() { throw Error();}";
     if (ca.sub) {
       groupedQueryItems.add(qfn);
     } else {
       queryItems.add(qfn);
+      securityRules
+          .add(convertSecurityRuleToString(rule: ca.rules, element: cElement));
     }
   });
   return """
@@ -306,17 +318,23 @@ String getDslFromCollections({required ClassElement element}) {
   """;
 }
 
-collection getCollectionAnnotation(ElementAnnotation annot) {
-  final reader = ConstantReader(annot.computeConstantValue());
-  final name = reader.peek("name")?.stringValue;
-  final sub = reader.peek("sub")?.boolValue ?? false;
-  final rulesObj = reader
-      .peek("rules");
+extension CollectionElementExt on Element {
+  collection get collectionAnnotation {
+    final annot = this.annotationFromType(collection);
+    if (annot == null) {
+      throw ArgumentError.value(
+          "All collection classes should add @collection annotation, there is no collection annotion for class ${this.name}");
+    }
+    final reader = ConstantReader(annot.computeConstantValue());
+    final name = reader.peek("name")?.stringValue;
+    final sub = reader.peek("sub")?.boolValue ?? false;
+    final rulesObj = reader.peek("rules");
     SecurityRule? rules;
-    if(rulesObj != null) {
+    if (rulesObj != null) {
       rules = convertDartObjectToSecurity(rulesObj.objectValue);
-    }  
-  return collection(name: name!, sub: sub, rules: rules);
+    }
+    return collection(name: name!, sub: sub, rules: rules);
+  }
 }
 
 SecurityRule convertDartObjectToSecurity(DartObject obj) {
@@ -458,9 +476,8 @@ $CompileTimeError
   if (subCollectionFields.isNotEmpty) {
     final docName = "${name}QueryDoc";
     final docFields = subCollectionFields.map((f) {
-      final annot = f.type.element?.annotationFromType(collection);
-      final col = getCollectionAnnotation(annot!);
-      final name = "${col.name}_${f.type}";
+      final col = f.type.element?.collectionAnnotation;
+      final name = "${col!.name}_${f.type}";
       return "${name}Query ${f.name}_${f.type}subcol() { $CompileTimeError }";
     }).join("\n");
     docClass = """
