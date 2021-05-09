@@ -20,46 +20,53 @@ class DefautSecurityFunctions {
       this.addHasAllAttributesFn = false});
 }
 
+abstract class GlobalSecurityOrValidationFunctionsMeta {
+  static const auth = "request.auth";
+  static const authToken = "request.auth.token";
+  static const incomingData = "request.resource.data";
+  static const hasOnlyPropsFunctionName = "hasOnlyProps";
+  static const hasAllPropsFunctionName = "hasAllProps";
+  static const hasOnlyPropsInline = "$incomingData.keys.hasOnly";
+  static const hasAllPropsInline = "$incomingData.keys.hasAllProps";
+  static const isLoggedInFunctionName = "isLoggedIn";
+  static const isLoggedInInline = "$auth != null";
+  static const authEmailVerifiedFunctionName = "authEmailVerified";
+  static const authEmailVerfiedInline = "$authToken.email_verified";
+}
+
 // Rules Doc : https://firebase.google.com/docs/reference/rules
 // functions exist ,
 abstract class GlobalSecurityOrValidationFunctions {
   static const _DB_PREFIX = "/databases/\$(database)/documents/";
 
-  static const _incomingData = "request.resource.data";
+  static const _incomingData =
+      GlobalSecurityOrValidationFunctionsMeta.incomingData;
 
-  static const _auth = "request.auth";
+  static const _auth = GlobalSecurityOrValidationFunctionsMeta.auth;
   static const _authToken = "$_auth.token";
 
-  static const hasOnlyProps = "hasOnlyProps";
-
   // useful when you want to check incoming request constains all props of model
-  static const hasOnlyPropsFn = """
-    function hasOnlyProps(props) {
+  static const hasOnlyProps = """
+    function ${GlobalSecurityOrValidationFunctionsMeta.hasOnlyPropsFunctionName}(props) {
       return $_incomingData.keys.hasOnly(props);
     }
   """;
 
-  static const hasAllProps = "hasAllProps";
-
   // useful when you want to make sure all required fields present in incoming request
-  static const hasAllPropsFn = """
-    function hasAllProps(props) {
+  static const hasAllProps = """
+    function ${GlobalSecurityOrValidationFunctionsMeta.hasAllPropsFunctionName}(props) {
       return $_incomingData.keys.hasAll(props);
     }
   """;
 
-  static const isLoggedIn = "isLoggedIn";
-
-  static const isLoggedInFn = """
-    function isLoggedIn() {
+  static const isLoggedIn = """
+    function ${GlobalSecurityOrValidationFunctionsMeta.isLoggedInFunctionName}() {
       return request.auth != null;
     }
   """;
 
-  static const authEmailVerified = "authEmailVerified";
-
-  static const authEmailVerifiedFn = """
-    function authEmailVerified() {
+  static const authEmailVerified = """
+    function ${GlobalSecurityOrValidationFunctionsMeta.authEmailVerifiedFunctionName}() {
       return $_authToken.email_verified;
     }
   """;
@@ -70,8 +77,6 @@ abstract class GlobalSecurityOrValidationFunctions {
       return exists(${_DB_PREFIX}collection/\$(request.auth.uid));
     }
   """;
-
-  // static const
 }
 
 class collection {
