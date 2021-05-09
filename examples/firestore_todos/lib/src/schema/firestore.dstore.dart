@@ -600,15 +600,12 @@ class messages_MessageQuery {
 }
 
 class CollectionRefs {
-  static final movies = FirebaseFireStore.instance
+  static final movies = FirebaseFirestore.instance
       .collection('movies')
       .withConverter<Movie>(
           fromFirestore: (snapshots, _) => Movie.fromJson(snapshots.data()!),
           toFirestore: (movie, _) => movie.toJson());
 
-  static final messages = FirebaseFireStore.instance
-      .collectionGroup('messages')
-      .withConverter<Message>(
-          fromFirestore: (snapshots, _) => Message.fromJson(snapshots.data()!),
-          toFirestore: (message, _) => message.toJson());
+  static final messages =
+      FirebaseFirestore.instance.collectionGroup('messages');
 }

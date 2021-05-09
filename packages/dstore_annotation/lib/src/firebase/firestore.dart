@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 class FireStoreSchema {
-  final List<Security>? rules; // global rules
+  final List<SecurityRule>? rules; // global rules
   final String rulesPath;
   const FireStoreSchema({
     this.rules,
@@ -13,15 +13,15 @@ class FireStoreOps {
   const FireStoreOps();
 }
 
-class DefautSecurityFunctions {
+class DefautSecurityOrValidateFunctions {
   final bool validFieldNames;
 
-  DefautSecurityFunctions({
+  const DefautSecurityOrValidateFunctions({
     this.validFieldNames = false,
   });
 }
 
-abstract class GlobalSecurityOrValidationFunctionsMeta {
+abstract class FireStoreGlobalSecurityOrValidationFunctionsMeta {
   static const auth = "request.auth";
   static const authToken = "request.auth.token";
   static const incomingData = "request.resource.data";
@@ -49,37 +49,37 @@ abstract class GlobalSecurityOrValidationFunctionsMeta {
 
 // Rules Doc : https://firebase.google.com/docs/reference/rules
 // functions exist ,
-abstract class GlobalSecurityOrValidationFunctions {
+abstract class FireStoreGlobalSecurityOrValidationFunctions {
   static const _DB_PREFIX = "/databases/\$(database)/documents/";
 
   static const _incomingData =
-      GlobalSecurityOrValidationFunctionsMeta.incomingData;
+      FireStoreGlobalSecurityOrValidationFunctionsMeta.incomingData;
 
-  static const _auth = GlobalSecurityOrValidationFunctionsMeta.auth;
+  static const _auth = FireStoreGlobalSecurityOrValidationFunctionsMeta.auth;
   static const _authToken = "$_auth.token";
 
   // useful when you want to check incoming request constains all props of model
   static const hasOnlyProps = """
-    function ${GlobalSecurityOrValidationFunctionsMeta.hasOnlyPropsFunctionName}(props) {
+    function ${FireStoreGlobalSecurityOrValidationFunctionsMeta.hasOnlyPropsFunctionName}(props) {
       return $_incomingData.keys.hasOnly(props);
     }
   """;
 
   // useful when you want to make sure all required fields present in incoming request
   static const hasAllProps = """
-    function ${GlobalSecurityOrValidationFunctionsMeta.hasAllPropsFunctionName}(props) {
+    function ${FireStoreGlobalSecurityOrValidationFunctionsMeta.hasAllPropsFunctionName}(props) {
       return $_incomingData.keys.hasAll(props);
     }
   """;
 
   static const isLoggedIn = """
-    function ${GlobalSecurityOrValidationFunctionsMeta.isLoggedInFunctionName}() {
+    function ${FireStoreGlobalSecurityOrValidationFunctionsMeta.isLoggedInFunctionName}() {
       return request.auth != null;
     }
   """;
 
   static const authEmailVerified = """
-    function ${GlobalSecurityOrValidationFunctionsMeta.authEmailVerifiedFunctionName}() {
+    function ${FireStoreGlobalSecurityOrValidationFunctionsMeta.authEmailVerifiedFunctionName}() {
       return $_authToken.email_verified;
     }
   """;
@@ -95,11 +95,11 @@ abstract class GlobalSecurityOrValidationFunctions {
 class collection {
   final String name;
   final bool sub;
-  final List<Security>? rules; // collection rules
+  final SecurityRule? rules; // collection rules
   const collection({required this.name, this.sub = false, this.rules});
 }
 
-class Security {
+class SecurityRule {
   final String? read;
   final String? match;
   final String? write;
@@ -109,8 +109,9 @@ class Security {
   final String? list;
   final String? delete;
   final String? functions;
+  final DefautSecurityOrValidateFunctions? defaultFunctions; // auto generated
 
-  const Security(
+  const SecurityRule(
       {this.read,
       this.write,
       this.update,
@@ -118,6 +119,7 @@ class Security {
       this.match,
       this.get,
       this.create,
+      this.defaultFunctions,
       this.delete,
       this.functions});
 }

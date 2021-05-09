@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
@@ -5,6 +6,7 @@ import 'package:dstore_generator/src/constants.dart';
 import 'package:dstore_generator/src/firebase/firestore/ops/visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
+import 'package:tuple/tuple.dart';
 
 Future<String> generateFireStoreSchema(
     {required ClassElement element, required BuildStep buildStep}) async {
@@ -12,6 +14,8 @@ Future<String> generateFireStoreSchema(
   var collectionDsl = "";
   var collectionsRefs = "";
   var nestedObjects = "";
+  final schemaMeta = getFireStoreSchemaFromAnnotation(element);
+  final securityRules = <String>[];
   element.fields.forEach((f) {
     final name = f.name.toLowerCase();
     if (name == "collections") {
@@ -32,6 +36,89 @@ Future<String> generateFireStoreSchema(
     $collectionsRefs
     $nestedObjects
   """;
+}
+
+Future<void> saveSecurityRulesToFile(
+    {required FireStoreSchema schemaMeta,
+    required List<String> securityRules}) {
+  final path = schemaMeta.rulesPath;
+  final globalRules = convertSecurityRulesToString(schemaMeta.rules);
+}
+
+List<String> convertGlobalSecurityRulesToString(List<SecurityRule>? rules) {
+  if (rules == null) {
+    return [];
+  }
+  return rules.map((s) {
+    final functions 
+    return """
+      
+    """;
+  }).toList();
+}
+
+
+// final String? read;
+//   final String? match;
+//   final String? write;
+//   final String? update;
+//   final String? create;
+//   final String? get;
+//   final String? list;
+//   final String? delete;
+String convertSecurityRuleToString({required SecurityRule rule,ClassElement? element}){
+   final functions = rule.functions ?? "";
+   final match = rule.match ?? "";
+   final read = rule.read != null ? "allow read: ${rule.read};" : "";
+   final write = rule.write != null ? "allow write: ${rule.write};" : "";
+   final update = rule.update != null ? "allow update: ${rule.update};" : "";
+   final create = rule.create != null ? "allow create: ${rule.create};" : "";
+   final get = rule.get != null ? "allow get: ${rule.get};" : "";
+   final list = rule.list != null ? "allow list: ${rule.list};" : "";
+   final delete = rule.delete != null ? "allow delete: ${rule.delete};" : "";
+   var defaultFunctions = "";
+   if(element != null) { // for now lets do collections 
+       final dfRuls = rule.defaultFunctions;
+       final dfFunctions = <String>[];
+
+   }
+   return """
+     $functions
+     match $match {
+       $read 
+       $write
+       $update
+       $create
+       $get 
+       $list
+       $delete
+     }
+   """;
+}
+
+String getDefaultSecurityFunctions({required ClassElement element, DefautSecurityOrValidateFunctions? df,  }) {
+  if(df == null) {
+    return "";
+  }
+  final reqProps = <String>[];
+  final allProps = <String>[];
+  element.fields.forEach((element) {
+     final ca = element.type.element?.annotationFromType(collection);
+     final type = element.type.toString();
+     final name = element.name;
+     if(ca == null) { // care about only non sub collection fields
+         if(!type.endsWith("?")) {
+           reqProps.add(name);
+         }
+         allProps.add(name);
+     }
+  });
+  final collectionName = element.name;
+  final fns = <String>[];
+  if(df.validFieldNames) {
+     fns.add(FireStoreGlobalSecurityOrValidationFunctionsMeta.validFieldNamesForCollection(collectionName: collectionName, requiredProps: reqProps, allProps: allProps));
+  }
+  return fns.join("\n");
 }
 
 String getNestedObjects({required ClassElement element}) {
@@ -67,8 +154,9 @@ String getDefaultCollectionRefs({required ClassElement element}) {
     final ca = getCollectionAnnotation(annot);
     final cname = ca.name;
     final cMethod = ca.sub ? "collectionGroup" : "collection";
+    final converter = ca.sub ? "" : ".${getWithConverter(element.name)}";
     return """static final ${ca.name} = 
-     FirebaseFireStore.instance.$cMethod('$cname').${getWithConverter(element.name)};
+     FirebaseFirestore.instance.$cMethod('$cname')$converter;
      """;
   }).join("\n");
   return """
@@ -185,7 +273,6 @@ String getDslFromCollections({required ClassElement element}) {
   final queryItems = <String>[];
   final groupedQueryItems = <String>[];
   final types = <String>[];
-  final mutationItems = <String>[];
   element.allSupertypes.where((e) => !e.isDartCoreObject).forEach((e) {
     final element = e.element;
     final annot = element.annotationFromType(collection);
@@ -223,7 +310,43 @@ collection getCollectionAnnotation(ElementAnnotation annot) {
   final reader = ConstantReader(annot.computeConstantValue());
   final name = reader.peek("name")?.stringValue;
   final sub = reader.peek("sub")?.boolValue ?? false;
-  return collection(name: name!, sub: sub);
+  final rulesObj = reader
+      .peek("rules");
+    SecurityRule? rules;
+    if(rulesObj != null) {
+      rules = convertDartObjectToSecurity(rulesObj.objectValue);
+    }  
+  return collection(name: name!, sub: sub, rules: rules);
+}
+
+SecurityRule convertDartObjectToSecurity(DartObject obj) {
+  final reader = ConstantReader(obj);
+  final read = reader.peek("read")?.stringValue;
+  final match = reader.peek("match")?.stringValue;
+  final update = reader.peek("update")?.stringValue;
+  final create = reader.peek("create")?.stringValue;
+  final get = reader.peek("get")?.stringValue;
+  final list = reader.peek("list")?.stringValue;
+  final delete = reader.peek("delete")?.stringValue;
+  final functions = reader.peek("functions")?.stringValue;
+  final defaultFunctionsObj = reader.peek("defaultFunctions");
+  DefautSecurityOrValidateFunctions? defaultFunctions;
+  if (defaultFunctionsObj != null) {
+    final validFieldNames = reader.peek("validFieldNames")?.boolValue ?? false;
+    defaultFunctions =
+        DefautSecurityOrValidateFunctions(validFieldNames: validFieldNames);
+  }
+
+  return SecurityRule(
+      read: read,
+      match: match,
+      update: update,
+      create: create,
+      get: get,
+      list: list,
+      functions: functions,
+      delete: delete,
+      defaultFunctions: defaultFunctions);
 }
 
 String convertCollectionModelToDartDSLQuery(
@@ -358,4 +481,28 @@ $CompileTimeError
   
    $docClass
   """;
+}
+
+//  final List<Security>? rules; // global rules
+//   final String rulesPath;
+FireStoreSchema getFireStoreSchemaFromAnnotation(ClassElement element) {
+  final annot = element.annotationFromType(FireStoreSchema)!;
+  final obj = annot.computeConstantValue();
+  if (obj == null) {
+    throw ArgumentError.value(
+        "Error in evaluating annotation make sure you used all constant values");
+  }
+  final reader = ConstantReader(obj);
+  final rulesPath = reader.peek("rulesPath")?.stringValue;
+  if (rulesPath == null) {
+    throw ArgumentError.value(
+        "rulesPath is a required field , please provide it");
+  }
+  final rules = reader
+      .peek("rules")
+      ?.listValue
+      .map((e) => convertDartObjectToSecurity(e))
+      .toList();
+
+  return FireStoreSchema(rulesPath: rulesPath, rules: rules);
 }
