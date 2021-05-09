@@ -145,7 +145,7 @@ String convertHttpFieldInfoToAction(
       ];
       if (graphqlQueryPart.hash != null) {
         final extensions = {
-          "persistedQuery": {"sha256Hash": graphqlQueryPart.hash}
+          "persistedQuery": {"version": 1, "sha256Hash": graphqlQueryPart.hash}
         };
         gparams.add("extensions: ${extensions}");
       }

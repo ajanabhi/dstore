@@ -49,7 +49,9 @@ Options _getOptions(
   var method = payload.method;
   if (payload.data is GraphqlRequestInput) {
     final greq = payload.data as GraphqlRequestInput;
-    if (greq.extensions != null && greq.useGetForPersitent) {
+    if (greq.extensions != null &&
+        greq.useGetForPersitent &&
+        greq.variables == null) {
       method = "GET";
     }
   }
@@ -154,7 +156,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     if (payload.data is GraphqlRequestInput) {
       final greq = payload.data as GraphqlRequestInput;
       if (greq.extensions != null) {
-        if (greq.useGetForPersitent) {
+        if (greq.useGetForPersitent && greq.variables == null) {
           url = "$url?extensions=${jsonEncode(greq.extensions)}";
           data = null;
         } else {
@@ -169,7 +171,9 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         queryParameters: payload.queryParams,
         cancelToken: cancelToken,
         options: options);
-  } on DioError catch (e) {} catch (e) {
+  } on DioError catch (e) {
+    _handleDioError(e: e, action: action, store: store);
+  } catch (e) {
     rethrow;
   }
   void handleGraphqlResponse(Response response) {
@@ -201,7 +205,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       if (isPersistQueryNotFoundError(response)) {
         try {
           final presp = await createPersistedGraphqlQuery(
-              payload: payload, options: options);
+              payload: payload, options: options, meta: meta);
           handleGraphqlResponse(presp);
         } on DioError catch (e) {
           _handleDioError(e: e, action: action, store: store);
@@ -243,12 +247,21 @@ dynamic createDioMiddleware<S extends AppStateI<S>>(
 }
 
 Future<Response> createPersistedGraphqlQuery(
-    {required HttpPayload payload, required Options options}) async {
+    {required HttpPayload payload,
+    required Options options,
+    required HttpMeta? meta}) async {
   final req = payload.data as GraphqlRequestInput;
-  final url =
-      '${payload.url}?query=${req.query}&extensions=${jsonEncode(req.extensions)}';
+  var url = payload.url;
+  var data = null;
+  if (req.variables == null) {
+    url =
+        '${payload.url}?query=${req.query}&extensions=${jsonEncode(req.extensions)}';
+  } else {
+    data = meta?.inputSerializer!(req);
+  }
+
   final dio = Dio();
-  final resp = await dio.get(url, options: Options(headers: payload.headers));
+  final resp = await dio.request(url, options: options, data: data);
   return resp;
 }
 
