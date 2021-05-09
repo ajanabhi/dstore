@@ -8,7 +8,7 @@ environment:
 dependencies:
   dstore:
     path: ../dstore
-  dio: 
+  dio: ^4.0.0
 dev_dependencies:
   pedantic:
   

@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:meta/meta.dart';
 import 'package:dstore/dstore.dart';
 
 //TODO upload download progress
@@ -71,28 +70,26 @@ void _handleDioError(
   final field = store.getFieldFromAction(action) as HttpField;
   late HttpError error;
   switch (e.type) {
-    case DioErrorType.CONNECT_TIMEOUT:
+    case DioErrorType.connectTimeout:
       error = HttpError(type: HttpErrorType.ConnectTimeout, message: e.message);
       break;
-    case DioErrorType.SEND_TIMEOUT:
+    case DioErrorType.sendTimeout:
       error = HttpError(type: HttpErrorType.SendTimeout, message: e.message);
       break;
-    case DioErrorType.RECEIVE_TIMEOUT:
+    case DioErrorType.receiveTimeout:
       error = HttpError(type: HttpErrorType.ReceiveTimeout, message: e.message);
       break;
-    case DioErrorType.RESPONSE:
-      var re = e.response;
+    case DioErrorType.response:
+      var re = e.response!;
       if (meta?.errorDeserializer != null) {
-        re = meta?.errorDeserializer!(re.statusCode, re.data);
+        re = meta?.errorDeserializer!(re.statusCode ?? 500, re.data);
       }
       error = HttpError(type: HttpErrorType.Response, error: re);
       break;
-    case DioErrorType.CANCEL:
+    case DioErrorType.cancel:
       error = HttpError(type: HttpErrorType.Aborted, message: e.message);
       break;
-    case DioErrorType.DEFAULT:
-      error = HttpError(type: HttpErrorType.Default, message: e.message);
-      break;
+
     default:
       error = HttpError(type: HttpErrorType.Default, message: e.message);
       break;
@@ -217,7 +214,8 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       }
     } else {
       late HttpField hf;
-      var data = meta!.responseDeserializer(response.statusCode, response.data);
+      var data =
+          meta!.responseDeserializer(response.statusCode ?? 200, response.data);
       hf = HttpField(data: data);
       if (meta.transformer != null) {
         hf = meta.transformer!(field, hf);
@@ -252,7 +250,7 @@ Future<Response> createPersistedGraphqlQuery(
     required HttpMeta? meta}) async {
   final req = payload.data as GraphqlRequestInput;
   var url = payload.url;
-  var data = null;
+  var data;
   if (req.variables == null) {
     url =
         '${payload.url}?query=${req.query}&extensions=${jsonEncode(req.extensions)}';
