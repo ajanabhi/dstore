@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
@@ -234,17 +232,6 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
       value = valueStr;
     }
     return "$name: $value";
-  }
-
-  @override
-  Object? visitPrefixedIdentifier(PrefixedIdentifier node) {
-    print("Prefix Identifier $node");
-    return super.visitPrefixedIdentifier(node);
-  }
-
-  @override
-  Object? visitSimpleIdentifier(SimpleIdentifier node) {
-    return super.visitSimpleIdentifier(node);
   }
 }
 

@@ -54,7 +54,9 @@ class HomePage extends StatelessWidget {
 
   void addData(CollectionReference collRef) async {
     await collRef
+        .limitToLast(limit)
         .doc("roomA")
+        
         .collection("messages")
         .doc("m1")
         .set(<String, dynamic>{"name": "n1"});
