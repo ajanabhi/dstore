@@ -52,8 +52,13 @@ Future<void> saveSecurityRulesToFile(
           .join("\n") ??
       "";
   final rules = """
-     $globalRules 
-     ${collectionSecurityRules.join("\n")}
+   rules_version = '2';
+   service cloud.firestore {
+      match /databases/{database}/documents {
+        $globalRules 
+        ${collectionSecurityRules.join("\n")}
+      }
+   }   
   """;
 
   await File(path).writeAsString(rules);
