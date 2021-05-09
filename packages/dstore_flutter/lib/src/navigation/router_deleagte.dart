@@ -94,12 +94,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       if (navState.dontTouchMeUrl != null) {
         final url = navState.dontTouchMeUrl!;
         print("pushing url ${navState.dontTouchMeUrl}");
-        if (navState.historyUpdate == HistoryUpdate.replace) {
+        if (navState.navOptions?.historyUpdate == HistoryUpdate.replace) {
           history.replace(url);
         } else {
           history.push(url);
         }
-        navState.historyUpdate = null;
+        navState.navOptions = null;
       }
     }
   }

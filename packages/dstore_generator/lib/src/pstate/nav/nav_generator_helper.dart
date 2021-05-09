@@ -263,31 +263,30 @@ Tuple2<String, String>? getUrlFromMethod(
           .join("");
       if (mparams.length != parameters.length) {
         errorMessage =
-            "apart from path params  $parameters action method ${md.name} can have only two extra params at most, param1 of type Map<String,String> that is to specify query params, param2 of type HistoryUpdate? to indicate history whether to push or replace url in history";
-        finalUrl =
-            _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
-                params: mparams, message: errorMessage, url: finalUrl);
+            "apart from path params  $parameters action method ${md.name} can have only two extra params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions? ";
+        finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
+            params: mparams, message: errorMessage, url: finalUrl);
       }
     } else {
       // static url
       errorMessage =
-          "static url action method ${md.name} should have only two params at most, param1 of type Map<String,String> that is to specify query params, param2 of type HistoryUpdate? to indicate history whether to push or replace url in history";
-      finalUrl =
-          _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
-              params: mparams, message: errorMessage, url: urlInput);
+          "static url action method ${md.name} should have only two params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions?";
+      finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
+          params: mparams, message: errorMessage, url: urlInput);
     }
     return Tuple2(urlInput, finalUrl);
   }
 }
 
-String _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
+String _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
     {required List<Field> params,
     required String message,
     required String url}) {
   final qp = "Map<String,String>";
-  final hu = "HistoryUpdate?";
+  final navOptions = "NavOptions?";
   var result = url;
-  bool isAllowedType(String type) => type.startsWith(qp) || type.startsWith(hu);
+  bool isAllowedType(String type) =>
+      type.startsWith(qp) || type.startsWith(navOptions);
   if (params.length > 2) {
     throw InvalidSignatureError(message);
   }
@@ -301,7 +300,7 @@ String _validateQueryParamsAndHistoryUpdateAndUpdateUrlWithQueryParams(
     if (fp.type.startsWith(qp)) {
       name = fp.name;
     }
-    if (sp.type.startsWith(hu)) {
+    if (sp.type.startsWith(navOptions)) {
       name = sp.name;
     }
     result = "$url?\${Uri(queryParameters: \${${name}})}";

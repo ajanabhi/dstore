@@ -7,7 +7,6 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/open_api/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:open_api_schema/v3.dart';
-import 'package:tuple/tuple.dart';
 import 'package:yaml/yaml.dart';
 
 const APPLICATION_JSON = "application/json";
@@ -18,7 +17,6 @@ String createOpenApi(
   final opneApi = _getOpenApiAnnotation(element);
   final file = opneApi.file;
   final schema = getSchemaFromFile(file);
-  logger.shout("Schema Bro");
   print(schema);
   // _resolveDiscriminators(schema);
   schema.components?.schemas?.forEach((key, value) {

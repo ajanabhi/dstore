@@ -16,7 +16,7 @@ abstract class NavStateI<M> extends PStateModel<M> {
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
-  HistoryUpdate? historyUpdate;
+  NavOptions? navOptions;
   String? get dontTouchMeUrl => _dontTouchMeUrl;
   set dontTouchMeUrl(String? value) {
     _dontTouchMeUrl = value;
@@ -50,4 +50,11 @@ abstract class NestedNavStateI extends NavStateI<dynamic> {}
 
 void configureNav() {
   configurePlatForm();
+}
+
+class NavOptions {
+  final HistoryUpdate? historyUpdate;
+  final bool reload;
+
+  NavOptions({this.historyUpdate, this.reload = false});
 }
