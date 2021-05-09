@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class FireStoreSchema {
   final List<Security>? rules; // global rules
   final String rulesPath;
@@ -12,12 +14,11 @@ class FireStoreOps {
 }
 
 class DefautSecurityFunctions {
-  final bool addContainsRequiredFieldsFn;
-  final bool addHasAllAttributesFn;
+  final bool validFieldNames;
 
-  DefautSecurityFunctions(
-      {this.addContainsRequiredFieldsFn = false,
-      this.addHasAllAttributesFn = false});
+  DefautSecurityFunctions({
+    this.validFieldNames = false,
+  });
 }
 
 abstract class GlobalSecurityOrValidationFunctionsMeta {
@@ -32,6 +33,18 @@ abstract class GlobalSecurityOrValidationFunctionsMeta {
   static const isLoggedInInline = "$auth != null";
   static const authEmailVerifiedFunctionName = "authEmailVerified";
   static const authEmailVerfiedInline = "$authToken.email_verified";
+
+  static String validFieldNamesForCollection(
+      {required String collectionName,
+      required List<String> requiredProps,
+      required List<String> allProps}) {
+    return """
+       function ${collectionName}_validFieldNames() {
+         return ${requiredProps.isNotEmpty ? "$hasAllPropsInline(${jsonEncode(requiredProps)}) && " : ""}$hasOnlyPropsInline(${jsonEncode(allProps)});
+       }
+     
+     """;
+  }
 }
 
 // Rules Doc : https://firebase.google.com/docs/reference/rules
