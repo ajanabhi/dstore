@@ -6,6 +6,7 @@ void _handleNavAction<S extends AppStateI<S>>(
   final navState = store.getFieldFromAction(action) as NavStateI;
   final history = navState.dontTouchMeHistory;
   if (!history.blockSameUrl || navState.navOptions?.reload == true) {
+    //
     next(action);
   } else {
     final uri = Uri.parse(history.url);

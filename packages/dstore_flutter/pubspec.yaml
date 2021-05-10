@@ -11,6 +11,8 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter  
   meta:
+  collection:   
+  path_to_regexp: 
   dstore:
     path: ../dstore
     

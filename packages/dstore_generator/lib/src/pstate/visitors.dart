@@ -19,12 +19,14 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   final bool historyEnabled;
   final int? historyLimit;
   final bool isNav;
+  final List<String>? nestedNavs;
 
   PStateAstVisitor(
       {required this.element,
       required this.isPersitable,
       this.isNav = false,
       this.historyLimit,
+      this.nestedNavs,
       required this.historyEnabled}) {
     if (isNav) {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
@@ -32,8 +34,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           Field(name: "beforeLeave", type: "BeforeLeaveFn?", isOptional: true));
       fields.add(
           Field(name: "redirectToAction", type: "Action?", isOptional: true));
-      fields.add(Field(
-          name: "historyUpdate", type: "HistoryUpdate?", isOptional: true));
+      fields.add(
+          Field(name: "navOptions", type: "NavOptions?", isOptional: true));
     }
   }
 
@@ -170,7 +172,14 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           throw NotAllowedError(
               "Only PState models are allowed as late variables");
         }
-        final dt = getFullTypeName(fe.type.element as ClassElement);
+        final psDepElement = fe.type.element as ClassElement;
+        final dt = getFullTypeName(psDepElement);
+        if (isNav) {
+          final psState = psDepElement.getPState();
+          if (psState.nav == true && nestedNavs != null) {
+            nestedNavs!.add(name);
+          }
+        }
         psDeps.add(Field(name: name, type: type.substring(2), value: dt));
       } else {
         if (!type.endsWith("?") && valueE == null) {

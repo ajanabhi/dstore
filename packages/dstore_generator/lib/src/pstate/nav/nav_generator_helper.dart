@@ -19,7 +19,8 @@ const navStateFeilds = [
 
 Future<String> generatePStateNavForClassElement(
     ClassElement element, PState pstate, BuildStep buildStep) async {
-  if (!_isNavPState(element)) {
+  final inf = _isNavPState(element);
+  if (inf == null) {
     throw InvalidSignatureError(
         "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
   }
@@ -29,11 +30,12 @@ Future<String> generatePStateNavForClassElement(
   final typeParamsWithBounds = typeParamsTuple.item2;
   final typeParams = typeParamsTuple.item1;
   final name = element.name.substring(2);
-
+  final nestedNavs = inf == "NavStateI" ? <String>[] : null;
   final visitor = PStateAstVisitor(
       element: element,
       isPersitable: false,
       historyEnabled: false,
+      nestedNavs: nestedNavs,
       isNav: true);
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
@@ -79,22 +81,25 @@ Future<String> generatePStateNavForClassElement(
       methods: methods);
   return """
     
-    ${_createPStateNavModel(fields: fields, psDeps: psDeps, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
+    ${_createPStateNavModel(fields: fields, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
   """;
 }
 
-bool _isNavPState(ClassElement element) {
+String? _isNavPState(ClassElement element) {
   final isNavInterfaceImplemented =
       AstUtils.isSubTypeof(element.thisType, "NavStateI");
 
   final isNestedNavInterfaceImplemented =
       AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
 
-  return isNavInterfaceImplemented != null ||
-      isNestedNavInterfaceImplemented != null;
+  return isNavInterfaceImplemented != null
+      ? "NavStateI"
+      : isNestedNavInterfaceImplemented != null
+          ? "NestedNavStateI"
+          : null;
 }
 
 String _getNavStaticMeta(
@@ -157,8 +162,10 @@ String _createPStateNavModel(
     required List<Field> psDeps,
     required String name,
     required List<String> annotations,
+    required List<String>? nestedNavs,
     required String buildPages,
     required String typeParams,
+    required String exinf,
     required bool enableHistory,
     required String typaParamsWithBounds}) {
   final psFeilds = psDeps
@@ -166,14 +173,23 @@ String _createPStateNavModel(
           " ${e.type} get ${e.name} => dont_touch_me_store.state.${e.name} as ${e.type};")
       .join("\n");
   final mixins = <String>["PStateStoreDepsMixin"];
-
+  var nestedNavsMethod = "";
+  if (nestedNavs != null && nestedNavs.isNotEmpty) {
+    nestedNavsMethod = """
+      @override
+       List<NestedNavStateI> getNestedNavs() {
+         return [${nestedNavs.map((e) => "this.${e}").join(",")}];
+       }        
+     """;
+  }
   final result = """
       
       ${annotations.join("\n")}
-      class ${name} extends NavStateI<$name> with ${mixins.join(", ")} {
+      class ${name} extends $exinf<$name> with ${mixins.join(", ")} {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
+        $nestedNavsMethod
         $buildPages
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}

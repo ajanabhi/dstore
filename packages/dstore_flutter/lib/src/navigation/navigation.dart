@@ -13,6 +13,7 @@ enum HistoryUpdate { push, replace }
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
+  Action notFoundAction(String url);
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
@@ -21,6 +22,8 @@ abstract class NavStateI<M> extends PStateModel<M> {
   set dontTouchMeUrl(String? value) {
     _dontTouchMeUrl = value;
   }
+
+  List<NestedNavStateI> getNestedNavs() => [];
 
   History? _dontTouchMeHistory;
   History get dontTouchMeHistory => _dontTouchMeHistory!;
@@ -46,7 +49,12 @@ class RouteInput {
 
 typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
-abstract class NestedNavStateI extends NavStateI<dynamic> {}
+abstract class NestedNavStateI extends NavStateI<dynamic> {
+  @override
+  Action notFoundAction(String url) {
+    throw UnimplementedError();
+  }
+}
 
 void configureNav() {
   configurePlatForm();

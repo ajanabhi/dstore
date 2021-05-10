@@ -6,12 +6,15 @@ import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:dstore_flutter/src/navigation/navigation_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:path_to_regexp/path_to_regexp.dart';
+import 'package:collection/collection.dart';
 
 class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
   late final History history;
   NavStateI? _navState;
+  NavStateI get navState => _navState!;
   late Dispatch _dispatch;
   bool _triggerFromHistory = false;
   bool _preparedState = false;
@@ -31,7 +34,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       fn(uri, _dispatch);
     } else {
       // match in dynamic paths
-
+      final r = 'r"$path"';
+      final regExp = pathToRegExp(r);
+      final dfn = navState.dontTouchMeDynamicMeta.entries
+          .singleWhereOrNull((de) => regExp.hasMatch(de.key))
+          ?.value;
+      if (dfn == null) {}
     }
   }
 
@@ -43,6 +51,14 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
         child: SelectorBuilder<S, NavStateI>(
           selector: selector,
           onInitState: (context, state) {
+            final nestedNavs = state.getNestedNavs();
+            if (nestedNavs.isNotEmpty) {
+              nestedNavs.forEach((nnav) {
+                state.dontTouchMeStaticMeta.addAll(nnav.dontTouchMeStaticMeta);
+                state.dontTouchMeDynamicMeta
+                    .addAll(nnav.dontTouchMeDynamicMeta);
+              });
+            }
             _navState = state;
           },
           onInitialBuild: (context, state) {
