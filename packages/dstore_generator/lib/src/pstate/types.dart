@@ -96,6 +96,11 @@ class PStateMethod {
       this.url,
       required this.keysModified,
       required this.body});
+
+  @override
+  String toString() {
+    return 'PStateMethod(name: $name, params: $params, body: $body, isAsync: $isAsync, url: $url, keysModified: $keysModified)';
+  }
 }
 
 enum MethodStatementKind {

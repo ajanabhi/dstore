@@ -51,7 +51,7 @@ typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
 abstract class NestedNavStateI extends NavStateI<dynamic> {
   @override
-  Action notFoundAction(String url) {
+  Action notFoundAction(Uri uri) {
     throw UnimplementedError();
   }
 }

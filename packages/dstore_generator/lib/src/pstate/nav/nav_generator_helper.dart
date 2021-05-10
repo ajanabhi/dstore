@@ -39,7 +39,10 @@ Future<String> generatePStateNavForClassElement(
       isNav: true);
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
-  final methods = visitor.methods.where((m) => m.name != "buildPages").toList();
+  final methods = visitor.methods
+      .where((m) => (m.name != "buildPages" && m.name != "notFoundAction"))
+      .toList();
+  logger.shout("nav visitor methods $methods");
   var fields = visitor.fields;
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
       name: m.name,
@@ -55,6 +58,15 @@ Future<String> generatePStateNavForClassElement(
 
   final buildPages =
       visitor.methods.where((m) => m.name == "buildPages").firstOrNull?.body;
+  final notFoundAction = visitor.methods
+          .singleWhereOrNull((m) => m.name == "notFoundAction")
+          ?.body ??
+      """
+   @override
+  Action notFoundAction(Uri uri) {
+    throw UnimplementedError();
+  }
+ """;
   print("methods : ${methods.map((e) => e.keysModified)}");
   final isPageUsed = visitor.methods
       .where((m) => m.keysModified.where((f) => f.name == "page").isNotEmpty);
@@ -81,7 +93,7 @@ Future<String> generatePStateNavForClassElement(
       methods: methods);
   return """
     
-    ${_createPStateNavModel(fields: fields, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
+    ${_createPStateNavModel(fields: fields, notFoundAction: notFoundAction, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
@@ -125,16 +137,32 @@ String _getNavDynamicMeta(
     final params = <String>[];
     e.params.forEach((p) {
       final name = p.name;
-      if (parameters.contains(p)) {
+      if (parameters.contains(name)) {
         // path param
-        if (p.type == "num") {
-          params.add("$name: num.parse(params['$name']) ");
-        } else if (p.type == "int") {
-          params.add("$name: int.parse(params['$name']) ");
-        } else if (p.type == "double") {
-          params.add("$name: double.parse(params['$name']) ");
-        } else if (p.type == "String") {
-          params.add("$name : params['$name']");
+        final ex = p.type.endsWith("?") ? "" : "!";
+        if (p.type.startsWith("num")) {
+          if (ex.isEmpty) {
+            params.add("$name: num.parse(params['$name']!) ");
+          } else {
+            params.add(
+                "$name: params['$name'] != null ? num.parse(params['$name']!) : null");
+          }
+        } else if (p.type.startsWith("int")) {
+          if (ex.isEmpty) {
+            params.add("$name: int.parse(params['$name']!) ");
+          } else {
+            params.add(
+                "$name: params['$name'] != null ? int.parse(params['$name']!) : null");
+          }
+        } else if (p.type.startsWith("double")) {
+          if (ex.isEmpty) {
+            params.add("$name: double.parse(params['$name']!) ");
+          } else {
+            params.add(
+                "$name: params['$name'] != null ? double.parse(params['$name']!) : null");
+          }
+        } else if (p.type.startsWith("String")) {
+          params.add("$name : params['$name']$ex");
         } else {
           throw InvalidSignatureError(
               "in method '${e.name} , path param '${name}' type can be one of String/int/double/num , but you specified ${p.type}");
@@ -144,13 +172,14 @@ String _getNavDynamicMeta(
         params.add("$name: uri.queryParameters");
       }
     });
+
     return """'${e.url}' : 
     (Uri uri,Dispatch dispatch) { 
       final path = uri.path;
       final parameters = <String>[];
       final regExp = pathToRegExp('${e.url}', parameters: parameters);
       final match = regExp.matchAsPrefix(path);
-      final params = extract(parameters, match);
+      final params = extract(parameters, match!);
       return dispatch(${modelName}Actions.${e.name}(${params.join(", ")}));
     }""";
   }).join(", ");
@@ -164,6 +193,7 @@ String _createPStateNavModel(
     required List<String> annotations,
     required List<String>? nestedNavs,
     required String buildPages,
+    required String notFoundAction,
     required String typeParams,
     required String exinf,
     required bool enableHistory,
@@ -191,6 +221,9 @@ String _createPStateNavModel(
         $psFeilds
         $nestedNavsMethod
         $buildPages
+
+        $notFoundAction
+        
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}
 
