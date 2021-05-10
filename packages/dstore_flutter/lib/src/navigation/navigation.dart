@@ -49,7 +49,7 @@ class RouteInput {
 
 typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
-abstract class NestedNavStateI extends NavStateI<dynamic> {
+abstract class NestedNavStateI<M> extends NavStateI<M> {
   @override
   Action notFoundAction(Uri uri) {
     throw UnimplementedError();

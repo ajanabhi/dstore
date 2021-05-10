@@ -24,7 +24,7 @@ Future<String> generatePStateNavForClassElement(
     throw InvalidSignatureError(
         "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
   }
-
+  logger.shout("nav interface  $inf");
   final typeParamsTuple =
       AstUtils.getTypeParamsAndBounds(element.typeParameters);
   final typeParamsWithBounds = typeParamsTuple.item2;
@@ -101,17 +101,11 @@ Future<String> generatePStateNavForClassElement(
 }
 
 String? _isNavPState(ClassElement element) {
-  final isNavInterfaceImplemented =
-      AstUtils.isSubTypeof(element.thisType, "NavStateI");
-
-  final isNestedNavInterfaceImplemented =
-      AstUtils.isSubTypeof(element.thisType, "NestedNavStateI");
-
-  return isNavInterfaceImplemented != null
-      ? "NavStateI"
-      : isNestedNavInterfaceImplemented != null
-          ? "NestedNavStateI"
-          : null;
+  if (AstUtils.isSubTypeof(element.thisType, "NestedNavStateI") != null) {
+    return "NestedNavStateI";
+  } else if (AstUtils.isSubTypeof(element.thisType, "NavStateI") != null) {
+    return "NavStateI";
+  }
 }
 
 String _getNavStaticMeta(
