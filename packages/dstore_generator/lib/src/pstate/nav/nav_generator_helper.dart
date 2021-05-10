@@ -194,7 +194,7 @@ String _createPStateNavModel(
     required String typaParamsWithBounds}) {
   final psFeilds = psDeps
       .map((e) =>
-          " ${e.type} get ${e.name} => dont_touch_me_store.state.${e.name} as ${e.type};")
+          " ${e.type} get ${e.name} => dontTouchMeStore.state.${e.name} as ${e.type};")
       .join("\n");
   final mixins = <String>["PStateStoreDepsMixin"];
   var nestedNavsMethod = "";
