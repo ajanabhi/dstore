@@ -27,6 +27,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     print("Uri Changed3 ${uri.path}");
     UrlToAction? fn;
     final path = uri.path;
+
     fn = _navState!.dontTouchMeStaticMeta[path];
     print("Url to Action2 $fn");
     if (fn != null) {
@@ -39,7 +40,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       final dfn = navState.dontTouchMeDynamicMeta.entries
           .singleWhereOrNull((de) => regExp.hasMatch(de.key))
           ?.value;
-      if (dfn == null) {}
+      if (dfn == null) {
+        _dispatch(navState.notFoundAction(uri));
+      } else {
+        _triggerFromHistory = true;
+        dfn(uri, _dispatch);
+      }
     }
   }
 

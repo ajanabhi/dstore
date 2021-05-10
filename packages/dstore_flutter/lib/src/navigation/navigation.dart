@@ -13,7 +13,7 @@ enum HistoryUpdate { push, replace }
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
-  Action notFoundAction(String url);
+  Action notFoundAction(Uri uri);
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;

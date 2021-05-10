@@ -45,7 +45,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     if (isNav) {
       logger.shout("Annot ${node.metadata.first.elementAnnotation}");
     }
-    if (isNav && name == "buildPages") {
+    if (isNav && (name == "buildPages" || name == "notFoundAction")) {
       logger.shout("buildPages : ${node.toSource()}");
       methods.add(PStateMethod(
           isAsync: false,
