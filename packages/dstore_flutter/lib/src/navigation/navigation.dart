@@ -5,6 +5,8 @@ import "configuration/confiure_native.dart"
     if (dart.library.html) "configuration/configure_web.dart";
 export "router_deleagte.dart";
 export "route_information_parser.dart";
+export "nested_router.dart";
+export "middleware.dart";
 
 typedef BeforeLeaveFn = bool Function(AppStateI);
 
@@ -18,6 +20,7 @@ abstract class NavStateI<M> extends PStateModel<M> {
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
   NavOptions? navOptions;
+  bool blockSameUrl = false;
   String? get dontTouchMeUrl => _dontTouchMeUrl;
   set dontTouchMeUrl(String? value) {
     _dontTouchMeUrl = value;

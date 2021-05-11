@@ -66,6 +66,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
               });
             }
             _navState = state;
+            history.blockSameUrl = state.blockSameUrl;
           },
           onInitialBuild: (context, state) {
             _preparedState = true;
@@ -82,6 +83,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                 _triggerFromHistory = false;
               } else {
                 _updateUrl(navState: newState);
+                print("Page ${newState.page}");
               }
               return true;
             }
@@ -89,6 +91,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           builder: (context, state) {
             return _preparedState
                 ? Navigator(
+                    transitionDelegate: NoAnimationTransitionDelegate(),
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
@@ -149,5 +152,40 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Future<void> setNewRoutePath(String configuration) async {
     print("Set new Route Path config $configuration");
     // do nothing
+  }
+}
+
+class NoAnimationTransitionDelegate extends TransitionDelegate<void> {
+  @override
+  Iterable<RouteTransitionRecord> resolve({
+    required List<RouteTransitionRecord> newPageRouteHistory,
+    required Map<RouteTransitionRecord?, RouteTransitionRecord>
+        locationToExitingPageRoute,
+    required Map<RouteTransitionRecord?, List<RouteTransitionRecord>>
+        pageRouteToPagelessRoutes,
+  }) {
+    final List<RouteTransitionRecord> results = <RouteTransitionRecord>[];
+
+    for (final RouteTransitionRecord pageRoute in newPageRouteHistory) {
+      if (pageRoute.isWaitingForEnteringDecision) {
+        pageRoute.markForAdd();
+      }
+      results.add(pageRoute);
+    }
+    for (final RouteTransitionRecord exitingPageRoute
+        in locationToExitingPageRoute.values) {
+      if (exitingPageRoute.isWaitingForExitingDecision) {
+        exitingPageRoute.markForRemove();
+        final List<RouteTransitionRecord>? pagelessRoutes =
+            pageRouteToPagelessRoutes[exitingPageRoute];
+        if (pagelessRoutes != null) {
+          for (final RouteTransitionRecord pagelessRoute in pagelessRoutes) {
+            pagelessRoute.markForRemove();
+          }
+        }
+      }
+      results.add(exitingPageRoute);
+    }
+    return results;
   }
 }

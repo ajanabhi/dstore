@@ -6,7 +6,7 @@ import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:flutter/material.dart';
 import "./navigation_provider.dart";
 
-class NestedRouter<AS extends AppStateI<AS>, S extends NestedNavStateI>
+class NestedRouter<AS extends AppStateI<AS>, S extends NestedNavStateI<dynamic>>
     extends StatefulWidget {
   final Selector<AS, S> selector;
 
@@ -15,8 +15,8 @@ class NestedRouter<AS extends AppStateI<AS>, S extends NestedNavStateI>
   _NestedRouterState<AS, S> createState() => _NestedRouterState();
 }
 
-class _NestedRouterState<AS extends AppStateI<AS>, S extends NestedNavStateI>
-    extends State<NestedRouter<AS, S>> {
+class _NestedRouterState<AS extends AppStateI<AS>,
+    S extends NestedNavStateI<dynamic>> extends State<NestedRouter<AS, S>> {
   late History history;
   late NestedNavStateI navState;
   late Dispatch _dispatch;

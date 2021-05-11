@@ -36,6 +36,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           Field(name: "redirectToAction", type: "Action?", isOptional: true));
       fields.add(
           Field(name: "navOptions", type: "NavOptions?", isOptional: true));
+      fields.add(Field(
+          name: "blockSameUrl",
+          type: "bool",
+          isOptional: false,
+          value: "false"));
     }
   }
 
