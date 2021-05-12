@@ -45,7 +45,10 @@ String _createTypeFromMap(Map<String, String> meta, String name) {
       }).toList(),
       addJsonKey: true);
   final type = ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: name, isJsonSerializable: true);
+      fields: fields,
+      className: name,
+      isJsonSerializable: true,
+      addStaticSerializeDeserialize: true);
   types.add(type);
   return name;
 }
@@ -124,6 +127,16 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
       params.add("responseSerializer: ${ot.serializer}");
       params.add("responseDeserializer: ${ot.deserializer}");
       params.add("errorDeserializer: ${ot.errorDeserializer}");
+
+      if (queryParamsType != null) {
+        params.add('queryParamsType: "${queryParamsType}"');
+      }
+
+      if (pathParamsType != null) {
+        params.add('pathParamsType: "${pathParamsType}"');
+      }
+
+      if (pathParamsType != null) {}
 
       final dapi = """
        @HttpRequest( ${params.join(", ")} )
@@ -324,7 +337,7 @@ OutputType _getResponseType(
 
     final toJson = """
     
-     static dynamic toJson(int status,$name input) {
+     static dynamic toJsonStatic(int status,$name input) {
        switch(status){
          ${serializeCases.join("\n")}
          ${serializeDefaultCase}
@@ -333,7 +346,7 @@ OutputType _getResponseType(
     """;
 
     final fromJson = """
-     static $name fromJson(int status,dynamic input) {
+     static $name fromJsonStatic(int status,dynamic input) {
          switch(status){
          ${deserializeCases.join("\n")}
          ${deserializeDefaultCase}
@@ -407,8 +420,8 @@ OutputType _getResponseType(
       String $deserializerName(int status,dynamic input) => input.toString(); 
     """;
   } else {
-    serializerName = "${successName}.toJson";
-    deserializerName = "${successName}.fromJson";
+    serializerName = "${successName}.toJsonStatic";
+    deserializerName = "${successName}.fromJsonStatic";
     serializer = "";
     deserializer = "";
   }
@@ -477,8 +490,6 @@ extension OPenAPiAnnoExtonElement on Element {
           "Looks like you passed invalid values to OpenApi annotation, all values should be const");
     }
     final file = dt.getField("file")?.toStringValue()!;
-    final saveOnlineSpecToFile =
-        dt.getField("saveOnlineSpecToFile")?.toStringValue();
     final httpObj = dt.getField("http");
     if (file == null && httpObj == null) {
       throw ArgumentError.value("You should  ");
@@ -569,7 +580,7 @@ String _getTypeName(SchemaOrReference sor, String objectName) {
     case "date-time":
     case "dateTime":
     case "password":
-      return "String$nullable"; //TODO enums schema.enum
+      return "String$nullable";
     case "boolean":
       return "bool$nullable";
     case "array":
@@ -622,6 +633,9 @@ void _createDartModelFromSchemaObject(Schema schema, String name) {
       [];
 
   final result = ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: name, isJsonSerializable: true);
+      fields: fields,
+      className: name,
+      isJsonSerializable: true,
+      addStaticSerializeDeserialize: true);
   types.add(result);
 }

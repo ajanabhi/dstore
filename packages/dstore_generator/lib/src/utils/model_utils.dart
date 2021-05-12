@@ -287,7 +287,7 @@ abstract class ModelUtils {
   }
 
   static String createToJsonStatic(String name) {
-    return "static dynamic toJsonDynamic($name input) => input.toJson()";
+    return "static dynamic toJsonStatic($name input) => input.toJson()";
   }
 
   static String createDefaultDartUpdateModelFromFeilds(

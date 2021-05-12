@@ -29,21 +29,16 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
     throw ArgumentError.value(
         "You should specify all 4 generic types of HttpField");
   }
-  String? queryParamsType = replaceEndStar(
-      ht.typeArguments[0].getDisplayString(withNullability: true));
-  print("queryParamsType $queryParamsType");
-  if (queryParamsType == "Null") {
-    queryParamsType = null;
-  }
+
   String? inputType = replaceEndStar(
-      ht.typeArguments[1].getDisplayString(withNullability: true));
+      ht.typeArguments[0].getDisplayString(withNullability: true));
   if (inputType == "Null") {
     inputType = null;
   }
   final responseType = replaceEndStar(
-      ht.typeArguments[2].getDisplayString(withNullability: true));
+      ht.typeArguments[1].getDisplayString(withNullability: true));
   final errorType = replaceEndStar(
-      ht.typeArguments[3].getDisplayString(withNullability: true));
+      ht.typeArguments[2].getDisplayString(withNullability: true));
   final anot = type.element?.annotationFromType(HttpRequest);
   if (anot == null) {
     throw ArgumentError.value(
@@ -63,6 +58,8 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       responseTypeEnum = HttpResponseType.JSON;
     }
   }
+  final queryParamsType = reader.peek("queryParamsType")?.stringValue;
+  final pathParamsType = reader.peek("pathParamsType")?.stringValue;
   var inputTypeEnum = reader.getEnumField("inputType", HttpInputType.values);
   if (inputTypeEnum == null) {
     if (inputType == "String") {
@@ -108,6 +105,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       queryParamsType: queryParamsType,
       inputSerializer: inputSerializer,
       responseType: responseType,
+      pathParamsType: pathParamsType,
       transformer: transformer,
       graphqlQuery: graphqlQuery);
 }

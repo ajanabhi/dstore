@@ -211,6 +211,14 @@ ActionsInfo _getActionsInfo(
     if (h.inputSerializer != null) {
       params.add("inputSerializer: ${h.inputSerializer}");
     }
+    if (h.queryParamsType != null) {
+      params.add("queryParamsSerializer : ${h.queryParamsType}.toJson");
+      params.add("queryParamsDeserializer : ${h.queryParamsType}.fromJson");
+    }
+    if (h.pathParamsType != null) {
+      params.add("pathParamsSerializer : ${h.pathParamsType}.toJson");
+      params.add("pathParamsDeserializer : ${h.pathParamsType}.fromJson");
+    }
     if (h.inputDeserializer != null) {
       params.add("inputDeserializer: ${h.inputDeserializer}");
     }
