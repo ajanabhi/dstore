@@ -1,4 +1,3 @@
-export "src/annotations.dart";
 export "src/action.dart";
 export "src/pstate.dart";
 export "src/selector.dart";

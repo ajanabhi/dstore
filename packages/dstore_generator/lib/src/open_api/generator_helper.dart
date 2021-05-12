@@ -36,6 +36,20 @@ String _getUrl(OpenApiSchema schema) {
   return schema.servers!.first.url;
 }
 
+String _createTypeFromMap(Map<String, String> meta, String name) {
+  final fields = ModelUtils.processFields(
+      meta.entries.map((e) {
+        final name = e.key;
+        final type = e.value;
+        return Field(name: name, type: type, isOptional: type.endsWith("?"));
+      }).toList(),
+      addJsonKey: true);
+  final type = ModelUtils.createDefaultDartModelFromFeilds(
+      fields: fields, className: name, isJsonSerializable: true);
+  types.add(type);
+  return name;
+}
+
 String _convertPaths({required OpenApiSchema schema, required String url}) {
   final pathTypes = <String>[];
   schema.paths.entries.forEach((e) {
@@ -76,6 +90,8 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
           pathParamsAndTypes[p.name] = type;
         }
       });
+      String? queryParamsType;
+      String? pathParamsType;
       if (pathParamsAndTypes.isNotEmpty) {
         final pathParams = _getParamsInPath(path).toSet();
         final typesList = pathParamsAndTypes.keys.toSet();
@@ -84,8 +100,13 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
           throw ArgumentError.value(
               "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
         }
+        pathParamsType = "${oid}PathParams";
+        _createTypeFromMap(pathParamsAndTypes, pathParamsType);
       }
-      if (queryParamsAndTypes.isNotEmpty) {}
+      if (queryParamsAndTypes.isNotEmpty) {
+        queryParamsType = "${oid}QueryParams";
+        _createTypeFromMap(queryParamsAndTypes, queryParamsType);
+      }
       final params = <String>[
         'method = "$method"',
         'url = "$url"',

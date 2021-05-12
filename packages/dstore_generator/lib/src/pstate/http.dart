@@ -191,7 +191,7 @@ String convertHttpFieldInfoToAction(
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
         $mergeHeaders
-        return Action<$mockType>(name:"${hf.name}",type:${type},http:HttpPayload<${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
+        return Action<$mockType>(name:"${hf.name}",type:${type},http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

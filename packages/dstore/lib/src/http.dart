@@ -4,15 +4,6 @@ import "package:json_annotation/json_annotation.dart";
 
 part "http.dstore.dart";
 
-@DImmutable()
-abstract class Hello with _$Hello {
-  const factory Hello({required String name}) = _Hello;
-}
-
-String getTodosSerializer(dynamic resp) {
-  return "";
-}
-
 mixin EmptyMixin {}
 
 class Stuff<T> {
@@ -24,7 +15,7 @@ abstract class AbortController {
   void abort();
 }
 
-class HttpField<QP, I, R, E> {
+class HttpField<I, R, E> {
   final bool loading;
   final R? data;
   final HttpError<E>? error;
@@ -46,7 +37,7 @@ class HttpField<QP, I, R, E> {
       this.completed = false,
       this.optimistic = false});
 
-  HttpField<QP, I, R, E> copyWith(
+  HttpField<I, R, E> copyWith(
       {bool? loading,
       Optional<R?> data = optionalDefault,
       Optional<AbortController?> abortController = optionalDefault,
@@ -92,6 +83,7 @@ abstract class HttpMeta<PP, QP, I, R, E, T>
 }
 
 @DImmutable()
+@optionalTypeArgs
 abstract class HttpPayload<PP, QP, I, R, E, T>
     with _$HttpPayload<PP, QP, I, R, E, T> {
   const factory HttpPayload(

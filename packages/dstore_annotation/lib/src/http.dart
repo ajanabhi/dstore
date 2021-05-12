@@ -48,6 +48,8 @@ class HttpRequest {
   final HttpResponseType? responseType;
   final GraphqlRequestPart? graphqlQuery;
   final Map<String, String>? headers;
+  final String? queryParamsType;
+  final String? pathParamsType;
 
   const HttpRequest({
     required this.method,
@@ -57,6 +59,8 @@ class HttpRequest {
     this.inputSerializer,
     this.responseType,
     this.headers,
+    this.pathParamsType,
+    this.queryParamsType,
     this.inputDeserializer,
     this.errorDeserializer,
     this.graphqlQuery,

@@ -126,10 +126,10 @@ String generateOpsTypeForQuery({
     $responseSerializerFn
     $responseDeserializerFunction
     $req
-    class $name = HttpField<Null, $inputType, $responseType, dynamic> with EmptyMixin;
+    class $name = HttpField<$inputType, $responseType, dynamic> with EmptyMixin;
 
     $req
-    class ${name}T<T> = HttpField<Null, $inputType, T, dynamic> with EmptyMixin;
+    class ${name}T<T> = HttpField<$inputType, T, dynamic> with EmptyMixin;
   """;
   } else {
     // subscription

@@ -248,6 +248,7 @@ abstract class ModelUtils {
       required String className,
       String annotations = "",
       bool isJsonSerializable = false,
+      bool addStaticSerializeDeserialize = false,
       bool addOverrideAnnotation = false}) {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
@@ -264,17 +265,29 @@ abstract class ModelUtils {
      
       ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
 
-      ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
+      ${isJsonSerializable ? ModelUtils.createToJson(className) : ""} 
+      
+      ${addStaticSerializeDeserialize ? ModelUtils.createFromJsonStatic(className) : ""}
 
-     ${ModelUtils.createEqualsFromFieldsList(className, fields)}
+      ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className) : ""}
 
-     ${ModelUtils.createHashcodeFromFieldsList(fields)}
+      ${ModelUtils.createEqualsFromFieldsList(className, fields)}
+
+      ${ModelUtils.createHashcodeFromFieldsList(fields)}
 
      ${createToStringFromFieldsList(className, fields)}
     }
 
     ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "")}
     """;
+  }
+
+  static String createFromJsonStatic(String name) {
+    return "static fromJsonStatic(dynamic) => _\$${name}FromJson(json as Map<String,dynamic>);";
+  }
+
+  static String createToJsonStatic(String name) {
+    return "static dynamic toJsonDynamic($name input) => input.toJson()";
   }
 
   static String createDefaultDartUpdateModelFromFeilds(
