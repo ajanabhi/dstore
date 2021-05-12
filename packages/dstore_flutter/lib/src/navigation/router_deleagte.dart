@@ -12,13 +12,15 @@ import 'package:collection/collection.dart';
 class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
+  final GlobalKey<NavigatorState> navigatorKey;
   late final History history;
   NavStateI? _navState;
   NavStateI get navState => _navState!;
   late Dispatch _dispatch;
   bool _triggerFromHistory = false;
   bool _preparedState = false;
-  DRouterDelegate({required this.selector}) {
+  DRouterDelegate({required this.selector})
+      : navigatorKey = GlobalKey<NavigatorState>() {
     history = createHistory();
     history.listen(handleUriChange);
   }
@@ -83,7 +85,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                 _triggerFromHistory = false;
               } else {
                 _updateUrl(navState: newState);
-                print("Page ${newState.page}");
+                print("Page ${newState.page} ${(newState.page)}");
               }
               return true;
             }
@@ -91,6 +93,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           builder: (context, state) {
             return _preparedState
                 ? Navigator(
+                    key: navigatorKey,
                     transitionDelegate: NoAnimationTransitionDelegate(),
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),

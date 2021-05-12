@@ -20,9 +20,11 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   late History history;
   late NestedNavStateI navState;
   late Dispatch _dispatch;
+  late final Key navigatorKey;
   @override
   void initState() {
     super.initState();
+    navigatorKey = ValueKey(widget.selector.hashCode);
   }
 
   @override
@@ -52,7 +54,13 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       builder: (context, state) {
+        print("before build pages");
+        print(
+          "building nested nav $state pages ${state.buildPages()}",
+        );
+        print("after buildapges");
         return Navigator(
+          key: navigatorKey,
           pages: state.buildPages(),
           onPopPage: (route, dynamic result) {
             print("On Pop nested");
