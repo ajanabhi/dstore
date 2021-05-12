@@ -1,24 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
+import 'package:dstore_generator/src/open_api/open_api_schema_utils.dart';
 import 'package:dstore_generator/src/open_api/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:open_api_schema/v3.dart';
-import 'package:yaml/yaml.dart';
 
 const APPLICATION_JSON = "application/json";
 const APPLICATION_OCTET_STREAM = "application/octet-stream";
 
-String createOpenApi(
-    {required ClassElement element, required BuildStep buildStep}) {
-  final opneApi = _getOpenApiAnnotation(element);
-  final file = opneApi.file;
-  final schema = getSchemaFromFile(file);
-  print(schema);
-  // _resolveDiscriminators(schema);
+Future<String> createOpenApi(
+    {required ClassElement element, required BuildStep buildStep}) async {
+  final openAPi = element.openAPiAnnotation;
+  final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
   schema.components?.schemas?.forEach((key, value) {
     if (value.schema != null && value.schema!.type == "object") {
       _createDartModelFromSchemaObject(value.schema!, key);
@@ -36,7 +31,7 @@ String _getUrl(OpenApiSchema schema) {
   return schema.servers!.first.url;
 }
 
-String _convertPaths(OpenApiSchema schema) {
+String _convertPaths({required OpenApiSchema schema, required String url}) {
   final pathTypes = <String>[];
   schema.paths.entries.forEach((e) {
     final path = e.key;
@@ -87,19 +82,22 @@ String _convertPaths(OpenApiSchema schema) {
       }
       final it = _getInputTypeFromReqoRRef(
           schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
+      // @HttpRequest(method: "", url: "", inputSerializer: "")
       final ot = _getResponseType(
           schema: schema, responses: op.responses, name: "${oid}Response");
 
       final dapi = """
       
-       @HttpRequest()
+       @HttpRequest(method = "$method", url = "$url",inputSerializer = "" )
        class $oid = HttpField<>;
       
       """;
     });
   });
 
-  return """""";
+  return """
+   ${pathTypes.join("\n")}
+  """;
 }
 
 InputType? _getInputTypeFromReqoRRef(
@@ -141,29 +139,27 @@ InputType? _getInputTypeFromReqoRRef(
 
   //   }
   // }
-  String serializer;
-  String deserializer;
+
+  final serializerName = "${name}Serializer";
+  final deserializerName = "${name}Deserializer";
+  ;
   if (type == "String") {
-    serializer = """
-      $type ${name}Serializer($type input) => input;
-    """;
-    deserializer = """
-      $type ${name}Deserializer(dynamic input) => input as $type;
-    """;
+    types.add(" $type $serializerName($type input) => input;");
+    types.add("$type $deserializerName(dynamic input) => input as $type;");
   } else {
-    serializer = """
-      dynamic ${name}Serializer($type input) => input.toJson();
-    """;
-    deserializer = """
-      $type ${name}Deserializer(dynamic input) => ${type}.fromJson(input);
-    """;
+    types.add("""
+      dynamic $serializerName($type input) => input.toJson();
+    """);
+    types.add("""
+      $type $deserializerName(dynamic input) => ${type}.fromJson(input);
+    """);
   }
   return InputType(
       type: type,
       required: false,
       contentType: contentType,
-      serializer: serializer,
-      deserializer: deserializer);
+      serializer: serializerName,
+      deserializer: deserializerName);
 }
 
 OutputType _getResponseType(
@@ -333,6 +329,8 @@ OutputType _getResponseType(
   }
   String successType;
   final successName = "${name}_Success";
+  var serializerName = "";
+  var deserializerName = "";
   if (success.length == 1) {
     final s1 = success.first.value;
     final resp = getResponseFromResponseOrRef(s1);
@@ -361,31 +359,37 @@ OutputType _getResponseType(
   String serializer;
   String deserializer;
   if (successType == "String") {
+    serializerName = "${successName}Serializer";
     serializer = """
-      String ${successName}Serializer(int status,String input) => input;
+      String $serializerName(int status,String input) => input;
     """;
+    deserializerName = "${successName}Deserializer";
     deserializer = """
-      String ${successName}Deserializer(int status,dynamic input) => input.toString(); 
+      String $deserializerName(int status,dynamic input) => input.toString(); 
     """;
   } else {
-    serializer = "${successName}.toJson";
-    deserializer = "${successName}.fromJson";
+    serializerName = "${successName}.toJson";
+    deserializerName = "${successName}.fromJson";
+    serializer = "";
+    deserializer = "";
   }
 
   String errorSerializer;
   String errorDeserializer;
+
   if (errorType == "String") {
-    errorSerializer = """
-      String ${errorName}Serializer(int status,String input) => input;
-    """;
-    errorDeserializer = """
-      String ${errorName}Deserializer(int status,dynamic input) => input.toString(); 
-    """;
+    errorSerializer = "${errorName}Serializer";
+    types.add("""
+    String $errorSerializer(int status,String input) => input;
+    """);
+    errorDeserializer = "${errorName}Deserializer";
+    types.add("""
+     String $errorDeserializer(int status,dynamic input) => input.toString(); 
+    """);
   } else {
     errorSerializer = "${errorName}.toJson";
     errorDeserializer = "${errorName}.fromJson";
   }
-
   return OutputType(
       successType: successType,
       errorType: errorType,
@@ -425,36 +429,38 @@ List<String> _getParamsInPath(String path) {
 
 final types = <String>[];
 
-OpenApiSchema getSchemaFromFile(String file) {
-  final content = File(file).readAsStringSync();
-  Map<String, dynamic> map;
-  if (file.endsWith(".json")) {
-    map = jsonDecode(content) as Map<String, dynamic>;
-  } else {
-    final v = (loadYaml(content) as YamlMap).value;
-    print(v.runtimeType);
-    final dynamic yaml = loadYaml(content);
-    String yamlStr;
-    try {
-      yamlStr = jsonEncode(yaml);
-    } catch (e) {
-      throw Exception(
-          "there is problem in reading yaml file using yaml package, please provide you open api spec as json file. you can convert your yaml file to json using services like https://onlineyamltools.com/convert-yaml-to-json ");
+extension OPenAPiAnnoExtonElement on Element {
+  OpenApi get openAPiAnnotation {
+    final a = this.annotationFromType(OpenApi)!;
+    final dt = a.computeConstantValue();
+    if (dt == null) {
+      throw ArgumentError(
+          "Looks like you passed invalid values to OpenApi annotation, all values should be const");
     }
-    map = jsonDecode(yamlStr) as Map<String, dynamic>;
+    final file = dt.getField("file")?.toStringValue()!;
+    final saveOnlineSpecToFile =
+        dt.getField("saveOnlineSpecToFile")?.toStringValue();
+    final httpObj = dt.getField("http");
+    if (file == null && httpObj == null) {
+      throw ArgumentError.value("You should  ");
+    }
+    final http = getOpenAPiHttpConfig(httpObj);
+
+    return OpenApi(file: file, http: http);
   }
-  return OpenApiSchema.fromJson(map);
 }
 
-OpenApi _getOpenApiAnnotation(ClassElement element) {
-  final a = element.annotationFromType(OpenApi)!;
-  final dt = a.computeConstantValue();
-  if (dt == null) {
-    throw ArgumentError(
-        "Looks like you passed invalid values to OpenApi annotation");
+OpenApiHttpConfig? getOpenAPiHttpConfig(DartObject? obj) {
+  if (obj != null) {
+    final url = obj.getField("url")?.toStringValue();
+    final headers = obj.getStringMapForField("headers");
+    final saveOnlineSpecToFile =
+        obj.getField("saveOnlineSpecToFile")?.toStringValue();
+    return OpenApiHttpConfig(
+        url: url!,
+        headers: headers,
+        saveOnlineSpecToFile: saveOnlineSpecToFile);
   }
-  final file = dt.getField("file")!.toStringValue()!;
-  return OpenApi(file);
 }
 
 void _resolveDiscriminators(OpenApiSchema spec) {

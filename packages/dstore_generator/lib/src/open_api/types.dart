@@ -3,6 +3,7 @@ class InputType {
   final bool required;
   final String contentType;
   final String serializer;
+
   final String deserializer;
 
   InputType(

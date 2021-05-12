@@ -13,7 +13,7 @@ dependencies:
   source_gen: ^1.0.0
   gql:
   crypto: 
-  dio: 4.0.0-beta1
+  dio: ^4.0.0
   collection:
   timing:
   yaml:    
