@@ -178,6 +178,8 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("""url:"${hf.url}" """);
   payloadFields.add("""method: "${hf.method}" """);
   payloadFields.add("responseType:${hf.responseTypeEnum}");
+  final qpType = hf.queryParamsType ?? "Null";
+  final ppType = hf.pathParamsType ?? "Null";
   final mockType = hf.fieldType.endsWith("?")
       ? hf.fieldType.replaceAll("?", "")
       : hf.fieldType;

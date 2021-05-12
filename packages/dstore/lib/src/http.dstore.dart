@@ -74,7 +74,7 @@ class __$HelloCopyWithImpl<O> extends _$HelloCopyWithImpl<O>
   }
 }
 
-mixin _$HttpMeta<I, R, E, T> {
+mixin _$HttpMeta<PP, QP, I, R, E, T> {
   R Function(int, dynamic) get responseDeserializer;
   dynamic Function(int, R)? get responseSerializer;
   HttpField<dynamic, dynamic, dynamic, dynamic> Function(
@@ -84,11 +84,16 @@ mixin _$HttpMeta<I, R, E, T> {
   Future<dynamic> Function(I)? get inputStorageSerializer;
   I Function(dynamic)? get inputDeserializer;
   E Function(int, dynamic)? get errorDeserializer;
+  PP Function(dynamic)? get pathParamsDeserializer;
+  dynamic Function(PP)? get pathParamsSerializer;
+  QP Function(dynamic)? get queryParamsDeserializer;
+  dynamic Function(QP)? get queryParamsSerializer;
 
-  $HttpMetaCopyWith<I, R, E, T, HttpMeta<I, R, E, T>> get copyWith;
+  $HttpMetaCopyWith<PP, QP, I, R, E, T, HttpMeta<PP, QP, I, R, E, T>>
+      get copyWith;
 }
 
-class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
+class _HttpMeta<PP, QP, I, R, E, T> implements HttpMeta<PP, QP, I, R, E, T> {
   @override
   final R Function(int, dynamic) responseDeserializer;
 
@@ -112,9 +117,21 @@ class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
   @override
   final E Function(int, dynamic)? errorDeserializer;
 
-  _$HttpMetaCopyWith<I, R, E, T, HttpMeta<I, R, E, T>> get copyWith =>
-      __$HttpMetaCopyWithImpl<I, R, E, T, HttpMeta<I, R, E, T>>(
-          this, IdentityFn);
+  @override
+  final PP Function(dynamic)? pathParamsDeserializer;
+
+  @override
+  final dynamic Function(PP)? pathParamsSerializer;
+
+  @override
+  final QP Function(dynamic)? queryParamsDeserializer;
+
+  @override
+  final dynamic Function(QP)? queryParamsSerializer;
+
+  _$HttpMetaCopyWith<PP, QP, I, R, E, T, HttpMeta<PP, QP, I, R, E, T>>
+      get copyWith => __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T,
+          HttpMeta<PP, QP, I, R, E, T>>(this, IdentityFn);
 
   const _HttpMeta(
       {required this.responseDeserializer,
@@ -123,7 +140,11 @@ class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
       this.inputSerializer,
       this.inputStorageSerializer,
       this.inputDeserializer,
-      this.errorDeserializer});
+      this.errorDeserializer,
+      this.pathParamsDeserializer,
+      this.pathParamsSerializer,
+      this.queryParamsDeserializer,
+      this.queryParamsSerializer});
 
   @override
   bool operator ==(Object o) {
@@ -135,7 +156,11 @@ class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
         o.inputSerializer == inputSerializer &&
         o.inputStorageSerializer == inputStorageSerializer &&
         o.inputDeserializer == inputDeserializer &&
-        o.errorDeserializer == errorDeserializer;
+        o.errorDeserializer == errorDeserializer &&
+        o.pathParamsDeserializer == pathParamsDeserializer &&
+        o.pathParamsSerializer == pathParamsSerializer &&
+        o.queryParamsDeserializer == queryParamsDeserializer &&
+        o.queryParamsSerializer == queryParamsSerializer;
   }
 
   @override
@@ -146,17 +171,21 @@ class _HttpMeta<I, R, E, T> implements HttpMeta<I, R, E, T> {
       inputSerializer.hashCode ^
       inputStorageSerializer.hashCode ^
       inputDeserializer.hashCode ^
-      errorDeserializer.hashCode;
+      errorDeserializer.hashCode ^
+      pathParamsDeserializer.hashCode ^
+      pathParamsSerializer.hashCode ^
+      queryParamsDeserializer.hashCode ^
+      queryParamsSerializer.hashCode;
 
   @override
   String toString() =>
-      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer})";
+      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer}, pathParamsDeserializer: ${this.pathParamsDeserializer}, pathParamsSerializer: ${this.pathParamsSerializer}, queryParamsDeserializer: ${this.queryParamsDeserializer}, queryParamsSerializer: ${this.queryParamsSerializer})";
 }
 
-abstract class $HttpMetaCopyWith<I, R, E, T, O> {
-  factory $HttpMetaCopyWith(
-          HttpMeta<I, R, E, T> value, O Function(HttpMeta<I, R, E, T>) then) =
-      _$HttpMetaCopyWithImpl<I, R, E, T, O>;
+abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
+  factory $HttpMetaCopyWith(HttpMeta<PP, QP, I, R, E, T> value,
+          O Function(HttpMeta<PP, QP, I, R, E, T>) then) =
+      _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
@@ -167,13 +196,17 @@ abstract class $HttpMetaCopyWith<I, R, E, T, O> {
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(int, dynamic)? errorDeserializer});
+      E Function(int, dynamic)? errorDeserializer,
+      PP Function(dynamic)? pathParamsDeserializer,
+      dynamic Function(PP)? pathParamsSerializer,
+      QP Function(dynamic)? queryParamsDeserializer,
+      dynamic Function(QP)? queryParamsSerializer});
 }
 
-class _$HttpMetaCopyWithImpl<I, R, E, T, O>
-    implements $HttpMetaCopyWith<I, R, E, T, O> {
-  final HttpMeta<I, R, E, T> _value;
-  final O Function(HttpMeta<I, R, E, T>) _then;
+class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
+    implements $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
+  final HttpMeta<PP, QP, I, R, E, T> _value;
+  final O Function(HttpMeta<PP, QP, I, R, E, T>) _then;
   _$HttpMetaCopyWithImpl(this._value, this._then);
 
   @override
@@ -184,7 +217,11 @@ class _$HttpMetaCopyWithImpl<I, R, E, T, O>
       Object? inputSerializer = dimmutable,
       Object? inputStorageSerializer = dimmutable,
       Object? inputDeserializer = dimmutable,
-      Object? errorDeserializer = dimmutable}) {
+      Object? errorDeserializer = dimmutable,
+      Object? pathParamsDeserializer = dimmutable,
+      Object? pathParamsSerializer = dimmutable,
+      Object? queryParamsDeserializer = dimmutable,
+      Object? queryParamsSerializer = dimmutable}) {
     return _then(_value.copyWith(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
@@ -209,15 +246,27 @@ class _$HttpMetaCopyWithImpl<I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(int, dynamic)?));
+            : errorDeserializer as E Function(int, dynamic)?,
+        pathParamsDeserializer: pathParamsDeserializer == dimmutable
+            ? _value.pathParamsDeserializer
+            : pathParamsDeserializer as PP Function(dynamic)?,
+        pathParamsSerializer: pathParamsSerializer == dimmutable
+            ? _value.pathParamsSerializer
+            : pathParamsSerializer as dynamic Function(PP)?,
+        queryParamsDeserializer: queryParamsDeserializer == dimmutable
+            ? _value.queryParamsDeserializer
+            : queryParamsDeserializer as QP Function(dynamic)?,
+        queryParamsSerializer: queryParamsSerializer == dimmutable
+            ? _value.queryParamsSerializer
+            : queryParamsSerializer as dynamic Function(QP)?));
   }
 }
 
-abstract class _$HttpMetaCopyWith<I, R, E, T, O>
-    implements $HttpMetaCopyWith<I, R, E, T, O> {
-  factory _$HttpMetaCopyWith(
-          HttpMeta<I, R, E, T> value, O Function(HttpMeta<I, R, E, T>) then) =
-      __$HttpMetaCopyWithImpl<I, R, E, T, O>;
+abstract class _$HttpMetaCopyWith<PP, QP, I, R, E, T, O>
+    implements $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
+  factory _$HttpMetaCopyWith(HttpMeta<PP, QP, I, R, E, T> value,
+          O Function(HttpMeta<PP, QP, I, R, E, T>) then) =
+      __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
       {R Function(int, dynamic) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
@@ -228,18 +277,22 @@ abstract class _$HttpMetaCopyWith<I, R, E, T, O>
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(int, dynamic)? errorDeserializer});
+      E Function(int, dynamic)? errorDeserializer,
+      PP Function(dynamic)? pathParamsDeserializer,
+      dynamic Function(PP)? pathParamsSerializer,
+      QP Function(dynamic)? queryParamsDeserializer,
+      dynamic Function(QP)? queryParamsSerializer});
 }
 
-class __$HttpMetaCopyWithImpl<I, R, E, T, O>
-    extends _$HttpMetaCopyWithImpl<I, R, E, T, O>
-    implements _$HttpMetaCopyWith<I, R, E, T, O> {
-  __$HttpMetaCopyWithImpl(
-      HttpMeta<I, R, E, T> _value, O Function(HttpMeta<I, R, E, T>) _then)
+class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
+    extends _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
+    implements _$HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
+  __$HttpMetaCopyWithImpl(HttpMeta<PP, QP, I, R, E, T> _value,
+      O Function(HttpMeta<PP, QP, I, R, E, T>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  HttpMeta<I, R, E, T> get _value => super._value;
+  HttpMeta<PP, QP, I, R, E, T> get _value => super._value;
 
   @override
   O call(
@@ -249,7 +302,11 @@ class __$HttpMetaCopyWithImpl<I, R, E, T, O>
       Object? inputSerializer = dimmutable,
       Object? inputStorageSerializer = dimmutable,
       Object? inputDeserializer = dimmutable,
-      Object? errorDeserializer = dimmutable}) {
+      Object? errorDeserializer = dimmutable,
+      Object? pathParamsDeserializer = dimmutable,
+      Object? pathParamsSerializer = dimmutable,
+      Object? queryParamsDeserializer = dimmutable,
+      Object? queryParamsSerializer = dimmutable}) {
     return _then(HttpMeta(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
@@ -274,7 +331,19 @@ class __$HttpMetaCopyWithImpl<I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(int, dynamic)?));
+            : errorDeserializer as E Function(int, dynamic)?,
+        pathParamsDeserializer: pathParamsDeserializer == dimmutable
+            ? _value.pathParamsDeserializer
+            : pathParamsDeserializer as PP Function(dynamic)?,
+        pathParamsSerializer: pathParamsSerializer == dimmutable
+            ? _value.pathParamsSerializer
+            : pathParamsSerializer as dynamic Function(PP)?,
+        queryParamsDeserializer: queryParamsDeserializer == dimmutable
+            ? _value.queryParamsDeserializer
+            : queryParamsDeserializer as QP Function(dynamic)?,
+        queryParamsSerializer: queryParamsSerializer == dimmutable
+            ? _value.queryParamsSerializer
+            : queryParamsSerializer as dynamic Function(QP)?));
   }
 }
 

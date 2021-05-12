@@ -30,6 +30,7 @@ class HttpFieldInfo {
   final String errorDeserializer;
   final String method;
   final String? queryParamsType;
+  final String? pathParamsType;
   final GraphqlRequestPart? graphqlQuery;
   final String responseType;
 
@@ -47,6 +48,7 @@ class HttpFieldInfo {
     required this.errorDeserializer,
     this.responseSerializer,
     this.inputDeserializer,
+    this.pathParamsType,
     required this.method,
     this.inputSerializer,
     this.transformer,

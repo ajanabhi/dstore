@@ -24,9 +24,6 @@ abstract class AbortController {
   void abort();
 }
 
-@HttpRequest(method: "GET", url: "")
-class GetTodo = HttpField<Null, Null, Null, String> with EmptyMixin;
-
 class HttpField<QP, I, R, E> {
   final bool loading;
   final R? data;
@@ -77,7 +74,8 @@ class HttpField<QP, I, R, E> {
 }
 
 @DImmutable()
-abstract class HttpMeta<I, R, E, T> with _$HttpMeta<I, R, E, T> {
+abstract class HttpMeta<PP, QP, I, R, E, T>
+    with _$HttpMeta<PP, QP, I, R, E, T> {
   const factory HttpMeta({
     required R Function(int status, dynamic resp) responseDeserializer,
     dynamic Function(int, R)? responseSerializer,
@@ -86,7 +84,11 @@ abstract class HttpMeta<I, R, E, T> with _$HttpMeta<I, R, E, T> {
     Future<dynamic> Function(I)? inputStorageSerializer,
     I Function(dynamic)? inputDeserializer,
     E Function(int status, dynamic resp)? errorDeserializer,
-  }) = _HttpMeta<I, R, E, T>;
+    PP Function(dynamic)? pathParamsDeserializer,
+    dynamic Function(PP)? pathParamsSerializer,
+    QP Function(dynamic)? queryParamsDeserializer,
+    dynamic Function(QP)? queryParamsSerializer,
+  }) = _HttpMeta<PP, QP, I, R, E, T>;
 }
 
 @DImmutable()
@@ -108,13 +110,14 @@ abstract class HttpPayload<PP, QP, I, R, E, T>
       @Default(false) bool abortable}) = _HttpPayload<PP, QP, I, R, E, T>;
 
   factory HttpPayload.fromJson(
-      Map<String, dynamic> map, HttpMeta<I, R, E, T> meta) {
+      Map<String, dynamic> map, HttpMeta<PP, QP, I, R, E, T> meta) {
     final url = map["url"] as String;
     final method = map["method"] as String;
     final responseType =
         HttpResponseTypeExt.fromValue(map["responseType"] as String)!;
-    var data = map["data"] as I?;
-    if (data != null) {
+    final dataObj = map["data"] as Map<String, dynamic>?;
+    I? data;
+    if (dataObj != null) {
       if (meta.inputDeserializer == null) {
         throw ArgumentError.value(
             "You should provide inputDeserializer for http field");
@@ -132,8 +135,24 @@ abstract class HttpPayload<PP, QP, I, R, E, T>
       inputType = HttpInputTypeExt.fromValue(inputTypeS);
     }
     final headers = map["headers"] as Map<String, dynamic>?;
-    final queryParams = map["queryParams"] as QP?;
-    final pathParams = map["pathParams"] as PP?;
+    var queryParamsObj = map["queryParams"] as Map<String, dynamic>?;
+    QP? queryParams;
+    if (queryParamsObj != null) {
+      if (meta.queryParamsDeserializer == null) {
+        throw ArgumentError.value(
+            "You should specify queryParamsDeserializer in HttpMeta   to deserialize payload");
+      }
+      queryParams = meta.queryParamsDeserializer!(queryParams);
+    }
+    final pathParamsObj = map["pathParams"] as Map<String, dynamic>?;
+    PP? pathParams;
+    if (pathParamsObj != null) {
+      if (meta.pathParamsDeserializer == null) {
+        throw ArgumentError.value(
+            "You should specify pathParamsDeserializer in HttpMeta to deserialize payload");
+      }
+      pathParams = meta.pathParamsDeserializer!(pathParamsObj);
+    }
     final sendTimeout = map["sendTimeout"] as int?;
     final receiveTieout = map["receiveTieout"] as int?;
     final abortable = map["abortable"] as bool;
@@ -144,7 +163,6 @@ abstract class HttpPayload<PP, QP, I, R, E, T>
         responseType: responseType,
         data: data,
         optimisticResponse: optimisticResponse,
-        // inputType: inputType,
         headers: headers,
         queryParams: queryParams,
         pathParams: pathParams,
@@ -189,6 +207,20 @@ extension HttpPayloadExt on HttpPayload {
     }
     if (receiveTieout != null) {
       map["receiveTieout"] = receiveTieout;
+    }
+    if (queryParams != null) {
+      if (meta.queryParamsSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide queryParamsSerializer in HttpMeta to serialize payload");
+      }
+      map["queryParams"] = meta.queryParamsSerializer!(queryParams);
+    }
+    if (pathParams != null) {
+      if (meta.pathParamsSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide pathParamsSerializer in HttpMeta to serialize payload");
+      }
+      map["pathParams"] = meta.pathParamsSerializer!(pathParams);
     }
     map["abortable"] = abortable;
     return map;
