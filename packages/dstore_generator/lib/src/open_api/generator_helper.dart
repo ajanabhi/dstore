@@ -21,7 +21,12 @@ Future<String> createOpenApi(
   });
   final url = _getUrl(schema);
 
-  return """""";
+  final pathTypes = _convertPaths(schema: schema, url: url);
+
+  return """
+    ${types.join("\n")}
+    ${pathTypes}
+  """;
 }
 
 String _getUrl(OpenApiSchema schema) {
@@ -80,18 +85,31 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
               "Path $path has pathParams $pathParams , but you didnt specified all pathParams in types ($pathParamsAndTypes)");
         }
       }
+      if (queryParamsAndTypes.isNotEmpty) {}
+      final params = <String>[
+        'method = "$method"',
+        'url = "$url"',
+      ];
       final it = _getInputTypeFromReqoRRef(
           schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
-      // @HttpRequest(method: "", url: "", inputSerializer: "")
+      if (it != null) {
+        params.add('inputDeserializer: ${it.serializer}');
+        params.add('inputSerializer: ${it.deserializer}');
+      }
+
       final ot = _getResponseType(
           schema: schema, responses: op.responses, name: "${oid}Response");
+      params.add("responseType: ${ot.responseType} ");
+      params.add("responseSerializer: ${ot.serializer}");
+      params.add("responseDeserializer: ${ot.deserializer}");
+      params.add("errorDeserializer: ${ot.errorDeserializer}");
 
       final dapi = """
-      
-       @HttpRequest(method = "$method", url = "$url",inputSerializer = "" )
-       class $oid = HttpField<>;
+       @HttpRequest( ${params.join(", ")} )
+       class $oid = HttpField<QP, I, R, E>;
       
       """;
+      pathTypes.add(dapi);
     });
   });
 
@@ -478,7 +496,6 @@ void _resolveDiscriminators(OpenApiSchema spec) {
           throw ArgumentError.value(
               "Discriminator mapping outside of '${validRefPath}' is not supported");
         }
-        // TODO capture this name
       });
     });
   }

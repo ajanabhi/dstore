@@ -278,7 +278,7 @@ class __$HttpMetaCopyWithImpl<I, R, E, T, O>
   }
 }
 
-mixin _$HttpPayload<I, R, E, T> {
+mixin _$HttpPayload<PP, QP, I, R, E, T> {
   String get url;
   I? get data;
   String get method;
@@ -287,15 +287,18 @@ mixin _$HttpPayload<I, R, E, T> {
   int? get optimisticHttpStatus;
   bool get offline;
   Map<String, dynamic>? get headers;
-  Map<String, dynamic>? get queryParams;
+  QP? get queryParams;
+  PP? get pathParams;
   int? get sendTimeout;
   int? get receiveTieout;
   bool get abortable;
 
-  $HttpPayloadCopyWith<I, R, E, T, HttpPayload<I, R, E, T>> get copyWith;
+  $HttpPayloadCopyWith<PP, QP, I, R, E, T, HttpPayload<PP, QP, I, R, E, T>>
+      get copyWith;
 }
 
-class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
+class _HttpPayload<PP, QP, I, R, E, T>
+    implements HttpPayload<PP, QP, I, R, E, T> {
   @override
   final String url;
 
@@ -323,7 +326,10 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
   final Map<String, dynamic>? headers;
 
   @override
-  final Map<String, dynamic>? queryParams;
+  final QP? queryParams;
+
+  @override
+  final PP? pathParams;
 
   @override
   final int? sendTimeout;
@@ -336,9 +342,9 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
   @JsonKey(defaultValue: false)
   final bool abortable;
 
-  _$HttpPayloadCopyWith<I, R, E, T, HttpPayload<I, R, E, T>> get copyWith =>
-      __$HttpPayloadCopyWithImpl<I, R, E, T, HttpPayload<I, R, E, T>>(
-          this, IdentityFn);
+  _$HttpPayloadCopyWith<PP, QP, I, R, E, T, HttpPayload<PP, QP, I, R, E, T>>
+      get copyWith => __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T,
+          HttpPayload<PP, QP, I, R, E, T>>(this, IdentityFn);
 
   const _HttpPayload(
       {required this.url,
@@ -350,6 +356,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       this.offline = false,
       this.headers,
       this.queryParams,
+      this.pathParams,
       this.sendTimeout,
       this.receiveTieout,
       this.abortable = false});
@@ -367,6 +374,7 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
         o.offline == offline &&
         o.headers == headers &&
         o.queryParams == queryParams &&
+        o.pathParams == pathParams &&
         o.sendTimeout == sendTimeout &&
         o.receiveTieout == receiveTieout &&
         o.abortable == abortable;
@@ -383,19 +391,20 @@ class _HttpPayload<I, R, E, T> implements HttpPayload<I, R, E, T> {
       offline.hashCode ^
       headers.hashCode ^
       queryParams.hashCode ^
+      pathParams.hashCode ^
       sendTimeout.hashCode ^
       receiveTieout.hashCode ^
       abortable.hashCode;
 
   @override
   String toString() =>
-      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, headers: ${this.headers}, queryParams: ${this.queryParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
+      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, headers: ${this.headers}, queryParams: ${this.queryParams}, pathParams: ${this.pathParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
 }
 
-abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
-  factory $HttpPayloadCopyWith(HttpPayload<I, R, E, T> value,
-          O Function(HttpPayload<I, R, E, T>) then) =
-      _$HttpPayloadCopyWithImpl<I, R, E, T, O>;
+abstract class $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
+  factory $HttpPayloadCopyWith(HttpPayload<PP, QP, I, R, E, T> value,
+          O Function(HttpPayload<PP, QP, I, R, E, T>) then) =
+      _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
       {String url,
       I? data,
@@ -405,16 +414,17 @@ abstract class $HttpPayloadCopyWith<I, R, E, T, O> {
       int? optimisticHttpStatus,
       bool offline,
       Map<String, dynamic>? headers,
-      Map<String, dynamic>? queryParams,
+      QP? queryParams,
+      PP? pathParams,
       int? sendTimeout,
       int? receiveTieout,
       bool abortable});
 }
 
-class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
-    implements $HttpPayloadCopyWith<I, R, E, T, O> {
-  final HttpPayload<I, R, E, T> _value;
-  final O Function(HttpPayload<I, R, E, T>) _then;
+class _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
+    implements $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
+  final HttpPayload<PP, QP, I, R, E, T> _value;
+  final O Function(HttpPayload<PP, QP, I, R, E, T>) _then;
   _$HttpPayloadCopyWithImpl(this._value, this._then);
 
   @override
@@ -428,6 +438,7 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? offline = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
+      Object? pathParams = dimmutable,
       Object? sendTimeout = dimmutable,
       Object? receiveTieout = dimmutable,
       Object? abortable = dimmutable}) {
@@ -448,9 +459,10 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
         headers: headers == dimmutable
             ? _value.headers
             : headers as Map<String, dynamic>?,
-        queryParams: queryParams == dimmutable
-            ? _value.queryParams
-            : queryParams as Map<String, dynamic>?,
+        queryParams:
+            queryParams == dimmutable ? _value.queryParams : queryParams as QP?,
+        pathParams:
+            pathParams == dimmutable ? _value.pathParams : pathParams as PP?,
         sendTimeout: sendTimeout == dimmutable
             ? _value.sendTimeout
             : sendTimeout as int?,
@@ -462,11 +474,11 @@ class _$HttpPayloadCopyWithImpl<I, R, E, T, O>
   }
 }
 
-abstract class _$HttpPayloadCopyWith<I, R, E, T, O>
-    implements $HttpPayloadCopyWith<I, R, E, T, O> {
-  factory _$HttpPayloadCopyWith(HttpPayload<I, R, E, T> value,
-          O Function(HttpPayload<I, R, E, T>) then) =
-      __$HttpPayloadCopyWithImpl<I, R, E, T, O>;
+abstract class _$HttpPayloadCopyWith<PP, QP, I, R, E, T, O>
+    implements $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
+  factory _$HttpPayloadCopyWith(HttpPayload<PP, QP, I, R, E, T> value,
+          O Function(HttpPayload<PP, QP, I, R, E, T>) then) =
+      __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
       {String url,
       I? data,
@@ -476,21 +488,22 @@ abstract class _$HttpPayloadCopyWith<I, R, E, T, O>
       int? optimisticHttpStatus,
       bool offline,
       Map<String, dynamic>? headers,
-      Map<String, dynamic>? queryParams,
+      QP? queryParams,
+      PP? pathParams,
       int? sendTimeout,
       int? receiveTieout,
       bool abortable});
 }
 
-class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
-    extends _$HttpPayloadCopyWithImpl<I, R, E, T, O>
-    implements _$HttpPayloadCopyWith<I, R, E, T, O> {
-  __$HttpPayloadCopyWithImpl(
-      HttpPayload<I, R, E, T> _value, O Function(HttpPayload<I, R, E, T>) _then)
+class __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
+    extends _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
+    implements _$HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
+  __$HttpPayloadCopyWithImpl(HttpPayload<PP, QP, I, R, E, T> _value,
+      O Function(HttpPayload<PP, QP, I, R, E, T>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  HttpPayload<I, R, E, T> get _value => super._value;
+  HttpPayload<PP, QP, I, R, E, T> get _value => super._value;
 
   @override
   O call(
@@ -503,6 +516,7 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
       Object? offline = dimmutable,
       Object? headers = dimmutable,
       Object? queryParams = dimmutable,
+      Object? pathParams = dimmutable,
       Object? sendTimeout = dimmutable,
       Object? receiveTieout = dimmutable,
       Object? abortable = dimmutable}) {
@@ -523,9 +537,10 @@ class __$HttpPayloadCopyWithImpl<I, R, E, T, O>
         headers: headers == dimmutable
             ? _value.headers
             : headers as Map<String, dynamic>?,
-        queryParams: queryParams == dimmutable
-            ? _value.queryParams
-            : queryParams as Map<String, dynamic>?,
+        queryParams:
+            queryParams == dimmutable ? _value.queryParams : queryParams as QP?,
+        pathParams:
+            pathParams == dimmutable ? _value.pathParams : pathParams as PP?,
         sendTimeout: sendTimeout == dimmutable
             ? _value.sendTimeout
             : sendTimeout as int?,

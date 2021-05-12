@@ -90,7 +90,8 @@ abstract class HttpMeta<I, R, E, T> with _$HttpMeta<I, R, E, T> {
 }
 
 @DImmutable()
-abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
+abstract class HttpPayload<PP, QP, I, R, E, T>
+    with _$HttpPayload<PP, QP, I, R, E, T> {
   const factory HttpPayload(
       {required String url,
       I? data,
@@ -100,10 +101,11 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       int? optimisticHttpStatus,
       @Default(false) bool offline,
       Map<String, dynamic>? headers,
-      Map<String, dynamic>? queryParams,
+      QP? queryParams,
+      PP? pathParams,
       int? sendTimeout,
       int? receiveTieout,
-      @Default(false) bool abortable}) = _HttpPayload<I, R, E, T>;
+      @Default(false) bool abortable}) = _HttpPayload<PP, QP, I, R, E, T>;
 
   factory HttpPayload.fromJson(
       Map<String, dynamic> map, HttpMeta<I, R, E, T> meta) {
@@ -130,7 +132,8 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
       inputType = HttpInputTypeExt.fromValue(inputTypeS);
     }
     final headers = map["headers"] as Map<String, dynamic>?;
-    final queryParams = map["queryParams"] as Map<String, dynamic>?;
+    final queryParams = map["queryParams"] as QP?;
+    final pathParams = map["pathParams"] as PP?;
     final sendTimeout = map["sendTimeout"] as int?;
     final receiveTieout = map["receiveTieout"] as int?;
     final abortable = map["abortable"] as bool;
@@ -144,6 +147,7 @@ abstract class HttpPayload<I, R, E, T> with _$HttpPayload<I, R, E, T> {
         // inputType: inputType,
         headers: headers,
         queryParams: queryParams,
+        pathParams: pathParams,
         sendTimeout: sendTimeout,
         receiveTieout: receiveTieout,
         abortable: abortable);

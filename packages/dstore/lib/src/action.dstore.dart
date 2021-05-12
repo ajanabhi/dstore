@@ -13,7 +13,7 @@ mixin _$Action<M> {
   bool get isAsync;
   bool get isNav;
   Map<String, dynamic>? get payload;
-  HttpPayload<dynamic, dynamic, dynamic, dynamic>? get http;
+  HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? get http;
   WebSocketPayload<dynamic, dynamic, dynamic>? get ws;
   dynamic get extra;
   ActionInternal? get internal;
@@ -46,7 +46,7 @@ class _Action<M> implements Action<M> {
   final Map<String, dynamic>? payload;
 
   @override
-  final HttpPayload<dynamic, dynamic, dynamic, dynamic>? http;
+  final HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http;
 
   @override
   final WebSocketPayload<dynamic, dynamic, dynamic>? ws;
@@ -138,7 +138,7 @@ abstract class $ActionCopyWith<M, O> {
       bool isAsync,
       bool isNav,
       Map<String, dynamic>? payload,
-      HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
+      HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
       dynamic extra,
       ActionInternal? internal,
@@ -178,7 +178,8 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
             : payload as Map<String, dynamic>?,
         http: http == dimmutable
             ? _value.http
-            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic>?,
+            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic,
+                dynamic>?,
         ws: ws == dimmutable
             ? _value.ws
             : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
@@ -203,7 +204,7 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       bool isAsync,
       bool isNav,
       Map<String, dynamic>? payload,
-      HttpPayload<dynamic, dynamic, dynamic, dynamic>? http,
+      HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
       dynamic extra,
       ActionInternal? internal,
@@ -246,7 +247,8 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
             : payload as Map<String, dynamic>?,
         http: http == dimmutable
             ? _value.http
-            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic>?,
+            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic,
+                dynamic>?,
         ws: ws == dimmutable
             ? _value.ws
             : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
