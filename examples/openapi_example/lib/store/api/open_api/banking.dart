@@ -1,4 +1,7 @@
 import 'package:dstore/dstore.dart';
+import "package:json_annotation/json_annotation.dart";
 
-@OpenApi(file: "./banking.json")
+part "banking.api.dstore.dart";
+
+@OpenApi(file: "./account.json")
 class BankingApi {}

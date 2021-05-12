@@ -14,10 +14,12 @@ class OpenApiGenerator extends GeneratorForAnnotation<OpenApi> {
       if (!(element is ClassElement)) {
         throw NotAllowedError("OpenAPi Annotation can only be used on classes");
       }
-
-      return await createOpenApi(element: element, buildStep: buildStep);
+      final result =
+          await createOpenApi(element: element, buildStep: buildStep);
+      clearOpenApiGlobals();
+      return result;
     } catch (e, st) {
-      logger.error("Error generating AppState for ${element.name}", e, st);
+      logger.error("Error generating OpenApi types for ${element.name}", e, st);
       rethrow;
     }
   }

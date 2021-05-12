@@ -283,11 +283,11 @@ abstract class ModelUtils {
   }
 
   static String createFromJsonStatic(String name) {
-    return "static fromJsonStatic(dynamic) => _\$${name}FromJson(json as Map<String,dynamic>);";
+    return "static fromJsonStatic(dynamic value) => _\$${name}FromJson(value as Map<String,dynamic>);";
   }
 
   static String createToJsonStatic(String name) {
-    return "static dynamic toJsonStatic($name input) => input.toJson()";
+    return "static dynamic toJsonStatic($name input) => input.toJson();";
   }
 
   static String createDefaultDartUpdateModelFromFeilds(

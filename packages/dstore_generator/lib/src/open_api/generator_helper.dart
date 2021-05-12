@@ -15,12 +15,14 @@ Future<String> createOpenApi(
   final openAPi = element.openAPiAnnotation;
   final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
   schema.components?.schemas?.forEach((key, value) {
-    if (value.schema != null && value.schema!.type == "object") {
-      _createDartModelFromSchemaObject(value.schema!, key);
+    if (value.schema != null) {
+      final vSchema = value.schema!;
+      if (vSchema.type == "object") {
+        _createDartModelFromSchemaObject(value.schema!, key);
+      }
     }
   });
   final url = _getUrl(schema);
-
   final pathTypes = _convertPaths(schema: schema, url: url);
 
   return """
@@ -86,7 +88,7 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
       op.parameters?.forEach((por) {
         final p = _getParameterFromParamOrRef(schema, por);
         final objectName = "${oid}_${p.name.cpatialize}";
-        final type = _getTypeName(p.schema!, objectName);
+        final type = _getTypeName(sor: p.schema!, objectName: objectName);
         if (p.o_in == "query") {
           queryParamsAndTypes[p.name] = type;
         } else if (p.o_in == "path") {
@@ -185,7 +187,7 @@ InputType? _getInputTypeFromReqoRRef(
   // if (rb.content.length == 1) {
   final c = rb.content.entries.first;
   contentType = c.key;
-  type = _getTypeName(c.value.schema, name);
+  type = _getTypeName(sor: c.value.schema, objectName: name);
   // } else {
   //   for (final c in rb.content.entries) {
 
@@ -253,7 +255,7 @@ OutputType _getResponseType(
       }
     }
     final r1 = content.entries.first.value.schema;
-    return _getTypeName(r1, name);
+    return _getTypeName(sor: r1, objectName: name);
   }
 
   String getTypeFromMultipleResponses(
@@ -457,7 +459,7 @@ Parameter _getParameterFromParamOrRef(OpenApiSchema schema, ParamOrRef por) {
     return por.param!;
   }
   final ref = por.ref!.$ref;
-  final refName = _getRef(ref);
+  final refName = _getRefRawName(ref);
   final por2 = schema.components?.parameters?[refName];
   if (por2 == null) {
     throw ArgumentError.value(
@@ -480,6 +482,12 @@ List<String> _getParamsInPath(String path) {
 }
 
 final types = <String>[];
+final scalarasAndArraysMap = <String, String>{};
+
+void clearOpenApiGlobals() {
+  types.clear();
+  scalarasAndArraysMap.clear();
+}
 
 extension OPenAPiAnnoExtonElement on Element {
   OpenApi get openAPiAnnotation {
@@ -501,7 +509,7 @@ extension OPenAPiAnnoExtonElement on Element {
 }
 
 OpenApiHttpConfig? getOpenAPiHttpConfig(DartObject? obj) {
-  if (obj != null) {
+  if (obj != null && !obj.isNull) {
     final url = obj.getField("url")?.toStringValue();
     final headers = obj.getStringMapForField("headers");
     final saveOnlineSpecToFile =
@@ -556,7 +564,31 @@ String _getRef(String $ref) {
       "This library only resolve \$ref that are include into '#components/*' for now");
 }
 
-String _getTypeName(SchemaOrReference sor, String objectName) {
+String _getRefRawName(String $ref) {
+  final schema = $ref.replaceAndReturn("#/components/schemas/");
+  if (schema != null) {
+    return schema;
+  }
+  final response = $ref.replaceAndReturn("#/components/responses/");
+  if (response != null) {
+    return response;
+  }
+
+  final param = $ref.replaceAndReturn("#/components/parameters/");
+  if (param != null) {
+    return param;
+  }
+  final reqBody = $ref.replaceAndReturn("#/components/requestBodies/");
+  if (reqBody != null) {
+    return reqBody;
+  }
+
+  throw ArgumentError.value(
+      "This library only resolve \$ref that are include into '#components/*' for now");
+}
+
+String _getTypeName(
+    {required SchemaOrReference sor, required String objectName}) {
   if (sor.ref != null) {
     return _getRef(sor.ref!.$ref);
   }
@@ -585,7 +617,7 @@ String _getTypeName(SchemaOrReference sor, String objectName) {
       return "bool$nullable";
     case "array":
       if (schema.items != null) {
-        return "List<${_getTypeName(schema.items!, objectName)}>$nullable";
+        return "List<${_getTypeName(sor: schema.items!, objectName: objectName)}>$nullable";
       } else {
         throw ArgumentError.value(
             "All array schema types should have items field");
@@ -606,13 +638,13 @@ String _getTypeName(SchemaOrReference sor, String objectName) {
 
 String _getCombinedTypes(Schema schema) {
   if (schema.allOf != null) {
-    return "allof ${schema.allOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+    return "allof ${schema.allOf!.map((e) => _getTypeName(sor: e, objectName: "")).join(", ")}";
   }
   if (schema.anyOf != null) {
-    return "anyOf ${schema.anyOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+    return "anyOf ${schema.anyOf!.map((e) => _getTypeName(sor: e, objectName: "")).join(", ")}";
   }
   if (schema.oneOf != null) {
-    return "oneOf ${schema.oneOf!.map((e) => _getTypeName(e, "")).join(", ")}";
+    return "oneOf ${schema.oneOf!.map((e) => _getTypeName(sor: e, objectName: "")).join(", ")}";
   }
   return "";
 }
@@ -623,7 +655,8 @@ void _createDartModelFromSchemaObject(Schema schema, String name) {
   }
   final fields = schema.properties?.entries.map((e) {
         final fn = e.key;
-        var type = _getTypeName(e.value, "${name}_${fn.cpatialize}");
+        var type =
+            _getTypeName(sor: e.value, objectName: "${name}_${fn.cpatialize}");
         final isRequired = schema.required?.contains(fn) ?? false;
         if (!isRequired) {
           type = "$type?";
