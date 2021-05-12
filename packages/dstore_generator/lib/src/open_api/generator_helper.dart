@@ -16,14 +16,16 @@ Future<String> createOpenApi(
   final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
   final url = _getUrl(schema);
   final pathTypes = _convertPaths(schema: schema, url: url);
-  processSchemaComponents(schema);
+  getScalarsFromSchemaComponents(schema);
+  createTopLevelObjects(schema);
+  logger.shout("sclarasMap $scalarasAndArraysMap");
   return """
     ${types.join("\n")}
     ${pathTypes}
   """;
 }
 
-void processSchemaComponents(OpenApiSchema schema) {
+void getScalarsFromSchemaComponents(OpenApiSchema schema) {
   schema.components?.schemas?.forEach((key, value) {
     String? processSchema(SchemaOrReference schemaOrRef,
         {bool isArray = false, bool isArrayRef = false, String? objName}) {
@@ -78,7 +80,6 @@ void processSchemaComponents(OpenApiSchema schema) {
             }
           }
           if (!isArrayRef) {
-            _createDartModelFromSchemaObject(cSchema, key);
             return null;
           } else {
             return "$objName$nullable";
@@ -93,6 +94,57 @@ void processSchemaComponents(OpenApiSchema schema) {
     if (name != null) {
       scalarasAndArraysMap[key] = name;
     }
+  });
+}
+
+void createTopLevelObjects(OpenApiSchema schema) {
+  schema.components?.schemas?.forEach((key, value) {
+    String? processSchema(SchemaOrReference schemaOrRef,
+        {bool isArray = false, bool isArrayRef = false, String? objName}) {
+      if (schemaOrRef.ref != null) {
+        final name = _getRefRawName(schemaOrRef.ref!.$ref);
+        final sor = schema.components?.schemas?[name];
+        if (sor == null) {
+          throw ArgumentError.value(
+              "ref $name didnt found in components.schema");
+        }
+        return processSchema(sor, isArrayRef: isArray);
+      }
+      final cSchema = schemaOrRef.schema!;
+      final nullable = cSchema.nullable ? "?" : "";
+      final type = cSchema.type;
+      switch (type) {
+        case "array":
+          if (cSchema.items != null) {
+            return "List<${processSchema(cSchema.items!, isArray: true, objName: key)}>$nullable";
+          } else {
+            throw ArgumentError.value(
+                "All array schema types should have items field");
+          }
+
+        case "object":
+          if (cSchema.oneOf != null ||
+              cSchema.anyOf != null ||
+              cSchema.allOf != null) {
+            if (!isArrayRef) {
+              return null;
+            } else {
+              return objName;
+            }
+          }
+          if (!isArrayRef) {
+            _createDartModelFromSchemaObject(cSchema, key);
+            return null;
+          } else {
+            return "$objName$nullable";
+          }
+
+        default:
+          return null;
+      }
+    }
+
+    processSchema(value);
   });
 }
 
@@ -124,6 +176,7 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
   final pathTypes = <String>[];
   schema.paths.entries.forEach((e) {
     final path = e.key;
+    final pathUrl = "$url$path";
     final ops = <String>{};
     final methodAndOp = <String, Operation>{};
     if (e.value.get != null) {
@@ -142,6 +195,7 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
         throw ArgumentError.value(
             "operationId for path $path and method $method should not be null ");
       }
+
       final oid = op.operationId!;
       if (ops.contains(oid)) {
         throw ArgumentError.value(
@@ -178,18 +232,22 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
         _createTypeFromMap(queryParamsAndTypes, queryParamsType);
       }
       final params = <String>[
-        'method = "$method"',
-        'url = "$url"',
+        'method: "$method"',
+        'url: "$pathUrl"',
       ];
       final it = _getInputTypeFromReqoRRef(
           schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
+      var inputType = "Null";
       if (it != null) {
         params.add('inputDeserializer: ${it.serializer}');
         params.add('inputSerializer: ${it.deserializer}');
+        inputType = it.type;
       }
 
       final ot = _getResponseType(
           schema: schema, responses: op.responses, name: "${oid}Response");
+      final responseType = ot.successType;
+      final errorType = ot.errorType;
       params.add("responseType: ${ot.responseType} ");
       params.add("responseSerializer: ${ot.serializer}");
       params.add("responseDeserializer: ${ot.deserializer}");
@@ -203,11 +261,9 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
         params.add('pathParamsType: "${pathParamsType}"');
       }
 
-      if (pathParamsType != null) {}
-
       final dapi = """
        @HttpRequest( ${params.join(", ")} )
-       class $oid = HttpField<QP, I, R, E>;
+       class $oid = HttpField<$inputType, $responseType, $errorType> with EmptyMixin;
       
       """;
       pathTypes.add(dapi);
@@ -336,14 +392,16 @@ OutputType _getResponseType(
       final type = getTypeFromResponse(resp, "${name}_${e.key}");
       final status = e.key;
       ctors.add("""
-       factory $name.$status($type value):_value:value;
+        $name.R$status($type value):_value = value;
       """);
       final accessor = """
-          $type? get $status => _value is $type ? _value as $type : null;
+          $type? get r$status => _value is $type ? _value as $type : null;
         """;
       acceesors.add(accessor);
       var serializeCase = "";
       //serialize
+      final toJsonReturn =
+          type == "Null" ? "null" : "input.r${status}!.toJson()";
       if (type == "String") {
         if (status == "default") {
           serializeDefaultCase = """
@@ -361,12 +419,12 @@ OutputType _getResponseType(
         if (status == "default") {
           serializeDefaultCase = """
            default:
-             return input.toJson(); 
+             return $toJsonReturn; 
           """;
         } else {
           serializeCase = """
           case $status:
-            return input.toJson();
+            return $toJsonReturn;
         """;
         }
       }
@@ -385,16 +443,18 @@ OutputType _getResponseType(
         }
       } else {
         // assume its json!
-
+        final fromJsonValue = type == "Null"
+            ? "null"
+            : "${type}.fromJson(input as Map<String,dynamic>)";
         if (status == "default") {
           deserializeDefaultCase = """
            default:
-             return $name(${name}_${status}.fromJson(input)); 
+             return $name.R$status($fromJsonValue); 
           """;
         } else {
           deserializeCase = """
           case $status:
-            return $name(${name}_${status}.fromJson(input));
+            return $name.R$status($fromJsonValue);
         """;
         }
       }
@@ -408,6 +468,8 @@ OutputType _getResponseType(
        switch(status){
          ${serializeCases.join("\n")}
          ${serializeDefaultCase}
+         default: 
+          throw ArgumentError.value("There is no repsonse matched to \$status");
        }
      }
     """;
@@ -417,6 +479,8 @@ OutputType _getResponseType(
          switch(status){
          ${deserializeCases.join("\n")}
          ${deserializeDefaultCase}
+         default: 
+          throw ArgumentError.value("There is no repsonse matched to \$status");
        }
      }
    """;
@@ -424,7 +488,7 @@ OutputType _getResponseType(
     final typeImpl = """
      
      class $name {
-       final dynamic _value;
+      dynamic _value;
        ${ctors.join("\n")}
       
        ${acceesors.join("\n")}
@@ -487,10 +551,9 @@ OutputType _getResponseType(
       String $deserializerName(int status,dynamic input) => input.toString(); 
     """;
   } else {
-    serializerName = "${successName}.toJsonStatic";
-    deserializerName = "${successName}.fromJsonStatic";
-    serializer = "";
-    deserializer = "";
+    serializer = "${successName}.toJsonStatic";
+    ;
+    deserializer = "${successName}.fromJsonStatic";
   }
 
   String errorSerializer;
@@ -506,8 +569,8 @@ OutputType _getResponseType(
      String $errorDeserializer(int status,dynamic input) => input.toString(); 
     """);
   } else {
-    errorSerializer = "${errorName}.toJson";
-    errorDeserializer = "${errorName}.fromJson";
+    errorSerializer = "${errorName}.toJsonStatic";
+    errorDeserializer = "${errorName}.fromJsonStatic";
   }
   return OutputType(
       successType: successType,
@@ -655,8 +718,12 @@ String _getRefRawName(String $ref) {
 String _getTypeName(
     {required SchemaOrReference sor, required String objectName}) {
   if (sor.ref != null) {
-    final refName = _getRef(sor.ref!.$ref);
-    return scalarasAndArraysMap[refName] ?? refName;
+    final refName = _getRefRawName(sor.ref!.$ref);
+    if (refName == "OBExternalAccountSubType1Code") {
+      logger.shout(
+          "OBExternalAccountSubType1Code map ${scalarasAndArraysMap[refName]}");
+    }
+    return scalarasAndArraysMap[refName] ?? refName.cpatialize;
   }
   final schema = sor.schema!;
   final isOptional = schema.nullable;

@@ -66,10 +66,13 @@ abstract class ModelUtils {
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
       {bool assignDefaults = true, bool addConst = true}) {
-    final cf = fields.map((f) {
+    var cf = fields.map((f) {
       return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${AstUtils.addConstToDefaultValue(f.value!)}" : ""}";
     }).join(", ");
-    return "${addConst ? "const" : ""} ${name}({$cf});";
+    if (cf.isNotEmpty) {
+      cf = "{$cf}";
+    }
+    return "${addConst ? "const" : ""} ${name}($cf);";
   }
 
   static String createHashcodeFromFieldsList(List<Field> fields) {
@@ -253,13 +256,14 @@ abstract class ModelUtils {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
     }
+    final hasFields = fields.isNotEmpty;
     return """
    $annotations 
    class $className {
          
      ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)}
      
-     ${ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: "")}
+     ${hasFields ? ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: "") : ""}
       
      ${ModelUtils.createConstructorFromFieldsList(className, fields)}
      
@@ -271,19 +275,19 @@ abstract class ModelUtils {
 
       ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className) : ""}
 
-      ${ModelUtils.createEqualsFromFieldsList(className, fields)}
+      ${hasFields ? ModelUtils.createEqualsFromFieldsList(className, fields) : ""}
 
-      ${ModelUtils.createHashcodeFromFieldsList(fields)}
+      ${hasFields ? ModelUtils.createHashcodeFromFieldsList(fields) : ""}
 
      ${createToStringFromFieldsList(className, fields)}
     }
 
-    ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "")}
+    ${hasFields ? ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "") : ""}
     """;
   }
 
   static String createFromJsonStatic(String name) {
-    return "static fromJsonStatic(dynamic value) => _\$${name}FromJson(value as Map<String,dynamic>);";
+    return "static $name fromJsonStatic(dynamic value) => _\$${name}FromJson(value as Map<String,dynamic>);";
   }
 
   static String createToJsonStatic(String name) {
