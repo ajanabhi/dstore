@@ -14,21 +14,86 @@ Future<String> createOpenApi(
     {required ClassElement element, required BuildStep buildStep}) async {
   final openAPi = element.openAPiAnnotation;
   final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
-  schema.components?.schemas?.forEach((key, value) {
-    if (value.schema != null) {
-      final vSchema = value.schema!;
-      if (vSchema.type == "object") {
-        _createDartModelFromSchemaObject(value.schema!, key);
-      }
-    }
-  });
   final url = _getUrl(schema);
   final pathTypes = _convertPaths(schema: schema, url: url);
-
+  processSchemaComponents(schema);
   return """
     ${types.join("\n")}
     ${pathTypes}
   """;
+}
+
+void processSchemaComponents(OpenApiSchema schema) {
+  schema.components?.schemas?.forEach((key, value) {
+    String? processSchema(SchemaOrReference schemaOrRef,
+        {bool isArray = false, bool isArrayRef = false, String? objName}) {
+      if (schemaOrRef.ref != null) {
+        final name = _getRefRawName(schemaOrRef.ref!.$ref);
+        final sor = schema.components?.schemas?[name];
+        if (sor == null) {
+          throw ArgumentError.value(
+              "ref $name didnt found in components.schema");
+        }
+        return processSchema(sor, isArrayRef: isArray);
+      }
+      final cSchema = schemaOrRef.schema!;
+      final nullable = cSchema.nullable ? "?" : "";
+      final type = cSchema.type;
+      switch (type) {
+        case "int32":
+        case "int64":
+        case "integer":
+        case "long":
+          return "int$nullable";
+        case "number":
+          return "num$nullable";
+        case "float":
+        case "double":
+          return "double$nullable";
+        case "string":
+        case "byte":
+        case "binary":
+        case "date-time":
+        case "dateTime":
+        case "password":
+          return "String$nullable";
+        case "boolean":
+          return "bool$nullable";
+        case "array":
+          if (cSchema.items != null) {
+            return "List<${processSchema(cSchema.items!, isArray: true, objName: key)}>$nullable";
+          } else {
+            throw ArgumentError.value(
+                "All array schema types should have items field");
+          }
+
+        case "object":
+          if (cSchema.oneOf != null ||
+              cSchema.anyOf != null ||
+              cSchema.allOf != null) {
+            if (!isArrayRef) {
+              return null;
+            } else {
+              return objName;
+            }
+          }
+          if (!isArrayRef) {
+            _createDartModelFromSchemaObject(cSchema, key);
+            return null;
+          } else {
+            return "$objName$nullable";
+          }
+
+        default:
+          return null;
+      }
+    }
+
+    final name = processSchema(value);
+    if (name != null) {
+      scalarasAndArraysMap[key] = name;
+    }
+  });
 }
 
 String _getUrl(OpenApiSchema schema) {
@@ -590,7 +655,8 @@ String _getRefRawName(String $ref) {
 String _getTypeName(
     {required SchemaOrReference sor, required String objectName}) {
   if (sor.ref != null) {
-    return _getRef(sor.ref!.$ref);
+    final refName = _getRef(sor.ref!.$ref);
+    return scalarasAndArraysMap[refName] ?? refName;
   }
   final schema = sor.schema!;
   final isOptional = schema.nullable;
