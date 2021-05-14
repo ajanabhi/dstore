@@ -32,16 +32,11 @@ dependencies:
     path: ../../packages/dstore/
   dstore_flutter:
     path: ../../packages/dstore_flutter/
-  dstore_firebase:
-    path: ../../packages/firebase/ 
   json_annotation:
   middleware_dio:
     path: ../../packages/middleware_dio/ 
   meta:
-  dstore_dgraph:
-    path: ../../packages/dgraph/
-  firebase_core:
-  cloud_firestore:    
+      
 
 dev_dependencies:
   flutter_test:
