@@ -91,8 +91,8 @@ abstract class LocalActions {
     return Action<Hello_todo>(
         name: "todos",
         type: _Local_FullPath,
-        http: HttpPayload<GraphqlRequestInput<Null>, Hello_todoData, dynamic,
-                dynamic>(
+        http: HttpPayload<Null, Null, GraphqlRequestInput<Null>, Hello_todoData,
+                dynamic, dynamic>(
             data: GraphqlRequestInput(query: """query todo{
       todo {
         text
@@ -113,10 +113,10 @@ Local Local_DS() => Local(todos: Hello_todo());
 
 final LocalMeta =
     PStateMeta<Local>(type: _Local_FullPath, ds: Local_DS, httpMetaMap: {
-  "todos":
-      HttpMeta<GraphqlRequestInput<Null>, Hello_todoData, dynamic, dynamic>(
-          inputSerializer: GraphqlRequestInput.toJson,
-          inputDeserializer: Hello_todoInputDeserializer,
-          responseSerializer: Hello_todoDataSerializer,
-          responseDeserializer: Hello_todoDataDeserializer)
+  "todos": HttpMeta<Null, Null, GraphqlRequestInput<Null>, Hello_todoData,
+          dynamic, dynamic>(
+      inputSerializer: GraphqlRequestInput.toJson,
+      inputDeserializer: Hello_todoInputDeserializer,
+      responseSerializer: Hello_todoDataSerializer,
+      responseDeserializer: Hello_todoDataDeserializer)
 });

@@ -1,13 +1,9 @@
 class OpenApi {
   final String? file;
   final OpenApiHttpConfig? http;
-  final Map<String, String>? scalarMap;
 
-  const OpenApi({
-    this.file,
-    this.http,
-    this.scalarMap
-  });
+  final String? revison; // temp variable to trigger schema gen
+  const OpenApi({this.file, this.http, this.revison});
 }
 
 class OpenApiHttpConfig {

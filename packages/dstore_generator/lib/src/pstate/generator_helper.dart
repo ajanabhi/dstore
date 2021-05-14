@@ -211,11 +211,15 @@ ActionsInfo _getActionsInfo(
     if (h.inputSerializer != null) {
       params.add("inputSerializer: ${h.inputSerializer}");
     }
+    var qType = "Null";
     if (h.queryParamsType != null) {
+      qType = h.queryParamsType!;
       params.add("queryParamsSerializer : ${h.queryParamsType}.toJson");
       params.add("queryParamsDeserializer : ${h.queryParamsType}.fromJson");
     }
+    var pType = "Null";
     if (h.pathParamsType != null) {
+      pType = h.pathParamsType!;
       params.add("pathParamsSerializer : ${h.pathParamsType}.toJson");
       params.add("pathParamsDeserializer : ${h.pathParamsType}.fromJson");
     }
@@ -227,7 +231,7 @@ ActionsInfo _getActionsInfo(
     }
     params.add("responseDeserializer: ${h.responseDeserializer}");
     final value =
-        "HttpMeta<${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";
+        "HttpMeta<${pType},${qType},${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";
 
     return """ "$key" : $value """;
   }).join(", ");

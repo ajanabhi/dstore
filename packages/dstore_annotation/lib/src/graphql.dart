@@ -5,11 +5,13 @@ class GraphqlApi {
   final String? wsUrl;
   final Map<String, String>? scalarMap;
   final PersitantQueryMode? enablePersitantQueries;
+  final String? revison; // temp variable to trigger schema gen
   const GraphqlApi(
       {required this.apiUrl,
       this.cacheOnlineApiSchema,
       this.schemaPath,
       this.wsUrl,
+      this.revison,
       this.enablePersitantQueries,
       this.scalarMap});
 

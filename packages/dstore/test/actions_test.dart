@@ -31,10 +31,5 @@ void main() {
     });
   });
 
-  group("Sytream Action", () {
-    test('should read stream values', () async {
-      await storeTester.testStreamAction(
-          SampleActions.intStream(stream: Stream.fromIterable([1, 2])), [1, 2]);
-    });
-  });
+  group("Sytream Action", () {});
 }

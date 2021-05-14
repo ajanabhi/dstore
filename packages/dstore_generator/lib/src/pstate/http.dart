@@ -25,9 +25,9 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   if (ht == null) {
     return null;
   }
-  if (ht.typeArguments.length != 4) {
+  if (ht.typeArguments.length != 3) {
     throw ArgumentError.value(
-        "You should specify all 4 generic types of HttpField");
+        "You should specify all 3 generic types of HttpField");
   }
 
   String? inputType = replaceEndStar(
