@@ -114,6 +114,36 @@ void _handleDioError(
   }
 }
 
+String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
+  final payload = action.http!;
+  var result = payload.url;
+  final queryParams = payload.queryParams;
+  final pathParams = payload.pathParams;
+  if (queryParams != null || pathParams != null) {
+    if (pathParams != null) {
+      if (meta?.pathParamsSerializer == null) {
+        throw ArgumentError.value(
+            "pathParamsSerializer is missing in HttpMeta for action :  ${action.id}");
+      }
+      final pp =
+          meta!.pathParamsSerializer!(pathParams) as Map<String, dynamic>;
+      pp.forEach((key, value) {
+        result = result.replaceFirst('{${key}}', value.toString());
+      });
+    }
+    if (queryParams != null) {
+      if (meta?.queryParamsSerializer == null) {
+        throw ArgumentError.value(
+            "queryParamsSerializer is missing in HttpMeta for action :  ${action.id}");
+      }
+      final qp =
+          meta!.queryParamsSerializer!(queryParams) as Map<String, dynamic>;
+      result = Uri(path: result, queryParameters: qp).toString();
+    }
+  }
+  return result;
+}
+
 void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     Action action, Dio dio) async {
   final psm = store.getPStateMetaFromAction(action);
@@ -145,7 +175,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   }
   late final Response? response;
   try {
-    var url = payload.url;
+    var url = _getUrlFromPayload(action: action, meta: meta);
     var data = payload.data;
     if (meta?.inputSerializer != null) {
       data = meta?.inputSerializer!(data);

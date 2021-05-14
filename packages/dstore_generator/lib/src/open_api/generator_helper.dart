@@ -100,7 +100,9 @@ void getScalarsFromSchemaComponents(OpenApiSchema schema) {
 void createTopLevelObjects(OpenApiSchema schema) {
   schema.components?.schemas?.forEach((key, value) {
     String? processSchema(SchemaOrReference schemaOrRef,
-        {bool isArray = false, bool isArrayRef = false, String? objName}) {
+        {bool isArray = false,
+        bool isArrayRef = false,
+        required String objName}) {
       if (schemaOrRef.ref != null) {
         final name = _getRefRawName(schemaOrRef.ref!.$ref);
         final sor = schema.components?.schemas?[name];
@@ -108,7 +110,7 @@ void createTopLevelObjects(OpenApiSchema schema) {
           throw ArgumentError.value(
               "ref $name didnt found in components.schema");
         }
-        return processSchema(sor, isArrayRef: isArray);
+        return processSchema(sor, isArrayRef: isArray, objName: objName);
       }
       final cSchema = schemaOrRef.schema!;
       final nullable = cSchema.nullable ? "?" : "";
@@ -116,7 +118,7 @@ void createTopLevelObjects(OpenApiSchema schema) {
       switch (type) {
         case "array":
           if (cSchema.items != null) {
-            return "List<${processSchema(cSchema.items!, isArray: true, objName: key)}>$nullable";
+            return "List<${processSchema(cSchema.items!, isArray: true, objName: objName)}>$nullable";
           } else {
             throw ArgumentError.value(
                 "All array schema types should have items field");
@@ -133,7 +135,7 @@ void createTopLevelObjects(OpenApiSchema schema) {
             }
           }
           if (!isArrayRef) {
-            _createDartModelFromSchemaObject(cSchema, key);
+            _createDartModelFromSchemaObject(cSchema, objName);
             return null;
           } else {
             return "$objName$nullable";
@@ -144,7 +146,7 @@ void createTopLevelObjects(OpenApiSchema schema) {
       }
     }
 
-    processSchema(value);
+    processSchema(value, objName: "${key}Object");
   });
 }
 
@@ -326,7 +328,7 @@ InputType? _getInputTypeFromReqoRRef(
       dynamic $serializerName($type input) => input.toJson();
     """);
     types.add("""
-      $type $deserializerName(dynamic input) => ${type}.fromJson(input);
+      $type $deserializerName(dynamic input) => ${type}.fromJson(input as Map<String,dynamic>);
     """);
   }
   return InputType(
@@ -376,7 +378,9 @@ OutputType _getResponseType(
       }
     }
     final r1 = content.entries.first.value.schema;
-    return _getTypeName(sor: r1, objectName: name);
+    final typeName = _getTypeName(sor: r1, objectName: name);
+    logger.shout("TypeName $typeName ObjectName $objName");
+    return typeName;
   }
 
   String getTypeFromMultipleResponses(
@@ -542,18 +546,17 @@ OutputType _getResponseType(
   String serializer;
   String deserializer;
   if (successType == "String") {
-    serializerName = "${successName}Serializer";
-    serializer = """
-      String $serializerName(int status,String input) => input;
-    """;
-    deserializerName = "${successName}Deserializer";
-    deserializer = """
-      String $deserializerName(int status,dynamic input) => input.toString(); 
-    """;
+    serializer = "${successName}Serializer";
+    types.add("""
+      String $serializer(int status,String input) => input;
+    """);
+    deserializer = "${successName}Deserializer";
+    types.add("""
+      String $deserializer(int status,dynamic input) => input.toString(); 
+    """);
   } else {
-    serializer = "${successName}.toJsonStatic";
-    ;
-    deserializer = "${successName}.fromJsonStatic";
+    serializer = "${successType}.toJsonStatic";
+    deserializer = "${successType}.fromJsonStatic";
   }
 
   String errorSerializer;
@@ -719,11 +722,8 @@ String _getTypeName(
     {required SchemaOrReference sor, required String objectName}) {
   if (sor.ref != null) {
     final refName = _getRefRawName(sor.ref!.$ref);
-    if (refName == "OBExternalAccountSubType1Code") {
-      logger.shout(
-          "OBExternalAccountSubType1Code map ${scalarasAndArraysMap[refName]}");
-    }
-    return scalarasAndArraysMap[refName] ?? refName.cpatialize;
+
+    return scalarasAndArraysMap[refName] ?? "${refName.cpatialize}Object";
   }
   final schema = sor.schema!;
   final isOptional = schema.nullable;
