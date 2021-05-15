@@ -163,7 +163,7 @@ id? getIdDirective(Element element) {
 }
 
 custom? getCustomDirective(Element element) {
-  final annot = element.annotationFromType(id)?.computeConstantValue();
+  final annot = element.annotationFromType(custom)?.computeConstantValue();
   if (annot != null) {
     final http = getCustomHttp(annot.getField("http"));
     final dql = annot.getField("dql")?.toStringValue();

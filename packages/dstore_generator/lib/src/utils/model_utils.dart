@@ -322,7 +322,7 @@ abstract class ModelUtils {
           ? "List<dynamic>${f.isOptional ? "?" : ""}"
           : f.type;
       final getter = "external ${type} get ${f.name};";
-      final setter = "external  set ${f.name}(${f.type} value);";
+      final setter = "external  set ${f.name}(${type} value);";
       return """
         $getter
         $setter

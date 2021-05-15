@@ -45,32 +45,41 @@ Future<String> generateSchema(
     final name = fe.name.toLowerCase();
     if (name == "objects") {
       final tuple = getObjects(
-          element: element, schema: schemaMeta, enumNames: enumNames);
+          element: fe.type.element! as ClassElement,
+          schema: schemaMeta,
+          enumNames: enumNames);
       objects = tuple.item1;
       jsObjects = tuple.item2;
     }
     if (name == "interfaces") {
       final tuple = getInterfaces(
-          element: element, schema: schemaMeta, enumNames: enumNames);
+          element: fe.type.element! as ClassElement,
+          schema: schemaMeta,
+          enumNames: enumNames);
       interfaces = tuple.item1;
       jsObjects = tuple.item2;
     }
     if (name == "inputs") {
-      final tuple =
-          getInputs(element: element, schema: schemaMeta, enumNames: enumNames);
+      final tuple = getInputs(
+          element: fe.type.element! as ClassElement,
+          schema: schemaMeta,
+          enumNames: enumNames);
       inputs = tuple.item1;
       jsInputs = tuple.item2;
     }
 
     if (name == "unions") {
-      final tuple = getUnions(element: element, schema: schemaMeta);
+      final tuple = getUnions(
+          element: fe.type.element! as ClassElement, schema: schemaMeta);
       unions = tuple.item1;
       jsUnions = tuple.item2;
     }
 
     if (name == "enums") {
-      final tuple =
-          getEnums(element: element, schema: schemaMeta, enumNames: enumNames);
+      final tuple = getEnums(
+          element: fe.type.element! as ClassElement,
+          schema: schemaMeta,
+          enumNames: enumNames);
       enums = tuple.item1;
       jsEnums = tuple.item2;
     }
@@ -92,6 +101,7 @@ Future<String> generateSchema(
   
   """
       .trim();
+  print("Schema $schema");
 
   _saveSchemaToFile(schemaMeta, schema);
   if (schemaMeta.uploadSchema) {
@@ -241,6 +251,7 @@ Tuple2<String, String> convertDartInterfaceTypeToObject(
     $interfacesFields
    }
   """;
+  print("Schema for object $s");
   final jsTypes = """
  ${ModelUtils.createDefaultDartJSModelFromFeilds(fields: fields, className: name)}
    ${_getArgs(element)}

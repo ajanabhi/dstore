@@ -52,6 +52,7 @@ class GraphqlSchemaSource {
   final bool uploadSchema;
   final bool uploadLambda;
   final String? comments;
+  final String? revision;
   const GraphqlSchemaSource(
       {required this.path,
       required this.database,
@@ -60,6 +61,7 @@ class GraphqlSchemaSource {
       this.lambdaUploadDetails,
       this.uploadLambda = false,
       this.lambdaSourceFile,
+      this.revision,
       this.uploadSchema = false});
 }
 
