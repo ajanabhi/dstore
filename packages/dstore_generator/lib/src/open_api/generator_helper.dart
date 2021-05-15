@@ -373,6 +373,10 @@ OutputType _getResponseType(
         responseType = HttpResponseType.JSON.toString();
       } else if (key.startsWith("text/plain")) {
         responseType = HttpResponseType.STRING.toString();
+      } else if (key.startsWith("application/octet-stream")) {
+        responseType = HttpResponseType.BYTES.toString();
+      } else if (key.startsWith("image/")) {
+        responseType = HttpResponseType.BYTES.toString();
       } else {
         responseType = HttpResponseType.JSON.toString();
       }
@@ -406,23 +410,24 @@ OutputType _getResponseType(
       //serialize
       final toJsonReturn =
           type == "Null" ? "null" : "input.r${status}!.toJson()";
-      if (type == "String") {
+      if (responseType == HttpResponseType.STRING.toString()) {
         if (status == "default") {
           serializeDefaultCase = """
-           default:
+           "default":
              return input.toString(); 
           """;
         } else {
           serializeCase = """
-          case $status:
+          case "$status":
             return input.toString();
         """;
         }
+      } else if (responseType == HttpResponseType.BYTES.toString()) {
       } else {
         // assume its json
         if (status == "default") {
           serializeDefaultCase = """
-           default:
+           "default":
              return $toJsonReturn; 
           """;
         } else {
@@ -433,15 +438,27 @@ OutputType _getResponseType(
         }
       }
       var deserializeCase = "";
-      if (type == "String") {
+      if (responseType == HttpResponseType.STRING.toString()) {
         if (status == "default") {
           deserializeDefaultCase = """
-           default:
+           "default":
              return $name(input.toString()); 
           """;
         } else {
           deserializeCase = """
-          case $status:
+          case "$status":
+            return $name(input.toString());
+        """;
+        }
+      } else if (responseType == HttpResponseType.BYTES.toString()) {
+        if (status == "default") {
+          deserializeDefaultCase = """
+           "default":
+             return $name(input.toString()); 
+          """;
+        } else {
+          deserializeCase = """
+          case "$status":
             return $name(input.toString());
         """;
         }
@@ -452,12 +469,12 @@ OutputType _getResponseType(
             : "${type}.fromJson(input as Map<String,dynamic>)";
         if (status == "default") {
           deserializeDefaultCase = """
-           default:
+           "default":
              return $name.R$status($fromJsonValue); 
           """;
         } else {
           deserializeCase = """
-          case $status:
+          case "$status":
             return $name.R$status($fromJsonValue);
         """;
         }
@@ -469,7 +486,7 @@ OutputType _getResponseType(
     final toJson = """
     
      static dynamic toJsonStatic(int status,$name input) {
-       switch(status){
+       switch(status.toString()){
          ${serializeCases.join("\n")}
          ${serializeDefaultCase}
          default: 
@@ -480,7 +497,7 @@ OutputType _getResponseType(
 
     final fromJson = """
      static $name fromJsonStatic(int status,dynamic input) {
-         switch(status){
+         switch(status.toString){
          ${deserializeCases.join("\n")}
          ${deserializeDefaultCase}
          default: 
@@ -516,8 +533,6 @@ OutputType _getResponseType(
   }
   String successType;
   final successName = "${name}_Success";
-  var serializerName = "";
-  var deserializerName = "";
   if (success.length == 1) {
     final s1 = success.first.value;
     final resp = getResponseFromResponseOrRef(s1);

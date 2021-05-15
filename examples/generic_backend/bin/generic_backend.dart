@@ -14,6 +14,7 @@ Handler init() {
   final app = Router().plus;
   app.use(corsHeaders(headers: overrideHeaders));
   app.get("/", () => "Hello Shelf");
+  app.get("/file", () => File("siva.jpeg"));
   app.get("/siva", () => File("siva.jpeg").readAsBytesSync());
   app.get("/stream", () => generateStream());
   return app;
