@@ -15,8 +15,7 @@ abstract class FormFieldObject<M> {
 }
 
 @DImmutable()
-abstract class FormField<Key, F extends FormFieldObject<F>>
-    with _$FormField<Key, F> {
+abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
   const factory FormField(
       {required F value,
       required Map<String, Function> validators,
@@ -29,7 +28,7 @@ abstract class FormField<Key, F extends FormFieldObject<F>>
       @Default(false) bool validateOnBlur,
       List<String>? internalKeysChanged,
       @Default("") String internalAName,
-      @Default("") String internalAType}) = _FormField<Key, F>;
+      @Default("") String internalAType}) = _FormField<F>;
 }
 
 extension FormFieldExt on FormField {

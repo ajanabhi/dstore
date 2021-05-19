@@ -8,22 +8,16 @@ part of 'stream.dart';
 // **************************************************************************
 
 class StreamField<D, E> {
-  @override
   final D? data;
 
-  @override
   final StreamSubscription<dynamic>? internalSubscription;
 
-  @override
   final E? error;
 
-  @override
   final bool listening;
 
-  @override
   final bool firstEventArrived;
 
-  @override
   final bool completed;
 
   _$StreamFieldCopyWith<D, E, StreamField<D, E>> get copyWith =>

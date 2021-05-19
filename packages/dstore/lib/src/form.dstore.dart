@@ -7,7 +7,7 @@ part of 'form.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$FormField<Key, F extends FormFieldObject<F>> {
+mixin _$FormField<F extends FormFieldObject<F>> {
   F get value;
   Map<String, Function> get validators;
   Map<String, String> get errors;
@@ -21,11 +21,10 @@ mixin _$FormField<Key, F extends FormFieldObject<F>> {
   String get internalAName;
   String get internalAType;
 
-  $FormFieldCopyWith<Key, F, FormField<Key, F>> get copyWith;
+  $FormFieldCopyWith<F, FormField<F>> get copyWith;
 }
 
-class _FormField<Key, F extends FormFieldObject<F>>
-    implements FormField<Key, F> {
+class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
   @override
   final F value;
 
@@ -80,8 +79,8 @@ class _FormField<Key, F extends FormFieldObject<F>>
   @JsonKey(defaultValue: "")
   final String internalAType;
 
-  _$FormFieldCopyWith<Key, F, FormField<Key, F>> get copyWith =>
-      __$FormFieldCopyWithImpl<Key, F, FormField<Key, F>>(this, IdentityFn);
+  _$FormFieldCopyWith<F, FormField<F>> get copyWith =>
+      __$FormFieldCopyWithImpl<F, FormField<F>>(this, IdentityFn);
 
   const _FormField(
       {required this.value,
@@ -135,10 +134,10 @@ class _FormField<Key, F extends FormFieldObject<F>>
       "FormField(value: ${this.value}, validators: ${this.validators}, errors: ${this.errors}, touched: ${this.touched}, isValid: ${this.isValid}, isSubmitting: ${this.isSubmitting}, isValidating: ${this.isValidating}, validateOnChange: ${this.validateOnChange}, validateOnBlur: ${this.validateOnBlur}, internalKeysChanged: ${this.internalKeysChanged}, internalAName: ${this.internalAName}, internalAType: ${this.internalAType})";
 }
 
-abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
+abstract class $FormFieldCopyWith<F extends FormFieldObject<F>, O> {
   factory $FormFieldCopyWith(
-          FormField<Key, F> value, O Function(FormField<Key, F>) then) =
-      _$FormFieldCopyWithImpl<Key, F, O>;
+          FormField<F> value, O Function(FormField<F>) then) =
+      _$FormFieldCopyWithImpl<F, O>;
   O call(
       {F value,
       Map<String, Function> validators,
@@ -154,10 +153,10 @@ abstract class $FormFieldCopyWith<Key, F extends FormFieldObject<F>, O> {
       String internalAType});
 }
 
-class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
-    implements $FormFieldCopyWith<Key, F, O> {
-  final FormField<Key, F> _value;
-  final O Function(FormField<Key, F>) _then;
+class _$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
+    implements $FormFieldCopyWith<F, O> {
+  final FormField<F> _value;
+  final O Function(FormField<F>) _then;
   _$FormFieldCopyWithImpl(this._value, this._then);
 
   @override
@@ -210,11 +209,11 @@ class _$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
   }
 }
 
-abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
-    implements $FormFieldCopyWith<Key, F, O> {
+abstract class _$FormFieldCopyWith<F extends FormFieldObject<F>, O>
+    implements $FormFieldCopyWith<F, O> {
   factory _$FormFieldCopyWith(
-          FormField<Key, F> value, O Function(FormField<Key, F>) then) =
-      __$FormFieldCopyWithImpl<Key, F, O>;
+          FormField<F> value, O Function(FormField<F>) then) =
+      __$FormFieldCopyWithImpl<F, O>;
   O call(
       {F value,
       Map<String, Function> validators,
@@ -230,15 +229,13 @@ abstract class _$FormFieldCopyWith<Key, F extends FormFieldObject<F>, O>
       String internalAType});
 }
 
-class __$FormFieldCopyWithImpl<Key, F extends FormFieldObject<F>, O>
-    extends _$FormFieldCopyWithImpl<Key, F, O>
-    implements _$FormFieldCopyWith<Key, F, O> {
-  __$FormFieldCopyWithImpl(
-      FormField<Key, F> _value, O Function(FormField<Key, F>) _then)
+class __$FormFieldCopyWithImpl<F extends FormFieldObject<F>, O>
+    extends _$FormFieldCopyWithImpl<F, O> implements _$FormFieldCopyWith<F, O> {
+  __$FormFieldCopyWithImpl(FormField<F> _value, O Function(FormField<F>) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  FormField<Key, F> get _value => super._value;
+  FormField<F> get _value => super._value;
 
   @override
   O call(

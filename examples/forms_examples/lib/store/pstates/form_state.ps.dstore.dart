@@ -8,36 +8,40 @@ part of 'form_state.dart';
 
 @immutable
 class FormState extends PStateModel<FormState> {
-  final String name;
+  final FormField<SimpleForm> simpleForm;
 
   _$FormStateCopyWith<FormState> get copyWith =>
       __$FormStateCopyWithImpl<FormState>(this, IdentityFn);
 
-  FormState({this.name = "in"});
+  FormState(
+      {this.simpleForm = const FormField(value: SimpleForm(), validators: {})});
 
   @override
   FormState copyWithMap(Map<String, dynamic> map) => FormState(
-      name: map.containsKey("name") ? map["name"] as String : this.name);
+      simpleForm: map.containsKey("simpleForm")
+          ? map["simpleForm"] as FormField<SimpleForm>
+          : this.simpleForm);
 
-  Map<String, dynamic> toMap() => <String, dynamic>{"name": this.name};
+  Map<String, dynamic> toMap() =>
+      <String, dynamic>{"simpleForm": this.simpleForm};
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is FormState && o.name == name;
+    return o is FormState && o.simpleForm == simpleForm;
   }
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => simpleForm.hashCode;
 
   @override
-  String toString() => "FormState(name: ${this.name})";
+  String toString() => "FormState(simpleForm: ${this.simpleForm})";
 }
 
 abstract class $FormStateCopyWith<O> {
   factory $FormStateCopyWith(FormState value, O Function(FormState) then) =
       _$FormStateCopyWithImpl<O>;
-  O call({String name});
+  O call({FormField<SimpleForm> simpleForm});
 }
 
 class _$FormStateCopyWithImpl<O> implements $FormStateCopyWith<O> {
@@ -46,16 +50,18 @@ class _$FormStateCopyWithImpl<O> implements $FormStateCopyWith<O> {
   _$FormStateCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? name = dimmutable}) {
+  O call({Object? simpleForm = dimmutable}) {
     return _then(_value.copyWith(
-        name: name == dimmutable ? _value.name : name as String));
+        simpleForm: simpleForm == dimmutable
+            ? _value.simpleForm
+            : simpleForm as FormField<SimpleForm>));
   }
 }
 
 abstract class _$FormStateCopyWith<O> implements $FormStateCopyWith<O> {
   factory _$FormStateCopyWith(FormState value, O Function(FormState) then) =
       __$FormStateCopyWithImpl<O>;
-  O call({String name});
+  O call({FormField<SimpleForm> simpleForm});
 }
 
 class __$FormStateCopyWithImpl<O> extends _$FormStateCopyWithImpl<O>
@@ -67,17 +73,32 @@ class __$FormStateCopyWithImpl<O> extends _$FormStateCopyWithImpl<O>
   FormState get _value => super._value;
 
   @override
-  O call({Object? name = dimmutable}) {
-    return _then(
-        FormState(name: name == dimmutable ? _value.name : name as String));
+  O call({Object? simpleForm = dimmutable}) {
+    return _then(FormState(
+        simpleForm: simpleForm == dimmutable
+            ? _value.simpleForm
+            : simpleForm as FormField<SimpleForm>));
   }
 }
 
 const _FormState_FullPath = "/store/pstates/form_state/FormState";
 
-abstract class FormStateActions {}
+abstract class FormStateActions {
+  static Action<dynamic> simpleForm(FormReq req) {
+    return Action<dynamic>(
+        name:
+            "Field(Name : simpleForm Type : FormField<SimpleForm> Value : FormField(value: SimpleForm(), validators: {}) isOptional : false annotations : [] isNamed: false).name}",
+        type: _FormState_FullPath,
+        form: req);
+  }
+}
 
-FormState FormState_DS() => FormState(name: "in");
+FormState FormState_DS() => FormState(
+    simpleForm: FormField(
+        value: SimpleForm(),
+        validators: {},
+        internalAName: "simpleForm",
+        internalAType: _FormState_FullPath));
 
 final FormStateMeta =
     PStateMeta<FormState>(type: _FormState_FullPath, ds: FormState_DS);

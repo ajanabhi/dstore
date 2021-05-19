@@ -54,7 +54,7 @@ class _StoreProviderInherited extends InheritedWidget {
     Key? key,
     required Store<AppStateI<dynamic>> store,
     required Widget child,
-  })   : _store = store,
+  })  : _store = store,
         super(key: key, child: child);
 
   @override
@@ -62,9 +62,15 @@ class _StoreProviderInherited extends InheritedWidget {
     return oldWidget._store != this._store;
   }
 
-  static Store<AppStateI<dynamic>> of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<_StoreProviderInherited>()!
-      ._store;
+  static Store<AppStateI<dynamic>> of(BuildContext context) {
+    final cValue =
+        context.dependOnInheritedWidgetOfExactType<_StoreProviderInherited>();
+    if (cValue == null) {
+      throw Exception(
+          "You should wrap your app root with StoreProvider from dstore");
+    }
+    return cValue._store;
+  }
 }
 
 extension DStoreContextExtensionMethods on BuildContext {

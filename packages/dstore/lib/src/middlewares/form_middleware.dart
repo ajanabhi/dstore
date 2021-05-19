@@ -1,5 +1,4 @@
 import 'package:dstore/src/action.dart';
-import 'package:dstore/src/errors.dart';
 import 'package:dstore/src/form.dart';
 import 'package:dstore/src/store.dart';
 
@@ -14,7 +13,7 @@ dynamic formMiddleware<S extends AppStateI<S>>(
     final req = action.form as FormReq;
     final ff = store.getFieldFromAction(action) as FormField;
     final pm = store.getPStateMetaFromAction(action);
-    late FormField<dynamic, FormFieldObject<dynamic>> nff;
+    late FormField<FormFieldObject<dynamic>> nff;
     if (req is FormSetFieldValue) {
       var validate = ff.validateOnChange;
       if (req.validate != null) {

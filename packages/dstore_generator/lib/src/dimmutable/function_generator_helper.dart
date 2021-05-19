@@ -11,27 +11,27 @@ String generateDImmutableFromFunction(FunctionElement element) {
   final isJsonSerializable = false;
   final tuple = AstUtils.getTypeParamsAndBounds(element.typeParameters);
   final typeParamsWithBounds = tuple.item2;
+  final tpwb = typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>";
   final typeParams = tuple.item1;
   element.parameters.forEach((element) {
     print(element);
     print(element.defaultValueCode);
   });
   final fields = AstUtils.convertParamElementsToFields(element.parameters);
-  logger.shout("Fields $fields");
 
   return """
     
-    class $className<$typeParamsWithBounds> {
+    class $className$tpwb {
          
-     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: true)}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
      
      ${ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: typeParams)}
       
      ${ModelUtils.createConstructorFromFieldsList(className, fields)}
      
-      ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
+     ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
 
-      ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
+     ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
 
      ${ModelUtils.createEqualsFromFieldsList(className, fields)}
 

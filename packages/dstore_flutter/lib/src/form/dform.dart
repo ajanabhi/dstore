@@ -3,7 +3,7 @@ import 'package:flutter/material.dart' hide FormField;
 import 'package:dstore_flutter/src/store/store_provider.dart';
 
 class DForm extends InheritedWidget {
-  final FormField<dynamic, FormFieldObject> ff;
+  final FormField<FormFieldObject> ff;
   final _FormState _formState = _FormState();
   DForm({Key? key, required this.ff, required Widget child})
       : super(key: key, child: child);
