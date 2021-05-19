@@ -93,7 +93,7 @@ Future<String> generatePStateNavForClassElement(
       methods: methods);
   return """
     
-    ${_createPStateNavModel(fields: fields, notFoundAction: notFoundAction, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
+    ${_createPStateNavModel(fields: fields, typeName: typeVariable, notFoundAction: notFoundAction, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
@@ -184,6 +184,7 @@ String _createPStateNavModel(
     {required List<Field> fields,
     required List<Field> psDeps,
     required String name,
+    required String typeName,
     required List<String> annotations,
     required List<String>? nestedNavs,
     required String buildPages,
@@ -205,6 +206,13 @@ String _createPStateNavModel(
          return [${nestedNavs.map((e) => "this.${e}").join(",")}];
        }        
      """;
+  }
+  if (exinf.startsWith("Nested")) {
+    fields.add(Field(
+        name: "dontTouchMeTypeName",
+        type: "String",
+        isOptional: false,
+        value: typeName));
   }
   final result = """
       
@@ -251,9 +259,11 @@ String _createActions(
         return "${p.type} ${p.name} ${defaultValue} ";
       }
     }).toList();
+    paramsList.add("bool silent = false");
     if (m.isAsync) {
       paramsList.add("Duration? debounce");
     }
+
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     final params = paramsList.join(", ");
 
@@ -267,7 +277,7 @@ String _createActions(
     }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action(name:"${m.name}",silent:silent,isNav: true,type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");

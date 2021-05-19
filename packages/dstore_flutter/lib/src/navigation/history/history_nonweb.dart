@@ -3,48 +3,83 @@ import 'package:flutter/material.dart';
 
 class HistoryImpl extends History {
   final _source = <String>[];
+  UriListener? _globalListerner;
+  UriListener get g_listener => _globalListerner!;
+  List<UriListener> _urlListeners = [];
+
   @override
-  VoidCallback listen(HistoryListener listener) {
-    //noop
+  VoidCallback listen(UriListener listener) {
+    _globalListerner = (Uri uri) {
+      listener(uri);
+      informUrlListeners();
+    };
     return () {};
   }
 
   @override
   void push(String url) {
     _source.add(url);
+    this.url = url;
+    informUrlListeners();
   }
 
   @override
   void replace(String url) {
-    _source.removeLast();
-    _source.add(url);
-  }
-
-  @override
-  String goBack() {
-    if (_source.length > 1) {
-      // final url = _source.last;
+    if (_source.isNotEmpty) {
       _source.removeLast();
-      return _source.last;
+      _source.add(url);
+      informUrlListeners();
     }
-    return "";
   }
 
   @override
-  String go(int number) {
-    //
-    //
-    return "";
+  void goBack() {
+    if (canGoBack) {
+      _source.removeLast();
+      final url = _source.last;
+      this.url = url;
+      g_listener(Uri.parse(url));
+    }
+  }
+
+  @override
+  void go(int number) {
+    //TODO
+    throw UnimplementedError();
   }
 
   @override
   void setInitialUrl(String url) {
     _source.add(url);
+    this.url = url;
   }
 
-  @override
-  String get url => _source.last;
+  // @override
+  // String get url => _source.isNotEmpty ? _source.last : "";
 
   @override
   bool blockSameUrl = false;
+
+  @override
+  VoidCallback listenUrl(UriListener uriListener) {
+    _urlListeners.add(uriListener);
+    return () {
+      _urlListeners = _urlListeners.where((l) => l != uriListener).toList();
+    };
+  }
+
+  @override
+  bool get canGoBack {
+    return _source.length > 1;
+  }
+
+  @override
+  void informUrlListeners([String? pUrl]) {
+    _urlListeners.forEach((ul) {
+      ul(Uri.parse(pUrl ?? url));
+    });
+  }
+
+  @override
+  String? get backUrl => canGoBack ? _source[_source.length - 2] : null;
 }

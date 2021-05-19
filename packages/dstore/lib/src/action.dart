@@ -23,6 +23,7 @@ abstract class Action<M> with _$Action<M> {
     ActionInternal? internal,
     StreamPayload? stream,
     Duration? debounce,
+    @Default(false) bool silent,
     M? mock,
     FormReq? form,
   }) = _Action<M>;

@@ -7,6 +7,7 @@ export "router_deleagte.dart";
 export "route_information_parser.dart";
 export "nested_router.dart";
 export "middleware.dart";
+export "url_builder.dart";
 
 typedef BeforeLeaveFn = bool Function(AppStateI);
 
@@ -19,6 +20,8 @@ abstract class NavStateI<M> extends PStateModel<M> {
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
+  Action?
+      originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
   NavOptions? navOptions;
   bool blockSameUrl = false;
   String? get dontTouchMeUrl => _dontTouchMeUrl;
@@ -57,15 +60,21 @@ abstract class NestedNavStateI<M> extends NavStateI<M> {
   Action notFoundAction(Uri uri) {
     throw UnimplementedError();
   }
+
+  String dontTouchMeTypeName = "";
+
+  Action? initialStateAction;
 }
 
 void configureNav() {
   configurePlatForm();
 }
 
-class NavOptions {
+class NavOptions<E> {
   final HistoryUpdate? historyUpdate;
   final bool reload;
+  final E?
+      extraOptions; // use this to pass extra options to navigation action , remember you should handle null case , because when user entered via url extraOptions will be null
 
-  NavOptions({this.historyUpdate, this.reload = false});
+  NavOptions({this.historyUpdate, this.reload = false, this.extraOptions});
 }

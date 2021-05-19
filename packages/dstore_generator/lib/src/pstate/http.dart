@@ -166,6 +166,7 @@ String convertHttpFieldInfoToAction(
     }
   }
   params.add("bool abortable = false");
+  params.add("bool silent = false");
   payloadFields.add("abortable: abortable");
   params.add("bool offline = false");
   payloadFields.add("offline: offline");
@@ -189,7 +190,7 @@ String convertHttpFieldInfoToAction(
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
         $mergeHeaders
-        return Action<$mockType>(name:"${hf.name}",type:${type},http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
+        return Action<$mockType>(name:"${hf.name}",type:${type},silent:silent,http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
       }
     """;
 }

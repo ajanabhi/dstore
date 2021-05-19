@@ -8,7 +8,7 @@ class hasInverse {
   const hasInverse(this.field);
 
   @override
-  String toString() => "hasInverse(field: ${field})";
+  String toString() => "@hasInverse(field: ${field})";
 }
 
 enum DgraphIndex {

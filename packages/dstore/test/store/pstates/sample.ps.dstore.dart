@@ -246,9 +246,12 @@ class SampleTestResult implements ToMap {
 
 abstract class SampleActions {
   static Action<SampleChangeNameResult> changeName(
-      {required String newName, SampleChangeNameResult? mock}) {
+      {required String newName,
+      SampleChangeNameResult? mock,
+      bool silent = false}) {
     return Action<SampleChangeNameResult>(
         name: "changeName",
+        silent: silent,
         type: _Sample_FullPath,
         payload: <String, dynamic>{"newName": newName},
         mock: mock,
@@ -256,9 +259,10 @@ abstract class SampleActions {
   }
 
   static Action<SampleChangeAgeResult> changeAge(
-      {required int newAge, SampleChangeAgeResult? mock}) {
+      {required int newAge, SampleChangeAgeResult? mock, bool silent = false}) {
     return Action<SampleChangeAgeResult>(
         name: "changeAge",
+        silent: silent,
         type: _Sample_FullPath,
         payload: <String, dynamic>{"newAge": newAge},
         mock: mock,
@@ -266,9 +270,12 @@ abstract class SampleActions {
   }
 
   static Action<SampleAddToListResult> addToList(
-      {required String item, SampleAddToListResult? mock}) {
+      {required String item,
+      SampleAddToListResult? mock,
+      bool silent = false}) {
     return Action<SampleAddToListResult>(
         name: "addToList",
+        silent: silent,
         type: _Sample_FullPath,
         payload: <String, dynamic>{"item": item},
         mock: mock,
@@ -278,9 +285,11 @@ abstract class SampleActions {
   static Action<SampleChangeThemeResult> changeTheme(
       {required bool value,
       Duration? debounce,
-      SampleChangeThemeResult? mock}) {
+      SampleChangeThemeResult? mock,
+      bool silent = false}) {
     return Action<SampleChangeThemeResult>(
         name: "changeTheme",
+        silent: silent,
         type: _Sample_FullPath,
         payload: <String, dynamic>{"value": value},
         mock: mock,
@@ -289,13 +298,25 @@ abstract class SampleActions {
   }
 
   static Action<SampleTestResult> test(
-      {required int age2, SampleTestResult? mock}) {
+      {required int age2, SampleTestResult? mock, bool silent = false}) {
     return Action<SampleTestResult>(
         name: "test",
+        silent: silent,
         type: _Sample_FullPath,
         payload: <String, dynamic>{"age2": age2},
         mock: mock,
         isAsync: false);
+  }
+
+  static Action<Iterable<int>> intStream(
+      {required Stream<int> stream,
+      bool cancelOnError = false,
+      Iterable<int>? mock}) {
+    return Action<Iterable<int>>(
+        name: "intStream",
+        type: _Sample_FullPath,
+        mock: mock,
+        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
   }
 }
 

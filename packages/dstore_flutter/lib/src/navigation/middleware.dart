@@ -3,9 +3,10 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 
 void _handleNavAction<S extends AppStateI<S>>(
     Action action, Dispatch next, Store<S> store) {
-  final navState = store.getFieldFromAction(action) as NavStateI;
+  print("field ${store.getFieldFromAction(action)}");
+  final navState = store.getPStateModelFromAction(action) as NavStateI;
   final history = navState.dontTouchMeHistory;
-  if (!history.blockSameUrl || navState.navOptions?.reload == true) {
+  if (!navState.blockSameUrl || navState.navOptions?.reload == true) {
     //
     next(action);
   } else {

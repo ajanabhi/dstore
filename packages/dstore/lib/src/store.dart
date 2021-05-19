@@ -226,7 +226,13 @@ class Store<S extends AppStateI<S>> {
       }
       newS = psm.reducer!(currentS, action) as PStateModel;
     }
-    if (!identical(newS, currentS)) {
+    if (action.silent) {
+      // TODO update storage
+      print("Silent Action");
+      gsMap[sk] = newS;
+      print("NewState $newS");
+      _state = _state.copyWithMap(gsMap);
+    } else if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
       _handleStateChange(
           stateKey: sk,
@@ -246,6 +252,7 @@ class Store<S extends AppStateI<S>> {
       required Map<String, dynamic> newGlobalStateMap,
       required PStateModel<dynamic> newState}) async {
     if (psm.sm != null) {
+      print("_handleStateChange");
       assert(storageOptions != null);
       final so = storageOptions!;
       if (so.writeMode == StorageWriteMode.DISKFIRST) {

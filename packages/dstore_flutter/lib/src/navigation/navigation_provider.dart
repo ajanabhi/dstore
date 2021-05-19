@@ -2,14 +2,17 @@ import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:flutter/material.dart';
 
 class NavigationProvider extends InheritedWidget {
-  final History history;
+  final History dotTouchmeHistory;
 
-  NavigationProvider({required this.history, Key? key, required Widget child})
+  NavigationProvider(
+      {required this.dotTouchmeHistory, Key? key, required Widget child})
       : super(key: key, child: child);
   @override
   bool updateShouldNotify(NavigationProvider oldWidget) {
-    return oldWidget.history != history;
+    return oldWidget.dotTouchmeHistory != dotTouchmeHistory;
   }
+
+  String get url => dotTouchmeHistory.url;
 
   static NavigationProvider of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<NavigationProvider>()!;

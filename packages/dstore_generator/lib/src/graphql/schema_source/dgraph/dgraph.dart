@@ -320,6 +320,7 @@ Future<void> validateAndUploadDGraphSchema(
   try {
     final existingSchema = await _getSchema(url, headers);
     if (existingSchema != schema) {
+      print("uploading schema $schema");
       final resp = await dio.post<Map<String, dynamic>>(
         url,
         options: Options(headers: headers),
@@ -341,9 +342,9 @@ Future<void> validateAndUploadDGraphSchema(
       );
 
       if (resp.data != null &&
-          resp.data!.containsKey("data") &&
+          !resp.data!.containsKey("errors") &&
           resp.statusCode == 200) {
-        print("Successfully uploaded schema");
+        print("Successfully uploaded schema ${resp.data}");
       } else {
         throw Exception(
             "Error uploading schema to $url , responded with ${resp.data} status : ${resp.statusCode} ");
@@ -354,7 +355,7 @@ Future<void> validateAndUploadDGraphSchema(
   }
 }
 
-Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
+Future<String?> _getSchema(String url, Map<String, dynamic>? headers) async {
   final dio = Dio();
   final resp = await dio.post<Map<String, dynamic>>(url,
       options: Options(
@@ -370,8 +371,15 @@ Future<String> _getSchema(String url, Map<String, dynamic>? headers) async {
   """
       });
   if (resp.data != null && resp.data!.containsKey("data")) {
+    print(resp.data);
     // success response
-    return resp.data!["data"]!["getGQLSchema"]!["schema"]! as String;
+    final getGQLSchema =
+        resp.data!["data"]!["getGQLSchema"] as Map<String, dynamic>?;
+    if (getGQLSchema == null) {
+      return null;
+    } else {
+      return getGQLSchema["schema"]! as String;
+    }
   } else {
     throw Exception(
         "Error getting schema Status : ${resp.statusCode} Response :  ${resp.data}");

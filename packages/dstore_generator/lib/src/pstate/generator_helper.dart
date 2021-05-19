@@ -291,6 +291,7 @@ String _generateActionsCreators({
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     mockModels.add(_createMockModel(name: mockName, fields: m.keysModified));
     paramsList.add("$mockName? mock");
+    paramsList.add("bool silent = false");
     final params = paramsList.join(", ");
 
     var payload = m.params.isNotEmpty
@@ -301,9 +302,10 @@ String _generateActionsCreators({
     if (payload.isNotEmpty) {
       payload = ", payload: ${payload}";
     }
+
     return """
       static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action<$mockName>(name:"${m.name}",type:${type} ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");

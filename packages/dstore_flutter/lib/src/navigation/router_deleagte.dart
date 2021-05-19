@@ -5,24 +5,25 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:dstore_flutter/src/navigation/navigation_provider.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Action;
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:collection/collection.dart';
 
 class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     with ChangeNotifier {
   final Selector<S, NavStateI> selector;
+  final Widget Function(Widget child) shell;
   final GlobalKey<NavigatorState> navigatorKey;
   late final History history;
   NavStateI? _navState;
   NavStateI get navState => _navState!;
+  VoidCallback? unsubscribeHistoryListener;
   late Dispatch _dispatch;
-  bool _triggerFromHistory = false;
   bool _preparedState = false;
-  DRouterDelegate({required this.selector})
+  DRouterDelegate({required this.selector, this.shell = IdentityFn})
       : navigatorKey = GlobalKey<NavigatorState>() {
     history = createHistory();
-    history.listen(handleUriChange);
+    unsubscribeHistoryListener = history.listen(handleUriChange);
   }
 
   void handleUriChange(Uri uri) {
@@ -33,7 +34,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     fn = _navState!.dontTouchMeStaticMeta[path];
     print("Url to Action2 $fn");
     if (fn != null) {
-      _triggerFromHistory = true;
+      history.urlChangedInSystem = true;
       fn(uri, _dispatch);
     } else {
       // match in dynamic paths
@@ -45,7 +46,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       if (dfn == null) {
         _dispatch(navState.notFoundAction(uri));
       } else {
-        _triggerFromHistory = true;
+        history.urlChangedInSystem = true;
         dfn(uri, _dispatch);
       }
     }
@@ -55,10 +56,11 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
     return NavigationProvider(
-        history: history,
-        child: SelectorBuilder<S, NavStateI>(
+        dotTouchmeHistory: history,
+        child: shell(SelectorBuilder<S, NavStateI>(
           selector: selector,
           onInitState: (context, state) {
+            state.dontTouchMeHistory = history;
             final nestedNavs = state.getNestedNavs();
             if (nestedNavs.isNotEmpty) {
               nestedNavs.forEach((nnav) {
@@ -75,14 +77,22 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             handleUriChange(Uri.parse(history.url));
           },
           shouldRebuild: (context, prevState, newState) {
+            newState.dontTouchMeHistory = history;
             if (newState.redirectToAction != null) {
               final action = newState.redirectToAction!;
               newState.redirectToAction = null;
+              history.originAction = newState.originAction;
+              newState.originAction = null;
               scheduleMicrotask(() => _dispatch(action));
               return false;
+            } else if (history.originAction != null) {
+              final a = history.originAction!;
+              history.originAction = null;
+              context.dispatch(a);
+              return false;
             } else {
-              if (_triggerFromHistory == true) {
-                _triggerFromHistory = false;
+              if (history.urlChangedInSystem == true) {
+                history.urlChangedInSystem = false;
               } else {
                 _updateUrl(navState: newState);
                 print("Page ${newState.page} ${(newState.page)}");
@@ -98,51 +108,37 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
-                      final url = history.goBack();
-                      print("Navigator pop : $url");
-                      if (url.isEmpty) {
-                        return false;
-                      }
-                      scheduleMicrotask(() {
-                        handleUriChange(Uri.parse(url));
-                      });
+                      history.goBack();
+
                       return true;
                     },
                   )
                 : SizedBox.shrink();
           },
-        ));
+        )));
   }
 
   void _updateUrl({required NavStateI navState}) {
-    if (history.urlChangedInSystem) {
-      print("Url Changed in system");
-      history.urlChangedInSystem = false;
-    } else {
-      if (navState.dontTouchMeUrl != null) {
-        final url = navState.dontTouchMeUrl!;
-        print("pushing url ${navState.dontTouchMeUrl}");
-        if (navState.navOptions?.historyUpdate == HistoryUpdate.replace) {
-          history.replace(url);
-        } else {
-          history.push(url);
-        }
-        navState.navOptions = null;
+    if (navState.dontTouchMeUrl != null) {
+      final url = navState.dontTouchMeUrl!;
+      print("pushing url ${navState.dontTouchMeUrl}");
+      if (navState.navOptions?.historyUpdate == HistoryUpdate.replace) {
+        history.replace(url);
+      } else {
+        history.push(url);
       }
+      navState.navOptions = null;
     }
   }
 
   @override
   Future<bool> popRoute() {
-    final url = history.goBack();
-    print("Pop route2 url : $url");
-    if (url.isEmpty) {
+    if (history.canGoBack) {
+      history.goBack();
+      return SynchronousFuture(true);
+    } else {
       return SynchronousFuture(false);
     }
-    scheduleMicrotask(() {
-      handleUriChange(Uri.parse(url));
-    });
-    return SynchronousFuture(true);
   }
 
   @override
@@ -155,6 +151,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Future<void> setNewRoutePath(String configuration) async {
     print("Set new Route Path config $configuration");
     // do nothing
+  }
+
+  @override
+  void dispose() {
+    unsubscribeHistoryListener?.call();
+    super.dispose();
   }
 }
 

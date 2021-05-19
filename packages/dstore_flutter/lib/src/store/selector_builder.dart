@@ -9,6 +9,8 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
   final Selector<S, I> selector;
   final UnSubscribeOptions? options;
   final SelectorBuilderFn<I> builder;
+  final bool
+      setStateOnUpdate; // useful if you're using silent action that doesnt trigger selector listeners
   final void Function(BuildContext context, I state)? onInitState;
   final void Function(BuildContext context, I state)? onInitialBuild;
   final void Function(BuildContext context, I state)? onDispose;
@@ -25,6 +27,7 @@ class SelectorBuilder<S extends AppStateI<S>, I> extends StatefulWidget {
       this.onInitialBuild,
       this.onDispose,
       this.onStateChange,
+      this.setStateOnUpdate = false,
       this.shouldRebuild,
       this.options})
       : super(key: key);
@@ -86,6 +89,9 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
       final prevState = _state;
       _state = widget.selector.fn(store.state);
       widget.onStateChange?.call(context, prevState, _state);
+    } else if (widget.setStateOnUpdate) {
+      final store = context.storeTyped<S>();
+      _state = widget.selector.fn(store.state);
     }
   }
 

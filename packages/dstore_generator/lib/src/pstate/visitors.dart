@@ -35,6 +35,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       fields.add(
           Field(name: "redirectToAction", type: "Action?", isOptional: true));
       fields.add(
+          Field(name: "initialStateAction", type: "Action?", isOptional: true));
+      fields.add(
           Field(name: "navOptions", type: "NavOptions?", isOptional: true));
       fields.add(Field(
           name: "blockSameUrl",
@@ -48,7 +50,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   dynamic visitMethodDeclaration(MethodDeclaration node) {
     final name = node.name.name;
     if (isNav) {
-      logger.shout("Annot ${node.metadata.first.elementAnnotation}");
+      logger.shout("Annot ${node.metadata.firstOrNull?.elementAnnotation}");
     }
     if (isNav && (name == "buildPages" || name == "notFoundAction")) {
       logger.shout("buildPages : ${node.toSource()}");
