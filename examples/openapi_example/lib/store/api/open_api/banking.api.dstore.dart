@@ -59,29 +59,29 @@ class CreateAccountAccessConsentsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, CreateAccountAccessConsentsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 415:
+      case "415":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -91,31 +91,31 @@ class CreateAccountAccessConsentsResponse_Error {
 
   static CreateAccountAccessConsentsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return CreateAccountAccessConsentsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return CreateAccountAccessConsentsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return CreateAccountAccessConsentsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return CreateAccountAccessConsentsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return CreateAccountAccessConsentsResponse_Error.R406(null);
 
-      case 415:
+      case "415":
         return CreateAccountAccessConsentsResponse_Error.R415(null);
 
-      case 429:
+      case "429":
         return CreateAccountAccessConsentsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return CreateAccountAccessConsentsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -268,26 +268,26 @@ class GetAccountAccessConsentsConsentIdResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountAccessConsentsConsentIdResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -297,28 +297,28 @@ class GetAccountAccessConsentsConsentIdResponse_Error {
 
   static GetAccountAccessConsentsConsentIdResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountAccessConsentsConsentIdResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountAccessConsentsConsentIdResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountAccessConsentsConsentIdResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return GetAccountAccessConsentsConsentIdResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountAccessConsentsConsentIdResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountAccessConsentsConsentIdResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountAccessConsentsConsentIdResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -365,26 +365,26 @@ class GetAccountsResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetAccountsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -393,28 +393,28 @@ class GetAccountsResponse_Error {
   }
 
   static GetAccountsResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return GetAccountsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -551,26 +551,26 @@ class GetAccountsAccountIdResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -580,28 +580,28 @@ class GetAccountsAccountIdResponse_Error {
 
   static GetAccountsAccountIdResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -743,26 +743,26 @@ class GetAccountsAccountIdBalancesResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdBalancesResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -772,28 +772,28 @@ class GetAccountsAccountIdBalancesResponse_Error {
 
   static GetAccountsAccountIdBalancesResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdBalancesResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdBalancesResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdBalancesResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdBalancesResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdBalancesResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdBalancesResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdBalancesResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -951,29 +951,29 @@ class GetAccountsAccountIdBeneficiariesResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdBeneficiariesResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -983,31 +983,31 @@ class GetAccountsAccountIdBeneficiariesResponse_Error {
 
   static GetAccountsAccountIdBeneficiariesResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdBeneficiariesResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -1164,29 +1164,29 @@ class GetAccountsAccountIdDirectDebitsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdDirectDebitsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -1196,31 +1196,31 @@ class GetAccountsAccountIdDirectDebitsResponse_Error {
 
   static GetAccountsAccountIdDirectDebitsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdDirectDebitsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -1366,29 +1366,29 @@ class GetAccountsAccountIdOffersResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdOffersResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -1398,31 +1398,31 @@ class GetAccountsAccountIdOffersResponse_Error {
 
   static GetAccountsAccountIdOffersResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdOffersResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdOffersResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdOffersResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdOffersResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdOffersResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdOffersResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdOffersResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdOffersResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -1568,29 +1568,29 @@ class GetAccountsAccountIdPartiesResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdPartiesResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -1600,31 +1600,31 @@ class GetAccountsAccountIdPartiesResponse_Error {
 
   static GetAccountsAccountIdPartiesResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdPartiesResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdPartiesResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdPartiesResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdPartiesResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdPartiesResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdPartiesResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdPartiesResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdPartiesResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -1769,29 +1769,29 @@ class GetAccountsAccountIdPartyResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdPartyResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -1801,31 +1801,31 @@ class GetAccountsAccountIdPartyResponse_Error {
 
   static GetAccountsAccountIdPartyResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdPartyResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdPartyResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdPartyResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdPartyResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdPartyResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdPartyResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdPartyResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdPartyResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -1971,29 +1971,29 @@ class GetAccountsAccountIdProductResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdProductResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -2003,31 +2003,31 @@ class GetAccountsAccountIdProductResponse_Error {
 
   static GetAccountsAccountIdProductResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdProductResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdProductResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdProductResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdProductResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdProductResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdProductResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdProductResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdProductResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -2187,29 +2187,29 @@ class GetAccountsAccountIdScheduledPaymentsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdScheduledPaymentsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -2219,31 +2219,31 @@ class GetAccountsAccountIdScheduledPaymentsResponse_Error {
 
   static GetAccountsAccountIdScheduledPaymentsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdScheduledPaymentsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -2401,29 +2401,29 @@ class GetAccountsAccountIdStandingOrdersResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdStandingOrdersResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -2433,31 +2433,31 @@ class GetAccountsAccountIdStandingOrdersResponse_Error {
 
   static GetAccountsAccountIdStandingOrdersResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdStandingOrdersResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -2724,29 +2724,29 @@ class GetAccountsAccountIdStatementsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdStatementsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -2756,31 +2756,31 @@ class GetAccountsAccountIdStatementsResponse_Error {
 
   static GetAccountsAccountIdStatementsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdStatementsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdStatementsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdStatementsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdStatementsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdStatementsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdStatementsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdStatementsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdStatementsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -2953,29 +2953,29 @@ class GetAccountsAccountIdStatementsStatementIdResponse_Error {
 
   static dynamic toJsonStatic(int status,
       GetAccountsAccountIdStatementsStatementIdResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -2985,36 +2985,36 @@ class GetAccountsAccountIdStatementsStatementIdResponse_Error {
 
   static GetAccountsAccountIdStatementsStatementIdResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R401(
             null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R404(
             null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R405(
             null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R406(
             null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R429(
             null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdStatementsStatementIdResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -3193,29 +3193,29 @@ class GetAccountsAccountIdStatementsStatementIdFileResponse_Error {
 
   static dynamic toJsonStatic(int status,
       GetAccountsAccountIdStatementsStatementIdFileResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -3225,36 +3225,36 @@ class GetAccountsAccountIdStatementsStatementIdFileResponse_Error {
 
   static GetAccountsAccountIdStatementsStatementIdFileResponse_Error
       fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R401(
             null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R404(
             null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R405(
             null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R406(
             null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R429(
             null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdStatementsStatementIdFileResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -3457,29 +3457,29 @@ class GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error {
       int status,
       GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
           input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -3489,38 +3489,38 @@ class GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error {
 
   static GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
       fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R400(
                 OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R403(
                 OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R404(null);
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error
             .R500(
                 OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
@@ -3784,26 +3784,26 @@ class GetAccountsAccountIdTransactionsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetAccountsAccountIdTransactionsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -3813,28 +3813,28 @@ class GetAccountsAccountIdTransactionsResponse_Error {
 
   static GetAccountsAccountIdTransactionsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetAccountsAccountIdTransactionsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetAccountsAccountIdTransactionsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetAccountsAccountIdTransactionsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 405:
+      case "405":
         return GetAccountsAccountIdTransactionsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetAccountsAccountIdTransactionsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetAccountsAccountIdTransactionsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetAccountsAccountIdTransactionsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -3885,29 +3885,29 @@ class GetBalancesResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetBalancesResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -3916,31 +3916,31 @@ class GetBalancesResponse_Error {
   }
 
   static GetBalancesResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetBalancesResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetBalancesResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetBalancesResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetBalancesResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetBalancesResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetBalancesResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetBalancesResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetBalancesResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -3995,29 +3995,29 @@ class GetBeneficiariesResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetBeneficiariesResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4027,31 +4027,31 @@ class GetBeneficiariesResponse_Error {
 
   static GetBeneficiariesResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetBeneficiariesResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetBeneficiariesResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetBeneficiariesResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetBeneficiariesResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetBeneficiariesResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetBeneficiariesResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetBeneficiariesResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetBeneficiariesResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4105,29 +4105,29 @@ class GetDirectDebitsResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetDirectDebitsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4137,31 +4137,31 @@ class GetDirectDebitsResponse_Error {
 
   static GetDirectDebitsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetDirectDebitsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetDirectDebitsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetDirectDebitsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetDirectDebitsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetDirectDebitsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetDirectDebitsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetDirectDebitsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetDirectDebitsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4212,29 +4212,29 @@ class GetOffersResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetOffersResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4243,31 +4243,31 @@ class GetOffersResponse_Error {
   }
 
   static GetOffersResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetOffersResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetOffersResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetOffersResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetOffersResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetOffersResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetOffersResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetOffersResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetOffersResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4318,29 +4318,29 @@ class GetPartyResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetPartyResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4349,31 +4349,31 @@ class GetPartyResponse_Error {
   }
 
   static GetPartyResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetPartyResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetPartyResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetPartyResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetPartyResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetPartyResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetPartyResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetPartyResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetPartyResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4424,29 +4424,29 @@ class GetProductsResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetProductsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4455,31 +4455,31 @@ class GetProductsResponse_Error {
   }
 
   static GetProductsResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetProductsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetProductsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetProductsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetProductsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetProductsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetProductsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetProductsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetProductsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4534,29 +4534,29 @@ class GetScheduledPaymentsResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetScheduledPaymentsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4566,31 +4566,31 @@ class GetScheduledPaymentsResponse_Error {
 
   static GetScheduledPaymentsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetScheduledPaymentsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetScheduledPaymentsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetScheduledPaymentsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetScheduledPaymentsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetScheduledPaymentsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetScheduledPaymentsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetScheduledPaymentsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetScheduledPaymentsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4645,29 +4645,29 @@ class GetStandingOrdersResponse_Error {
 
   static dynamic toJsonStatic(
       int status, GetStandingOrdersResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4677,31 +4677,31 @@ class GetStandingOrdersResponse_Error {
 
   static GetStandingOrdersResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetStandingOrdersResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetStandingOrdersResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetStandingOrdersResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetStandingOrdersResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetStandingOrdersResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetStandingOrdersResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetStandingOrdersResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetStandingOrdersResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -4855,29 +4855,29 @@ class GetStatementsResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetStatementsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -4886,31 +4886,31 @@ class GetStatementsResponse_Error {
   }
 
   static GetStatementsResponse_Error fromJsonStatic(int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetStatementsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetStatementsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetStatementsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetStatementsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetStatementsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetStatementsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetStatementsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetStatementsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -5065,29 +5065,29 @@ class GetTransactionsResponse_Error {
       : null;
 
   static dynamic toJsonStatic(int status, GetTransactionsResponse_Error input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return input.r400!.toJson();
 
-      case 401:
+      case "401":
         return null;
 
-      case 403:
+      case "403":
         return input.r403!.toJson();
 
-      case 404:
+      case "404":
         return null;
 
-      case 405:
+      case "405":
         return null;
 
-      case 406:
+      case "406":
         return null;
 
-      case 429:
+      case "429":
         return null;
 
-      case 500:
+      case "500":
         return input.r500!.toJson();
 
       default:
@@ -5097,31 +5097,31 @@ class GetTransactionsResponse_Error {
 
   static GetTransactionsResponse_Error fromJsonStatic(
       int status, dynamic input) {
-    switch (status) {
-      case 400:
+    switch (status.toString()) {
+      case "400":
         return GetTransactionsResponse_Error.R400(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 401:
+      case "401":
         return GetTransactionsResponse_Error.R401(null);
 
-      case 403:
+      case "403":
         return GetTransactionsResponse_Error.R403(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
-      case 404:
+      case "404":
         return GetTransactionsResponse_Error.R404(null);
 
-      case 405:
+      case "405":
         return GetTransactionsResponse_Error.R405(null);
 
-      case 406:
+      case "406":
         return GetTransactionsResponse_Error.R406(null);
 
-      case 429:
+      case "429":
         return GetTransactionsResponse_Error.R429(null);
 
-      case 500:
+      case "500":
         return GetTransactionsResponse_Error.R500(
             OBErrorResponse1Object.fromJson(input as Map<String, dynamic>));
 
@@ -5140,10 +5140,10 @@ class FileObject {
 
   Map<String, dynamic> toJson() => _$FileObjectToJson(this);
 
-  static FileObject fromJsonStatic(dynamic value) =>
+  static FileObject fromJsonStatic(int status, dynamic value) =>
       _$FileObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(FileObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, FileObject input) => input.toJson();
 
   @override
   String toString() => "FileObject()";
@@ -5173,10 +5173,10 @@ class LinksObject {
 
   Map<String, dynamic> toJson() => _$LinksObjectToJson(this);
 
-  static LinksObject fromJsonStatic(dynamic value) =>
+  static LinksObject fromJsonStatic(int status, dynamic value) =>
       _$LinksObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(LinksObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, LinksObject input) => input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -5285,10 +5285,10 @@ class MetaObject {
 
   Map<String, dynamic> toJson() => _$MetaObjectToJson(this);
 
-  static MetaObject fromJsonStatic(dynamic value) =>
+  static MetaObject fromJsonStatic(int status, dynamic value) =>
       _$MetaObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(MetaObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, MetaObject input) => input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -5401,10 +5401,11 @@ class OBAccount4Object_Account {
 
   Map<String, dynamic> toJson() => _$OBAccount4Object_AccountToJson(this);
 
-  static OBAccount4Object_Account fromJsonStatic(dynamic value) =>
+  static OBAccount4Object_Account fromJsonStatic(int status, dynamic value) =>
       _$OBAccount4Object_AccountFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount4Object_Account input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount4Object_Account input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -5548,10 +5549,11 @@ class OBAccount4Object {
 
   Map<String, dynamic> toJson() => _$OBAccount4ObjectToJson(this);
 
-  static OBAccount4Object fromJsonStatic(dynamic value) =>
+  static OBAccount4Object fromJsonStatic(int status, dynamic value) =>
       _$OBAccount4ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount4Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount4Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -5758,10 +5760,11 @@ class OBAccount4BasicObject {
 
   Map<String, dynamic> toJson() => _$OBAccount4BasicObjectToJson(this);
 
-  static OBAccount4BasicObject fromJsonStatic(dynamic value) =>
+  static OBAccount4BasicObject fromJsonStatic(int status, dynamic value) =>
       _$OBAccount4BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount4BasicObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount4BasicObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -5930,10 +5933,12 @@ class OBAccount4DetailObject_Account {
 
   Map<String, dynamic> toJson() => _$OBAccount4DetailObject_AccountToJson(this);
 
-  static OBAccount4DetailObject_Account fromJsonStatic(dynamic value) =>
+  static OBAccount4DetailObject_Account fromJsonStatic(
+          int status, dynamic value) =>
       _$OBAccount4DetailObject_AccountFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount4DetailObject_Account input) =>
+  static dynamic toJsonStatic(
+          int status, OBAccount4DetailObject_Account input) =>
       input.toJson();
 
   @override
@@ -6082,10 +6087,11 @@ class OBAccount4DetailObject {
 
   Map<String, dynamic> toJson() => _$OBAccount4DetailObjectToJson(this);
 
-  static OBAccount4DetailObject fromJsonStatic(dynamic value) =>
+  static OBAccount4DetailObject fromJsonStatic(int status, dynamic value) =>
       _$OBAccount4DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount4DetailObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount4DetailObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -6280,10 +6286,11 @@ class OBAccount6Object_Account {
 
   Map<String, dynamic> toJson() => _$OBAccount6Object_AccountToJson(this);
 
-  static OBAccount6Object_Account fromJsonStatic(dynamic value) =>
+  static OBAccount6Object_Account fromJsonStatic(int status, dynamic value) =>
       _$OBAccount6Object_AccountFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount6Object_Account input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount6Object_Account input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -6436,10 +6443,11 @@ class OBAccount6Object {
 
   Map<String, dynamic> toJson() => _$OBAccount6ObjectToJson(this);
 
-  static OBAccount6Object fromJsonStatic(dynamic value) =>
+  static OBAccount6Object fromJsonStatic(int status, dynamic value) =>
       _$OBAccount6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -6693,10 +6701,11 @@ class OBAccount6BasicObject {
 
   Map<String, dynamic> toJson() => _$OBAccount6BasicObjectToJson(this);
 
-  static OBAccount6BasicObject fromJsonStatic(dynamic value) =>
+  static OBAccount6BasicObject fromJsonStatic(int status, dynamic value) =>
       _$OBAccount6BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount6BasicObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount6BasicObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -6901,10 +6910,12 @@ class OBAccount6DetailObject_Account {
 
   Map<String, dynamic> toJson() => _$OBAccount6DetailObject_AccountToJson(this);
 
-  static OBAccount6DetailObject_Account fromJsonStatic(dynamic value) =>
+  static OBAccount6DetailObject_Account fromJsonStatic(
+          int status, dynamic value) =>
       _$OBAccount6DetailObject_AccountFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount6DetailObject_Account input) =>
+  static dynamic toJsonStatic(
+          int status, OBAccount6DetailObject_Account input) =>
       input.toJson();
 
   @override
@@ -7062,10 +7073,11 @@ class OBAccount6DetailObject {
 
   Map<String, dynamic> toJson() => _$OBAccount6DetailObjectToJson(this);
 
-  static OBAccount6DetailObject fromJsonStatic(dynamic value) =>
+  static OBAccount6DetailObject fromJsonStatic(int status, dynamic value) =>
       _$OBAccount6DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBAccount6DetailObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBAccount6DetailObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -7294,12 +7306,12 @@ class OBActiveOrHistoricCurrencyAndAmount_0Object {
       _$OBActiveOrHistoricCurrencyAndAmount_0ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_0Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_0ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_0Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_0Object input) =>
       input.toJson();
 
   @override
@@ -7395,12 +7407,12 @@ class OBActiveOrHistoricCurrencyAndAmount_1Object {
       _$OBActiveOrHistoricCurrencyAndAmount_1ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_1Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_1ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_1Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_1Object input) =>
       input.toJson();
 
   @override
@@ -7496,12 +7508,12 @@ class OBActiveOrHistoricCurrencyAndAmount_10Object {
       _$OBActiveOrHistoricCurrencyAndAmount_10ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_10Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_10ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_10Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_10Object input) =>
       input.toJson();
 
   @override
@@ -7597,12 +7609,12 @@ class OBActiveOrHistoricCurrencyAndAmount_11Object {
       _$OBActiveOrHistoricCurrencyAndAmount_11ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_11Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_11ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_11Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_11Object input) =>
       input.toJson();
 
   @override
@@ -7698,12 +7710,12 @@ class OBActiveOrHistoricCurrencyAndAmount_2Object {
       _$OBActiveOrHistoricCurrencyAndAmount_2ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_2Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_2ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_2Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_2Object input) =>
       input.toJson();
 
   @override
@@ -7799,12 +7811,12 @@ class OBActiveOrHistoricCurrencyAndAmount_3Object {
       _$OBActiveOrHistoricCurrencyAndAmount_3ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_3Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_3ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_3Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_3Object input) =>
       input.toJson();
 
   @override
@@ -7900,12 +7912,12 @@ class OBActiveOrHistoricCurrencyAndAmount_4Object {
       _$OBActiveOrHistoricCurrencyAndAmount_4ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_4Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_4ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_4Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_4Object input) =>
       input.toJson();
 
   @override
@@ -8001,12 +8013,12 @@ class OBActiveOrHistoricCurrencyAndAmount_5Object {
       _$OBActiveOrHistoricCurrencyAndAmount_5ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_5Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_5ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_5Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_5Object input) =>
       input.toJson();
 
   @override
@@ -8102,12 +8114,12 @@ class OBActiveOrHistoricCurrencyAndAmount_6Object {
       _$OBActiveOrHistoricCurrencyAndAmount_6ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_6Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_6ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_6Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_6Object input) =>
       input.toJson();
 
   @override
@@ -8203,12 +8215,12 @@ class OBActiveOrHistoricCurrencyAndAmount_7Object {
       _$OBActiveOrHistoricCurrencyAndAmount_7ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_7Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_7ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_7Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_7Object input) =>
       input.toJson();
 
   @override
@@ -8304,12 +8316,12 @@ class OBActiveOrHistoricCurrencyAndAmount_8Object {
       _$OBActiveOrHistoricCurrencyAndAmount_8ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_8Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_8ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_8Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_8Object input) =>
       input.toJson();
 
   @override
@@ -8405,12 +8417,12 @@ class OBActiveOrHistoricCurrencyAndAmount_9Object {
       _$OBActiveOrHistoricCurrencyAndAmount_9ObjectToJson(this);
 
   static OBActiveOrHistoricCurrencyAndAmount_9Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBActiveOrHistoricCurrencyAndAmount_9ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBActiveOrHistoricCurrencyAndAmount_9Object input) =>
+          int status, OBActiveOrHistoricCurrencyAndAmount_9Object input) =>
       input.toJson();
 
   @override
@@ -8506,10 +8518,12 @@ class OBBCAData1Object_ProductDetails {
   Map<String, dynamic> toJson() =>
       _$OBBCAData1Object_ProductDetailsToJson(this);
 
-  static OBBCAData1Object_ProductDetails fromJsonStatic(dynamic value) =>
+  static OBBCAData1Object_ProductDetails fromJsonStatic(
+          int status, dynamic value) =>
       _$OBBCAData1Object_ProductDetailsFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBCAData1Object_ProductDetails input) =>
+  static dynamic toJsonStatic(
+          int status, OBBCAData1Object_ProductDetails input) =>
       input.toJson();
 
   @override
@@ -8643,11 +8657,12 @@ class OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
           this);
 
   static OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
               input) =>
       input.toJson();
@@ -8789,11 +8804,12 @@ class OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequ
           this);
 
   static OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -8935,11 +8951,12 @@ class OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequ
           this);
 
   static OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -9117,11 +9134,11 @@ class OBBCAData1Object_CreditInterest_TierBandSet_TierBand {
       _$OBBCAData1Object_CreditInterest_TierBandSet_TierBandToJson(this);
 
   static OBBCAData1Object_CreditInterest_TierBandSet_TierBand fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_CreditInterest_TierBandSet_TierBandFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBCAData1Object_CreditInterest_TierBandSet_TierBand input) =>
       input.toJson();
 
@@ -9404,12 +9421,12 @@ class OBBCAData1Object_CreditInterest_TierBandSet {
       _$OBBCAData1Object_CreditInterest_TierBandSetToJson(this);
 
   static OBBCAData1Object_CreditInterest_TierBandSet fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_CreditInterest_TierBandSetFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBBCAData1Object_CreditInterest_TierBandSet input) =>
+          int status, OBBCAData1Object_CreditInterest_TierBandSet input) =>
       input.toJson();
 
   @override
@@ -9548,10 +9565,12 @@ class OBBCAData1Object_CreditInterest {
   Map<String, dynamic> toJson() =>
       _$OBBCAData1Object_CreditInterestToJson(this);
 
-  static OBBCAData1Object_CreditInterest fromJsonStatic(dynamic value) =>
+  static OBBCAData1Object_CreditInterest fromJsonStatic(
+          int status, dynamic value) =>
       _$OBBCAData1Object_CreditInterestFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBCAData1Object_CreditInterest input) =>
+  static dynamic toJsonStatic(
+          int status, OBBCAData1Object_CreditInterest input) =>
       input.toJson();
 
   @override
@@ -9651,11 +9670,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -9813,11 +9833,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -10022,11 +10043,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -10184,11 +10206,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -10393,11 +10416,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -10539,11 +10563,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -10685,11 +10710,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -10831,11 +10857,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -11021,11 +11048,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -11335,11 +11363,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -11524,11 +11553,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand {
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBandFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand
               input) =>
       input.toJson();
@@ -11789,11 +11819,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -11951,11 +11982,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -12160,11 +12192,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -12322,11 +12355,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -12531,11 +12565,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -12677,11 +12712,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -12823,11 +12859,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -12969,11 +13006,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -13159,11 +13197,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -13473,11 +13512,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges {
           this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -13648,12 +13688,12 @@ class OBBCAData1Object_Overdraft_OverdraftTierBandSet {
       _$OBBCAData1Object_Overdraft_OverdraftTierBandSetToJson(this);
 
   static OBBCAData1Object_Overdraft_OverdraftTierBandSet fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_Overdraft_OverdraftTierBandSetFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBBCAData1Object_Overdraft_OverdraftTierBandSet input) =>
+          int status, OBBCAData1Object_Overdraft_OverdraftTierBandSet input) =>
       input.toJson();
 
   @override
@@ -13838,10 +13878,10 @@ class OBBCAData1Object_Overdraft {
 
   Map<String, dynamic> toJson() => _$OBBCAData1Object_OverdraftToJson(this);
 
-  static OBBCAData1Object_Overdraft fromJsonStatic(dynamic value) =>
+  static OBBCAData1Object_Overdraft fromJsonStatic(int status, dynamic value) =>
       _$OBBCAData1Object_OverdraftFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBCAData1Object_Overdraft input) =>
+  static dynamic toJsonStatic(int status, OBBCAData1Object_Overdraft input) =>
       input.toJson();
 
   @override
@@ -13948,11 +13988,11 @@ class OBBCAData1Object_OtherFeesCharges_OtherTariffType {
       _$OBBCAData1Object_OtherFeesCharges_OtherTariffTypeToJson(this);
 
   static OBBCAData1Object_OtherFeesCharges_OtherTariffType fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_OtherFeesCharges_OtherTariffTypeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBCAData1Object_OtherFeesCharges_OtherTariffType input) =>
       input.toJson();
 
@@ -14065,11 +14105,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeTyp
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -14227,11 +14268,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap {
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
               input) =>
       input.toJson();
@@ -14427,11 +14469,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType {
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType
               input) =>
       input.toJson();
@@ -14578,11 +14621,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType {
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -14730,11 +14774,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType {
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -14872,11 +14917,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequenc
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -15018,11 +15064,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequenc
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -15169,11 +15216,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange {
           this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRangeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
               input) =>
       input.toJson();
@@ -15390,11 +15438,11 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeDetail {
       _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetailToJson(this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeDetail fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_OtherFeesCharges_FeeChargeDetailFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeDetail input) =>
       input.toJson();
 
@@ -15693,11 +15741,11 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType {
       _$OBBCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeTypeToJson(this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBBCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType input) =>
       input.toJson();
 
@@ -15842,12 +15890,12 @@ class OBBCAData1Object_OtherFeesCharges_FeeChargeCap {
       _$OBBCAData1Object_OtherFeesCharges_FeeChargeCapToJson(this);
 
   static OBBCAData1Object_OtherFeesCharges_FeeChargeCap fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBCAData1Object_OtherFeesCharges_FeeChargeCapFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBBCAData1Object_OtherFeesCharges_FeeChargeCap input) =>
+          int status, OBBCAData1Object_OtherFeesCharges_FeeChargeCap input) =>
       input.toJson();
 
   @override
@@ -16022,11 +16070,13 @@ class OBBCAData1Object_OtherFeesCharges {
   Map<String, dynamic> toJson() =>
       _$OBBCAData1Object_OtherFeesChargesToJson(this);
 
-  static OBBCAData1Object_OtherFeesCharges fromJsonStatic(dynamic value) =>
+  static OBBCAData1Object_OtherFeesCharges fromJsonStatic(
+          int status, dynamic value) =>
       _$OBBCAData1Object_OtherFeesChargesFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBCAData1Object_OtherFeesCharges input) =>
+  static dynamic toJsonStatic(
+          int status, OBBCAData1Object_OtherFeesCharges input) =>
       input.toJson();
 
   @override
@@ -16180,10 +16230,11 @@ class OBBCAData1Object {
 
   Map<String, dynamic> toJson() => _$OBBCAData1ObjectToJson(this);
 
-  static OBBCAData1Object fromJsonStatic(dynamic value) =>
+  static OBBCAData1Object fromJsonStatic(int status, dynamic value) =>
       _$OBBCAData1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBCAData1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBBCAData1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -16312,11 +16363,13 @@ class OBBankTransactionCodeStructure1Object {
   Map<String, dynamic> toJson() =>
       _$OBBankTransactionCodeStructure1ObjectToJson(this);
 
-  static OBBankTransactionCodeStructure1Object fromJsonStatic(dynamic value) =>
+  static OBBankTransactionCodeStructure1Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBBankTransactionCodeStructure1ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBankTransactionCodeStructure1Object input) =>
+  static dynamic toJsonStatic(
+          int status, OBBankTransactionCodeStructure1Object input) =>
       input.toJson();
 
   @override
@@ -16420,10 +16473,11 @@ class OBBeneficiary5Object {
 
   Map<String, dynamic> toJson() => _$OBBeneficiary5ObjectToJson(this);
 
-  static OBBeneficiary5Object fromJsonStatic(dynamic value) =>
+  static OBBeneficiary5Object fromJsonStatic(int status, dynamic value) =>
       _$OBBeneficiary5ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBeneficiary5Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBBeneficiary5Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -16593,10 +16647,10 @@ class OBBeneficiary5BasicObject {
 
   Map<String, dynamic> toJson() => _$OBBeneficiary5BasicObjectToJson(this);
 
-  static OBBeneficiary5BasicObject fromJsonStatic(dynamic value) =>
+  static OBBeneficiary5BasicObject fromJsonStatic(int status, dynamic value) =>
       _$OBBeneficiary5BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBeneficiary5BasicObject input) =>
+  static dynamic toJsonStatic(int status, OBBeneficiary5BasicObject input) =>
       input.toJson();
 
   @override
@@ -16748,10 +16802,10 @@ class OBBeneficiary5DetailObject {
 
   Map<String, dynamic> toJson() => _$OBBeneficiary5DetailObjectToJson(this);
 
-  static OBBeneficiary5DetailObject fromJsonStatic(dynamic value) =>
+  static OBBeneficiary5DetailObject fromJsonStatic(int status, dynamic value) =>
       _$OBBeneficiary5DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBBeneficiary5DetailObject input) =>
+  static dynamic toJsonStatic(int status, OBBeneficiary5DetailObject input) =>
       input.toJson();
 
   @override
@@ -16918,11 +16972,11 @@ class OBBranchAndFinancialInstitutionIdentification5_0Object {
       _$OBBranchAndFinancialInstitutionIdentification5_0ObjectToJson(this);
 
   static OBBranchAndFinancialInstitutionIdentification5_0Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBranchAndFinancialInstitutionIdentification5_0ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBranchAndFinancialInstitutionIdentification5_0Object input) =>
       input.toJson();
 
@@ -17036,11 +17090,11 @@ class OBBranchAndFinancialInstitutionIdentification5_1Object {
       _$OBBranchAndFinancialInstitutionIdentification5_1ObjectToJson(this);
 
   static OBBranchAndFinancialInstitutionIdentification5_1Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBranchAndFinancialInstitutionIdentification5_1ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBranchAndFinancialInstitutionIdentification5_1Object input) =>
       input.toJson();
 
@@ -17158,11 +17212,11 @@ class OBBranchAndFinancialInstitutionIdentification6_0Object {
       _$OBBranchAndFinancialInstitutionIdentification6_0ObjectToJson(this);
 
   static OBBranchAndFinancialInstitutionIdentification6_0Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBranchAndFinancialInstitutionIdentification6_0ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBranchAndFinancialInstitutionIdentification6_0Object input) =>
       input.toJson();
 
@@ -17310,11 +17364,11 @@ class OBBranchAndFinancialInstitutionIdentification6_1Object {
       _$OBBranchAndFinancialInstitutionIdentification6_1ObjectToJson(this);
 
   static OBBranchAndFinancialInstitutionIdentification6_1Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBranchAndFinancialInstitutionIdentification6_1ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBranchAndFinancialInstitutionIdentification6_1Object input) =>
       input.toJson();
 
@@ -17462,11 +17516,11 @@ class OBBranchAndFinancialInstitutionIdentification6_2Object {
       _$OBBranchAndFinancialInstitutionIdentification6_2ObjectToJson(this);
 
   static OBBranchAndFinancialInstitutionIdentification6_2Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBBranchAndFinancialInstitutionIdentification6_2ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBBranchAndFinancialInstitutionIdentification6_2Object input) =>
       input.toJson();
 
@@ -17611,10 +17665,11 @@ class OBCashAccount5_0Object {
 
   Map<String, dynamic> toJson() => _$OBCashAccount5_0ObjectToJson(this);
 
-  static OBCashAccount5_0Object fromJsonStatic(dynamic value) =>
+  static OBCashAccount5_0Object fromJsonStatic(int status, dynamic value) =>
       _$OBCashAccount5_0ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBCashAccount5_0Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBCashAccount5_0Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -17741,10 +17796,11 @@ class OBCashAccount5_1Object {
 
   Map<String, dynamic> toJson() => _$OBCashAccount5_1ObjectToJson(this);
 
-  static OBCashAccount5_1Object fromJsonStatic(dynamic value) =>
+  static OBCashAccount5_1Object fromJsonStatic(int status, dynamic value) =>
       _$OBCashAccount5_1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBCashAccount5_1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBCashAccount5_1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -17871,10 +17927,11 @@ class OBCashAccount6_0Object {
 
   Map<String, dynamic> toJson() => _$OBCashAccount6_0ObjectToJson(this);
 
-  static OBCashAccount6_0Object fromJsonStatic(dynamic value) =>
+  static OBCashAccount6_0Object fromJsonStatic(int status, dynamic value) =>
       _$OBCashAccount6_0ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBCashAccount6_0Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBCashAccount6_0Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -18003,10 +18060,11 @@ class OBCashAccount6_1Object {
 
   Map<String, dynamic> toJson() => _$OBCashAccount6_1ObjectToJson(this);
 
-  static OBCashAccount6_1Object fromJsonStatic(dynamic value) =>
+  static OBCashAccount6_1Object fromJsonStatic(int status, dynamic value) =>
       _$OBCashAccount6_1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBCashAccount6_1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBCashAccount6_1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -18132,12 +18190,12 @@ class OBCurrencyExchange5Object_InstructedAmount {
       _$OBCurrencyExchange5Object_InstructedAmountToJson(this);
 
   static OBCurrencyExchange5Object_InstructedAmount fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBCurrencyExchange5Object_InstructedAmountFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBCurrencyExchange5Object_InstructedAmount input) =>
+          int status, OBCurrencyExchange5Object_InstructedAmount input) =>
       input.toJson();
 
   @override
@@ -18244,10 +18302,10 @@ class OBCurrencyExchange5Object {
 
   Map<String, dynamic> toJson() => _$OBCurrencyExchange5ObjectToJson(this);
 
-  static OBCurrencyExchange5Object fromJsonStatic(dynamic value) =>
+  static OBCurrencyExchange5Object fromJsonStatic(int status, dynamic value) =>
       _$OBCurrencyExchange5ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBCurrencyExchange5Object input) =>
+  static dynamic toJsonStatic(int status, OBCurrencyExchange5Object input) =>
       input.toJson();
 
   @override
@@ -18413,10 +18471,11 @@ class OBError1Object {
 
   Map<String, dynamic> toJson() => _$OBError1ObjectToJson(this);
 
-  static OBError1Object fromJsonStatic(dynamic value) =>
+  static OBError1Object fromJsonStatic(int status, dynamic value) =>
       _$OBError1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBError1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBError1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -18522,10 +18581,11 @@ class OBErrorResponse1Object {
 
   Map<String, dynamic> toJson() => _$OBErrorResponse1ObjectToJson(this);
 
-  static OBErrorResponse1Object fromJsonStatic(dynamic value) =>
+  static OBErrorResponse1Object fromJsonStatic(int status, dynamic value) =>
       _$OBErrorResponse1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBErrorResponse1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBErrorResponse1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -18630,10 +18690,11 @@ class OBMerchantDetails1Object {
 
   Map<String, dynamic> toJson() => _$OBMerchantDetails1ObjectToJson(this);
 
-  static OBMerchantDetails1Object fromJsonStatic(dynamic value) =>
+  static OBMerchantDetails1Object fromJsonStatic(int status, dynamic value) =>
       _$OBMerchantDetails1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBMerchantDetails1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBMerchantDetails1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -18732,10 +18793,12 @@ class OBPCAData1Object_ProductDetails {
   Map<String, dynamic> toJson() =>
       _$OBPCAData1Object_ProductDetailsToJson(this);
 
-  static OBPCAData1Object_ProductDetails fromJsonStatic(dynamic value) =>
+  static OBPCAData1Object_ProductDetails fromJsonStatic(
+          int status, dynamic value) =>
       _$OBPCAData1Object_ProductDetailsFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPCAData1Object_ProductDetails input) =>
+  static dynamic toJsonStatic(
+          int status, OBPCAData1Object_ProductDetails input) =>
       input.toJson();
 
   @override
@@ -18855,11 +18918,12 @@ class OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
           this);
 
   static OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
               input) =>
       input.toJson();
@@ -19001,11 +19065,12 @@ class OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequ
           this);
 
   static OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -19147,11 +19212,12 @@ class OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequ
           this);
 
   static OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_CreditInterest_TierBandSet_TierBand_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -19329,11 +19395,11 @@ class OBPCAData1Object_CreditInterest_TierBandSet_TierBand {
       _$OBPCAData1Object_CreditInterest_TierBandSet_TierBandToJson(this);
 
   static OBPCAData1Object_CreditInterest_TierBandSet_TierBand fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBPCAData1Object_CreditInterest_TierBandSet_TierBandFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBPCAData1Object_CreditInterest_TierBandSet_TierBand input) =>
       input.toJson();
 
@@ -19616,12 +19682,12 @@ class OBPCAData1Object_CreditInterest_TierBandSet {
       _$OBPCAData1Object_CreditInterest_TierBandSetToJson(this);
 
   static OBPCAData1Object_CreditInterest_TierBandSet fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBPCAData1Object_CreditInterest_TierBandSetFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBPCAData1Object_CreditInterest_TierBandSet input) =>
+          int status, OBPCAData1Object_CreditInterest_TierBandSet input) =>
       input.toJson();
 
   @override
@@ -19760,10 +19826,12 @@ class OBPCAData1Object_CreditInterest {
   Map<String, dynamic> toJson() =>
       _$OBPCAData1Object_CreditInterestToJson(this);
 
-  static OBPCAData1Object_CreditInterest fromJsonStatic(dynamic value) =>
+  static OBPCAData1Object_CreditInterest fromJsonStatic(
+          int status, dynamic value) =>
       _$OBPCAData1Object_CreditInterestFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPCAData1Object_CreditInterest input) =>
+  static dynamic toJsonStatic(
+          int status, OBPCAData1Object_CreditInterest input) =>
       input.toJson();
 
   @override
@@ -19863,11 +19931,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -20028,11 +20097,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -20249,11 +20319,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -20395,11 +20466,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -20541,11 +20613,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -20687,11 +20760,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -20833,11 +20907,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -20998,11 +21073,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -21259,11 +21335,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -21561,11 +21638,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_Overdraf
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -21741,11 +21819,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand {
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBandFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftTierBand
               input) =>
       input.toJson();
@@ -21970,11 +22049,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -22135,11 +22215,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -22356,11 +22437,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -22502,11 +22584,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -22648,11 +22731,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -22794,11 +22878,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -22940,11 +23025,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -23105,11 +23191,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -23366,11 +23453,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_Overd
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -23668,11 +23756,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges {
           this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -23843,12 +23932,12 @@ class OBPCAData1Object_Overdraft_OverdraftTierBandSet {
       _$OBPCAData1Object_Overdraft_OverdraftTierBandSetToJson(this);
 
   static OBPCAData1Object_Overdraft_OverdraftTierBandSet fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBPCAData1Object_Overdraft_OverdraftTierBandSetFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBPCAData1Object_Overdraft_OverdraftTierBandSet input) =>
+          int status, OBPCAData1Object_Overdraft_OverdraftTierBandSet input) =>
       input.toJson();
 
   @override
@@ -24033,10 +24122,10 @@ class OBPCAData1Object_Overdraft {
 
   Map<String, dynamic> toJson() => _$OBPCAData1Object_OverdraftToJson(this);
 
-  static OBPCAData1Object_Overdraft fromJsonStatic(dynamic value) =>
+  static OBPCAData1Object_Overdraft fromJsonStatic(int status, dynamic value) =>
       _$OBPCAData1Object_OverdraftFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPCAData1Object_Overdraft input) =>
+  static dynamic toJsonStatic(int status, OBPCAData1Object_Overdraft input) =>
       input.toJson();
 
   @override
@@ -24145,11 +24234,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType {
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeCategoryType
               input) =>
       input.toJson();
@@ -24296,11 +24386,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType {
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeType
               input) =>
       input.toJson();
@@ -24448,11 +24539,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType {
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherFeeRateType
               input) =>
       input.toJson();
@@ -24590,11 +24682,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequenc
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherApplicationFrequency
               input) =>
       input.toJson();
@@ -24736,11 +24829,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequenc
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_OtherCalculationFrequency
               input) =>
       input.toJson();
@@ -24882,11 +24976,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeTyp
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -25044,11 +25139,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap {
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
               input) =>
       input.toJson();
@@ -25249,11 +25345,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange {
           this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRangeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
               input) =>
       input.toJson();
@@ -25467,11 +25564,11 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeDetail {
       _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetailToJson(this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeDetail fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBPCAData1Object_OtherFeesCharges_FeeChargeDetailFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeDetail input) =>
       input.toJson();
 
@@ -25758,11 +25855,11 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType {
       _$OBPCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeTypeToJson(this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBPCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBPCAData1Object_OtherFeesCharges_FeeChargeCap_OtherFeeType input) =>
       input.toJson();
 
@@ -25907,12 +26004,12 @@ class OBPCAData1Object_OtherFeesCharges_FeeChargeCap {
       _$OBPCAData1Object_OtherFeesCharges_FeeChargeCapToJson(this);
 
   static OBPCAData1Object_OtherFeesCharges_FeeChargeCap fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBPCAData1Object_OtherFeesCharges_FeeChargeCapFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBPCAData1Object_OtherFeesCharges_FeeChargeCap input) =>
+          int status, OBPCAData1Object_OtherFeesCharges_FeeChargeCap input) =>
       input.toJson();
 
   @override
@@ -26077,11 +26174,13 @@ class OBPCAData1Object_OtherFeesCharges {
   Map<String, dynamic> toJson() =>
       _$OBPCAData1Object_OtherFeesChargesToJson(this);
 
-  static OBPCAData1Object_OtherFeesCharges fromJsonStatic(dynamic value) =>
+  static OBPCAData1Object_OtherFeesCharges fromJsonStatic(
+          int status, dynamic value) =>
       _$OBPCAData1Object_OtherFeesChargesFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPCAData1Object_OtherFeesCharges input) =>
+  static dynamic toJsonStatic(
+          int status, OBPCAData1Object_OtherFeesCharges input) =>
       input.toJson();
 
   @override
@@ -26195,10 +26294,11 @@ class OBPCAData1Object {
 
   Map<String, dynamic> toJson() => _$OBPCAData1ObjectToJson(this);
 
-  static OBPCAData1Object fromJsonStatic(dynamic value) =>
+  static OBPCAData1Object fromJsonStatic(int status, dynamic value) =>
       _$OBPCAData1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPCAData1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBPCAData1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -26343,10 +26443,11 @@ class OBParty2Object_Address {
 
   Map<String, dynamic> toJson() => _$OBParty2Object_AddressToJson(this);
 
-  static OBParty2Object_Address fromJsonStatic(dynamic value) =>
+  static OBParty2Object_Address fromJsonStatic(int status, dynamic value) =>
       _$OBParty2Object_AddressFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBParty2Object_Address input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBParty2Object_Address input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -26545,10 +26646,11 @@ class OBParty2Object {
 
   Map<String, dynamic> toJson() => _$OBParty2ObjectToJson(this);
 
-  static OBParty2Object fromJsonStatic(dynamic value) =>
+  static OBParty2Object fromJsonStatic(int status, dynamic value) =>
       _$OBParty2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBParty2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBParty2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -26765,11 +26867,13 @@ class OBPartyRelationships1Object_Account {
   Map<String, dynamic> toJson() =>
       _$OBPartyRelationships1Object_AccountToJson(this);
 
-  static OBPartyRelationships1Object_Account fromJsonStatic(dynamic value) =>
+  static OBPartyRelationships1Object_Account fromJsonStatic(
+          int status, dynamic value) =>
       _$OBPartyRelationships1Object_AccountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPartyRelationships1Object_Account input) =>
+  static dynamic toJsonStatic(
+          int status, OBPartyRelationships1Object_Account input) =>
       input.toJson();
 
   @override
@@ -26854,10 +26958,11 @@ class OBPartyRelationships1Object {
 
   Map<String, dynamic> toJson() => _$OBPartyRelationships1ObjectToJson(this);
 
-  static OBPartyRelationships1Object fromJsonStatic(dynamic value) =>
+  static OBPartyRelationships1Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBPartyRelationships1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPartyRelationships1Object input) =>
+  static dynamic toJsonStatic(int status, OBPartyRelationships1Object input) =>
       input.toJson();
 
   @override
@@ -26968,10 +27073,11 @@ class OBPostalAddress6Object {
 
   Map<String, dynamic> toJson() => _$OBPostalAddress6ObjectToJson(this);
 
-  static OBPostalAddress6Object fromJsonStatic(dynamic value) =>
+  static OBPostalAddress6Object fromJsonStatic(int status, dynamic value) =>
       _$OBPostalAddress6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBPostalAddress6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBPostalAddress6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -27158,10 +27264,10 @@ class OBReadAccount6Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadAccount6Object_DataToJson(this);
 
-  static OBReadAccount6Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadAccount6Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadAccount6Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadAccount6Object_Data input) =>
+  static dynamic toJsonStatic(int status, OBReadAccount6Object_Data input) =>
       input.toJson();
 
   @override
@@ -27246,10 +27352,11 @@ class OBReadAccount6Object {
 
   Map<String, dynamic> toJson() => _$OBReadAccount6ObjectToJson(this);
 
-  static OBReadAccount6Object fromJsonStatic(dynamic value) =>
+  static OBReadAccount6Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadAccount6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadAccount6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadAccount6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -27352,11 +27459,12 @@ class OBReadBalance1Object_Data_Balance_Amount {
       _$OBReadBalance1Object_Data_Balance_AmountToJson(this);
 
   static OBReadBalance1Object_Data_Balance_Amount fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBReadBalance1Object_Data_Balance_AmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBalance1Object_Data_Balance_Amount input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadBalance1Object_Data_Balance_Amount input) =>
       input.toJson();
 
   @override
@@ -27453,11 +27561,11 @@ class OBReadBalance1Object_Data_Balance_CreditLine_Amount {
       _$OBReadBalance1Object_Data_Balance_CreditLine_AmountToJson(this);
 
   static OBReadBalance1Object_Data_Balance_CreditLine_Amount fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBReadBalance1Object_Data_Balance_CreditLine_AmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBReadBalance1Object_Data_Balance_CreditLine_Amount input) =>
       input.toJson();
 
@@ -27560,12 +27668,12 @@ class OBReadBalance1Object_Data_Balance_CreditLine {
       _$OBReadBalance1Object_Data_Balance_CreditLineToJson(this);
 
   static OBReadBalance1Object_Data_Balance_CreditLine fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBReadBalance1Object_Data_Balance_CreditLineFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBReadBalance1Object_Data_Balance_CreditLine input) =>
+          int status, OBReadBalance1Object_Data_Balance_CreditLine input) =>
       input.toJson();
 
   @override
@@ -27688,11 +27796,13 @@ class OBReadBalance1Object_Data_Balance {
   Map<String, dynamic> toJson() =>
       _$OBReadBalance1Object_Data_BalanceToJson(this);
 
-  static OBReadBalance1Object_Data_Balance fromJsonStatic(dynamic value) =>
+  static OBReadBalance1Object_Data_Balance fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadBalance1Object_Data_BalanceFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBalance1Object_Data_Balance input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadBalance1Object_Data_Balance input) =>
       input.toJson();
 
   @override
@@ -27835,10 +27945,10 @@ class OBReadBalance1Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadBalance1Object_DataToJson(this);
 
-  static OBReadBalance1Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadBalance1Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadBalance1Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBalance1Object_Data input) =>
+  static dynamic toJsonStatic(int status, OBReadBalance1Object_Data input) =>
       input.toJson();
 
   @override
@@ -27923,10 +28033,11 @@ class OBReadBalance1Object {
 
   Map<String, dynamic> toJson() => _$OBReadBalance1ObjectToJson(this);
 
-  static OBReadBalance1Object fromJsonStatic(dynamic value) =>
+  static OBReadBalance1Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadBalance1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBalance1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadBalance1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -28022,10 +28133,12 @@ class OBReadBeneficiary5Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadBeneficiary5Object_DataToJson(this);
 
-  static OBReadBeneficiary5Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadBeneficiary5Object_Data fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadBeneficiary5Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBeneficiary5Object_Data input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadBeneficiary5Object_Data input) =>
       input.toJson();
 
   @override
@@ -28114,10 +28227,11 @@ class OBReadBeneficiary5Object {
 
   Map<String, dynamic> toJson() => _$OBReadBeneficiary5ObjectToJson(this);
 
-  static OBReadBeneficiary5Object fromJsonStatic(dynamic value) =>
+  static OBReadBeneficiary5Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadBeneficiary5ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadBeneficiary5Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadBeneficiary5Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -28227,10 +28341,10 @@ class OBReadConsent1Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadConsent1Object_DataToJson(this);
 
-  static OBReadConsent1Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadConsent1Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadConsent1Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadConsent1Object_Data input) =>
+  static dynamic toJsonStatic(int status, OBReadConsent1Object_Data input) =>
       input.toJson();
 
   @override
@@ -28356,10 +28470,11 @@ class OBReadConsent1Object {
 
   Map<String, dynamic> toJson() => _$OBReadConsent1ObjectToJson(this);
 
-  static OBReadConsent1Object fromJsonStatic(dynamic value) =>
+  static OBReadConsent1Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadConsent1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadConsent1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadConsent1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -28466,11 +28581,13 @@ class OBReadConsentResponse1Object_Data {
   Map<String, dynamic> toJson() =>
       _$OBReadConsentResponse1Object_DataToJson(this);
 
-  static OBReadConsentResponse1Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadConsentResponse1Object_Data fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadConsentResponse1Object_DataFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadConsentResponse1Object_Data input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadConsentResponse1Object_Data input) =>
       input.toJson();
 
   @override
@@ -28646,10 +28763,11 @@ class OBReadConsentResponse1Object {
 
   Map<String, dynamic> toJson() => _$OBReadConsentResponse1ObjectToJson(this);
 
-  static OBReadConsentResponse1Object fromJsonStatic(dynamic value) =>
+  static OBReadConsentResponse1Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadConsentResponse1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadConsentResponse1Object input) =>
+  static dynamic toJsonStatic(int status, OBReadConsentResponse1Object input) =>
       input.toJson();
 
   @override
@@ -28762,10 +28880,10 @@ class OBReadDataStatement2Object {
 
   Map<String, dynamic> toJson() => _$OBReadDataStatement2ObjectToJson(this);
 
-  static OBReadDataStatement2Object fromJsonStatic(dynamic value) =>
+  static OBReadDataStatement2Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadDataStatement2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadDataStatement2Object input) =>
+  static dynamic toJsonStatic(int status, OBReadDataStatement2Object input) =>
       input.toJson();
 
   @override
@@ -28847,10 +28965,11 @@ class OBReadDataTransaction6Object {
 
   Map<String, dynamic> toJson() => _$OBReadDataTransaction6ObjectToJson(this);
 
-  static OBReadDataTransaction6Object fromJsonStatic(dynamic value) =>
+  static OBReadDataTransaction6Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadDataTransaction6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadDataTransaction6Object input) =>
+  static dynamic toJsonStatic(int status, OBReadDataTransaction6Object input) =>
       input.toJson();
 
   @override
@@ -28961,12 +29080,12 @@ class OBReadDirectDebit2Object_Data_DirectDebit {
       _$OBReadDirectDebit2Object_Data_DirectDebitToJson(this);
 
   static OBReadDirectDebit2Object_Data_DirectDebit fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBReadDirectDebit2Object_Data_DirectDebitFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBReadDirectDebit2Object_Data_DirectDebit input) =>
+          int status, OBReadDirectDebit2Object_Data_DirectDebit input) =>
       input.toJson();
 
   @override
@@ -29136,10 +29255,12 @@ class OBReadDirectDebit2Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadDirectDebit2Object_DataToJson(this);
 
-  static OBReadDirectDebit2Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadDirectDebit2Object_Data fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadDirectDebit2Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadDirectDebit2Object_Data input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadDirectDebit2Object_Data input) =>
       input.toJson();
 
   @override
@@ -29228,10 +29349,11 @@ class OBReadDirectDebit2Object {
 
   Map<String, dynamic> toJson() => _$OBReadDirectDebit2ObjectToJson(this);
 
-  static OBReadDirectDebit2Object fromJsonStatic(dynamic value) =>
+  static OBReadDirectDebit2Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadDirectDebit2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadDirectDebit2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadDirectDebit2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -29337,11 +29459,13 @@ class OBReadOffer1Object_Data_Offer_Amount {
   Map<String, dynamic> toJson() =>
       _$OBReadOffer1Object_Data_Offer_AmountToJson(this);
 
-  static OBReadOffer1Object_Data_Offer_Amount fromJsonStatic(dynamic value) =>
+  static OBReadOffer1Object_Data_Offer_Amount fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadOffer1Object_Data_Offer_AmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadOffer1Object_Data_Offer_Amount input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadOffer1Object_Data_Offer_Amount input) =>
       input.toJson();
 
   @override
@@ -29433,11 +29557,13 @@ class OBReadOffer1Object_Data_Offer_Fee {
   Map<String, dynamic> toJson() =>
       _$OBReadOffer1Object_Data_Offer_FeeToJson(this);
 
-  static OBReadOffer1Object_Data_Offer_Fee fromJsonStatic(dynamic value) =>
+  static OBReadOffer1Object_Data_Offer_Fee fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadOffer1Object_Data_Offer_FeeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadOffer1Object_Data_Offer_Fee input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadOffer1Object_Data_Offer_Fee input) =>
       input.toJson();
 
   @override
@@ -29558,10 +29684,12 @@ class OBReadOffer1Object_Data_Offer {
 
   Map<String, dynamic> toJson() => _$OBReadOffer1Object_Data_OfferToJson(this);
 
-  static OBReadOffer1Object_Data_Offer fromJsonStatic(dynamic value) =>
+  static OBReadOffer1Object_Data_Offer fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadOffer1Object_Data_OfferFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadOffer1Object_Data_Offer input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadOffer1Object_Data_Offer input) =>
       input.toJson();
 
   @override
@@ -29760,10 +29888,11 @@ class OBReadOffer1Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadOffer1Object_DataToJson(this);
 
-  static OBReadOffer1Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadOffer1Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadOffer1Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadOffer1Object_Data input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadOffer1Object_Data input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -29846,10 +29975,11 @@ class OBReadOffer1Object {
 
   Map<String, dynamic> toJson() => _$OBReadOffer1ObjectToJson(this);
 
-  static OBReadOffer1Object fromJsonStatic(dynamic value) =>
+  static OBReadOffer1Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadOffer1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadOffer1Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadOffer1Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -29941,10 +30071,11 @@ class OBReadParty2Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadParty2Object_DataToJson(this);
 
-  static OBReadParty2Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadParty2Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadParty2Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadParty2Object_Data input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadParty2Object_Data input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -30023,10 +30154,11 @@ class OBReadParty2Object {
 
   Map<String, dynamic> toJson() => _$OBReadParty2ObjectToJson(this);
 
-  static OBReadParty2Object fromJsonStatic(dynamic value) =>
+  static OBReadParty2Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadParty2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadParty2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadParty2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -30118,10 +30250,11 @@ class OBReadParty3Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadParty3Object_DataToJson(this);
 
-  static OBReadParty3Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadParty3Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadParty3Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadParty3Object_Data input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadParty3Object_Data input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -30204,10 +30337,11 @@ class OBReadParty3Object {
 
   Map<String, dynamic> toJson() => _$OBReadParty3ObjectToJson(this);
 
-  static OBReadParty3Object fromJsonStatic(dynamic value) =>
+  static OBReadParty3Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadParty3ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadParty3Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadParty3Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -30323,11 +30457,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_ProductDetails {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_ProductDetails
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_ProductDetailsFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_ProductDetails
               input) =>
       input.toJson();
@@ -30513,11 +30648,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBand
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBand_OtherBankInterestTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBand_OtherBankInterestType
               input) =>
       input.toJson();
@@ -30695,11 +30831,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBand
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBand
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBandFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet_TierBand
               input) =>
       input.toJson();
@@ -31006,11 +31143,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBand
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSetFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest_TierBandSet
               input) =>
       input.toJson();
@@ -31215,11 +31353,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_CreditInterestFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_CreditInterest
               input) =>
       input.toJson();
@@ -31350,11 +31489,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -31512,11 +31652,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -31721,11 +31862,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -31883,11 +32025,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -32132,11 +32275,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -32433,11 +32577,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -32619,11 +32764,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBandFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftTierBand
               input) =>
       input.toJson();
@@ -32877,11 +33023,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -33039,11 +33186,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -33248,11 +33396,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -33410,11 +33559,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail_OverdraftFeeChargeCap
               input) =>
       input.toJson();
@@ -33659,11 +33809,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges_OverdraftFeeChargeDetail
               input) =>
       input.toJson();
@@ -33960,11 +34111,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet_OverdraftFeesCharges
               input) =>
       input.toJson();
@@ -34139,11 +34291,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTier
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSetFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft_OverdraftTierBandSet
               input) =>
       input.toJson();
@@ -34366,11 +34519,11 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Overdraft {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Overdraft
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OverdraftFromJson(
               value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Overdraft input) =>
       input.toJson();
 
@@ -34504,11 +34657,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_OtherLoanProviderInterestRateType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_OtherLoanProviderInterestRateTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_OtherLoanProviderInterestRateType
               input) =>
       input.toJson();
@@ -34679,11 +34833,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeDetail
               input) =>
       input.toJson();
@@ -34938,11 +35093,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -35100,11 +35256,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges_LoanInterestFeeChargeCap
               input) =>
       input.toJson();
@@ -35312,11 +35469,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand_LoanInterestFeesCharges
               input) =>
       input.toJson();
@@ -35509,11 +35667,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBandFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestTierBand
               input) =>
       input.toJson();
@@ -35837,11 +35996,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeDetail
               input) =>
       input.toJson();
@@ -36096,11 +36256,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -36258,11 +36419,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges_LoanInterestFeeChargeCap
               input) =>
       input.toJson();
@@ -36470,11 +36632,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet_LoanInterestFeesCharges
               input) =>
       input.toJson();
@@ -36647,11 +36810,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanIntere
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSetFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest_LoanInterestTierBandSet
               input) =>
       input.toJson();
@@ -36862,11 +37026,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_LoanInterestFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_LoanInterest
               input) =>
       input.toJson();
@@ -37005,11 +37170,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymen
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentType
               input) =>
       input.toJson();
@@ -37151,11 +37317,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymen
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentFrequency
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentFrequencyFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherRepaymentFrequency
               input) =>
       input.toJson();
@@ -37297,11 +37464,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherAmountTy
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherAmountType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherAmountTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_OtherAmountType
               input) =>
       input.toJson();
@@ -37472,11 +37640,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeC
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeDetail
               input) =>
       input.toJson();
@@ -37731,11 +37900,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeC
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -37893,11 +38063,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeC
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges_RepaymentFeeChargeCap
               input) =>
       input.toJson();
@@ -38104,11 +38275,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeC
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentFeeCharges
               input) =>
       input.toJson();
@@ -38262,11 +38434,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentHoli
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentHoliday
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentHolidayFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment_RepaymentHoliday
               input) =>
       input.toJson();
@@ -38442,11 +38615,11 @@ class OBReadProduct2Object_Data_Product_OtherProductType_Repayment {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_Repayment
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_RepaymentFromJson(
               value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBReadProduct2Object_Data_Product_OtherProductType_Repayment input) =>
       input.toJson();
 
@@ -38684,11 +38857,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_OtherT
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_OtherTariffType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_OtherTariffTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_OtherTariffType
               input) =>
       input.toJson();
@@ -38830,11 +39004,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -38992,11 +39167,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeChargeCap
               input) =>
       input.toJson();
@@ -39206,11 +39382,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeApplicableRangeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail_FeeApplicableRange
               input) =>
       input.toJson();
@@ -39425,11 +39602,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetailFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeDetail
               input) =>
       input.toJson();
@@ -39740,11 +39918,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCap_OtherFeeType
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCap_OtherFeeTypeFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCap_OtherFeeType
               input) =>
       input.toJson();
@@ -39902,11 +40081,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeCha
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCap
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCapFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges_FeeChargeCap
               input) =>
       input.toJson();
@@ -40124,11 +40304,12 @@ class OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges {
           this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges
-      fromJsonStatic(dynamic value) =>
+      fromJsonStatic(int status, dynamic value) =>
           _$OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesChargesFromJson(
               value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
+          int status,
           OBReadProduct2Object_Data_Product_OtherProductType_OtherFeesCharges
               input) =>
       input.toJson();
@@ -40343,11 +40524,11 @@ class OBReadProduct2Object_Data_Product_OtherProductType {
       _$OBReadProduct2Object_Data_Product_OtherProductTypeToJson(this);
 
   static OBReadProduct2Object_Data_Product_OtherProductType fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBReadProduct2Object_Data_Product_OtherProductTypeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(
+  static dynamic toJsonStatic(int status,
           OBReadProduct2Object_Data_Product_OtherProductType input) =>
       input.toJson();
 
@@ -40579,11 +40760,13 @@ class OBReadProduct2Object_Data_Product {
   Map<String, dynamic> toJson() =>
       _$OBReadProduct2Object_Data_ProductToJson(this);
 
-  static OBReadProduct2Object_Data_Product fromJsonStatic(dynamic value) =>
+  static OBReadProduct2Object_Data_Product fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadProduct2Object_Data_ProductFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadProduct2Object_Data_Product input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadProduct2Object_Data_Product input) =>
       input.toJson();
 
   @override
@@ -40760,10 +40943,10 @@ class OBReadProduct2Object_Data {
 
   Map<String, dynamic> toJson() => _$OBReadProduct2Object_DataToJson(this);
 
-  static OBReadProduct2Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadProduct2Object_Data fromJsonStatic(int status, dynamic value) =>
       _$OBReadProduct2Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadProduct2Object_Data input) =>
+  static dynamic toJsonStatic(int status, OBReadProduct2Object_Data input) =>
       input.toJson();
 
   @override
@@ -40848,10 +41031,11 @@ class OBReadProduct2Object {
 
   Map<String, dynamic> toJson() => _$OBReadProduct2ObjectToJson(this);
 
-  static OBReadProduct2Object fromJsonStatic(dynamic value) =>
+  static OBReadProduct2Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadProduct2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadProduct2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadProduct2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -40950,11 +41134,13 @@ class OBReadScheduledPayment3Object_Data {
   Map<String, dynamic> toJson() =>
       _$OBReadScheduledPayment3Object_DataToJson(this);
 
-  static OBReadScheduledPayment3Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadScheduledPayment3Object_Data fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadScheduledPayment3Object_DataFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadScheduledPayment3Object_Data input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadScheduledPayment3Object_Data input) =>
       input.toJson();
 
   @override
@@ -41045,10 +41231,12 @@ class OBReadScheduledPayment3Object {
 
   Map<String, dynamic> toJson() => _$OBReadScheduledPayment3ObjectToJson(this);
 
-  static OBReadScheduledPayment3Object fromJsonStatic(dynamic value) =>
+  static OBReadScheduledPayment3Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadScheduledPayment3ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadScheduledPayment3Object input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadScheduledPayment3Object input) =>
       input.toJson();
 
   @override
@@ -41153,10 +41341,12 @@ class OBReadStandingOrder6Object_Data {
   Map<String, dynamic> toJson() =>
       _$OBReadStandingOrder6Object_DataToJson(this);
 
-  static OBReadStandingOrder6Object_Data fromJsonStatic(dynamic value) =>
+  static OBReadStandingOrder6Object_Data fromJsonStatic(
+          int status, dynamic value) =>
       _$OBReadStandingOrder6Object_DataFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadStandingOrder6Object_Data input) =>
+  static dynamic toJsonStatic(
+          int status, OBReadStandingOrder6Object_Data input) =>
       input.toJson();
 
   @override
@@ -41247,10 +41437,10 @@ class OBReadStandingOrder6Object {
 
   Map<String, dynamic> toJson() => _$OBReadStandingOrder6ObjectToJson(this);
 
-  static OBReadStandingOrder6Object fromJsonStatic(dynamic value) =>
+  static OBReadStandingOrder6Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadStandingOrder6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadStandingOrder6Object input) =>
+  static dynamic toJsonStatic(int status, OBReadStandingOrder6Object input) =>
       input.toJson();
 
   @override
@@ -41355,10 +41545,11 @@ class OBReadStatement2Object {
 
   Map<String, dynamic> toJson() => _$OBReadStatement2ObjectToJson(this);
 
-  static OBReadStatement2Object fromJsonStatic(dynamic value) =>
+  static OBReadStatement2Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadStatement2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadStatement2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadStatement2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -41458,10 +41649,11 @@ class OBReadTransaction6Object {
 
   Map<String, dynamic> toJson() => _$OBReadTransaction6ObjectToJson(this);
 
-  static OBReadTransaction6Object fromJsonStatic(dynamic value) =>
+  static OBReadTransaction6Object fromJsonStatic(int status, dynamic value) =>
       _$OBReadTransaction6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBReadTransaction6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBReadTransaction6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -41554,10 +41746,11 @@ class OBRisk2Object {
 
   Map<String, dynamic> toJson() => _$OBRisk2ObjectToJson(this);
 
-  static OBRisk2Object fromJsonStatic(dynamic value) =>
+  static OBRisk2Object fromJsonStatic(int status, dynamic value) =>
       _$OBRisk2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBRisk2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBRisk2Object input) =>
+      input.toJson();
 
   @override
   String toString() => "OBRisk2Object()";
@@ -41604,10 +41797,10 @@ class OBScheduledPayment3Object {
 
   Map<String, dynamic> toJson() => _$OBScheduledPayment3ObjectToJson(this);
 
-  static OBScheduledPayment3Object fromJsonStatic(dynamic value) =>
+  static OBScheduledPayment3Object fromJsonStatic(int status, dynamic value) =>
       _$OBScheduledPayment3ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBScheduledPayment3Object input) =>
+  static dynamic toJsonStatic(int status, OBScheduledPayment3Object input) =>
       input.toJson();
 
   @override
@@ -41808,10 +42001,12 @@ class OBScheduledPayment3BasicObject {
 
   Map<String, dynamic> toJson() => _$OBScheduledPayment3BasicObjectToJson(this);
 
-  static OBScheduledPayment3BasicObject fromJsonStatic(dynamic value) =>
+  static OBScheduledPayment3BasicObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OBScheduledPayment3BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBScheduledPayment3BasicObject input) =>
+  static dynamic toJsonStatic(
+          int status, OBScheduledPayment3BasicObject input) =>
       input.toJson();
 
   @override
@@ -41996,10 +42191,12 @@ class OBScheduledPayment3DetailObject {
   Map<String, dynamic> toJson() =>
       _$OBScheduledPayment3DetailObjectToJson(this);
 
-  static OBScheduledPayment3DetailObject fromJsonStatic(dynamic value) =>
+  static OBScheduledPayment3DetailObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OBScheduledPayment3DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBScheduledPayment3DetailObject input) =>
+  static dynamic toJsonStatic(
+          int status, OBScheduledPayment3DetailObject input) =>
       input.toJson();
 
   @override
@@ -42233,10 +42430,11 @@ class OBStandingOrder6Object {
 
   Map<String, dynamic> toJson() => _$OBStandingOrder6ObjectToJson(this);
 
-  static OBStandingOrder6Object fromJsonStatic(dynamic value) =>
+  static OBStandingOrder6Object fromJsonStatic(int status, dynamic value) =>
       _$OBStandingOrder6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStandingOrder6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBStandingOrder6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -42560,10 +42758,11 @@ class OBStandingOrder6BasicObject {
 
   Map<String, dynamic> toJson() => _$OBStandingOrder6BasicObjectToJson(this);
 
-  static OBStandingOrder6BasicObject fromJsonStatic(dynamic value) =>
+  static OBStandingOrder6BasicObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStandingOrder6BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStandingOrder6BasicObject input) =>
+  static dynamic toJsonStatic(int status, OBStandingOrder6BasicObject input) =>
       input.toJson();
 
   @override
@@ -42870,10 +43069,11 @@ class OBStandingOrder6DetailObject {
 
   Map<String, dynamic> toJson() => _$OBStandingOrder6DetailObjectToJson(this);
 
-  static OBStandingOrder6DetailObject fromJsonStatic(dynamic value) =>
+  static OBStandingOrder6DetailObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStandingOrder6DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStandingOrder6DetailObject input) =>
+  static dynamic toJsonStatic(int status, OBStandingOrder6DetailObject input) =>
       input.toJson();
 
   @override
@@ -43164,11 +43364,13 @@ class OBStatement2Object_StatementBenefit {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementBenefitToJson(this);
 
-  static OBStatement2Object_StatementBenefit fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementBenefit fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementBenefitFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementBenefit input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementBenefit input) =>
       input.toJson();
 
   @override
@@ -43277,10 +43479,12 @@ class OBStatement2Object_StatementFee {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementFeeToJson(this);
 
-  static OBStatement2Object_StatementFee fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementFee fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementFeeFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementFee input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementFee input) =>
       input.toJson();
 
   @override
@@ -43453,11 +43657,13 @@ class OBStatement2Object_StatementInterest {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementInterestToJson(this);
 
-  static OBStatement2Object_StatementInterest fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementInterest fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementInterestFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementInterest input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementInterest input) =>
       input.toJson();
 
   @override
@@ -43618,11 +43824,13 @@ class OBStatement2Object_StatementAmount {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementAmountToJson(this);
 
-  static OBStatement2Object_StatementAmount fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementAmount fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementAmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementAmount input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementAmount input) =>
       input.toJson();
 
   @override
@@ -43737,11 +43945,13 @@ class OBStatement2Object_StatementDateTime {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementDateTimeToJson(this);
 
-  static OBStatement2Object_StatementDateTime fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementDateTime fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementDateTimeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementDateTime input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementDateTime input) =>
       input.toJson();
 
   @override
@@ -43831,10 +44041,12 @@ class OBStatement2Object_StatementRate {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementRateToJson(this);
 
-  static OBStatement2Object_StatementRate fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementRate fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementRateFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementRate input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementRate input) =>
       input.toJson();
 
   @override
@@ -43924,11 +44136,13 @@ class OBStatement2Object_StatementValue {
   Map<String, dynamic> toJson() =>
       _$OBStatement2Object_StatementValueToJson(this);
 
-  static OBStatement2Object_StatementValue fromJsonStatic(dynamic value) =>
+  static OBStatement2Object_StatementValue fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2Object_StatementValueFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object_StatementValue input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2Object_StatementValue input) =>
       input.toJson();
 
   @override
@@ -44055,10 +44269,11 @@ class OBStatement2Object {
 
   Map<String, dynamic> toJson() => _$OBStatement2ObjectToJson(this);
 
-  static OBStatement2Object fromJsonStatic(dynamic value) =>
+  static OBStatement2Object fromJsonStatic(int status, dynamic value) =>
       _$OBStatement2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBStatement2Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -44314,11 +44529,12 @@ class OBStatement2BasicObject_StatementBenefit {
       _$OBStatement2BasicObject_StatementBenefitToJson(this);
 
   static OBStatement2BasicObject_StatementBenefit fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementBenefitFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2BasicObject_StatementBenefit input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2BasicObject_StatementBenefit input) =>
       input.toJson();
 
   @override
@@ -44430,11 +44646,13 @@ class OBStatement2BasicObject_StatementFee {
   Map<String, dynamic> toJson() =>
       _$OBStatement2BasicObject_StatementFeeToJson(this);
 
-  static OBStatement2BasicObject_StatementFee fromJsonStatic(dynamic value) =>
+  static OBStatement2BasicObject_StatementFee fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementFeeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2BasicObject_StatementFee input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2BasicObject_StatementFee input) =>
       input.toJson();
 
   @override
@@ -44608,12 +44826,12 @@ class OBStatement2BasicObject_StatementInterest {
       _$OBStatement2BasicObject_StatementInterestToJson(this);
 
   static OBStatement2BasicObject_StatementInterest fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementInterestFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBStatement2BasicObject_StatementInterest input) =>
+          int status, OBStatement2BasicObject_StatementInterest input) =>
       input.toJson();
 
   @override
@@ -44772,12 +44990,12 @@ class OBStatement2BasicObject_StatementDateTime {
       _$OBStatement2BasicObject_StatementDateTimeToJson(this);
 
   static OBStatement2BasicObject_StatementDateTime fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementDateTimeFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBStatement2BasicObject_StatementDateTime input) =>
+          int status, OBStatement2BasicObject_StatementDateTime input) =>
       input.toJson();
 
   @override
@@ -44869,11 +45087,13 @@ class OBStatement2BasicObject_StatementRate {
   Map<String, dynamic> toJson() =>
       _$OBStatement2BasicObject_StatementRateToJson(this);
 
-  static OBStatement2BasicObject_StatementRate fromJsonStatic(dynamic value) =>
+  static OBStatement2BasicObject_StatementRate fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementRateFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2BasicObject_StatementRate input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2BasicObject_StatementRate input) =>
       input.toJson();
 
   @override
@@ -44964,11 +45184,13 @@ class OBStatement2BasicObject_StatementValue {
   Map<String, dynamic> toJson() =>
       _$OBStatement2BasicObject_StatementValueToJson(this);
 
-  static OBStatement2BasicObject_StatementValue fromJsonStatic(dynamic value) =>
+  static OBStatement2BasicObject_StatementValue fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2BasicObject_StatementValueFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2BasicObject_StatementValue input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2BasicObject_StatementValue input) =>
       input.toJson();
 
   @override
@@ -45093,10 +45315,11 @@ class OBStatement2BasicObject {
 
   Map<String, dynamic> toJson() => _$OBStatement2BasicObjectToJson(this);
 
-  static OBStatement2BasicObject fromJsonStatic(dynamic value) =>
+  static OBStatement2BasicObject fromJsonStatic(int status, dynamic value) =>
       _$OBStatement2BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2BasicObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBStatement2BasicObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -45346,12 +45569,12 @@ class OBStatement2DetailObject_StatementBenefit {
       _$OBStatement2DetailObject_StatementBenefitToJson(this);
 
   static OBStatement2DetailObject_StatementBenefit fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementBenefitFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBStatement2DetailObject_StatementBenefit input) =>
+          int status, OBStatement2DetailObject_StatementBenefit input) =>
       input.toJson();
 
   @override
@@ -45463,11 +45686,13 @@ class OBStatement2DetailObject_StatementFee {
   Map<String, dynamic> toJson() =>
       _$OBStatement2DetailObject_StatementFeeToJson(this);
 
-  static OBStatement2DetailObject_StatementFee fromJsonStatic(dynamic value) =>
+  static OBStatement2DetailObject_StatementFee fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementFeeFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2DetailObject_StatementFee input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2DetailObject_StatementFee input) =>
       input.toJson();
 
   @override
@@ -45641,12 +45866,12 @@ class OBStatement2DetailObject_StatementInterest {
       _$OBStatement2DetailObject_StatementInterestToJson(this);
 
   static OBStatement2DetailObject_StatementInterest fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementInterestFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBStatement2DetailObject_StatementInterest input) =>
+          int status, OBStatement2DetailObject_StatementInterest input) =>
       input.toJson();
 
   @override
@@ -45809,11 +46034,12 @@ class OBStatement2DetailObject_StatementAmount {
       _$OBStatement2DetailObject_StatementAmountToJson(this);
 
   static OBStatement2DetailObject_StatementAmount fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementAmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2DetailObject_StatementAmount input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2DetailObject_StatementAmount input) =>
       input.toJson();
 
   @override
@@ -45930,12 +46156,12 @@ class OBStatement2DetailObject_StatementDateTime {
       _$OBStatement2DetailObject_StatementDateTimeToJson(this);
 
   static OBStatement2DetailObject_StatementDateTime fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementDateTimeFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          OBStatement2DetailObject_StatementDateTime input) =>
+          int status, OBStatement2DetailObject_StatementDateTime input) =>
       input.toJson();
 
   @override
@@ -46027,11 +46253,13 @@ class OBStatement2DetailObject_StatementRate {
   Map<String, dynamic> toJson() =>
       _$OBStatement2DetailObject_StatementRateToJson(this);
 
-  static OBStatement2DetailObject_StatementRate fromJsonStatic(dynamic value) =>
+  static OBStatement2DetailObject_StatementRate fromJsonStatic(
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementRateFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2DetailObject_StatementRate input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2DetailObject_StatementRate input) =>
       input.toJson();
 
   @override
@@ -46123,11 +46351,12 @@ class OBStatement2DetailObject_StatementValue {
       _$OBStatement2DetailObject_StatementValueToJson(this);
 
   static OBStatement2DetailObject_StatementValue fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$OBStatement2DetailObject_StatementValueFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2DetailObject_StatementValue input) =>
+  static dynamic toJsonStatic(
+          int status, OBStatement2DetailObject_StatementValue input) =>
       input.toJson();
 
   @override
@@ -46256,10 +46485,11 @@ class OBStatement2DetailObject {
 
   Map<String, dynamic> toJson() => _$OBStatement2DetailObjectToJson(this);
 
-  static OBStatement2DetailObject fromJsonStatic(dynamic value) =>
+  static OBStatement2DetailObject fromJsonStatic(int status, dynamic value) =>
       _$OBStatement2DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBStatement2DetailObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBStatement2DetailObject input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -46511,10 +46741,10 @@ class OBSupplementaryData1Object {
 
   Map<String, dynamic> toJson() => _$OBSupplementaryData1ObjectToJson(this);
 
-  static OBSupplementaryData1Object fromJsonStatic(dynamic value) =>
+  static OBSupplementaryData1Object fromJsonStatic(int status, dynamic value) =>
       _$OBSupplementaryData1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBSupplementaryData1Object input) =>
+  static dynamic toJsonStatic(int status, OBSupplementaryData1Object input) =>
       input.toJson();
 
   @override
@@ -46608,10 +46838,11 @@ class OBTransaction6Object {
 
   Map<String, dynamic> toJson() => _$OBTransaction6ObjectToJson(this);
 
-  static OBTransaction6Object fromJsonStatic(dynamic value) =>
+  static OBTransaction6Object fromJsonStatic(int status, dynamic value) =>
       _$OBTransaction6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransaction6Object input) => input.toJson();
+  static dynamic toJsonStatic(int status, OBTransaction6Object input) =>
+      input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -47030,10 +47261,10 @@ class OBTransaction6BasicObject {
 
   Map<String, dynamic> toJson() => _$OBTransaction6BasicObjectToJson(this);
 
-  static OBTransaction6BasicObject fromJsonStatic(dynamic value) =>
+  static OBTransaction6BasicObject fromJsonStatic(int status, dynamic value) =>
       _$OBTransaction6BasicObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransaction6BasicObject input) =>
+  static dynamic toJsonStatic(int status, OBTransaction6BasicObject input) =>
       input.toJson();
 
   @override
@@ -47387,10 +47618,10 @@ class OBTransaction6DetailObject {
 
   Map<String, dynamic> toJson() => _$OBTransaction6DetailObjectToJson(this);
 
-  static OBTransaction6DetailObject fromJsonStatic(dynamic value) =>
+  static OBTransaction6DetailObject fromJsonStatic(int status, dynamic value) =>
       _$OBTransaction6DetailObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransaction6DetailObject input) =>
+  static dynamic toJsonStatic(int status, OBTransaction6DetailObject input) =>
       input.toJson();
 
   @override
@@ -47773,11 +48004,13 @@ class OBTransactionCardInstrument1Object {
   Map<String, dynamic> toJson() =>
       _$OBTransactionCardInstrument1ObjectToJson(this);
 
-  static OBTransactionCardInstrument1Object fromJsonStatic(dynamic value) =>
+  static OBTransactionCardInstrument1Object fromJsonStatic(
+          int status, dynamic value) =>
       _$OBTransactionCardInstrument1ObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransactionCardInstrument1Object input) =>
+  static dynamic toJsonStatic(
+          int status, OBTransactionCardInstrument1Object input) =>
       input.toJson();
 
   @override
@@ -47906,11 +48139,13 @@ class OBTransactionCashBalanceObject_Amount {
   Map<String, dynamic> toJson() =>
       _$OBTransactionCashBalanceObject_AmountToJson(this);
 
-  static OBTransactionCashBalanceObject_Amount fromJsonStatic(dynamic value) =>
+  static OBTransactionCashBalanceObject_Amount fromJsonStatic(
+          int status, dynamic value) =>
       _$OBTransactionCashBalanceObject_AmountFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransactionCashBalanceObject_Amount input) =>
+  static dynamic toJsonStatic(
+          int status, OBTransactionCashBalanceObject_Amount input) =>
       input.toJson();
 
   @override
@@ -48004,10 +48239,12 @@ class OBTransactionCashBalanceObject {
 
   Map<String, dynamic> toJson() => _$OBTransactionCashBalanceObjectToJson(this);
 
-  static OBTransactionCashBalanceObject fromJsonStatic(dynamic value) =>
+  static OBTransactionCashBalanceObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OBTransactionCashBalanceObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OBTransactionCashBalanceObject input) =>
+  static dynamic toJsonStatic(
+          int status, OBTransactionCashBalanceObject input) =>
       input.toJson();
 
   @override
@@ -48121,10 +48358,10 @@ class OB_OtherCodeType1_0Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_0ObjectToJson(this);
 
-  static OB_OtherCodeType1_0Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_0Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_0ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_0Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_0Object input) =>
       input.toJson();
 
   @override
@@ -48224,10 +48461,10 @@ class OB_OtherCodeType1_1Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_1ObjectToJson(this);
 
-  static OB_OtherCodeType1_1Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_1Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_1ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_1Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_1Object input) =>
       input.toJson();
 
   @override
@@ -48327,10 +48564,10 @@ class OB_OtherCodeType1_2Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_2ObjectToJson(this);
 
-  static OB_OtherCodeType1_2Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_2Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_2ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_2Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_2Object input) =>
       input.toJson();
 
   @override
@@ -48430,10 +48667,10 @@ class OB_OtherCodeType1_3Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_3ObjectToJson(this);
 
-  static OB_OtherCodeType1_3Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_3Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_3ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_3Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_3Object input) =>
       input.toJson();
 
   @override
@@ -48533,10 +48770,10 @@ class OB_OtherCodeType1_4Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_4ObjectToJson(this);
 
-  static OB_OtherCodeType1_4Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_4Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_4ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_4Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_4Object input) =>
       input.toJson();
 
   @override
@@ -48636,10 +48873,10 @@ class OB_OtherCodeType1_5Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_5ObjectToJson(this);
 
-  static OB_OtherCodeType1_5Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_5Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_5ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_5Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_5Object input) =>
       input.toJson();
 
   @override
@@ -48739,10 +48976,10 @@ class OB_OtherCodeType1_6Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_6ObjectToJson(this);
 
-  static OB_OtherCodeType1_6Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_6Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_6ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_6Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_6Object input) =>
       input.toJson();
 
   @override
@@ -48842,10 +49079,10 @@ class OB_OtherCodeType1_7Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_7ObjectToJson(this);
 
-  static OB_OtherCodeType1_7Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_7Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_7ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_7Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_7Object input) =>
       input.toJson();
 
   @override
@@ -48945,10 +49182,10 @@ class OB_OtherCodeType1_8Object {
 
   Map<String, dynamic> toJson() => _$OB_OtherCodeType1_8ObjectToJson(this);
 
-  static OB_OtherCodeType1_8Object fromJsonStatic(dynamic value) =>
+  static OB_OtherCodeType1_8Object fromJsonStatic(int status, dynamic value) =>
       _$OB_OtherCodeType1_8ObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherCodeType1_8Object input) =>
+  static dynamic toJsonStatic(int status, OB_OtherCodeType1_8Object input) =>
       input.toJson();
 
   @override
@@ -49055,11 +49292,13 @@ class OB_OtherFeeChargeDetailTypeObject {
   Map<String, dynamic> toJson() =>
       _$OB_OtherFeeChargeDetailTypeObjectToJson(this);
 
-  static OB_OtherFeeChargeDetailTypeObject fromJsonStatic(dynamic value) =>
+  static OB_OtherFeeChargeDetailTypeObject fromJsonStatic(
+          int status, dynamic value) =>
       _$OB_OtherFeeChargeDetailTypeObjectFromJson(
           value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(OB_OtherFeeChargeDetailTypeObject input) =>
+  static dynamic toJsonStatic(
+          int status, OB_OtherFeeChargeDetailTypeObject input) =>
       input.toJson();
 
   @override
@@ -49178,12 +49417,12 @@ class ProprietaryBankTransactionCodeStructure1Object {
       _$ProprietaryBankTransactionCodeStructure1ObjectToJson(this);
 
   static ProprietaryBankTransactionCodeStructure1Object fromJsonStatic(
-          dynamic value) =>
+          int status, dynamic value) =>
       _$ProprietaryBankTransactionCodeStructure1ObjectFromJson(
           value as Map<String, dynamic>);
 
   static dynamic toJsonStatic(
-          ProprietaryBankTransactionCodeStructure1Object input) =>
+          int status, ProprietaryBankTransactionCodeStructure1Object input) =>
       input.toJson();
 
   @override
@@ -49268,10 +49507,10 @@ class ModelObject {
 
   Map<String, dynamic> toJson() => _$ModelObjectToJson(this);
 
-  static ModelObject fromJsonStatic(dynamic value) =>
+  static ModelObject fromJsonStatic(int status, dynamic value) =>
       _$ModelObjectFromJson(value as Map<String, dynamic>);
 
-  static dynamic toJsonStatic(ModelObject input) => input.toJson();
+  static dynamic toJsonStatic(int status, ModelObject input) => input.toJson();
 
   @override
   bool operator ==(Object o) {
@@ -49335,10 +49574,8 @@ class __$ModelObjectCopyWithImpl<O> extends _$ModelObjectCopyWithImpl<O>
     responseSerializer: OBReadConsentResponse1Object.toJsonStatic,
     responseDeserializer: OBReadConsentResponse1Object.fromJsonStatic,
     errorDeserializer: CreateAccountAccessConsentsResponse_Error.fromJsonStatic)
-class CreateAccountAccessConsents = HttpField<
-    OBReadConsent1Object,
-    OBReadConsentResponse1Object,
-    CreateAccountAccessConsentsResponse_Error> with EmptyMixin;
+typedef CreateAccountAccessConsents = HttpField<OBReadConsent1Object,
+    OBReadConsentResponse1Object, CreateAccountAccessConsentsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49349,10 +49586,10 @@ class CreateAccountAccessConsents = HttpField<
     errorDeserializer:
         GetAccountAccessConsentsConsentIdResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountAccessConsentsConsentIdPathParams")
-class GetAccountAccessConsentsConsentId = HttpField<
+typedef GetAccountAccessConsentsConsentId = HttpField<
     Null,
     OBReadConsentResponse1Object,
-    GetAccountAccessConsentsConsentIdResponse_Error> with EmptyMixin;
+    GetAccountAccessConsentsConsentIdResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49361,8 +49598,8 @@ class GetAccountAccessConsentsConsentId = HttpField<
     responseSerializer: OBReadAccount6Object.toJsonStatic,
     responseDeserializer: OBReadAccount6Object.fromJsonStatic,
     errorDeserializer: GetAccountsResponse_Error.fromJsonStatic)
-class GetAccounts = HttpField<Null, OBReadAccount6Object,
-    GetAccountsResponse_Error> with EmptyMixin;
+typedef GetAccounts
+    = HttpField<Null, OBReadAccount6Object, GetAccountsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49372,8 +49609,8 @@ class GetAccounts = HttpField<Null, OBReadAccount6Object,
     responseDeserializer: OBReadAccount6Object.fromJsonStatic,
     errorDeserializer: GetAccountsAccountIdResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdPathParams")
-class GetAccountsAccountId = HttpField<Null, OBReadAccount6Object,
-    GetAccountsAccountIdResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountId
+    = HttpField<Null, OBReadAccount6Object, GetAccountsAccountIdResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49384,8 +49621,8 @@ class GetAccountsAccountId = HttpField<Null, OBReadAccount6Object,
     errorDeserializer:
         GetAccountsAccountIdBalancesResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdBalancesPathParams")
-class GetAccountsAccountIdBalances = HttpField<Null, OBReadBalance1Object,
-    GetAccountsAccountIdBalancesResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdBalances = HttpField<Null, OBReadBalance1Object,
+    GetAccountsAccountIdBalancesResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49396,10 +49633,8 @@ class GetAccountsAccountIdBalances = HttpField<Null, OBReadBalance1Object,
     errorDeserializer:
         GetAccountsAccountIdBeneficiariesResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdBeneficiariesPathParams")
-class GetAccountsAccountIdBeneficiaries = HttpField<
-    Null,
-    OBReadBeneficiary5Object,
-    GetAccountsAccountIdBeneficiariesResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdBeneficiaries = HttpField<Null,
+    OBReadBeneficiary5Object, GetAccountsAccountIdBeneficiariesResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49410,10 +49645,8 @@ class GetAccountsAccountIdBeneficiaries = HttpField<
     errorDeserializer:
         GetAccountsAccountIdDirectDebitsResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdDirectDebitsPathParams")
-class GetAccountsAccountIdDirectDebits = HttpField<
-    Null,
-    OBReadDirectDebit2Object,
-    GetAccountsAccountIdDirectDebitsResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdDirectDebits = HttpField<Null,
+    OBReadDirectDebit2Object, GetAccountsAccountIdDirectDebitsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49423,8 +49656,8 @@ class GetAccountsAccountIdDirectDebits = HttpField<
     responseDeserializer: OBReadOffer1Object.fromJsonStatic,
     errorDeserializer: GetAccountsAccountIdOffersResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdOffersPathParams")
-class GetAccountsAccountIdOffers = HttpField<Null, OBReadOffer1Object,
-    GetAccountsAccountIdOffersResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdOffers = HttpField<Null, OBReadOffer1Object,
+    GetAccountsAccountIdOffersResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49434,8 +49667,8 @@ class GetAccountsAccountIdOffers = HttpField<Null, OBReadOffer1Object,
     responseDeserializer: OBReadParty3Object.fromJsonStatic,
     errorDeserializer: GetAccountsAccountIdPartiesResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdPartiesPathParams")
-class GetAccountsAccountIdParties = HttpField<Null, OBReadParty3Object,
-    GetAccountsAccountIdPartiesResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdParties = HttpField<Null, OBReadParty3Object,
+    GetAccountsAccountIdPartiesResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49445,8 +49678,8 @@ class GetAccountsAccountIdParties = HttpField<Null, OBReadParty3Object,
     responseDeserializer: OBReadParty2Object.fromJsonStatic,
     errorDeserializer: GetAccountsAccountIdPartyResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdPartyPathParams")
-class GetAccountsAccountIdParty = HttpField<Null, OBReadParty2Object,
-    GetAccountsAccountIdPartyResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdParty = HttpField<Null, OBReadParty2Object,
+    GetAccountsAccountIdPartyResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49456,8 +49689,8 @@ class GetAccountsAccountIdParty = HttpField<Null, OBReadParty2Object,
     responseDeserializer: OBReadProduct2Object.fromJsonStatic,
     errorDeserializer: GetAccountsAccountIdProductResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdProductPathParams")
-class GetAccountsAccountIdProduct = HttpField<Null, OBReadProduct2Object,
-    GetAccountsAccountIdProductResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdProduct = HttpField<Null, OBReadProduct2Object,
+    GetAccountsAccountIdProductResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49468,10 +49701,10 @@ class GetAccountsAccountIdProduct = HttpField<Null, OBReadProduct2Object,
     errorDeserializer:
         GetAccountsAccountIdScheduledPaymentsResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdScheduledPaymentsPathParams")
-class GetAccountsAccountIdScheduledPayments = HttpField<
+typedef GetAccountsAccountIdScheduledPayments = HttpField<
     Null,
     OBReadScheduledPayment3Object,
-    GetAccountsAccountIdScheduledPaymentsResponse_Error> with EmptyMixin;
+    GetAccountsAccountIdScheduledPaymentsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49482,10 +49715,10 @@ class GetAccountsAccountIdScheduledPayments = HttpField<
     errorDeserializer:
         GetAccountsAccountIdStandingOrdersResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdStandingOrdersPathParams")
-class GetAccountsAccountIdStandingOrders = HttpField<
+typedef GetAccountsAccountIdStandingOrders = HttpField<
     Null,
     OBReadStandingOrder6Object,
-    GetAccountsAccountIdStandingOrdersResponse_Error> with EmptyMixin;
+    GetAccountsAccountIdStandingOrdersResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49497,8 +49730,8 @@ class GetAccountsAccountIdStandingOrders = HttpField<
         GetAccountsAccountIdStatementsResponse_Error.fromJsonStatic,
     queryParamsType: "GetAccountsAccountIdStatementsQueryParams",
     pathParamsType: "GetAccountsAccountIdStatementsPathParams")
-class GetAccountsAccountIdStatements = HttpField<Null, OBReadStatement2Object,
-    GetAccountsAccountIdStatementsResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdStatements = HttpField<Null, OBReadStatement2Object,
+    GetAccountsAccountIdStatementsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49510,10 +49743,10 @@ class GetAccountsAccountIdStatements = HttpField<Null, OBReadStatement2Object,
     errorDeserializer:
         GetAccountsAccountIdStatementsStatementIdResponse_Error.fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdStatementsStatementIdPathParams")
-class GetAccountsAccountIdStatementsStatementId = HttpField<
+typedef GetAccountsAccountIdStatementsStatementId = HttpField<
     Null,
     OBReadStatement2Object,
-    GetAccountsAccountIdStatementsStatementIdResponse_Error> with EmptyMixin;
+    GetAccountsAccountIdStatementsStatementIdResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49526,9 +49759,8 @@ class GetAccountsAccountIdStatementsStatementId = HttpField<
         GetAccountsAccountIdStatementsStatementIdFileResponse_Error
             .fromJsonStatic,
     pathParamsType: "GetAccountsAccountIdStatementsStatementIdFilePathParams")
-class GetAccountsAccountIdStatementsStatementIdFile = HttpField<Null,
-        FileObject, GetAccountsAccountIdStatementsStatementIdFileResponse_Error>
-    with EmptyMixin;
+typedef GetAccountsAccountIdStatementsStatementIdFile = HttpField<Null,
+    FileObject, GetAccountsAccountIdStatementsStatementIdFileResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49542,11 +49774,10 @@ class GetAccountsAccountIdStatementsStatementIdFile = HttpField<Null,
             .fromJsonStatic,
     pathParamsType:
         "GetAccountsAccountIdStatementsStatementIdTransactionsPathParams")
-class GetAccountsAccountIdStatementsStatementIdTransactions = HttpField<
-        Null,
-        OBReadTransaction6Object,
-        GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error>
-    with EmptyMixin;
+typedef GetAccountsAccountIdStatementsStatementIdTransactions = HttpField<
+    Null,
+    OBReadTransaction6Object,
+    GetAccountsAccountIdStatementsStatementIdTransactionsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49558,10 +49789,8 @@ class GetAccountsAccountIdStatementsStatementIdTransactions = HttpField<
         GetAccountsAccountIdTransactionsResponse_Error.fromJsonStatic,
     queryParamsType: "GetAccountsAccountIdTransactionsQueryParams",
     pathParamsType: "GetAccountsAccountIdTransactionsPathParams")
-class GetAccountsAccountIdTransactions = HttpField<
-    Null,
-    OBReadTransaction6Object,
-    GetAccountsAccountIdTransactionsResponse_Error> with EmptyMixin;
+typedef GetAccountsAccountIdTransactions = HttpField<Null,
+    OBReadTransaction6Object, GetAccountsAccountIdTransactionsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49570,8 +49799,8 @@ class GetAccountsAccountIdTransactions = HttpField<
     responseSerializer: OBReadBalance1Object.toJsonStatic,
     responseDeserializer: OBReadBalance1Object.fromJsonStatic,
     errorDeserializer: GetBalancesResponse_Error.fromJsonStatic)
-class GetBalances = HttpField<Null, OBReadBalance1Object,
-    GetBalancesResponse_Error> with EmptyMixin;
+typedef GetBalances
+    = HttpField<Null, OBReadBalance1Object, GetBalancesResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49580,8 +49809,8 @@ class GetBalances = HttpField<Null, OBReadBalance1Object,
     responseSerializer: OBReadBeneficiary5Object.toJsonStatic,
     responseDeserializer: OBReadBeneficiary5Object.fromJsonStatic,
     errorDeserializer: GetBeneficiariesResponse_Error.fromJsonStatic)
-class GetBeneficiaries = HttpField<Null, OBReadBeneficiary5Object,
-    GetBeneficiariesResponse_Error> with EmptyMixin;
+typedef GetBeneficiaries
+    = HttpField<Null, OBReadBeneficiary5Object, GetBeneficiariesResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49590,8 +49819,8 @@ class GetBeneficiaries = HttpField<Null, OBReadBeneficiary5Object,
     responseSerializer: OBReadDirectDebit2Object.toJsonStatic,
     responseDeserializer: OBReadDirectDebit2Object.fromJsonStatic,
     errorDeserializer: GetDirectDebitsResponse_Error.fromJsonStatic)
-class GetDirectDebits = HttpField<Null, OBReadDirectDebit2Object,
-    GetDirectDebitsResponse_Error> with EmptyMixin;
+typedef GetDirectDebits
+    = HttpField<Null, OBReadDirectDebit2Object, GetDirectDebitsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49600,8 +49829,8 @@ class GetDirectDebits = HttpField<Null, OBReadDirectDebit2Object,
     responseSerializer: OBReadOffer1Object.toJsonStatic,
     responseDeserializer: OBReadOffer1Object.fromJsonStatic,
     errorDeserializer: GetOffersResponse_Error.fromJsonStatic)
-class GetOffers = HttpField<Null, OBReadOffer1Object, GetOffersResponse_Error>
-    with EmptyMixin;
+typedef GetOffers
+    = HttpField<Null, OBReadOffer1Object, GetOffersResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49610,8 +49839,7 @@ class GetOffers = HttpField<Null, OBReadOffer1Object, GetOffersResponse_Error>
     responseSerializer: OBReadParty2Object.toJsonStatic,
     responseDeserializer: OBReadParty2Object.fromJsonStatic,
     errorDeserializer: GetPartyResponse_Error.fromJsonStatic)
-class GetParty = HttpField<Null, OBReadParty2Object, GetPartyResponse_Error>
-    with EmptyMixin;
+typedef GetParty = HttpField<Null, OBReadParty2Object, GetPartyResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49620,8 +49848,8 @@ class GetParty = HttpField<Null, OBReadParty2Object, GetPartyResponse_Error>
     responseSerializer: OBReadProduct2Object.toJsonStatic,
     responseDeserializer: OBReadProduct2Object.fromJsonStatic,
     errorDeserializer: GetProductsResponse_Error.fromJsonStatic)
-class GetProducts = HttpField<Null, OBReadProduct2Object,
-    GetProductsResponse_Error> with EmptyMixin;
+typedef GetProducts
+    = HttpField<Null, OBReadProduct2Object, GetProductsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49630,8 +49858,8 @@ class GetProducts = HttpField<Null, OBReadProduct2Object,
     responseSerializer: OBReadScheduledPayment3Object.toJsonStatic,
     responseDeserializer: OBReadScheduledPayment3Object.fromJsonStatic,
     errorDeserializer: GetScheduledPaymentsResponse_Error.fromJsonStatic)
-class GetScheduledPayments = HttpField<Null, OBReadScheduledPayment3Object,
-    GetScheduledPaymentsResponse_Error> with EmptyMixin;
+typedef GetScheduledPayments = HttpField<Null, OBReadScheduledPayment3Object,
+    GetScheduledPaymentsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49640,8 +49868,8 @@ class GetScheduledPayments = HttpField<Null, OBReadScheduledPayment3Object,
     responseSerializer: OBReadStandingOrder6Object.toJsonStatic,
     responseDeserializer: OBReadStandingOrder6Object.fromJsonStatic,
     errorDeserializer: GetStandingOrdersResponse_Error.fromJsonStatic)
-class GetStandingOrders = HttpField<Null, OBReadStandingOrder6Object,
-    GetStandingOrdersResponse_Error> with EmptyMixin;
+typedef GetStandingOrders = HttpField<Null, OBReadStandingOrder6Object,
+    GetStandingOrdersResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49651,8 +49879,8 @@ class GetStandingOrders = HttpField<Null, OBReadStandingOrder6Object,
     responseDeserializer: OBReadStatement2Object.fromJsonStatic,
     errorDeserializer: GetStatementsResponse_Error.fromJsonStatic,
     queryParamsType: "GetStatementsQueryParams")
-class GetStatements = HttpField<Null, OBReadStatement2Object,
-    GetStatementsResponse_Error> with EmptyMixin;
+typedef GetStatements
+    = HttpField<Null, OBReadStatement2Object, GetStatementsResponse_Error>;
 
 @HttpRequest(
     method: "GET",
@@ -49662,5 +49890,5 @@ class GetStatements = HttpField<Null, OBReadStatement2Object,
     responseDeserializer: OBReadTransaction6Object.fromJsonStatic,
     errorDeserializer: GetTransactionsResponse_Error.fromJsonStatic,
     queryParamsType: "GetTransactionsQueryParams")
-class GetTransactions = HttpField<Null, OBReadTransaction6Object,
-    GetTransactionsResponse_Error> with EmptyMixin;
+typedef GetTransactions
+    = HttpField<Null, OBReadTransaction6Object, GetTransactionsResponse_Error>;

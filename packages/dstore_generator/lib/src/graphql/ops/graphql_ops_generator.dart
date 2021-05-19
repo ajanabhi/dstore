@@ -126,10 +126,10 @@ String generateOpsTypeForQuery({
     $responseSerializerFn
     $responseDeserializerFunction
     $req
-    class $name = HttpField<$inputType, $responseType, dynamic> with EmptyMixin;
+    typedef $name = HttpField<$inputType, $responseType, dynamic>;
 
     $req
-    class ${name}T<T> = HttpField<$inputType, T, dynamic> with EmptyMixin;
+    typedef ${name}T<T> = HttpField<$inputType, T, dynamic>;
   """;
   } else {
     // subscription
@@ -152,10 +152,10 @@ String generateOpsTypeForQuery({
     $types    
     $responseDeserializerFunction
     $req
-    class $name = WebSocketField<$inputType, $responseType, dynamic> with EmptyMixin;
+    typedef = WebSocketField<$inputType, $responseType, dynamic>;
 
     $req
-    class ${name}T<T> = WebSocketField<$inputType, T, dynamic> with EmptyMixin;
+    typedef ${name}T<T> = WebSocketField<$inputType, T, dynamic>;
   """;
   }
 

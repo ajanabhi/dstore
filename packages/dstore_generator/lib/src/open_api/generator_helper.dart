@@ -265,7 +265,7 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
 
       final dapi = """
        @HttpRequest( ${params.join(", ")} )
-       class $oid = HttpField<$inputType, $responseType, $errorType> with EmptyMixin;
+       typedef $oid = HttpField<$inputType, $responseType, $errorType>;
       
       """;
       pathTypes.add(dapi);
@@ -432,7 +432,7 @@ OutputType _getResponseType(
           """;
         } else {
           serializeCase = """
-          case $status:
+          case "$status":
             return $toJsonReturn;
         """;
         }
@@ -497,7 +497,7 @@ OutputType _getResponseType(
 
     final fromJson = """
      static $name fromJsonStatic(int status,dynamic input) {
-         switch(status.toString){
+         switch(status.toString()){
          ${deserializeCases.join("\n")}
          ${deserializeDefaultCase}
          default: 
@@ -817,6 +817,7 @@ void _createDartModelFromSchemaObject(Schema schema, String name) {
       fields: fields,
       className: name,
       isJsonSerializable: true,
-      addStaticSerializeDeserialize: true);
+      addStaticSerializeDeserialize: true,
+      addStatusToStaticSerializer: true);
   types.add(result);
 }

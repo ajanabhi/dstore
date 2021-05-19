@@ -254,6 +254,16 @@ extension ElementExt on Element {
   }
 }
 
+extension TypelAliasElementExt on TypeAliasElement {
+  ElementAnnotation? annotationFromType(Type type) {
+    final tc = TypeChecker.fromRuntime(type);
+    return metadata.singleWhereOrNull((e) {
+      final v = e.computeConstantValue();
+      return v != null && v.type != null && tc.isAssignableFromType(v.type!);
+    });
+  }
+}
+
 extension VariableDeclarationExt on VariableDeclaration {
   Annotation? annotationFromType(Type type) {
     final tc = TypeChecker.fromRuntime(type);

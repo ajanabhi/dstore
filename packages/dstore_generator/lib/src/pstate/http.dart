@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -19,12 +20,14 @@ List<HttpFieldInfo> getHttpFields(List<FieldElement> fields) {
 }
 
 HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
-  final type = element.type;
-
-  final ht = AstUtils.isSubTypeof(type, "HttpField");
-  if (ht == null) {
+  var ht = element.type;
+  print(
+      "Getting http for field ${element.type} ${element.type.runtimeType} Alias ${element.type.aliasElement}");
+  // final ht = AstUtils.isSubTypeof(type, "HttpField");
+  if (!ht.toString().startsWith("HttpField<")) {
     return null;
   }
+  ht = ht as InterfaceType;
   if (ht.typeArguments.length != 3) {
     throw ArgumentError.value(
         "You should specify all 3 generic types of HttpField");
@@ -32,17 +35,13 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
 
   String? inputType = replaceEndStar(
       ht.typeArguments[0].getDisplayString(withNullability: true));
-  if (inputType == "Null") {
-    inputType = null;
-  }
   final responseType = replaceEndStar(
       ht.typeArguments[1].getDisplayString(withNullability: true));
   final errorType = replaceEndStar(
       ht.typeArguments[2].getDisplayString(withNullability: true));
-  final anot = type.element?.annotationFromType(HttpRequest);
+  final anot = element.type.aliasElement?.annotationFromType(HttpRequest);
   if (anot == null) {
-    throw ArgumentError.value(
-        "You should anotate type ${type} with HttpRequest");
+    throw ArgumentError.value("You should anotate type ${ht} with HttpRequest");
   }
   print("HttpRequest Anotation ${anot.toSource()}");
   final value = anot.computeConstantValue();
@@ -133,7 +132,7 @@ String convertHttpFieldInfoToAction(
     payloadFields.add(
         "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
   }
-  if (hf.inputType != null) {
+  if (hf.inputType != "Null") {
     if (hf.inputType!.startsWith("GraphqlRequestInput")) {
       final it = hf.inputType!;
 

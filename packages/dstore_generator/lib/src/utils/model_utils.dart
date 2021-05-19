@@ -252,10 +252,12 @@ abstract class ModelUtils {
       String annotations = "",
       bool isJsonSerializable = false,
       bool addStaticSerializeDeserialize = false,
-      bool addOverrideAnnotation = false}) {
+      bool addOverrideAnnotation = false,
+      bool addStatusToStaticSerializer = false}) {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
     }
+
     final hasFields = fields.isNotEmpty;
     return """
    $annotations 
@@ -271,9 +273,9 @@ abstract class ModelUtils {
 
       ${isJsonSerializable ? ModelUtils.createToJson(className) : ""} 
       
-      ${addStaticSerializeDeserialize ? ModelUtils.createFromJsonStatic(className) : ""}
+      ${addStaticSerializeDeserialize ? ModelUtils.createFromJsonStatic(className, addStatusToStaticSerializer: addStatusToStaticSerializer) : ""}
 
-      ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className) : ""}
+      ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className, addStatusToStaticSerializer: addStatusToStaticSerializer) : ""}
 
       ${hasFields ? ModelUtils.createEqualsFromFieldsList(className, fields) : ""}
 
@@ -286,12 +288,24 @@ abstract class ModelUtils {
     """;
   }
 
-  static String createFromJsonStatic(String name) {
-    return "static $name fromJsonStatic(dynamic value) => _\$${name}FromJson(value as Map<String,dynamic>);";
+  static String createFromJsonStatic(String name,
+      {bool addStatusToStaticSerializer = false}) {
+    final params = <String>[];
+    if (addStatusToStaticSerializer) {
+      params.add("int status");
+    }
+    params.add("dynamic value");
+    return "static $name fromJsonStatic(${params.join(", ")}) => _\$${name}FromJson(value as Map<String,dynamic>);";
   }
 
-  static String createToJsonStatic(String name) {
-    return "static dynamic toJsonStatic($name input) => input.toJson();";
+  static String createToJsonStatic(String name,
+      {bool addStatusToStaticSerializer = false}) {
+    final params = <String>[];
+    if (addStatusToStaticSerializer) {
+      params.add("int status");
+    }
+    params.add("$name input");
+    return "static dynamic toJsonStatic(${params.join(", ")}) => input.toJson();";
   }
 
   static String createDefaultDartUpdateModelFromFeilds(
