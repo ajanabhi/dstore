@@ -55,15 +55,39 @@ class SimpleDForm extends StatelessWidget {
       ff: ff,
       child: Column(
         children: [
-          DTextField<SimpleFormKey>(name: SimpleFormKey.name),
+          DTextField(name: SimpleFormKey.name),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                DRadioField(name: SimpleFormKey.r, value: REnum.one),
+                DRadioField(name: SimpleFormKey.r, value: REnum.two),
+                DRadioField(name: SimpleFormKey.r, value: REnum.three)
+              ],
+            ),
+          ),
           SizedBox(
             height: 20,
           ),
-          ElevatedButton(
-              onPressed: () {
-                print("Form Value ${ff.value}");
-              },
-              child: Text("Submit Form"))
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              ElevatedButton(
+                  onPressed: () {
+                    print("Form Value ${ff.value}");
+                  },
+                  child: Text("Reset Form")),
+              SizedBox(
+                width: 40,
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    print("Form Value ${ff.value}");
+                  },
+                  child: Text("Submit Form"))
+            ],
+          )
         ],
       ),
     );

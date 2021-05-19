@@ -9,9 +9,14 @@ class DForm extends InheritedWidget {
       : super(key: key, child: child);
 
   static DForm of(BuildContext context) {
-    final dform = context.dependOnInheritedWidgetOfExactType<DForm>()!;
+    final dformType = context.dependOnInheritedWidgetOfExactType<DForm>();
+    if (dformType == null) {
+      throw Exception(
+          "No Parent Dform Found , make sure you use d form fields as a child of DFrom widget");
+    }
+    final dform = dformType;
     if (dform._formState.ops == null) {
-      final d = context.dispatch as Dispatch;
+      final d = context.dispatch;
       dform._formState.ops = FormUtils.getFormOps(dform.ff, d);
     }
     return dform;
@@ -19,10 +24,12 @@ class DForm extends InheritedWidget {
 
   FormOps get ops => _formState.ops!;
 
+  void resetForm() => ops.resetForm(FormReset());
+
   FromFieldPropInfo getInfo(String key) {
     final value = ff.value.toMap();
-    final dynamic kv = value[key.toString().split(".").last];
-    if (kv == null) {
+    final fromFieldKey = key.toString().split(".").last;
+    if (!value.containsKey(fromFieldKey)) {
       throw ArgumentError.value("$key not found in this from ${value}");
     }
     final validator = ff.validators[key];
@@ -30,7 +37,7 @@ class DForm extends InheritedWidget {
     final touched = ff.touched[key] ?? false;
     return FromFieldPropInfo(
         name: key,
-        value: kv,
+        value: value[fromFieldKey],
         validator: validator,
         error: error,
         setValue: (dynamic value, {bool? validate}) => ops.setFieldValue(
@@ -59,4 +66,8 @@ class DForm extends InheritedWidget {
 
 class _FormState {
   FormOps? ops;
+}
+
+extension BuildContextDFormExtension on BuildContext {
+  DForm get dform => DForm.of(this);
 }

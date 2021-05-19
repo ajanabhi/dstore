@@ -9,7 +9,10 @@ class $_FormState {
       FormField(value: SimpleForm(), validators: {});
 }
 
+enum REnum { one, two, three }
+
 @FormModel()
 class $_SimpleForm {
   String name = "initialName";
+  REnum? r;
 }

@@ -11,34 +11,38 @@ part of 'form_state.dart';
 class SimpleForm implements FormFieldObject<SimpleForm> {
   final String name;
 
+  final REnum? r;
+
   _$SimpleFormCopyWith<SimpleForm> get copyWith =>
       __$SimpleFormCopyWithImpl<SimpleForm>(this, IdentityFn);
 
-  const SimpleForm({this.name = "initialName"});
+  const SimpleForm({this.name = "initialName", this.r});
 
   @override
   SimpleForm copyWithMap(Map<String, dynamic> map) => SimpleForm(
-      name: map.containsKey("name") ? map["name"] as String : this.name);
+      name: map.containsKey("name") ? map["name"] as String : this.name,
+      r: map.containsKey("r") ? map["r"] as REnum? : this.r);
 
-  Map<String, dynamic> toMap() => <String, dynamic>{"name": this.name};
+  Map<String, dynamic> toMap() =>
+      <String, dynamic>{"name": this.name, "r": this.r};
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is SimpleForm && o.name == name;
+    return o is SimpleForm && o.name == name && o.r == r;
   }
 
   @override
-  int get hashCode => name.hashCode;
+  int get hashCode => name.hashCode ^ r.hashCode;
 
   @override
-  String toString() => "SimpleForm(name: ${this.name})";
+  String toString() => "SimpleForm(name: ${this.name}, r: ${this.r})";
 }
 
 abstract class $SimpleFormCopyWith<O> {
   factory $SimpleFormCopyWith(SimpleForm value, O Function(SimpleForm) then) =
       _$SimpleFormCopyWithImpl<O>;
-  O call({String name});
+  O call({String name, REnum? r});
 }
 
 class _$SimpleFormCopyWithImpl<O> implements $SimpleFormCopyWith<O> {
@@ -47,16 +51,17 @@ class _$SimpleFormCopyWithImpl<O> implements $SimpleFormCopyWith<O> {
   _$SimpleFormCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? name = dimmutable}) {
+  O call({Object? name = dimmutable, Object? r = dimmutable}) {
     return _then(_value.copyWith(
-        name: name == dimmutable ? _value.name : name as String));
+        name: name == dimmutable ? _value.name : name as String,
+        r: r == dimmutable ? _value.r : r as REnum?));
   }
 }
 
 abstract class _$SimpleFormCopyWith<O> implements $SimpleFormCopyWith<O> {
   factory _$SimpleFormCopyWith(SimpleForm value, O Function(SimpleForm) then) =
       __$SimpleFormCopyWithImpl<O>;
-  O call({String name});
+  O call({String name, REnum? r});
 }
 
 class __$SimpleFormCopyWithImpl<O> extends _$SimpleFormCopyWithImpl<O>
@@ -68,10 +73,11 @@ class __$SimpleFormCopyWithImpl<O> extends _$SimpleFormCopyWithImpl<O>
   SimpleForm get _value => super._value;
 
   @override
-  O call({Object? name = dimmutable}) {
-    return _then(
-        SimpleForm(name: name == dimmutable ? _value.name : name as String));
+  O call({Object? name = dimmutable, Object? r = dimmutable}) {
+    return _then(SimpleForm(
+        name: name == dimmutable ? _value.name : name as String,
+        r: r == dimmutable ? _value.r : r as REnum?));
   }
 }
 
-enum SimpleFormKey { name }
+enum SimpleFormKey { name, r }
