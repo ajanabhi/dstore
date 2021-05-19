@@ -59,8 +59,10 @@ class _DRadioFieldState<FieldKey, RadioEnum>
     final key = FormUtils.getNameFromKey(widget.name);
     final dform = DForm.of(context);
     _info ??= dform.getInfo(key);
-    if (dform.ff.internalKeysChanged != null &&
-        dform.ff.internalKeysChanged!.contains(key)) {
+    final internalKeysChanged = dform.ff.internalKeysChanged;
+    if (internalKeysChanged != null &&
+        (internalKeysChanged.contains(key) ||
+            internalKeysChanged.isEmpty /*in reset case we get empty list */)) {
       _info = dform.getInfo(key);
       _w = _getWidget();
     } else {

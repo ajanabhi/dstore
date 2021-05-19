@@ -138,13 +138,15 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
     dform = DForm.of(context);
     final key = FormUtils.getNameFromKey(widget.name);
     _info ??= dform.getInfo(key);
-    if (dform.ff.internalKeysChanged != null &&
-        dform.ff.internalKeysChanged!.contains(key)) {
+    final internalKeysChanged = dform.ff.internalKeysChanged;
+    if (internalKeysChanged != null &&
+        (internalKeysChanged.contains(key) ||
+            internalKeysChanged.isEmpty /*in reset case we get empty list */)) {
       _info = dform.getInfo(key);
-      _setText();
+      _setText(internalKeysChanged.isEmpty);
       _w = _getWidget();
     } else {
-      _setText();
+      _setText(false);
       _w ??= _getWidget();
     }
   }
@@ -154,13 +156,17 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
     return _w!;
   }
 
-  void _setText() {
+  void _setText(bool isReset) {
     final text = widget.toText != null
         ? widget.toText!(_info?.value)
         : "${_info!.value}";
-    final prevSelection = _controller.selection;
-    _controller.text = text;
-    _controller.selection = prevSelection;
+    if (isReset) {
+      _controller.text = text;
+    } else {
+      final prevSelection = _controller.selection;
+      _controller.text = text;
+      _controller.selection = prevSelection;
+    }
   }
 
   TextField _getWidget() {
@@ -232,7 +238,7 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
     if (oldWidget.name != widget.name) {
       final key = FormUtils.getNameFromKey(widget.name);
       _info = dform.getInfo(key);
-      _setText();
+      _setText(true);
       _w = _getWidget();
     }
   }

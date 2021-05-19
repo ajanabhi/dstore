@@ -53,42 +53,48 @@ class SimpleDForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return DForm(
       ff: ff,
-      child: Column(
-        children: [
-          DTextField(name: SimpleFormKey.name),
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                DRadioField(name: SimpleFormKey.r, value: REnum.one),
-                DRadioField(name: SimpleFormKey.r, value: REnum.two),
-                DRadioField(name: SimpleFormKey.r, value: REnum.three)
-              ],
-            ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+      child: Builder(
+        builder: (context) {
+          print("re build form ${ff.value}");
+          return Column(
             children: [
-              ElevatedButton(
-                  onPressed: () {
-                    print("Form Value ${ff.value}");
-                  },
-                  child: Text("Reset Form")),
-              SizedBox(
-                width: 40,
+              DTextField(name: SimpleFormKey.name),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    DRadioField(name: SimpleFormKey.r, value: REnum.one),
+                    DRadioField(name: SimpleFormKey.r, value: REnum.two),
+                    DRadioField(name: SimpleFormKey.r, value: REnum.three)
+                  ],
+                ),
               ),
-              ElevatedButton(
-                  onPressed: () {
-                    print("Form Value ${ff.value}");
-                  },
-                  child: Text("Submit Form"))
+              SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        print("Resetting Form");
+                        context.dform.resetForm();
+                      },
+                      child: Text("Reset Form")),
+                  SizedBox(
+                    width: 40,
+                  ),
+                  ElevatedButton(
+                      onPressed: () {
+                        print("Form Value ${ff.value}");
+                      },
+                      child: Text("Submit Form"))
+                ],
+              )
             ],
-          )
-        ],
+          );
+        },
       ),
     );
   }

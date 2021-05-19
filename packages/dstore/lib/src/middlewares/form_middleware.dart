@@ -91,10 +91,11 @@ dynamic formMiddleware<S extends AppStateI<S>>(
           isSubmitting: req.isSubmitting, internalKeysChanged: null);
     } else if (req is FormValidate) {
       final errors = await FormUtils.isFormValid(ff);
+      final internalKeysChanged = errors.isEmpty ? null : errors.keys.toList();
       nff = ff.copyWith(
           errors: errors,
           isValid: errors.isEmpty,
-          internalKeysChanged: errors.keys.toList());
+          internalKeysChanged: internalKeysChanged);
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
