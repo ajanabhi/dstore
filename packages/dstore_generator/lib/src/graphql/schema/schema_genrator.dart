@@ -72,16 +72,21 @@ String _convertObjectTypeToDSl(gschema.ObjectTypeDefinition? ot,
 
 String _convertFieldDefinitionToDSL(
     gschema.FieldDefinition f, Map<String, String>? scalaraMap) {
+  if (f.type == null) {
+    return "";
+  }
   final fn = f.name;
-  final ft = getFieldMetadataFromFieldTypeInstance(f.type);
-  final type = f.type.baseTypeName;
+  final fType = f.type!;
+  final ft = getFieldMetadataFromFieldTypeInstance(fType);
+  final type = fType.baseTypeName;
   final isScalar = ft.fieldType is gschema.ScalarTypeDefinition;
-  final args = f.args.map((a) {
-    final an = a.name;
-    final type = _getInputTypeFromGraphqlType(a.type, scalaraMap);
-    final req = type.endsWith("?") ? "" : "required ";
-    return "$req $type $an";
-  }).toList();
+  final args = f.args?.map((a) {
+        final an = a.name;
+        final type = _getInputTypeFromGraphqlType(a.type!, scalaraMap);
+        final req = type.endsWith("?") ? "" : "required ";
+        return "$req $type $an";
+      }).toList() ??
+      [];
   args.add("String? alias");
   args.add("String? directive");
   var reqArgs = "";
@@ -194,7 +199,7 @@ String _convertGEnumToDEnum(gschema.EnumTypeDefinition genum) {
 String _getInputTypeFromGraphqlType(
     gschema.GraphQLType gtype, Map<String, String>? scalarMap) {
   String getNamedType(gschema.NamedType gtype2) {
-    final gschema.TypeDefinition td = gtype2.type;
+    final gschema.TypeDefinition td = gtype2.type!;
     var type = gtype.baseTypeName;
     if (td is gschema.ScalarTypeDefinition) {
       type = getScalarTypeFromString(type, scalarMap: scalarMap);
@@ -223,9 +228,9 @@ String _convertGInputTypeToDType(
   final fields = it.fields.map((gf) {
     final name = gf.name;
     final gtype = gf.type;
-    var type = _getInputTypeFromGraphqlType(gtype, scalarMap);
+    var type = _getInputTypeFromGraphqlType(gtype!, scalarMap);
     return Field(
-      name: name,
+      name: name!,
       type: type,
       isOptional: !gtype.isNonNull,
     );
@@ -233,7 +238,7 @@ String _convertGInputTypeToDType(
 
   return ModelUtils.createDefaultDartModelFromFeilds(
       fields: ModelUtils.processFields(fields, addJsonKey: true),
-      className: name,
+      className: name!,
       isJsonSerializable: true);
 }
 

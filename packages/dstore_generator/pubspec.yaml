@@ -11,7 +11,7 @@ dependencies:
   build_config: ^0.4.6 
   meta: ^1.3.0 
   source_gen: ^1.0.0
-  gql:
+  gql: ^0.13.0 
   crypto: 
   dio: ^4.0.0
   collection:

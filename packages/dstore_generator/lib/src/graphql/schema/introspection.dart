@@ -391,7 +391,7 @@ TypeNode _convertIntroSpectionTypeRefToTypeNode(IntrospectionTypeRef typeRef,
   }
 
   return NamedTypeNode(
-      name: NameNode(value: typeRef.name), isNonNull: isNonNull);
+      name: NameNode(value: typeRef.name!), isNonNull: isNonNull);
 }
 
 InputObjectTypeDefinition buildInputObjectTypeDef(
@@ -432,7 +432,7 @@ ObjectTypeDefinition buildObjectTypeDef(IntrospectionType objectIntrospection) {
     if (e.name == null) {
       throw Exception("Interface Ref should have name");
     }
-    return NamedTypeNode(name: NameNode(value: e.name));
+    return NamedTypeNode(name: NameNode(value: e.name!));
   }).toList();
   return ObjectTypeDefinition(ObjectTypeDefinitionNode(
       name: NameNode(value: objectIntrospection.name),
@@ -460,7 +460,7 @@ UnionTypeDefinition buildUnionTypeDef(IntrospectionType unionIntrospection) {
     if (e.name == null) {
       throw Exception("Possible type name cannot be null");
     }
-    return NamedTypeNode(name: NameNode(value: e.name));
+    return NamedTypeNode(name: NameNode(value: e.name!));
   }).toList();
   return UnionTypeDefinition(UnionTypeDefinitionNode(
       name: NameNode(value: unionIntrospection.name),
@@ -538,7 +538,7 @@ DirectiveDefinition buildDirectiveDef(
   return DirectiveDefinition(DirectiveDefinitionNode(
       name: NameNode(value: directiveIntrospection.name),
       description: _getDescription(directiveIntrospection.description),
-      repeatable: directiveIntrospection.isRepeatable,
+      repeatable: directiveIntrospection.isRepeatable ?? false,
       locations: locations,
       args: args));
 }

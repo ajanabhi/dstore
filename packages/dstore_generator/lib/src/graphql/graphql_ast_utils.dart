@@ -4,7 +4,7 @@ import 'package:gql/schema.dart';
 abstract class GraphqlAstUtils {
   static TypeDefinition getTypeDefinitionFromGraphqlType(GraphQLType gt) {
     if (gt is NamedType) {
-      return gt.type;
+      return gt.type!;
     } else {
       return getTypeDefinitionFromGraphqlType((gt as ListType).type);
     }
@@ -37,9 +37,9 @@ abstract class GraphqlAstUtils {
 
   static String convertFieldDefinitionToQueryString(FieldDefinition fd) {
     final name = fd.name;
-    final td = getTypeDefinitionFromGraphqlType(fd.type);
+    final td = getTypeDefinitionFromGraphqlType(fd.type!);
     if (td is ScalarTypeDefinition) {
-      return name;
+      return name!;
     } else if (td is ObjectTypeDefinition) {
       return """$name {
              ${convertObjectDefnitionToQueryString(td)}

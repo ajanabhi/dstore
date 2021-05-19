@@ -67,7 +67,7 @@ class OperationVisitor extends RecursiveVisitor {
     super.visitOperationDefinitionNode(node);
     final fe = _resultFieldElementStack.consume();
     if (fe.fields.isEmpty && fe.typeFragments.isEmpty) {
-      throw Exception("You should select fields for query ${node.name.value}");
+      throw Exception("You should select fields for query ${node.name?.value}");
     }
     fields = fe.fields;
     fragments = fe.typeFragments;
@@ -94,9 +94,9 @@ class OperationVisitor extends RecursiveVisitor {
   void visitVariableDefinitionNode(VariableDefinitionNode node) {
     super.visitVariableDefinitionNode(node);
     print(
-        "variable definition leave ${node.variable.name.value} ${node.defaultValue.value} ${node.type}");
+        "variable definition leave ${node.variable.name.value} ${node.defaultValue?.value} ${node.type}");
     final variableName = node.variable.name.value.substring(1);
-    final defaultValue = node.defaultValue.value
+    final defaultValue = node.defaultValue?.value
         ?.toString(); //TODO handle array object default variables
     final tm = _getTypeNodeMeta(node.type);
     final td = schema.getType(tm.fieldType);
@@ -141,12 +141,12 @@ class OperationVisitor extends RecursiveVisitor {
   void visitInlineFragmentNode(InlineFragmentNode node) {
     print("InLineFragment Enter ${node} ");
     if (node.typeCondition != null) {
-      final name = node.typeCondition.on.name.value;
-      final type = schema.getType(name) as TypeDefinition?;
+      final name = node.typeCondition?.on.name.value;
+      final type = schema.getType(name ?? "");
       if (type == null) {
         throw Exception("can not find type ${name}");
       }
-      print("Union TYpe $type name ${node.typeCondition.on.name.value}");
+      print("Union TYpe $type name ${node.typeCondition?.on.name.value}");
       _parentTypeStack.stack(type);
       _resultFieldElementStack.stack();
     }
@@ -157,14 +157,14 @@ class OperationVisitor extends RecursiveVisitor {
       final fe = _resultFieldElementStack.consume();
       if (fe.fields.isEmpty && fe.typeFragments.isEmpty) {
         throw Exception(
-            " You should select fields on inline fragment ${node.typeCondition.on.name.value}");
+            " You should select fields on inline fragment ${node.typeCondition?.on.name.value}");
       }
       final isUnionCondition = _isConcreteTypeOfParentUnionType(
-          node.typeCondition, _parentTypeStack.current);
+          node.typeCondition!, _parentTypeStack.current);
       _resultFieldElementStack.current.typeFragments.add(GFragment(
           isUnionCondition: isUnionCondition,
           fields: fe.fields,
-          on: node.typeCondition.on.name.value,
+          on: node.typeCondition?.on.name.value,
           fragments: fe.typeFragments));
     }
   }
@@ -178,7 +178,7 @@ class OperationVisitor extends RecursiveVisitor {
     if (fieldName != "__typename") {
       final f = (_parentTypeStack.current as TypeDefinitionWithFieldSet)
           .getField(node.name.value);
-      fm = getFieldMetadataFromFieldTypeInstance(f.type);
+      fm = getFieldMetadataFromFieldTypeInstance(f.type!);
       print("field meta $fm");
       if (fm.fieldType is ObjectTypeDefinition ||
           fm.fieldType is InterfaceTypeDefinition ||
@@ -288,6 +288,6 @@ class OperationVisitor extends RecursiveVisitor {
 
   String _getScalarType(ScalarTypeDefinition typeDef,
       {Map<String, String>? scalarMap}) {
-    return getScalarTypeFromString(typeDef.name, scalarMap: scalarMap);
+    return getScalarTypeFromString(typeDef.name ?? "", scalarMap: scalarMap);
   }
 }
