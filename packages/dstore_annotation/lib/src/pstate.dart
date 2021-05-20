@@ -4,11 +4,13 @@ class PState {
   final int? historyLimit;
   final bool? nav;
   final bool? navBlockSameUrl;
+  final List<String>? nonConstClassesWithDefaultValues;
   const PState(
       {this.persist,
       this.enableHistory = false,
       this.navBlockSameUrl,
       this.historyLimit,
+      this.nonConstClassesWithDefaultValues,
       this.nav});
 }
 

@@ -252,11 +252,15 @@ extension PStateExtension on ClassElement {
     final historyLimit = reader.peek("historyLimit")?.intValue;
     final nav = reader.peek("nav")?.boolValue;
     final navBlockSameUrl = reader.peek("navBlockSameUrl")?.boolValue;
+    final nonConstClassesWithDefaultValues =
+        reader.getStringList("nonConstClassesWithDefaultValues");
+
     return PState(
         persist: persit,
         enableHistory: enableHistory ?? false,
         nav: nav,
         historyLimit: historyLimit,
+        nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues,
         navBlockSameUrl: navBlockSameUrl);
   }
 }

@@ -4,14 +4,16 @@ import 'package:tuple/tuple.dart';
 
 abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
-      {bool addLateModifier = false, bool addOverrideAnnotation = false}) {
+      {bool addLateModifier = false,
+      bool addOverrideAnnotation = false,
+      List<String>? nonConstClassesWithDefaultValues}) {
     return fields.map((f) {
       var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
       if (f.value != null &&
           f.value != "null" &&
-          !canhaveConsConstructor(type)) {
+          !canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
         type = "$type?";
       }
       return """
@@ -22,23 +24,28 @@ abstract class ModelUtils {
     }).join("\n ");
   }
 
-  static bool canhaveConsConstructor(String type) {
+  static bool canhaveConsConstructor(
+      String type, List<String>? nonConstClassesWithDefaultValues) {
     var result = true;
-    if (!type.endsWith("?") && type == "DateTime" ||
-        (type.startsWith("FormField<"))) {
+    final list =
+        DBuilderOptions.psBuilderOptions.nonConstClassesWithDefaultValues;
+    list.addAll(nonConstClassesWithDefaultValues ?? []);
+    if (!type.endsWith("?") &&
+        list.where((t) => t == type || type.startsWith(t)).isNotEmpty) {
       result = false;
     }
 
     return result;
   }
 
-  static String getFinalFieldType(Field f) {
+  static String getFinalFieldType(Field f,
+      {List<String>? nonConstClassesWithDefaultValues}) {
     var type = f.isOptional && !f.type.endsWith("?") && f.value == null
         ? "${f.type}?"
         : "${f.type}";
     final value = f.value;
     if (value != null && value != "null") {
-      if (!canhaveConsConstructor(type)) {
+      if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
         type = "$type?";
       }
     }
@@ -46,14 +53,14 @@ abstract class ModelUtils {
   }
 
   static Tuple2<String, Tuple2<String, String>?> getDefaultValueForField(
-      Field f) {
+      Field f, List<String>? nonConstClassesWithDefaultValues) {
     final value = f.value;
     final name = f.name;
     if (value != null && value != "null") {
       var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
-      if (!canhaveConsConstructor(type)) {
+      if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
         type = "$type?";
         return Tuple2("", Tuple2("$type $name", "$name = $name ?? $value"));
       } else {
@@ -113,10 +120,13 @@ abstract class ModelUtils {
   }
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
-      {bool assignDefaults = true, bool addConst = true}) {
+      {bool assignDefaults = true,
+      bool addConst = true,
+      List<String>? nonConstClassesWithDefaultValues}) {
     final nonConstantDefaults = <String>[];
     var cf = fields.map((f) {
-      final tuple = getDefaultValueForField(f);
+      final tuple =
+          getDefaultValueForField(f, nonConstClassesWithDefaultValues);
       final defaultValue = tuple.item1;
       final nonConstTuple = tuple.item2;
       var param =
@@ -168,14 +178,17 @@ abstract class ModelUtils {
       {required String name,
       required List<Field> fields,
       required String typeParamsWithBounds,
-      required String typeParams}) {
-    final callParams =
-        fields.map((f) => "${getFinalFieldType(f)} ${f.name}").join(", ");
+      required String typeParams,
+      List<String>? nonConstClassesWithDefaultValues}) {
+    final callParams = fields
+        .map((f) =>
+            "${getFinalFieldType(f, nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues)} ${f.name}")
+        .join(", ");
     final callImplParams =
         fields.map((f) => "Object? ${f.name} = dimmutable").join(", ");
     final copyWithParams = fields
         .map((f) =>
-            "${f.name} : ${f.name} == dimmutable ? _value.${f.name} : ${f.name} as ${getFinalFieldType(f)}")
+            "${f.name} : ${f.name} == dimmutable ? _value.${f.name} : ${f.name} as ${getFinalFieldType(f, nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues)}")
         .join(", ");
     final aName = "\$${name}CopyWith";
     final aImplName = "_${aName}Impl";

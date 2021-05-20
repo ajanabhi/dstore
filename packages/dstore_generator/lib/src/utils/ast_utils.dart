@@ -343,6 +343,13 @@ extension DartObjectExt on DartObject {
         MapEntry(key!.toStringValue()!, value!.toStringValue()!));
   }
 
+  List<String>? getStringList(String name) {
+    return getField(name)
+        ?.toListValue()
+        ?.map((e) => e.toStringValue()!)
+        .toList();
+  }
+
   T? getEnumField<T>(String name, List<T> values) {
     final field = getField(name);
     print("Enum Field $field ${field.runtimeType}");
@@ -376,6 +383,10 @@ extension ConstReadExt on ConstantReader {
   String? functionNameForField(String name,
       {String? Function(ExecutableElement fn)? validateFn}) {
     return objectValue.functionNameForField(name, validateFn: validateFn);
+  }
+
+  List<String>? getStringList(String name) {
+    return objectValue.getStringList(name);
   }
 
   Map<String, String>? getStringMapForField(String name) {

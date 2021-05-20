@@ -9,8 +9,10 @@ enum PersistMode { ExplicitPersist, ExplicitDontPersist }
 
 class PStateGeneratorBuildOptions {
   final PersistMode? persistMode;
+  final List<String> nonConstClassesWithDefaultValues;
 
-  PStateGeneratorBuildOptions({this.persistMode});
+  PStateGeneratorBuildOptions(
+      {this.persistMode, required this.nonConstClassesWithDefaultValues});
 
   @override
   String toString() => "PStateGeneratorBuildOptions(persitMode: $persistMode)";
@@ -26,7 +28,14 @@ class PStateGeneratorBuildOptions {
         }
         persistMode = convertStringToEnum(pms, PersistMode.values);
       }
-      final options = PStateGeneratorBuildOptions(persistMode: persistMode);
+      final nonConstClassesWithDefaultValues =
+          (config["nonConstClassesWithDefaultValues"] as List<dynamic>?)
+                  ?.map((dynamic e) => e as String)
+                  .toList() ??
+              ["DateTime", "FormField"];
+      final options = PStateGeneratorBuildOptions(
+          persistMode: persistMode,
+          nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues);
       logger.shout("PS Builder options $options");
       DBuilderOptions.psBuilderOptions = options;
     } catch (e, st) {
