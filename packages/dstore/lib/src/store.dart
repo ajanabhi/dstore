@@ -232,6 +232,9 @@ class Store<S extends AppStateI<S>> {
       gsMap[sk] = newS;
       print("NewState $newS");
       _state = _state.copyWithMap(gsMap);
+      if (action.nextAction != null) {
+        dispatch(action.nextAction!);
+      }
     } else if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
       _handleStateChange(

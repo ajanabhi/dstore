@@ -17,6 +17,7 @@ abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
   Action notFoundAction(Uri uri);
+  Action fallBackNestedStackNonInitializationAction(NavStateI navState);
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
@@ -24,6 +25,7 @@ abstract class NavStateI<M> extends PStateModel<M> {
       originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
   NavOptions? navOptions;
   bool blockSameUrl = false;
+
   String? get dontTouchMeUrl => _dontTouchMeUrl;
   set dontTouchMeUrl(String? value) {
     _dontTouchMeUrl = value;
@@ -58,6 +60,11 @@ typedef UrlToAction = dynamic Function(Uri, Dispatch);
 abstract class NestedNavStateI<M> extends NavStateI<M> {
   @override
   Action notFoundAction(Uri uri) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
     throw UnimplementedError();
   }
 

@@ -64,6 +64,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             final nestedNavs = state.getNestedNavs();
             if (nestedNavs.isNotEmpty) {
               nestedNavs.forEach((nnav) {
+                nnav.dontTouchMeHistory = history;
                 state.dontTouchMeStaticMeta.addAll(nnav.dontTouchMeStaticMeta);
                 state.dontTouchMeDynamicMeta
                     .addAll(nnav.dontTouchMeDynamicMeta);
@@ -71,6 +72,8 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             }
             _navState = state;
             history.blockSameUrl = state.blockSameUrl;
+            history.fallBackNestedStackNonInitializationAction =
+                state.fallBackNestedStackNonInitializationAction;
           },
           onInitialBuild: (context, state) {
             _preparedState = true;

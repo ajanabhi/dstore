@@ -17,6 +17,12 @@ const navStateFeilds = [
   "historyUpdate"
 ];
 
+const navStateRegularMethods = [
+  "buildPages",
+  "notFoundAction",
+  "fallBackNestedStackNonInitializationAction"
+];
+
 Future<String> generatePStateNavForClassElement(
     ClassElement element, PState pstate, BuildStep buildStep) async {
   final inf = _isNavPState(element);
@@ -40,7 +46,7 @@ Future<String> generatePStateNavForClassElement(
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
   final methods = visitor.methods
-      .where((m) => (m.name != "buildPages" && m.name != "notFoundAction"))
+      .where((m) => !navStateRegularMethods.contains(m.name))
       .toList();
   logger.shout("nav visitor methods $methods");
   var fields = visitor.fields;
@@ -55,23 +61,15 @@ Future<String> generatePStateNavForClassElement(
   ));
   fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
+  final regularMethods = visitor.methods
+      .where((m) => navStateRegularMethods.contains(m.name))
+      .map((m) => m.body)
+      .join("\n");
 
-  final buildPages =
-      visitor.methods.where((m) => m.name == "buildPages").firstOrNull?.body;
-  final notFoundAction = visitor.methods
-          .singleWhereOrNull((m) => m.name == "notFoundAction")
-          ?.body ??
-      """
-   @override
-  Action notFoundAction(Uri uri) {
-    throw UnimplementedError();
-  }
- """;
   print("methods : ${methods.map((e) => e.keysModified)}");
   final isPageUsed = visitor.methods
       .where((m) => m.keysModified.where((f) => f.name == "page").isNotEmpty);
-  logger.shout("buidlPages $buildPages isPageUsed $isPageUsed");
-  if (isPageUsed.isNotEmpty && buildPages != null) {
+  if (isPageUsed.isNotEmpty && regularMethods.contains("buildPages()")) {
     throw NotAllowedError(
         "You are setting page field and implemented buildPages , which is anot allowed, use only one method");
   }
@@ -93,7 +91,7 @@ Future<String> generatePStateNavForClassElement(
       methods: methods);
   return """
     
-    ${_createPStateNavModel(fields: fields, typeName: typeVariable, notFoundAction: notFoundAction, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], buildPages: buildPages ?? "", typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
+    ${_createPStateNavModel(fields: fields, typeName: typeVariable, regularMethods: regularMethods, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
@@ -187,8 +185,7 @@ String _createPStateNavModel(
     required String typeName,
     required List<String> annotations,
     required List<String>? nestedNavs,
-    required String buildPages,
-    required String notFoundAction,
+    required String regularMethods,
     required String typeParams,
     required String exinf,
     required bool enableHistory,
@@ -222,9 +219,7 @@ String _createPStateNavModel(
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
         $nestedNavsMethod
-        $buildPages
-
-        $notFoundAction
+        
         
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}
@@ -370,7 +365,3 @@ String _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
 
   return result;
 }
-
-// String _convertMapToQueryParams(Map<String,String> map) {
-//   Uri(queryParameters: )
-// }

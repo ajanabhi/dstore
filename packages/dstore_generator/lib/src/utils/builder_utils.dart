@@ -28,11 +28,18 @@ class PStateGeneratorBuildOptions {
         }
         persistMode = convertStringToEnum(pms, PersistMode.values);
       }
-      final nonConstClassesWithDefaultValues =
+      var nonConstClassesWithDefaultValues =
           (config["nonConstClassesWithDefaultValues"] as List<dynamic>?)
-                  ?.map((dynamic e) => e as String)
-                  .toList() ??
-              ["DateTime", "FormField"];
+              ?.map((dynamic e) => e as String)
+              .toList();
+      if (nonConstClassesWithDefaultValues != null) {
+        nonConstClassesWithDefaultValues
+            .addAll(_defaultNonConstClassesWithDefaultValues);
+      } else {
+        nonConstClassesWithDefaultValues = [
+          ..._defaultNonConstClassesWithDefaultValues
+        ];
+      }
       final options = PStateGeneratorBuildOptions(
           persistMode: persistMode,
           nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues);
@@ -44,3 +51,5 @@ class PStateGeneratorBuildOptions {
     }
   }
 }
+
+const _defaultNonConstClassesWithDefaultValues = ["DateTime", "FormField"];

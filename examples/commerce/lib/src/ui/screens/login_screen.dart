@@ -93,7 +93,7 @@ class OtpWidget extends StatelessWidget {
                     );
                   }, codeSent: (value) {
                     return DForm(
-                        ff: state.loginForm,
+                        ff: state.loginForm!,
                         child: Column(
                           children: [
                             DTextField(

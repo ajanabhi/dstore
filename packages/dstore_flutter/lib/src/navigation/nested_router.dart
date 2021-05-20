@@ -90,6 +90,11 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           return true;
         }
       },
+      onDispose: (context, state) {
+        print("Disposing nested nav $state");
+        final typeName = state.dontTouchMeTypeName;
+        history.nestedNavsHistory.remove(typeName);
+      },
       builder: (context, state) {
         print("before build pages");
         print(

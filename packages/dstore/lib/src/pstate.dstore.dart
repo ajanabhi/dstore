@@ -39,7 +39,7 @@ class _AsyncActionField implements AsyncActionField {
       __$AsyncActionFieldCopyWithImpl<AsyncActionField>(this, IdentityFn);
 
   const _AsyncActionField(
-      {this.loading = false, this.completed = false, this.error = null});
+      {this.loading = false, this.completed = false, this.error});
 
   factory _AsyncActionField.fromJson(Map<String, dynamic> json) =>
       _$_AsyncActionFieldFromJson(json);

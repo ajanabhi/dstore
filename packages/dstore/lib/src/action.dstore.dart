@@ -19,6 +19,7 @@ mixin _$Action<M> {
   ActionInternal? get internal;
   StreamPayload? get stream;
   Duration? get debounce;
+  void Function(PStateModel<dynamic>)? get afterSilent;
   bool get silent;
   M? get mock;
   FormReq? get form;
@@ -67,6 +68,9 @@ class _Action<M> implements Action<M> {
   final Duration? debounce;
 
   @override
+  final void Function(PStateModel<dynamic>)? afterSilent;
+
+  @override
   @Default(false)
   @JsonKey(defaultValue: false)
   final bool silent;
@@ -88,10 +92,11 @@ class _Action<M> implements Action<M> {
       this.payload,
       this.http,
       this.ws,
-      this.extra = null,
+      this.extra,
       this.internal,
       this.stream,
       this.debounce,
+      this.afterSilent,
       this.silent = false,
       this.mock,
       this.form});
@@ -111,6 +116,7 @@ class _Action<M> implements Action<M> {
         o.internal == internal &&
         o.stream == stream &&
         o.debounce == debounce &&
+        o.afterSilent == afterSilent &&
         o.silent == silent &&
         o.mock == mock &&
         o.form == form;
@@ -129,13 +135,14 @@ class _Action<M> implements Action<M> {
       internal.hashCode ^
       stream.hashCode ^
       debounce.hashCode ^
+      afterSilent.hashCode ^
       silent.hashCode ^
       mock.hashCode ^
       form.hashCode;
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, isNav: ${this.isNav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, isNav: ${this.isNav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, afterSilent: ${this.afterSilent}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form})";
 }
 
 abstract class $ActionCopyWith<M, O> {
@@ -153,6 +160,7 @@ abstract class $ActionCopyWith<M, O> {
       ActionInternal? internal,
       StreamPayload? stream,
       Duration? debounce,
+      void Function(PStateModel<dynamic>)? afterSilent,
       bool silent,
       M? mock,
       FormReq? form});
@@ -176,6 +184,7 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
       Object? internal = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
+      Object? afterSilent = dimmutable,
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable}) {
@@ -201,6 +210,9 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         stream: stream == dimmutable ? _value.stream : stream as StreamPayload?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
+        afterSilent: afterSilent == dimmutable
+            ? _value.afterSilent
+            : afterSilent as void Function(PStateModel<dynamic>)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));
@@ -222,6 +234,7 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       ActionInternal? internal,
       StreamPayload? stream,
       Duration? debounce,
+      void Function(PStateModel<dynamic>)? afterSilent,
       bool silent,
       M? mock,
       FormReq? form});
@@ -248,6 +261,7 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
       Object? internal = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
+      Object? afterSilent = dimmutable,
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable}) {
@@ -273,6 +287,9 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         stream: stream == dimmutable ? _value.stream : stream as StreamPayload?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
+        afterSilent: afterSilent == dimmutable
+            ? _value.afterSilent
+            : afterSilent as void Function(PStateModel<dynamic>)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));

@@ -1,4 +1,5 @@
 import 'package:dstore/dstore.dart';
+import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:dstore_flutter/src/navigation/history/history_nonweb.dart'
     if (dart.library.html) 'package:dstore_flutter/src/navigation/history/history_web.dart';
 import 'package:flutter/material.dart' hide Action;
@@ -21,6 +22,9 @@ abstract class History {
   VoidCallback listenUrl(UriListener uriListener);
   Action? originAction;
   String? currentActiveNestedNav;
+
+  late Action Function(NavStateI navState)
+      fallBackNestedStackNonInitializationAction;
 
   final nestedNavsHistory = <String, NestedNavHistory>{};
 }
