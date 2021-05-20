@@ -3,13 +3,11 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-class DRadioField<FieldKey, RadioEnum> extends StatefulWidget {
+class DCheckbox<FieldKey> extends StatefulWidget {
   final FieldKey name;
-  final RadioEnum value;
 
-  // default radio widget properties
+  // default checkbox widget properties
   final MouseCursor? mouseCursor;
-  final bool toggleable;
   final Color? activeColor;
   final MaterialStateProperty<Color?>? fillColor;
   final MaterialTapTargetSize? materialTapTargetSize;
@@ -20,14 +18,16 @@ class DRadioField<FieldKey, RadioEnum> extends StatefulWidget {
   final double? splashRadius;
   final FocusNode? focusNode;
   final bool autofocus;
-  // defaul radio props end
+  final Color? checkColor;
+  final bool tristate;
+  final OutlinedBorder? shape;
+  final BorderSide? side;
+  // defaul checkbox props end
 
-  const DRadioField({
+  const DCheckbox({
     Key? key,
     required this.name,
-    required this.value,
     this.mouseCursor,
-    this.toggleable = false,
     this.activeColor,
     this.fillColor,
     this.materialTapTargetSize,
@@ -38,14 +38,16 @@ class DRadioField<FieldKey, RadioEnum> extends StatefulWidget {
     this.splashRadius,
     this.focusNode,
     this.autofocus = false,
+    this.checkColor,
+    this.tristate = false,
+    this.shape,
+    this.side,
   }) : super(key: key);
   @override
-  _DRadioFieldState<FieldKey, RadioEnum> createState() =>
-      _DRadioFieldState<FieldKey, RadioEnum>();
+  _DCheckboxState<FieldKey> createState() => _DCheckboxState<FieldKey>();
 }
 
-class _DRadioFieldState<FieldKey, RadioEnum>
-    extends State<DRadioField<FieldKey, RadioEnum>> {
+class _DCheckboxState<FieldKey> extends State<DCheckbox<FieldKey>> {
   Widget? _w;
   FromFieldPropInfo? _info;
   FromFieldPropInfo get info => _info!;
@@ -76,19 +78,17 @@ class _DRadioFieldState<FieldKey, RadioEnum>
     }
   }
 
-  Radio _getWidget() {
+  Checkbox _getWidget() {
     final dynamic formValue = info.value;
-    if (formValue != null && !DStoreUtils.isEnum(formValue)) {
-      throw ArgumentError.value("${widget.key} should be a Enum type");
+    if (!(formValue is bool?)) {
+      throw ArgumentError.value("${widget.key} should be a bool type");
     }
-    return Radio<dynamic>(
-      value: widget.value,
-      groupValue: formValue,
+    return Checkbox(
+      value: info.value as bool?,
       onChanged: (dynamic value) {
         info.setValue(value);
       },
       mouseCursor: widget.mouseCursor,
-      toggleable: widget.toggleable,
       activeColor: widget.activeColor,
       fillColor: widget.fillColor,
       materialTapTargetSize: widget.materialTapTargetSize,
@@ -99,6 +99,10 @@ class _DRadioFieldState<FieldKey, RadioEnum>
       splashRadius: widget.splashRadius,
       focusNode: widget.focusNode,
       autofocus: widget.autofocus,
+      checkColor: widget.checkColor,
+      tristate: widget.tristate,
+      shape: widget.shape,
+      side: widget.side,
     );
   }
 
@@ -108,7 +112,7 @@ class _DRadioFieldState<FieldKey, RadioEnum>
   }
 
   @override
-  void didUpdateWidget(covariant DRadioField<FieldKey, RadioEnum> oldWidget) {
+  void didUpdateWidget(covariant DCheckbox<FieldKey> oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (oldWidget.name != widget.name) {
       throw NotSUpportedError(

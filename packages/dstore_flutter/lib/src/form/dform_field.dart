@@ -1,5 +1,6 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/src/form/dform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class DFormField<FieldKey> extends StatefulWidget {
@@ -21,6 +22,11 @@ class _DFormFieldState<FieldKey> extends State<DFormField<FieldKey>> {
   @override
   void initState() {
     super.initState();
+    if (kDebugMode) {
+      if (!DStoreUtils.isEnum(widget.name)) {
+        throw ArgumentError.value("${widget.name} should be an enum ");
+      }
+    }
   }
 
   @override

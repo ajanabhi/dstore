@@ -2,6 +2,7 @@ import 'dart:ui' as ui show BoxHeightStyle, BoxWidthStyle;
 
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/src/form/dform.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -129,6 +130,11 @@ class _DTextFieldState<FieldKey> extends State<DTextField<FieldKey>> {
   @override
   void initState() {
     super.initState();
+    if (kDebugMode) {
+      if (!DStoreUtils.isEnum(widget.name)) {
+        throw ArgumentError.value("${widget.name} should be an enum ");
+      }
+    }
     _controller = TextEditingController();
   }
 

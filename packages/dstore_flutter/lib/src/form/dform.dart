@@ -2,6 +2,7 @@ import 'package:dstore/dstore.dart';
 import 'package:flutter/material.dart' hide FormField;
 import 'package:dstore_flutter/src/store/store_provider.dart';
 
+//TODO try to find a way to remove Builder widget
 class DForm extends InheritedWidget {
   final FormField<FormFieldObject> ff;
   final _FormState _formState = _FormState();
@@ -63,14 +64,6 @@ class DForm extends InheritedWidget {
     return oldWidget.ff != this.ff;
   }
 }
-
-// class DForm extends StatelessWidget {
-//   // final FormField<FormFieldObject> ff;
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container();
-//   }
-// }
 
 class _FormState {
   FormOps? ops;

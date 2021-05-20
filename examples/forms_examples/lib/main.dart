@@ -70,6 +70,12 @@ class SimpleDForm extends StatelessWidget {
                   ],
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: DCheckbox(
+                  name: SimpleFormKey.c1,
+                ),
+              ),
               SizedBox(
                 height: 20,
               ),

@@ -15,4 +15,5 @@ enum REnum { one, two, three }
 class $_SimpleForm {
   String name = "initialName";
   REnum? r;
+  bool? c1 = false;
 }
