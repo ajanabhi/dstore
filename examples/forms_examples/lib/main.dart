@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
                   height: 50,
                 ),
                 Text("Simple Form"),
-                SimpleDForm(ff: state.simpleForm)
+                SimpleDForm(ff: state.simpleForm!)
               ],
             ),
           ),
@@ -74,6 +74,24 @@ class SimpleDForm extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: DCheckbox(
                   name: SimpleFormKey.c1,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: DDatePicker(
+                  name: SimpleFormKey.date,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: DSlider(
+                  name: SimpleFormKey.rating,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: DRangeSlider(
+                  name: SimpleFormKey.rangeRating,
                 ),
               ),
               SizedBox(

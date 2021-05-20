@@ -1,19 +1,67 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:tuple/tuple.dart';
 
 abstract class ModelUtils {
   static String getFinalFieldsFromFieldsList(List<Field> fields,
       {bool addLateModifier = false, bool addOverrideAnnotation = false}) {
     return fields.map((f) {
-      final type = f.isOptional && !f.type.endsWith("?") && f.value == null
+      var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
+      if (f.value != null &&
+          f.value != "null" &&
+          !canhaveConsConstructor(type)) {
+        type = "$type?";
+      }
       return """
      ${addOverrideAnnotation ? "@override" : ""}
      ${f.annotations.join("\n")}
      ${addLateModifier ? "late" : ""} final $type ${f.name};
     """;
     }).join("\n ");
+  }
+
+  static bool canhaveConsConstructor(String type) {
+    var result = true;
+    if (!type.endsWith("?") && type == "DateTime" ||
+        (type.startsWith("FormField<"))) {
+      result = false;
+    }
+
+    return result;
+  }
+
+  static String getFinalFieldType(Field f) {
+    var type = f.isOptional && !f.type.endsWith("?") && f.value == null
+        ? "${f.type}?"
+        : "${f.type}";
+    final value = f.value;
+    if (value != null && value != "null") {
+      if (!canhaveConsConstructor(type)) {
+        type = "$type?";
+      }
+    }
+    return type;
+  }
+
+  static Tuple2<String, Tuple2<String, String>?> getDefaultValueForField(
+      Field f) {
+    final value = f.value;
+    final name = f.name;
+    if (value != null && value != "null") {
+      var type = f.isOptional && !f.type.endsWith("?") && f.value == null
+          ? "${f.type}?"
+          : "${f.type}";
+      if (!canhaveConsConstructor(type)) {
+        type = "$type?";
+        return Tuple2("", Tuple2("$type $name", "$name = $name ?? $value"));
+      } else {
+        return Tuple2("= ${AstUtils.addConstToDefaultValue(f.value!)}", null);
+      }
+    } else {
+      return Tuple2("", null);
+    }
   }
 
   static List<Field> convertParameterElementsToFields(
@@ -66,13 +114,29 @@ abstract class ModelUtils {
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
       {bool assignDefaults = true, bool addConst = true}) {
+    final nonConstantDefaults = <String>[];
     var cf = fields.map((f) {
-      return "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name} ${assignDefaults && f.value != null ? "= ${AstUtils.addConstToDefaultValue(f.value!)}" : ""}";
+      final tuple = getDefaultValueForField(f);
+      final defaultValue = tuple.item1;
+      final nonConstTuple = tuple.item2;
+      var param =
+          "${(!f.isOptional && f.value == null) ? "required" : ""} this.${f.name}";
+      if (nonConstTuple != null) {
+        param = nonConstTuple.item1;
+        nonConstantDefaults.add(nonConstTuple.item2);
+      }
+      return "$param ${assignDefaults ? defaultValue : ""}";
     }).join(", ");
     if (cf.isNotEmpty) {
       cf = "{$cf}";
     }
-    return "${addConst ? "const" : ""} ${name}($cf);";
+    final af = nonConstantDefaults.isEmpty
+        ? ""
+        : ": ${nonConstantDefaults.join(", ")}";
+    if (af.isNotEmpty) {
+      addConst = false;
+    }
+    return "${addConst ? "const" : ""} ${name}($cf)$af;";
   }
 
   static String createHashcodeFromFieldsList(List<Field> fields) {
@@ -105,12 +169,13 @@ abstract class ModelUtils {
       required List<Field> fields,
       required String typeParamsWithBounds,
       required String typeParams}) {
-    final callParams = fields.map((f) => "${f.type} ${f.name}").join(", ");
+    final callParams =
+        fields.map((f) => "${getFinalFieldType(f)} ${f.name}").join(", ");
     final callImplParams =
         fields.map((f) => "Object? ${f.name} = dimmutable").join(", ");
     final copyWithParams = fields
         .map((f) =>
-            "${f.name} : ${f.name} == dimmutable ? _value.${f.name} : ${f.name} as ${f.type}")
+            "${f.name} : ${f.name} == dimmutable ? _value.${f.name} : ${f.name} as ${getFinalFieldType(f)}")
         .join(", ");
     final aName = "\$${name}CopyWith";
     final aImplName = "_${aName}Impl";
@@ -253,6 +318,8 @@ abstract class ModelUtils {
       bool isJsonSerializable = false,
       bool addStaticSerializeDeserialize = false,
       bool addOverrideAnnotation = false,
+      String extendClass = "",
+      String mixins = "",
       bool addStatusToStaticSerializer = false}) {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
@@ -261,7 +328,7 @@ abstract class ModelUtils {
     final hasFields = fields.isNotEmpty;
     return """
    $annotations 
-   class $className {
+   class $className $extendClass $mixins {
          
      ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)}
      
@@ -472,4 +539,10 @@ abstract class ModelUtils {
 
     """;
   }
+}
+
+class H {
+  final DateTime? date;
+
+  H({DateTime? date}) : date = date ?? DateTime.now();
 }
