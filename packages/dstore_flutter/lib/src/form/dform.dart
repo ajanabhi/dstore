@@ -2,7 +2,7 @@ import 'package:dstore/dstore.dart';
 import 'package:flutter/material.dart' hide FormField;
 import 'package:dstore_flutter/src/store/store_provider.dart';
 
-//TODO try to find a way to remove Builder widget
+/// make sure your child wrapped with Builder widget or as a separate widget
 class DForm extends InheritedWidget {
   final FormField<FormFieldObject> ff;
   final _FormState _formState = _FormState();

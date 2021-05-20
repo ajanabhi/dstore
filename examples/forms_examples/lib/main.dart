@@ -51,75 +51,76 @@ class SimpleDForm extends StatelessWidget {
   const SimpleDForm({Key? key, required this.ff}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return DForm(
-      ff: ff,
-      child: Builder(
-        builder: (context) {
-          print("re build form ${ff.value}");
-          return Column(
+    return DForm(ff: ff, child: FormWidget());
+  }
+}
+
+class FormWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        DTextField(name: SimpleFormKey.name),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              DTextField(name: SimpleFormKey.name),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    DRadioField(name: SimpleFormKey.r, value: REnum.one),
-                    DRadioField(name: SimpleFormKey.r, value: REnum.two),
-                    DRadioField(name: SimpleFormKey.r, value: REnum.three)
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: DCheckbox(
-                  name: SimpleFormKey.c1,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: DDatePicker(
-                  name: SimpleFormKey.date,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: DSlider(
-                  name: SimpleFormKey.rating,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20),
-                child: DRangeSlider(
-                  name: SimpleFormKey.rangeRating,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        print("Resetting Form");
-                        context.dform.resetForm();
-                      },
-                      child: Text("Reset Form")),
-                  SizedBox(
-                    width: 40,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        print("Form Value ${ff.value}");
-                      },
-                      child: Text("Submit Form"))
-                ],
-              )
+              DRadioField(name: SimpleFormKey.r, value: REnum.one),
+              DRadioField(name: SimpleFormKey.r, value: REnum.two),
+              DRadioField(name: SimpleFormKey.r, value: REnum.three)
             ],
-          );
-        },
-      ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: DCheckbox(
+            name: SimpleFormKey.c1,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: DDatePicker(
+            name: SimpleFormKey.date,
+            firstDate: DateTime(2021),
+            lastDate: DateTime(2022),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: DSlider(
+            name: SimpleFormKey.rating,
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: DRangeSlider(
+            name: SimpleFormKey.rangeRating,
+          ),
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  print("Resetting Form");
+                  context.dform.resetForm();
+                },
+                child: Text("Reset Form")),
+            SizedBox(
+              width: 40,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  // print("Form Value ${ff.value}");
+                },
+                child: Text("Submit Form"))
+          ],
+        )
+      ],
     );
   }
 }

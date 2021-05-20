@@ -5,37 +5,53 @@ import 'package:flutter/material.dart';
 
 class DDatePicker<FieldKey> extends StatefulWidget {
   final FieldKey name;
+  final String Function(DateTime dt)? dateFormatter;
+  final InputDecoration? inputDecoration;
 
-  // default radio widget properties
-  final MouseCursor? mouseCursor;
-  final bool toggleable;
-  final Color? activeColor;
-  final MaterialStateProperty<Color?>? fillColor;
-  final MaterialTapTargetSize? materialTapTargetSize;
-  final VisualDensity? visualDensity;
-  final Color? focusColor;
-  final Color? hoverColor;
-  final MaterialStateProperty<Color?>? overlayColor;
-  final double? splashRadius;
-  final FocusNode? focusNode;
-  final bool autofocus;
-  // defaul radio props end
+  // default showDatePicker properties
+  final DateTime firstDate;
+  final DateTime lastDate;
+  final DateTime? currentDate;
+  final DatePickerEntryMode initialEntryMode; //= DatePickerEntryMode.calendar,
+  final SelectableDayPredicate? selectableDayPredicate;
+  final String? helpText;
+  final String? cancelText;
+  final String? confirmText;
+  final Locale? locale;
+  final bool useRootNavigator; // true
+  final RouteSettings? routeSettings;
+  final TextDirection? textDirection;
+  final TransitionBuilder? builder;
+  final DatePickerMode initialDatePickerMode; //= DatePickerMode.day,
+  final String? errorFormatText;
+  final String? errorInvalidText;
+  final String? fieldHintText;
+  final String? fieldLabelText;
+  // defaul showDatePicker properties
 
   const DDatePicker({
     Key? key,
     required this.name,
-    this.mouseCursor,
-    this.toggleable = false,
-    this.activeColor,
-    this.fillColor,
-    this.materialTapTargetSize,
-    this.visualDensity,
-    this.focusColor,
-    this.hoverColor,
-    this.overlayColor,
-    this.splashRadius,
-    this.focusNode,
-    this.autofocus = false,
+    this.dateFormatter,
+    this.inputDecoration,
+    required this.firstDate,
+    required this.lastDate,
+    this.initialEntryMode = DatePickerEntryMode.calendar,
+    this.initialDatePickerMode = DatePickerMode.day,
+    this.currentDate,
+    this.selectableDayPredicate,
+    this.helpText,
+    this.cancelText,
+    this.confirmText,
+    this.locale,
+    this.useRootNavigator = true,
+    this.routeSettings,
+    this.textDirection,
+    this.builder,
+    this.errorFormatText,
+    this.errorInvalidText,
+    this.fieldHintText,
+    this.fieldLabelText,
   }) : super(key: key);
   @override
   _DDatePickerState<FieldKey> createState() => _DDatePickerState<FieldKey>();
@@ -82,7 +98,8 @@ class _DDatePickerState<FieldKey> extends State<DDatePicker<FieldKey>> {
       throw ArgumentError.value("${widget.key} should be a DateTime type");
     }
     return TextField(
-      decoration: InputDecoration(prefixIcon: Icon(Icons.calendar_today)),
+      decoration: widget.inputDecoration ??
+          InputDecoration(prefixIcon: Icon(Icons.calendar_today)),
       onTap: () {
         _displayDatePicker(formValue);
       },
@@ -92,15 +109,33 @@ class _DDatePickerState<FieldKey> extends State<DDatePicker<FieldKey>> {
   }
 
   void _setText() {
-    _controller.text = "${info.value}";
+    _controller.text = widget.dateFormatter != null
+        ? "${widget.dateFormatter!(info.value as DateTime)}"
+        : "${info.value}";
   }
 
   void _displayDatePicker(DateTime value) async {
     final selectedData = await showDatePicker(
-        context: context,
-        initialDate: value,
-        firstDate: DateTime(2021),
-        lastDate: DateTime(2022));
+      context: context,
+      initialDate: value,
+      firstDate: widget.firstDate,
+      lastDate: widget.lastDate,
+      initialEntryMode: widget.initialEntryMode,
+      currentDate: widget.currentDate,
+      selectableDayPredicate: widget.selectableDayPredicate,
+      helpText: widget.helpText,
+      cancelText: widget.cancelText,
+      confirmText: widget.confirmText,
+      locale: widget.locale,
+      useRootNavigator: widget.useRootNavigator,
+      routeSettings: widget.routeSettings,
+      textDirection: widget.textDirection,
+      builder: widget.builder,
+      errorFormatText: widget.errorFormatText,
+      errorInvalidText: widget.errorInvalidText,
+      fieldHintText: widget.fieldHintText,
+      fieldLabelText: widget.fieldLabelText,
+    );
     if (selectedData != null) {
       info.setValue(selectedData);
     }
