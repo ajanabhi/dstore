@@ -201,7 +201,7 @@ String _createPStateNavModel(
     nestedNavsMethod = """
       @override
        List<NestedNavStateI> getNestedNavs() {
-         return [${nestedNavs.map((e) => "this.${e}").join(",")}];
+         return [${nestedNavs.map((e) => "dontTouchMeStore.getPStateModelFromPSType('${e}') as NestedNavStateI").join(",")}];
        }        
      """;
   }
