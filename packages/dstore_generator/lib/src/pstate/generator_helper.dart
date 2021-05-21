@@ -245,7 +245,11 @@ ActionsInfo _getActionsInfo(
 
 extension PStateExtension on ClassElement {
   PState getPState() {
-    final annot = annotationFromType(PState)!;
+    final annot = annotationFromType(PState);
+    if (annot == null) {
+      throw ArgumentError.value(
+          "${this.name}  class should be annotated with @Pstate annotation");
+    }
     final reader = ConstantReader(annot.computeConstantValue());
     final persit = reader.peek("persit")?.boolValue;
     final enableHistory = reader.peek("enableHistory")?.boolValue;

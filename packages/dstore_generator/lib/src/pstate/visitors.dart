@@ -32,14 +32,6 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
       fields.add(
           Field(name: "beforeLeave", type: "BeforeLeaveFn?", isOptional: true));
-      // fields.add(
-      //     Field(name: "redirectToAction", type: "Action?", isOptional: true));
-      // fields.add(
-      //     Field(name: "initialStateAction", type: "Action?", isOptional: true));
-      // fields
-      //     .add(Field(name: "originAction", type: "Action?", isOptional: true));
-      // fields.add(
-      //     Field(name: "navOptions", type: "NavOptions?", isOptional: true));
       fields.add(Field(
           name: "meta",
           type: "NavConfigMeta",
@@ -95,9 +87,21 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     String? rawUrl;
     String? finalUrl;
     if (isNav) {
-      final urlTuple = getUrlFromMethod(node, params);
+      final urlTuple =
+          getUrlFromMethod(md: node, mparams: params, element: element);
       rawUrl = urlTuple?.item1;
       finalUrl = urlTuple?.item2;
+      final nestedNavElement = urlTuple?.item3;
+      if (nestedNavElement != null &&
+          nestedNavElement is ClassElement &&
+          nestedNavs != null) {
+        final i = isNavPState(nestedNavElement);
+        if (i?.startsWith("NestedNavState") != true) {
+          throw ArgumentError.value(
+              "nestedType param of Url annotation should be a class annotated with PState and  extends NestedNavState ");
+        }
+        nestedNavs!.add(getFullTypeName(nestedNavElement));
+      }
     }
     if (body is ExpressionFunctionBody) {
       final e = body.expression;
@@ -191,10 +195,10 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         final psDepElement = fe.type.element as ClassElement;
         final dt = getFullTypeName(psDepElement);
         if (isNav) {
-          final psState = psDepElement.getPState();
-          if (psState.nav == true && nestedNavs != null) {
-            nestedNavs!.add(name);
-          }
+          // final psState = psDepElement.getPState();
+          // if (psState.nav == true && nestedNavs != null) {
+          //   nestedNavs!.add(name);
+          // }
         }
         psDeps.add(Field(name: name, type: type.substring(2), value: dt));
       } else {

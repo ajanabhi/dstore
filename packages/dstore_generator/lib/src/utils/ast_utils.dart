@@ -403,12 +403,13 @@ extension FieldElementExt on FieldElement {
 }
 
 extension MethodElementExt on MethodElement {
-  String? getUrlFromAnnotation() {
+  Tuple2<String, Element?>? getUrlFromAnnotation() {
     final a = this.annotationFromType(Url);
     if (a != null) {
       final ao = ConstantReader(a.computeConstantValue());
-      final url = ao.peek("path");
-      return url?.stringValue;
+      final url = ao.peek("path")?.stringValue;
+      final nt = ao.peek("nestedType")?.objectValue.toTypeValue()?.element;
+      return Tuple2(url!, nt);
     }
   }
 }

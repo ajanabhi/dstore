@@ -25,7 +25,7 @@ const navStateRegularMethods = [
 
 Future<String> generatePStateNavForClassElement(
     ClassElement element, PState pstate, BuildStep buildStep) async {
-  final inf = _isNavPState(element);
+  final inf = isNavPState(element, pstate: pstate);
   if (inf == null) {
     throw InvalidSignatureError(
         "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
@@ -98,7 +98,8 @@ Future<String> generatePStateNavForClassElement(
   """;
 }
 
-String? _isNavPState(ClassElement element) {
+String? isNavPState(ClassElement element, {PState? pstate}) {
+  pstate ??= element.getPState();
   if (AstUtils.isSubTypeof(element.thisType, "NestedNavStateI") != null) {
     return "NestedNavStateI";
   } else if (AstUtils.isSubTypeof(element.thisType, "NavStateI") != null) {
@@ -286,13 +287,15 @@ String _createActions(
   """;
 }
 
-Tuple2<String, String>? getUrlFromMethod(
-    MethodDeclaration md, List<Field> mparams) {
-  final urlInput = md.metadata
-      .map((e) => e.toSource())
-      .where((e) => e.startsWith("@Url("))
-      .map((e) => e.substring(e.indexOf("(") + 2, e.length - 2))
-      .firstOrNull;
+Tuple3<String, String, Element?>? getUrlFromMethod(
+    {required MethodDeclaration md,
+    required List<Field> mparams,
+    required ClassElement element}) {
+  final urlAnnot = element.methods
+      .singleWhere((me) => me.name == md.name.name)
+      .getUrlFromAnnotation();
+
+  final urlInput = urlAnnot?.item1;
   logger.shout("Url Input $urlInput");
   var errorMessage = "";
   if (urlInput != null) {
@@ -323,7 +326,7 @@ Tuple2<String, String>? getUrlFromMethod(
       finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
           params: mparams, message: errorMessage, url: urlInput);
     }
-    return Tuple2(urlInput, finalUrl);
+    return Tuple3(urlInput, finalUrl, urlAnnot?.item2);
   }
 }
 

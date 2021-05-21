@@ -541,7 +541,11 @@ class Store<S extends AppStateI<S>> {
   }
 
   PStateModel<dynamic> getPStateModelFromAction(Action<dynamic> action) {
-    final sk = getStateKeyForPstateType(action.type);
+    return getPStateModelFromPSType(action.type);
+  }
+
+  PStateModel<dynamic> getPStateModelFromPSType(String psType) {
+    final sk = getStateKeyForPstateType(psType);
     final gsMap = state.toMap();
     return gsMap[sk]!;
   }
