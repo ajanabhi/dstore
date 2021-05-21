@@ -21,11 +21,13 @@ class NavConfigMeta {
       originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
   NavOptions? navOptions;
   Action? initialStateAction; // only for nested navs
+  bool blockSameUrl;
   NavConfigMeta(
       {this.beforeLeave,
       this.redirectToAction,
       this.originAction,
       this.navOptions,
+      this.blockSameUrl = false,
       this.initialStateAction});
 
   @override
@@ -34,31 +36,26 @@ class NavConfigMeta {
   }
 }
 
+class NavStateDontTouchMe {
+  String? url;
+  late final Map<String, UrlToAction> staticMeta;
+  late final Map<String, UrlToAction> dynamicMeta;
+  late final Map<String, Action> nestedMeta;
+  late History hisotry;
+  String typeName = ""; // empty in main navigation
+  Action? initialSetup; // not null for all nested navs
+  late HistoryMode historyMode;
+}
+
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
   Action notFoundAction(Uri uri);
   Action fallBackNestedStackNonInitializationAction(NavStateI navState);
-  String? _dontTouchMeUrl;
-  BeforeLeaveFn? beforeLeave;
-  bool blockSameUrl = false;
+
   NavConfigMeta meta = NavConfigMeta();
-  String? get dontTouchMeUrl => _dontTouchMeUrl;
-  set dontTouchMeUrl(String? value) {
-    _dontTouchMeUrl = value;
-  }
-
+  NavStateDontTouchMe dontTouchMe = NavStateDontTouchMe();
   List<NestedNavStateI> getNestedNavs() => [];
-
-  History? _dontTouchMeHistory;
-  History get dontTouchMeHistory => _dontTouchMeHistory!;
-  set dontTouchMeHistory(History? history) {
-    _dontTouchMeHistory = history;
-  }
-
-  late final Map<String, UrlToAction> dontTouchMeStaticMeta;
-  late final Map<String, UrlToAction> dontTouchMeDynamicMeta;
-  late final Map<String, Action> dontTouchMeNestedMeta;
 
   @override
   Map<String, dynamic> toMap() => throw UnimplementedError();
@@ -86,7 +83,8 @@ abstract class NestedNavStateI<M> extends NavStateI<M> {
     throw UnimplementedError();
   }
 
-  String dontTouchMeTypeName = "";
+  void initialSetup();
+
   bool mounted = false;
 }
 

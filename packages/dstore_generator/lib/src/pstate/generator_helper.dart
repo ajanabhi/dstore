@@ -119,9 +119,10 @@ String getPStateMeta(
     required bool isPersiable,
     required int? historyLimit,
     bool isNav = false,
-    String navStaticMeta = "{}",
-    String navDynamicMeta = "{}",
-    String navNestedMeta = "{}",
+    // String navStaticMeta = "{}",
+    // String navDynamicMeta = "{}",
+    // String navNestedMeta = "{}",
+    NavDontTouchMe? navDontTouchMe,
     required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
@@ -164,9 +165,12 @@ String getPStateMeta(
         final state = $defaultState;
         ${enableHistory ? "state.dontTouchMePSHistory = PStateHistory<$modelName>($historyLimit);" : ""} 
         ${isNav ? """
-          state.dontTouchMeStaticMeta = $navStaticMeta;
-          state.dontTouchMeDynamicMeta = $navDynamicMeta;
-          state.dontTouchMeNestedMeta = $navNestedMeta;
+          state.dontTouchMe.staticMeta = ${navDontTouchMe!.staticMeta};
+          state.dontTouchMe.dynamicMeta = ${navDontTouchMe.dynamicMeta};
+          state.dontTouchMe.nestedMeta = ${navDontTouchMe.nestedMeta};
+          state.dontTouchMe.typeName = ${navDontTouchMe.typeName};
+          state.dontTouchMe.initialSetup = ${navDontTouchMe.initialSetup};
+          state.dontTouchMe.historyMode = ${navDontTouchMe.historyMode};
         """ : ""}
         return state;
       }

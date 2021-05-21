@@ -8,9 +8,9 @@ void _handleNavAction<S extends AppStateI<S>>(
   final navState = store.getPStateModelFromAction(action) as NavStateI;
   String? typeName;
   if (navState is NestedNavStateI) {
-    typeName = navState.dontTouchMeTypeName;
+    typeName = navState.dontTouchMe.typeName;
   }
-  final history = navState.dontTouchMeHistory;
+  final history = navState.dontTouchMe.hisotry;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory}");
   if (navPayload.isUrlBased &&
@@ -21,13 +21,13 @@ void _handleNavAction<S extends AppStateI<S>>(
     final a = history.nestedNavMeta[typeName]!;
     print("modified a $a");
     store.dispatch(a);
-  } else if (!navState.blockSameUrl ||
+  } else if (!navState.meta.blockSameUrl ||
       navState.meta.navOptions?.reload == true) {
     //
     next(action);
   } else {
     final uri = Uri.parse(history.url);
-    if (uri.path == navState.dontTouchMeUrl) {
+    if (uri.path == navState.dontTouchMe.url) {
       // do nothing
     } else {
       next(action);

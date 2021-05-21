@@ -10,14 +10,12 @@ class NestedRouter<AS extends AppStateI<AS>, S extends NestedNavStateI<dynamic>>
     extends StatefulWidget {
   final Selector<AS, S> selector;
   final UnSubscribeOptions? options;
-  final Action? inititalStateAction;
 
-  const NestedRouter(
-      {Key? key,
-      required this.selector,
-      this.options,
-      this.inititalStateAction})
-      : super(key: key);
+  const NestedRouter({
+    Key? key,
+    required this.selector,
+    this.options,
+  }) : super(key: key);
   @override
   _NestedRouterState<AS, S> createState() => _NestedRouterState();
 }
@@ -39,9 +37,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    if (widget.inititalStateAction != null) {
-      context.dispatch(widget.inititalStateAction!);
-    }
     history = context.dnavigation.dotTouchmeHistory;
   }
 
@@ -58,11 +53,10 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       options: widget.options,
       setStateOnUpdate: ssonup,
       onInitState: (context, state) {
-        print("NestedNav Init State");
-
         state.mounted = true;
-        final typeName = state.dontTouchMeTypeName;
-        state.dontTouchMeHistory = history;
+        context.dispatch(state.dontTouchMe.initialSetup!);
+        final typeName = state.dontTouchMe.typeName;
+        state.dontTouchMe.hisotry = history;
         history.nestedNavsHistory[typeName] =
             NestedNavHistory(history: history);
         nestedHistory = history.nestedNavsHistory[typeName]!;
@@ -90,7 +84,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         } else {
           nestedHistory.historyMode = HistoryMode.stack;
         }
-        newState.dontTouchMeHistory = history;
+        newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
         nestedHistory.nestedInitialStateAction =
@@ -120,13 +114,13 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         } else {
           print("nestedrouter in update");
           _updateUrl();
-          history.currentActiveNestedNav = newState.dontTouchMeTypeName;
+          history.currentActiveNestedNav = newState.dontTouchMe.typeName;
           return true;
         }
       },
       onDispose: (context, state) {
         print("Disposing nested nav $state");
-        final typeName = state.dontTouchMeTypeName;
+        final typeName = state.dontTouchMe.typeName;
         history.nestedNavsHistory.remove(typeName);
         history.currentNavKey = null;
         state.mounted = false;
@@ -172,8 +166,8 @@ class _NestedRouterState<AS extends AppStateI<AS>,
     if (history.urlChangedInSystem) {
       history.urlChangedInSystem = false;
     } else {
-      if (navState.dontTouchMeUrl != null) {
-        final url = navState.dontTouchMeUrl!;
+      if (navState.dontTouchMe.url != null) {
+        final url = navState.dontTouchMe.url!;
         // print("pushing url ${navState.dontTouchMeUrl}");
         if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
           nestedHistory.replace(url);

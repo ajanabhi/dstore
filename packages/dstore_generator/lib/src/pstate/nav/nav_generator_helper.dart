@@ -30,6 +30,8 @@ Future<String> generatePStateNavForClassElement(
     throw InvalidSignatureError(
         "PState ${element.name} should extend NavStateI  / NestedNavStateI ");
   }
+  final isNestedNav = inf.startsWith("NestedNav");
+
   logger.shout("nav interface  $inf");
   final typeParamsTuple =
       AstUtils.getTypeParamsAndBounds(element.typeParameters);
@@ -55,10 +57,7 @@ Future<String> generatePStateNavForClassElement(
       type: "AsyncActionField",
       value: "AsyncActionField()",
       param: null)));
-  fields.add(Field(
-    name: "dontTouchMeBlockSameUrl",
-    type: "bool?",
-  ));
+
   fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
   final regularMethods = visitor.methods
@@ -73,6 +72,10 @@ Future<String> generatePStateNavForClassElement(
     throw NotAllowedError(
         "You are setting page field and implemented buildPages , which is anot allowed, use only one method");
   }
+  var historyMode = "HistoryMode.stack";
+  if (isPageUsed.isNotEmpty) {
+    historyMode = "HistoryMode.tabs";
+  }
   final typePath = getFullTypeName(element);
   final typeVariable = "_${name}_FullPath";
   var navNestedMeta = "{}";
@@ -80,6 +83,13 @@ Future<String> generatePStateNavForClassElement(
     final v = nestedNavs.entries.map((e) => "'${e.key}':${e.value}").join(", ");
     navNestedMeta = "{$v}";
   }
+  var typeName = "";
+  String? initialSetup;
+  if (isNestedNav) {
+    typeName = getFullTypeName(element);
+    initialSetup = "${name}Actions.initialSetup(silent:true)";
+  }
+
   final pStateMeta = getPStateMeta(
       modelName: name,
       fields: fields,
@@ -90,9 +100,13 @@ Future<String> generatePStateNavForClassElement(
       isNav: true,
       isPersiable: false,
       historyLimit: null,
-      navStaticMeta: _getNavStaticMeta(methods: methods, modelName: name),
-      navDynamicMeta: _getNavDynamicMeta(methods: methods, modelName: name),
-      navNestedMeta: navNestedMeta,
+      navDontTouchMe: NavDontTouchMe(
+          staticMeta: _getNavStaticMeta(methods: methods, modelName: name),
+          dynamicMeta: _getNavDynamicMeta(methods: methods, modelName: name),
+          nestedMeta: navNestedMeta,
+          typeName: typeName,
+          initialSetup: initialSetup,
+          historyMode: historyMode),
       httpMeta: "",
       methods: methods);
   return """
@@ -102,6 +116,27 @@ Future<String> generatePStateNavForClassElement(
     $pStateMeta
     ${_createActions(modelName: name, type: typeVariable, methods: methods)}
   """;
+}
+
+class NavDontTouchMe {
+  final String? url;
+  final String staticMeta;
+  final String dynamicMeta;
+  final String nestedMeta;
+  // final String hisotry;
+  final String typeName; // empty in main navigation
+  final String? initialSetup; // not null for all nested navs
+  final String historyMode;
+
+  NavDontTouchMe(
+      {this.url,
+      required this.staticMeta,
+      required this.dynamicMeta,
+      required this.nestedMeta,
+      // required this.hisotry,
+      required this.typeName,
+      required this.initialSetup,
+      required this.historyMode});
 }
 
 String? isNavPState(ClassElement element, {PState? pstate}) {
@@ -211,12 +246,14 @@ String _createPStateNavModel(
        }        
      """;
   }
+  var initialSetupMethod = "";
   if (exinf.startsWith("Nested")) {
-    fields.add(Field(
-        name: "dontTouchMeTypeName",
-        type: "String",
-        isOptional: false,
-        value: typeName));
+    initialSetupMethod = """
+     @override
+     void initialSetup() {
+       throw UnImplementedError("This method stubbed out as action ${name}Actions.initialSetup() , use that action instead");
+     }
+    """;
   }
   final result = """
       
@@ -224,7 +261,9 @@ String _createPStateNavModel(
       class ${name} extends $exinf<$name> with ${mixins.join(", ")} {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
+        
         $psFeilds
+        $initialSetupMethod
         $regularMethods
         $nestedNavsMethod
         

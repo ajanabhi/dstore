@@ -20,7 +20,6 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   final int? historyLimit;
   final bool isNav;
   final Map<String, String>? nestedNavs;
-  final String className;
 
   PStateAstVisitor(
       {required this.element,
@@ -28,8 +27,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       this.isNav = false,
       this.historyLimit,
       this.nestedNavs,
-      required this.historyEnabled})
-      : className = getFullTypeName(element) {
+      required this.historyEnabled}) {
     if (isNav) {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
       fields.add(
@@ -634,12 +632,16 @@ Tuple2<String, Set<String>> processMethodStatements(
     ${(historyEnabled || url != null || isNav) ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
     ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
-    ${url != null ? " newState.dontTouchMeUrl = '$url';" : ""}
+    ${url != null ? " newState.dontTouchMe.url = '$url';" : ""}
     ${isNav ? """ 
-    newState.dontTouchMeStaticMeta = ${STATE_VARIABLE}.dontTouchMeStaticMeta;
-    newState.dontTouchMeDynamicMeta = ${STATE_VARIABLE}.dontTouchMeDynamicMeta;
-    newState.dontTouchMeHistory = ${STATE_VARIABLE}.dontTouchMeHistory; 
-    newState.dontTouchMeNestedMeta = ${STATE_VARIABLE}.dontTouchMeNestedMeta; 
+    newState.dontTouchMe.staticMeta = ${STATE_VARIABLE}.dontTouchMe.staticMeta;
+    newState.dontTouchMe.dynamicMeta = ${STATE_VARIABLE}.dontTouchMe.dynamicMeta;
+    newState.dontTouchMe.nestedMeta = ${STATE_VARIABLE}.dontTouchMe.nestedMeta;
+    newState.dontTouchMe.hisotry = ${STATE_VARIABLE}.dontTouchMe.hisotry;
+    newState.dontTouchMe.typeName = ${STATE_VARIABLE}.dontTouchMe.typeName;
+    newState.dontTouchMe.initialSetup = ${STATE_VARIABLE}.dontTouchMe.initialSetup;
+    newState.dontTouchMe.historyMode = ${STATE_VARIABLE}.dontTouchMe.historyMode;
+   
     """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}

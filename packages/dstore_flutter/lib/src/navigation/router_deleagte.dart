@@ -31,7 +31,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     UrlToAction? fn;
     final path = uri.path;
 
-    fn = _navState!.dontTouchMeStaticMeta[path];
+    fn = _navState!.dontTouchMe.staticMeta[path];
     print("Url to Action2 $fn");
     if (fn != null) {
       history.urlChangedInSystem = true;
@@ -40,7 +40,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       // match in dynamic paths
       final r = 'r"$path"';
       final regExp = pathToRegExp(r);
-      final dfn = navState.dontTouchMeDynamicMeta.entries
+      final dfn = navState.dontTouchMe.dynamicMeta.entries
           .singleWhereOrNull((de) => regExp.hasMatch(de.key))
           ?.value;
       if (dfn == null) {
@@ -60,28 +60,29 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
         child: shell(SelectorBuilder<S, NavStateI>(
           selector: selector,
           onInitState: (context, state) {
-            state.dontTouchMeHistory = history;
+            state.dontTouchMe.hisotry = history;
             final nestedNavs = state.getNestedNavs();
             if (nestedNavs.isNotEmpty) {
               nestedNavs.forEach((nnav) {
-                nnav.dontTouchMeHistory = history;
-                state.dontTouchMeStaticMeta.addAll(nnav.dontTouchMeStaticMeta);
-                state.dontTouchMeDynamicMeta
-                    .addAll(nnav.dontTouchMeDynamicMeta);
+                nnav.dontTouchMe.hisotry = history;
+                state.dontTouchMe.staticMeta
+                    .addAll(nnav.dontTouchMe.staticMeta);
+                state.dontTouchMe.dynamicMeta
+                    .addAll(nnav.dontTouchMe.dynamicMeta);
               });
             }
             _navState = state;
-            history.blockSameUrl = state.blockSameUrl;
+            history.blockSameUrl = state.meta.blockSameUrl;
             history.fallBackNestedStackNonInitializationAction =
                 state.fallBackNestedStackNonInitializationAction;
-            history.nestedNavMeta.addAll(state.dontTouchMeNestedMeta);
+            history.nestedNavMeta.addAll(state.dontTouchMe.nestedMeta);
           },
           onInitialBuild: (context, state) {
             _preparedState = true;
             handleUriChange(Uri.parse(history.url));
           },
           shouldRebuild: (context, prevState, newState) {
-            newState.dontTouchMeHistory = history;
+            newState.dontTouchMe.hisotry = history;
             if (newState.page != null) {
               history.historyMode = HistoryMode.tabs;
             } else {
@@ -137,9 +138,9 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   }
 
   void _updateUrl({required NavStateI navState}) {
-    if (navState.dontTouchMeUrl != null) {
-      final url = navState.dontTouchMeUrl!;
-      print("pushing url ${navState.dontTouchMeUrl}");
+    final url = navState.dontTouchMe.url;
+    if (url != null) {
+      print("pushing url ${url}");
       if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
         history.replace(url);
       } else {
