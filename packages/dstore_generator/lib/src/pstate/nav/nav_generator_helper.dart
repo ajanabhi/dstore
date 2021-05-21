@@ -36,7 +36,7 @@ Future<String> generatePStateNavForClassElement(
   final typeParamsWithBounds = typeParamsTuple.item2;
   final typeParams = typeParamsTuple.item1;
   final name = element.name.substring(2);
-  final nestedNavs = inf == "NavStateI" ? <String>[] : null;
+  final nestedNavs = inf == "NavStateI" ? <String, String>{} : null;
   final visitor = PStateAstVisitor(
       element: element,
       isPersitable: false,
@@ -75,6 +75,11 @@ Future<String> generatePStateNavForClassElement(
   }
   final typePath = getFullTypeName(element);
   final typeVariable = "_${name}_FullPath";
+  var navNestedMeta = "{}";
+  if (nestedNavs != null) {
+    final v = nestedNavs.entries.map((e) => "'${e.key}':${e.value}").join(", ");
+    navNestedMeta = "{$v}";
+  }
   final pStateMeta = getPStateMeta(
       modelName: name,
       fields: fields,
@@ -87,6 +92,7 @@ Future<String> generatePStateNavForClassElement(
       historyLimit: null,
       navStaticMeta: _getNavStaticMeta(methods: methods, modelName: name),
       navDynamicMeta: _getNavDynamicMeta(methods: methods, modelName: name),
+      navNestedMeta: navNestedMeta,
       httpMeta: "",
       methods: methods);
   return """
@@ -185,7 +191,7 @@ String _createPStateNavModel(
     required String name,
     required String typeName,
     required List<String> annotations,
-    required List<String>? nestedNavs,
+    required Map<String, String>? nestedNavs,
     required String regularMethods,
     required String typeParams,
     required String exinf,
@@ -201,7 +207,7 @@ String _createPStateNavModel(
     nestedNavsMethod = """
       @override
        List<NestedNavStateI> getNestedNavs() {
-         return [${nestedNavs.map((e) => "dontTouchMeStore.getPStateModelFromPSType('${e}') as NestedNavStateI").join(",")}];
+         return [${nestedNavs.keys.map((e) => "dontTouchMeStore.getPStateModelFromPSType('${e}') as NestedNavStateI").join(",")}];
        }        
      """;
   }
@@ -272,9 +278,13 @@ String _createActions(
     if (payload.isNotEmpty) {
       payload = ", payload: ${payload}";
     }
+    final navPayloadParams = <String>[];
+    if (m.url != null) {
+      navPayloadParams.add("isUrlBased : true");
+    }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",silent:silent,isNav: true,type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action(name:"${m.name}",silent:silent,nav: NavPayload(${navPayloadParams.join(", ")}),type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");

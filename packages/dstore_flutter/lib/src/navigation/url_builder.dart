@@ -17,7 +17,9 @@ class _UrlBuilderState extends State<UrlBuilder> {
   void initState() {
     super.initState();
     listener = (Uri hurl) {
-      setState(() {});
+      WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+        setState(() {});
+      });
     };
   }
 

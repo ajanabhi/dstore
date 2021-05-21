@@ -4,7 +4,7 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 void _handleNavAction<S extends AppStateI<S>>(
     Action action, Dispatch next, Store<S> store) {
   print("field ${store.getFieldFromAction(action)}");
-
+  final navPayload = action.nav!;
   final navState = store.getPStateModelFromAction(action) as NavStateI;
   String? typeName;
   if (navState is NestedNavStateI) {
@@ -13,21 +13,14 @@ void _handleNavAction<S extends AppStateI<S>>(
   final history = navState.dontTouchMeHistory;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory}");
-  if (typeName != null && !history.nestedNavsHistory.containsKey(typeName)) {
+  if (navPayload.isUrlBased &&
+      typeName != null &&
+      !history.nestedNavsHistory.containsKey(typeName)) {
     // nested stack not initialized yet
-    final a = action.copyWith(
-        silent: true,
-        afterSilent: (PStateModel s) {
-          s = s as NavStateI;
-          print("setting nested nav origins ${s.meta.originAction}");
-          if (s.meta.originAction != null) {
-            history.nestedNavOrigins[typeName!] = s.meta.originAction;
-          }
-          store.dispatch(history.fallBackNestedStackNonInitializationAction(s));
-        });
+    history.nestedNavOrigins[typeName] = action;
+    final a = history.nestedNavMeta[typeName]!;
     print("modified a $a");
-    // history.originAction = navState.originAction;
-    next(a);
+    store.dispatch(a);
   } else if (!navState.blockSameUrl ||
       navState.meta.navOptions?.reload == true) {
     //
@@ -44,7 +37,7 @@ void _handleNavAction<S extends AppStateI<S>>(
 
 dynamic navigaionMiddleware<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) {
-  if (action.isProcessed || !action.isNav) {
+  if (action.isProcessed || action.nav == null) {
     next(action);
   } else {
     _handleNavAction(action, next, store);

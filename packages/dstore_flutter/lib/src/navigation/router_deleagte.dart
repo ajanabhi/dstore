@@ -74,6 +74,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             history.blockSameUrl = state.blockSameUrl;
             history.fallBackNestedStackNonInitializationAction =
                 state.fallBackNestedStackNonInitializationAction;
+            history.nestedNavMeta.addAll(state.dontTouchMeNestedMeta);
           },
           onInitialBuild: (context, state) {
             _preparedState = true;

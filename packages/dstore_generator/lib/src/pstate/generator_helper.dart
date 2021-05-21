@@ -121,6 +121,7 @@ String getPStateMeta(
     bool isNav = false,
     String navStaticMeta = "{}",
     String navDynamicMeta = "{}",
+    String navNestedMeta = "{}",
     required String httpMeta,
     required List<PStateMethod> methods}) {
   final syncReducerFunctionStr =
@@ -165,6 +166,7 @@ String getPStateMeta(
         ${isNav ? """
           state.dontTouchMeStaticMeta = $navStaticMeta;
           state.dontTouchMeDynamicMeta = $navDynamicMeta;
+          state.dontTouchMeNestedMeta = $navNestedMeta;
         """ : ""}
         return state;
       }

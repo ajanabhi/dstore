@@ -19,7 +19,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   final bool historyEnabled;
   final int? historyLimit;
   final bool isNav;
-  final List<String>? nestedNavs;
+  final Map<String, String>? nestedNavs;
+  final String className;
 
   PStateAstVisitor(
       {required this.element,
@@ -27,7 +28,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       this.isNav = false,
       this.historyLimit,
       this.nestedNavs,
-      required this.historyEnabled}) {
+      required this.historyEnabled})
+      : className = getFullTypeName(element) {
     if (isNav) {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
       fields.add(
@@ -100,7 +102,8 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           throw ArgumentError.value(
               "nestedType param of Url annotation should be a class annotated with PState and  extends NestedNavState ");
         }
-        nestedNavs!.add(getFullTypeName(nestedNavElement));
+        nestedNavs![getFullTypeName(nestedNavElement)] =
+            "${element.name.substring(2)}Actions.$name()";
       }
     }
     if (body is ExpressionFunctionBody) {
@@ -636,6 +639,7 @@ Tuple2<String, Set<String>> processMethodStatements(
     newState.dontTouchMeStaticMeta = ${STATE_VARIABLE}.dontTouchMeStaticMeta;
     newState.dontTouchMeDynamicMeta = ${STATE_VARIABLE}.dontTouchMeDynamicMeta;
     newState.dontTouchMeHistory = ${STATE_VARIABLE}.dontTouchMeHistory; 
+    newState.dontTouchMeNestedMeta = ${STATE_VARIABLE}.dontTouchMeNestedMeta; 
     """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}

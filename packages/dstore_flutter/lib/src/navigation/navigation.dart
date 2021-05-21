@@ -58,6 +58,7 @@ abstract class NavStateI<M> extends PStateModel<M> {
 
   late final Map<String, UrlToAction> dontTouchMeStaticMeta;
   late final Map<String, UrlToAction> dontTouchMeDynamicMeta;
+  late final Map<String, Action> dontTouchMeNestedMeta;
 
   @override
   Map<String, dynamic> toMap() => throw UnimplementedError();

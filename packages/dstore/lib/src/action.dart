@@ -1,5 +1,6 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/http.dart';
+import 'package:dstore/src/nav.dart';
 import 'package:dstore/src/stream.dart';
 import 'package:dstore/src/utils/utils.dart';
 import 'package:dstore/src/websocket.dart';
@@ -15,7 +16,7 @@ abstract class Action<M> with _$Action<M> {
     required String name,
     required String type,
     @Default(false) bool isAsync,
-    @Default(false) bool isNav,
+    NavPayload? nav,
     Map<String, dynamic>? payload,
     HttpPayload? http,
     WebSocketPayload<dynamic, dynamic, dynamic>? ws,

@@ -29,6 +29,7 @@ abstract class History {
   final nestedNavsHistory = <String, NestedNavHistory>{};
 
   final nestedNavOrigins = <String, Action?>{};
+  final nestedNavMeta = <String, Action>{};
 }
 
 class NestedNavHistory {

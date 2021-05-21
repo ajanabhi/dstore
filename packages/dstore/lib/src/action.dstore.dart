@@ -11,7 +11,7 @@ mixin _$Action<M> {
   String get name;
   String get type;
   bool get isAsync;
-  bool get isNav;
+  NavPayload? get nav;
   Map<String, dynamic>? get payload;
   HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? get http;
   WebSocketPayload<dynamic, dynamic, dynamic>? get ws;
@@ -40,9 +40,7 @@ class _Action<M> implements Action<M> {
   final bool isAsync;
 
   @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
-  final bool isNav;
+  final NavPayload? nav;
 
   @override
   final Map<String, dynamic>? payload;
@@ -88,7 +86,7 @@ class _Action<M> implements Action<M> {
       {required this.name,
       required this.type,
       this.isAsync = false,
-      this.isNav = false,
+      this.nav,
       this.payload,
       this.http,
       this.ws,
@@ -108,7 +106,7 @@ class _Action<M> implements Action<M> {
         o.name == name &&
         o.type == type &&
         o.isAsync == isAsync &&
-        o.isNav == isNav &&
+        o.nav == nav &&
         o.payload == payload &&
         o.http == http &&
         o.ws == ws &&
@@ -127,7 +125,7 @@ class _Action<M> implements Action<M> {
       name.hashCode ^
       type.hashCode ^
       isAsync.hashCode ^
-      isNav.hashCode ^
+      nav.hashCode ^
       payload.hashCode ^
       http.hashCode ^
       ws.hashCode ^
@@ -142,7 +140,7 @@ class _Action<M> implements Action<M> {
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, isNav: ${this.isNav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, afterSilent: ${this.afterSilent}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, nav: ${this.nav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, afterSilent: ${this.afterSilent}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form})";
 }
 
 abstract class $ActionCopyWith<M, O> {
@@ -152,7 +150,7 @@ abstract class $ActionCopyWith<M, O> {
       {String name,
       String type,
       bool isAsync,
-      bool isNav,
+      NavPayload? nav,
       Map<String, dynamic>? payload,
       HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
@@ -176,7 +174,7 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
       {Object? name = dimmutable,
       Object? type = dimmutable,
       Object? isAsync = dimmutable,
-      Object? isNav = dimmutable,
+      Object? nav = dimmutable,
       Object? payload = dimmutable,
       Object? http = dimmutable,
       Object? ws = dimmutable,
@@ -192,7 +190,7 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         name: name == dimmutable ? _value.name : name as String,
         type: type == dimmutable ? _value.type : type as String,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
-        isNav: isNav == dimmutable ? _value.isNav : isNav as bool,
+        nav: nav == dimmutable ? _value.nav : nav as NavPayload?,
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
@@ -226,7 +224,7 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       {String name,
       String type,
       bool isAsync,
-      bool isNav,
+      NavPayload? nav,
       Map<String, dynamic>? payload,
       HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
@@ -253,7 +251,7 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
       {Object? name = dimmutable,
       Object? type = dimmutable,
       Object? isAsync = dimmutable,
-      Object? isNav = dimmutable,
+      Object? nav = dimmutable,
       Object? payload = dimmutable,
       Object? http = dimmutable,
       Object? ws = dimmutable,
@@ -269,7 +267,7 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         name: name == dimmutable ? _value.name : name as String,
         type: type == dimmutable ? _value.type : type as String,
         isAsync: isAsync == dimmutable ? _value.isAsync : isAsync as bool,
-        isNav: isNav == dimmutable ? _value.isNav : isNav as bool,
+        nav: nav == dimmutable ? _value.nav : nav as NavPayload?,
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
