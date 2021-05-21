@@ -27,12 +27,15 @@ abstract class History {
       fallBackNestedStackNonInitializationAction;
 
   final nestedNavsHistory = <String, NestedNavHistory>{};
+
+  final nestedNavOrigins = <String, Action?>{};
 }
 
 class NestedNavHistory {
   final History history;
   final List<String> _source = [];
   Action? nestedInitialStateAction;
+  Action? originAction;
 
   NestedNavHistory({required this.history});
   void push(String url) {

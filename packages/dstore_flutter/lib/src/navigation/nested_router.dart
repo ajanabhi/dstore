@@ -59,32 +59,54 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       setStateOnUpdate: ssonup,
       onInitState: (context, state) {
         print("NestedNav Init State");
+        state.mounted = true;
         final typeName = state.dontTouchMeTypeName;
         state.dontTouchMeHistory = history;
         history.nestedNavsHistory[typeName] =
             NestedNavHistory(history: history);
         nestedHistory = history.nestedNavsHistory[typeName]!;
+        final nestedOrigin = history.nestedNavOrigins[typeName];
+        nestedHistory.originAction = nestedOrigin;
+        history.nestedNavOrigins.remove(typeName);
         history.currentActiveNestedNav = typeName;
         navState = state;
+        print("nestedOrigin  ${nestedHistory.originAction}");
+        if (nestedHistory.originAction != null) {
+          final a = nestedHistory.originAction!;
+          nestedHistory.originAction = null;
+          scheduleMicrotask(() => _dispatch(a));
+        }
       },
       shouldRebuild: (context, prevState, newState) {
         newState.dontTouchMeHistory = history;
         navState = newState;
-        nestedHistory.nestedInitialStateAction = newState.initialStateAction;
+        navState.mounted = true;
+        nestedHistory.nestedInitialStateAction =
+            newState.meta.initialStateAction;
         print("Newstate of nestedrouter $newState");
-        if (newState.redirectToAction != null) {
-          final action = newState.redirectToAction!;
-          newState.redirectToAction = null;
-          history.originAction = newState.originAction;
-          newState.originAction = null;
+        if (newState.meta.redirectToAction != null) {
+          print("Nested Router in redirect");
+          final meta = newState.meta;
+          final action = meta.redirectToAction!;
+          meta.redirectToAction = null;
+          history.originAction = meta.originAction;
+          meta.originAction = null;
           scheduleMicrotask(() => _dispatch(action));
           return false;
         } else if (history.originAction != null) {
+          print("Nested Router origin");
           final a = history.originAction!;
           history.originAction = null;
           scheduleMicrotask(() => _dispatch(a));
           return false;
+        } else if (nestedHistory.originAction != null) {
+          print("Nested Router in nestedOrigin");
+          final a = nestedHistory.originAction!;
+          nestedHistory.originAction = null;
+          scheduleMicrotask(() => _dispatch(a));
+          return false;
         } else {
+          print("nestedrouter in update");
           _updateUrl();
           history.currentActiveNestedNav = newState.dontTouchMeTypeName;
           return true;
@@ -94,6 +116,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         print("Disposing nested nav $state");
         final typeName = state.dontTouchMeTypeName;
         history.nestedNavsHistory.remove(typeName);
+        state.mounted = false;
       },
       builder: (context, state) {
         print("before build pages");
@@ -107,9 +130,10 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           onPopPage: (route, dynamic result) {
             if (route.didPop(result)) {
               print("On Pop nested");
-              if (state.initialStateAction != null) {
-                final a = state.initialStateAction!;
-                state.initialStateAction = null;
+              if (state.meta.initialStateAction != null) {
+                final meta = state.meta;
+                final a = meta.initialStateAction!;
+                meta.initialStateAction = null;
                 nestedHistory.nestedInitialStateAction = null;
                 print("start silent action");
                 context.dispatch(a);
@@ -129,18 +153,19 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   }
 
   void _updateUrl() {
+    print('url chnaged ${history.urlChangedInSystem}');
     if (history.urlChangedInSystem) {
       history.urlChangedInSystem = false;
     } else {
       if (navState.dontTouchMeUrl != null) {
         final url = navState.dontTouchMeUrl!;
         // print("pushing url ${navState.dontTouchMeUrl}");
-        if (navState.navOptions?.historyUpdate == HistoryUpdate.replace) {
+        if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
           nestedHistory.replace(url);
         } else {
           nestedHistory.push(url);
         }
-        navState.navOptions = null;
+        navState.meta.navOptions = null;
       }
     }
   }

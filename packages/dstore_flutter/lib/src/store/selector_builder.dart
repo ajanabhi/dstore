@@ -62,7 +62,9 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
         final shouldRebuild =
             widget.shouldRebuild?.call(context, prevState, _state);
         if (shouldRebuild != false) {
-          setState(() {});
+          WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
+            setState(() {});
+          });
         }
       };
       _state = widget.selector.fn(store.state);

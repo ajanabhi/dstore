@@ -81,19 +81,23 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           },
           shouldRebuild: (context, prevState, newState) {
             newState.dontTouchMeHistory = history;
-            if (newState.redirectToAction != null) {
-              final action = newState.redirectToAction!;
-              newState.redirectToAction = null;
-              history.originAction = newState.originAction;
-              newState.originAction = null;
+            if (newState.meta.redirectToAction != null) {
+              print("NavParent inredirect");
+              final meta = newState.meta;
+              final action = meta.redirectToAction!;
+              meta.redirectToAction = null;
+              history.originAction = meta.originAction;
+              meta.originAction = null;
               scheduleMicrotask(() => _dispatch(action));
               return false;
             } else if (history.originAction != null) {
+              print("NavParent in Origin");
               final a = history.originAction!;
               history.originAction = null;
               context.dispatch(a);
               return false;
             } else {
+              print("NavParent in update");
               if (history.urlChangedInSystem == true) {
                 history.urlChangedInSystem = false;
               } else {
@@ -125,12 +129,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     if (navState.dontTouchMeUrl != null) {
       final url = navState.dontTouchMeUrl!;
       print("pushing url ${navState.dontTouchMeUrl}");
-      if (navState.navOptions?.historyUpdate == HistoryUpdate.replace) {
+      if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
         history.replace(url);
       } else {
         history.push(url);
       }
-      navState.navOptions = null;
+      navState.meta.navOptions = null;
     }
   }
 

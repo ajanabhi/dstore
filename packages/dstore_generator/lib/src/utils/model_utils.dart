@@ -11,11 +11,11 @@ abstract class ModelUtils {
       var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
-      if (f.value != null &&
-          f.value != "null" &&
-          !canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
-        type = "$type?";
-      }
+      // if (f.value != null &&
+      //     f.value != "null" &&
+      //     !canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
+      //   type = "$type?";
+      // }
       return """
      ${addOverrideAnnotation ? "@override" : ""}
      ${f.annotations.join("\n")}
@@ -43,12 +43,12 @@ abstract class ModelUtils {
     var type = f.isOptional && !f.type.endsWith("?") && f.value == null
         ? "${f.type}?"
         : "${f.type}";
-    final value = f.value;
-    if (value != null && value != "null") {
-      if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
-        type = "$type?";
-      }
-    }
+    // final value = f.value;
+    // if (value != null && value != "null") {
+    //   if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
+    //     type = "$type?";
+    //   }
+    // }
     return type;
   }
 

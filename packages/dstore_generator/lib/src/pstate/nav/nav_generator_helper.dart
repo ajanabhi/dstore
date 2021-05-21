@@ -218,6 +218,7 @@ String _createPStateNavModel(
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
         $psFeilds
+        $regularMethods
         $nestedNavsMethod
         
         

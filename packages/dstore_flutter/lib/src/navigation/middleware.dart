@@ -19,12 +19,17 @@ void _handleNavAction<S extends AppStateI<S>>(
         silent: true,
         afterSilent: (PStateModel s) {
           s = s as NavStateI;
+          print("setting nested nav origins ${s.meta.originAction}");
+          if (s.meta.originAction != null) {
+            history.nestedNavOrigins[typeName!] = s.meta.originAction;
+          }
           store.dispatch(history.fallBackNestedStackNonInitializationAction(s));
         });
     print("modified a $a");
     // history.originAction = navState.originAction;
     next(a);
-  } else if (!navState.blockSameUrl || navState.navOptions?.reload == true) {
+  } else if (!navState.blockSameUrl ||
+      navState.meta.navOptions?.reload == true) {
     //
     next(action);
   } else {

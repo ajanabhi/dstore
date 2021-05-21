@@ -1,4 +1,5 @@
 class Url {
   final String path;
-  const Url(this.path);
+  final Type? nestedType;
+  const Url(this.path, {this.nestedType});
 }

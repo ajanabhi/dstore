@@ -52,4 +52,8 @@ class PStateGeneratorBuildOptions {
   }
 }
 
-const _defaultNonConstClassesWithDefaultValues = ["DateTime", "FormField"];
+const _defaultNonConstClassesWithDefaultValues = [
+  "DateTime",
+  "FormField",
+  "NavConfigMeta"
+];

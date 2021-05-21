@@ -32,14 +32,19 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
       fields.add(Field(name: "page", type: "Page?", isOptional: true));
       fields.add(
           Field(name: "beforeLeave", type: "BeforeLeaveFn?", isOptional: true));
-      fields.add(
-          Field(name: "redirectToAction", type: "Action?", isOptional: true));
-      fields.add(
-          Field(name: "initialStateAction", type: "Action?", isOptional: true));
-      fields
-          .add(Field(name: "originAction", type: "Action?", isOptional: true));
-      fields.add(
-          Field(name: "navOptions", type: "NavOptions?", isOptional: true));
+      // fields.add(
+      //     Field(name: "redirectToAction", type: "Action?", isOptional: true));
+      // fields.add(
+      //     Field(name: "initialStateAction", type: "Action?", isOptional: true));
+      // fields
+      //     .add(Field(name: "originAction", type: "Action?", isOptional: true));
+      // fields.add(
+      //     Field(name: "navOptions", type: "NavOptions?", isOptional: true));
+      fields.add(Field(
+          name: "meta",
+          type: "NavConfigMeta",
+          isOptional: false,
+          value: "NavConfigMeta()"));
       fields.add(Field(
           name: "blockSameUrl",
           type: "bool",
@@ -154,7 +159,9 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         url: rawUrl,
         params: params,
         keysModified: keys
-            .map((e) => fields.singleWhere((element) => element.name == e))
+            .map((e) => fields.singleWhere((element) => element.name == e,
+                orElse: () => throw ArgumentError.value(
+                    "key $e not found in fields $fields")))
             .toList(),
         body: mbody));
     return super.visitMethodDeclaration(node);
@@ -624,6 +631,7 @@ Tuple2<String, Set<String>> processMethodStatements(
     ${isNav ? """ 
     newState.dontTouchMeStaticMeta = ${STATE_VARIABLE}.dontTouchMeStaticMeta;
     newState.dontTouchMeDynamicMeta = ${STATE_VARIABLE}.dontTouchMeDynamicMeta;
+    newState.dontTouchMeHistory = ${STATE_VARIABLE}.dontTouchMeHistory; 
     """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}
@@ -647,8 +655,8 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   dynamic visitSimpleIdentifier(SimpleIdentifier node) {
     final name = node.name;
     print(
-        "visitSimpleIdentifier $name , Parent ${node.parent}, pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ${_isClassMemeber(name)}");
-    if (_isClassMemeber(name) && !_isThisParent(node.parent)) {
+        "visitSimpleIdentifier $name , Parent ${node.parent}, ${node.parent.runtimeType} pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ${_isClassMemeber(name)}");
+    if (_isClassMemeber(name) && node.parent == null) {
       print(element.fields.map((e) => e.name));
       throw NotAllowedError(
           "You should access class memeber ${name} with this. prefix , example : this.${name} , if $name is not a class memeber probably you're shadowing variable if thats the case please use different name for your local variable");
@@ -666,14 +674,4 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   bool _isClassMemeber(String name) =>
       element.fields.where((element) => element.name == name).isNotEmpty ||
       navFields.contains(name);
-
-  bool _isThisParent(AstNode? node) {
-    if (node == null) {
-      return false;
-    }
-    if (node is PropertyAccess) {
-      return true;
-    }
-    return false;
-  }
 }

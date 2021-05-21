@@ -1,6 +1,7 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/src/navigation/history/history.dart';
 import 'package:flutter/material.dart' hide Action;
+
 import "configuration/confiure_native.dart"
     if (dart.library.html) "configuration/configure_web.dart";
 export "router_deleagte.dart";
@@ -13,6 +14,26 @@ typedef BeforeLeaveFn = bool Function(AppStateI);
 
 enum HistoryUpdate { push, replace }
 
+class NavConfigMeta {
+  BeforeLeaveFn? beforeLeave;
+  Action? redirectToAction;
+  Action?
+      originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
+  NavOptions? navOptions;
+  Action? initialStateAction; // only for nested navs
+  NavConfigMeta(
+      {this.beforeLeave,
+      this.redirectToAction,
+      this.originAction,
+      this.navOptions,
+      this.initialStateAction});
+
+  @override
+  String toString() {
+    return 'NavConfigMeta(beforeLeave: $beforeLeave, redirectToAction: $redirectToAction, originAction: $originAction, navOptions: $navOptions, initialStateAction: $initialStateAction)';
+  }
+}
+
 abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
@@ -20,12 +41,8 @@ abstract class NavStateI<M> extends PStateModel<M> {
   Action fallBackNestedStackNonInitializationAction(NavStateI navState);
   String? _dontTouchMeUrl;
   BeforeLeaveFn? beforeLeave;
-  Action? redirectToAction;
-  Action?
-      originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
-  NavOptions? navOptions;
   bool blockSameUrl = false;
-
+  NavConfigMeta meta = NavConfigMeta();
   String? get dontTouchMeUrl => _dontTouchMeUrl;
   set dontTouchMeUrl(String? value) {
     _dontTouchMeUrl = value;
@@ -69,8 +86,7 @@ abstract class NestedNavStateI<M> extends NavStateI<M> {
   }
 
   String dontTouchMeTypeName = "";
-
-  Action? initialStateAction;
+  bool mounted = false;
 }
 
 void configureNav() {
