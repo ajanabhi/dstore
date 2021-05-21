@@ -6,6 +6,8 @@ import 'package:flutter/material.dart' hide Action;
 
 typedef UriListener = void Function(Uri uri);
 
+enum HistoryMode { tabs, stack }
+
 abstract class History {
   abstract bool blockSameUrl;
   VoidCallback listen(UriListener listener);
@@ -22,6 +24,8 @@ abstract class History {
   VoidCallback listenUrl(UriListener uriListener);
   Action? originAction;
   String? currentActiveNestedNav;
+  late HistoryMode historyMode;
+  GlobalKey<NavigatorState>? currentNavKey;
 
   late Action Function(NavStateI navState)
       fallBackNestedStackNonInitializationAction;
@@ -37,6 +41,7 @@ class NestedNavHistory {
   final List<String> _source = [];
   Action? nestedInitialStateAction;
   Action? originAction;
+  late HistoryMode historyMode;
 
   NestedNavHistory({required this.history});
   void push(String url) {

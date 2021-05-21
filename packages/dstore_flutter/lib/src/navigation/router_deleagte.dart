@@ -82,6 +82,11 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           },
           shouldRebuild: (context, prevState, newState) {
             newState.dontTouchMeHistory = history;
+            if (newState.page != null) {
+              history.historyMode = HistoryMode.tabs;
+            } else {
+              history.historyMode = HistoryMode.stack;
+            }
             if (newState.meta.redirectToAction != null) {
               print("NavParent inredirect");
               final meta = newState.meta;
@@ -116,9 +121,14 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
-                      history.goBack();
-
-                      return true;
+                      if (route.didPop(result)) {
+                        print("On Pop nested");
+                        history.goBack();
+                        return true;
+                      } else {
+                        print("Nested pop fail");
+                        return false;
+                      }
                     },
                   )
                 : SizedBox.shrink();
@@ -140,12 +150,38 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   }
 
   @override
-  Future<bool> popRoute() {
-    if (history.canGoBack) {
-      history.goBack();
-      return SynchronousFuture(true);
+  Future<bool> popRoute() async {
+    print("popRoute");
+    final currentActiveNestedNav = history.currentActiveNestedNav;
+    print("currentActiveNestedNav $currentActiveNestedNav");
+    if (currentActiveNestedNav != null) {
+      print("hmm ${history.nestedNavsHistory[currentActiveNestedNav]}");
+      final nestedHistory = history.nestedNavsHistory[currentActiveNestedNav]!;
+      print("nested");
+      print("Nested history Mode : ${nestedHistory.historyMode}");
+      if (nestedHistory.historyMode == HistoryMode.tabs) {
+        if (nestedHistory.canGoBack) {
+          nestedHistory.goBack();
+          return true;
+        }
+      } else {
+        final currentNestedNavKey = history.currentNavKey!;
+        final r = await currentNestedNavKey.currentState!.maybePop();
+        if (r) {
+          return true;
+        }
+      }
+    }
+    print("forwarding to global ${history.historyMode}");
+    if (history.historyMode == HistoryMode.tabs) {
+      if (history.canGoBack) {
+        history.goBack();
+        return true;
+      } else {
+        return false;
+      }
     } else {
-      return SynchronousFuture(false);
+      return navigatorKey.currentState!.maybePop();
     }
   }
 
@@ -202,3 +238,5 @@ class NoAnimationTransitionDelegate extends TransitionDelegate<void> {
     return results;
   }
 }
+
+//TODO  shell is rebuilding after back recheck

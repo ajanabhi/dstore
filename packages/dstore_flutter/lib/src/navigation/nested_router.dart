@@ -28,12 +28,12 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   late NestedNavHistory nestedHistory;
   late NestedNavStateI navState;
   late Dispatch _dispatch;
-  late final Key navigatorKey;
+  late final GlobalKey<NavigatorState> navigatorKey;
   bool setStateOnupdate = false;
   @override
   void initState() {
     super.initState();
-    navigatorKey = ValueKey(widget.selector.hashCode);
+    navigatorKey = GlobalKey();
   }
 
   @override
@@ -59,17 +59,24 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       setStateOnUpdate: ssonup,
       onInitState: (context, state) {
         print("NestedNav Init State");
+
         state.mounted = true;
         final typeName = state.dontTouchMeTypeName;
         state.dontTouchMeHistory = history;
         history.nestedNavsHistory[typeName] =
             NestedNavHistory(history: history);
         nestedHistory = history.nestedNavsHistory[typeName]!;
+        if (state.page != null) {
+          nestedHistory.historyMode = HistoryMode.tabs;
+        } else {
+          nestedHistory.historyMode = HistoryMode.stack;
+        }
         final nestedOrigin = history.nestedNavOrigins[typeName];
         nestedHistory.originAction = nestedOrigin;
         history.nestedNavOrigins.remove(typeName);
         history.currentActiveNestedNav = typeName;
         navState = state;
+        history.currentNavKey = navigatorKey;
         print("nestedOrigin  ${nestedHistory.originAction}");
         if (nestedHistory.originAction != null) {
           final a = nestedHistory.originAction!;
@@ -78,6 +85,11 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
+        if (newState.page != null) {
+          nestedHistory.historyMode = HistoryMode.tabs;
+        } else {
+          nestedHistory.historyMode = HistoryMode.stack;
+        }
         newState.dontTouchMeHistory = history;
         navState = newState;
         navState.mounted = true;
@@ -116,6 +128,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         print("Disposing nested nav $state");
         final typeName = state.dontTouchMeTypeName;
         history.nestedNavsHistory.remove(typeName);
+        history.currentNavKey = null;
         state.mounted = false;
       },
       builder: (context, state) {
@@ -124,9 +137,11 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           "building nested nav $state pages ${state.buildPages()}",
         );
         print("after buildapges");
+        final pages = state.page != null ? [state.page!] : state.buildPages();
+
         return Navigator(
-          // key: navigatorKey,
-          pages: state.buildPages(),
+          key: navigatorKey,
+          pages: pages,
           onPopPage: (route, dynamic result) {
             if (route.didPop(result)) {
               print("On Pop nested");
