@@ -6,8 +6,6 @@ import 'package:flutter/material.dart' hide Action;
 
 typedef UriListener = void Function(Uri uri);
 
-enum HistoryMode { tabs, stack }
-
 abstract class History {
   abstract bool blockSameUrl;
   VoidCallback listen(UriListener listener);

@@ -167,7 +167,6 @@ String getPStateMeta(
         ${isNav ? """
           state.dontTouchMe.staticMeta = ${navDontTouchMe!.staticMeta};
           state.dontTouchMe.dynamicMeta = ${navDontTouchMe.dynamicMeta};
-          state.dontTouchMe.nestedMeta = ${navDontTouchMe.nestedMeta};
           state.dontTouchMe.typeName = ${navDontTouchMe.typeName};
           state.dontTouchMe.initialSetup = ${navDontTouchMe.initialSetup};
           state.dontTouchMe.historyMode = ${navDontTouchMe.historyMode};

@@ -14,6 +14,8 @@ typedef BeforeLeaveFn = bool Function(AppStateI);
 
 enum HistoryUpdate { push, replace }
 
+enum HistoryMode { tabs, stack }
+
 class NavConfigMeta {
   BeforeLeaveFn? beforeLeave;
   Action? redirectToAction;
@@ -40,11 +42,11 @@ class NavStateDontTouchMe {
   String? url;
   late final Map<String, UrlToAction> staticMeta;
   late final Map<String, UrlToAction> dynamicMeta;
-  late final Map<String, Action> nestedMeta;
   late History hisotry;
   String typeName = ""; // empty in main navigation
   Action? initialSetup; // not null for all nested navs
   late HistoryMode historyMode;
+  String? rootUrl;
 }
 
 abstract class NavStateI<M> extends PStateModel<M> {
@@ -55,12 +57,19 @@ abstract class NavStateI<M> extends PStateModel<M> {
 
   NavConfigMeta meta = NavConfigMeta();
   NavStateDontTouchMe dontTouchMe = NavStateDontTouchMe();
-  List<NestedNavStateI> getNestedNavs() => [];
+  List<NestedNavStateMeta> getNestedNavs() => [];
 
   @override
   Map<String, dynamic> toMap() => throw UnimplementedError();
   @override
   M copyWithMap(Map<String, dynamic> map) => throw UnimplementedError();
+}
+
+class NestedNavStateMeta {
+  final NestedNavStateI state;
+  final Action rootAction;
+
+  NestedNavStateMeta({required this.state, required this.rootAction});
 }
 
 class RouteInput {

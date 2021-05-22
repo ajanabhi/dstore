@@ -1,5 +1,5 @@
 class NavPayload {
-  final bool isUrlBased;
-
-  NavPayload({this.isUrlBased = false});
+  final String? rawUrl;
+  final String? nestedNavTypeName;
+  NavPayload({this.rawUrl, this.nestedNavTypeName});
 }

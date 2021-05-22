@@ -67,6 +67,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
         final nestedOrigin = history.nestedNavOrigins[typeName];
         nestedHistory.originAction = nestedOrigin;
+        nestedHistory.historyMode = state.dontTouchMe.historyMode;
         history.nestedNavOrigins.remove(typeName);
         history.currentActiveNestedNav = typeName;
         navState = state;
@@ -79,11 +80,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
-        if (newState.page != null) {
-          nestedHistory.historyMode = HistoryMode.tabs;
-        } else {
-          nestedHistory.historyMode = HistoryMode.stack;
-        }
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
@@ -139,16 +135,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           onPopPage: (route, dynamic result) {
             if (route.didPop(result)) {
               print("On Pop nested");
-              if (state.meta.initialStateAction != null) {
-                final meta = state.meta;
-                final a = meta.initialStateAction!;
-                meta.initialStateAction = null;
-                nestedHistory.nestedInitialStateAction = null;
-                print("start silent action");
-                context.dispatch(a);
-                print("done silent action");
-                setStateOnupdate = true;
-              }
               nestedHistory.goBack();
               return true;
             } else {

@@ -63,19 +63,22 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             state.dontTouchMe.hisotry = history;
             final nestedNavs = state.getNestedNavs();
             if (nestedNavs.isNotEmpty) {
-              nestedNavs.forEach((nnav) {
+              nestedNavs.forEach((nnavmeta) {
+                final nnav = nnavmeta.state;
                 nnav.dontTouchMe.hisotry = history;
                 state.dontTouchMe.staticMeta
                     .addAll(nnav.dontTouchMe.staticMeta);
                 state.dontTouchMe.dynamicMeta
                     .addAll(nnav.dontTouchMe.dynamicMeta);
+                history.nestedNavMeta[nnav.dontTouchMe.typeName] =
+                    nnavmeta.rootAction;
               });
             }
             _navState = state;
             history.blockSameUrl = state.meta.blockSameUrl;
             history.fallBackNestedStackNonInitializationAction =
                 state.fallBackNestedStackNonInitializationAction;
-            history.nestedNavMeta.addAll(state.dontTouchMe.nestedMeta);
+            history.historyMode = state.dontTouchMe.historyMode;
           },
           onInitialBuild: (context, state) {
             _preparedState = true;
@@ -83,11 +86,6 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           },
           shouldRebuild: (context, prevState, newState) {
             newState.dontTouchMe.hisotry = history;
-            if (newState.page != null) {
-              history.historyMode = HistoryMode.tabs;
-            } else {
-              history.historyMode = HistoryMode.stack;
-            }
             if (newState.meta.redirectToAction != null) {
               print("NavParent inredirect");
               final meta = newState.meta;

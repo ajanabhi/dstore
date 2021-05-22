@@ -89,6 +89,7 @@ class PStateMethod {
   final String body;
   final bool isAsync;
   final String? url;
+  final String? nestedNavTypeName;
   final List<Field> keysModified;
 
   PStateMethod(
@@ -96,6 +97,7 @@ class PStateMethod {
       required this.name,
       required this.params,
       this.url,
+      this.nestedNavTypeName,
       required this.keysModified,
       required this.body});
 

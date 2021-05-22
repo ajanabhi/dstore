@@ -38,7 +38,7 @@ Future<String> generatePStateNavForClassElement(
   final typeParamsWithBounds = typeParamsTuple.item2;
   final typeParams = typeParamsTuple.item1;
   final name = element.name.substring(2);
-  final nestedNavs = inf == "NavStateI" ? <String, String>{} : null;
+  final nestedNavs = inf == "NavStateI" ? <NestedNavsInfo>[] : null;
   final visitor = PStateAstVisitor(
       element: element,
       isPersitable: false,
@@ -78,15 +78,11 @@ Future<String> generatePStateNavForClassElement(
   }
   final typePath = getFullTypeName(element);
   final typeVariable = "_${name}_FullPath";
-  var navNestedMeta = "{}";
-  if (nestedNavs != null) {
-    final v = nestedNavs.entries.map((e) => "'${e.key}':${e.value}").join(", ");
-    navNestedMeta = "{$v}";
-  }
-  var typeName = "";
+
+  var typeName = "''";
   String? initialSetup;
   if (isNestedNav) {
-    typeName = getFullTypeName(element);
+    typeName = "'${getFullTypeName(element)}'";
     initialSetup = "${name}Actions.initialSetup(silent:true)";
   }
 
@@ -103,7 +99,6 @@ Future<String> generatePStateNavForClassElement(
       navDontTouchMe: NavDontTouchMe(
           staticMeta: _getNavStaticMeta(methods: methods, modelName: name),
           dynamicMeta: _getNavDynamicMeta(methods: methods, modelName: name),
-          nestedMeta: navNestedMeta,
           typeName: typeName,
           initialSetup: initialSetup,
           historyMode: historyMode),
@@ -122,7 +117,6 @@ class NavDontTouchMe {
   final String? url;
   final String staticMeta;
   final String dynamicMeta;
-  final String nestedMeta;
   // final String hisotry;
   final String typeName; // empty in main navigation
   final String? initialSetup; // not null for all nested navs
@@ -132,7 +126,6 @@ class NavDontTouchMe {
       {this.url,
       required this.staticMeta,
       required this.dynamicMeta,
-      required this.nestedMeta,
       // required this.hisotry,
       required this.typeName,
       required this.initialSetup,
@@ -226,12 +219,14 @@ String _createPStateNavModel(
     required String name,
     required String typeName,
     required List<String> annotations,
-    required Map<String, String>? nestedNavs,
+    required List<NestedNavsInfo>? nestedNavs,
     required String regularMethods,
     required String typeParams,
     required String exinf,
     required bool enableHistory,
     required String typaParamsWithBounds}) {
+  //     final String url;
+  // final String defaultAction;
   final psFeilds = psDeps
       .map((e) =>
           " ${e.type} get ${e.name} => dontTouchMeStore.state.${e.name} as ${e.type};")
@@ -239,10 +234,18 @@ String _createPStateNavModel(
   final mixins = <String>["PStateStoreDepsMixin"];
   var nestedNavsMethod = "";
   if (nestedNavs != null && nestedNavs.isNotEmpty) {
+    final list = nestedNavs.map((e) {
+      return "getMeta('${e.typeName}','${e.url}',${e.defaultAction})";
+    }).join(",");
     nestedNavsMethod = """
       @override
-       List<NestedNavStateI> getNestedNavs() {
-         return [${nestedNavs.keys.map((e) => "dontTouchMeStore.getPStateModelFromPSType('${e}') as NestedNavStateI").join(",")}];
+      List<NestedNavStateMeta> getNestedNavs() {
+         NestedNavStateMeta getMeta(String psType,String url,Action action) {
+           final state = dontTouchMeStore.getPStateModelFromPSType('psType') as NestedNavStateI;
+           state.dontTOuch.rootUrl = url;
+           return NestedNavStateMeta(state:state,rootAction:action);
+         }
+         return [${list}];
        }        
      """;
   }
@@ -251,7 +254,7 @@ String _createPStateNavModel(
     initialSetupMethod = """
      @override
      void initialSetup() {
-       throw UnImplementedError("This method stubbed out as action ${name}Actions.initialSetup() , use that action instead");
+       throw UnimplementedError("This method stubbed out as action ${name}Actions.initialSetup() , use that action instead");
      }
     """;
   }
@@ -319,7 +322,10 @@ String _createActions(
     }
     final navPayloadParams = <String>[];
     if (m.url != null) {
-      navPayloadParams.add("isUrlBased : true");
+      navPayloadParams.add("rawUrl : '${m.url}'");
+    }
+    if (m.nestedNavTypeName != null) {
+      navPayloadParams.add("nestedNavTypeName : '${m.nestedNavTypeName}'");
     }
     return """
       static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
@@ -417,4 +423,16 @@ String _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
   }
 
   return result;
+}
+
+class NestedNavsInfo {
+  final String typeName;
+  final String url;
+  final String defaultAction;
+
+  NestedNavsInfo(
+      {required this.typeName, required this.url, required this.defaultAction});
+
+  @override
+  String toString() => 'NestedNavsInfo(typeName: $typeName, url: $url)';
 }

@@ -19,7 +19,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
   final bool historyEnabled;
   final int? historyLimit;
   final bool isNav;
-  final Map<String, String>? nestedNavs;
+  final List<NestedNavsInfo>? nestedNavs;
 
   PStateAstVisitor(
       {required this.element,
@@ -86,6 +86,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     final keys = <String>[];
     String? rawUrl;
     String? finalUrl;
+    String? nestedNavTypeName;
     if (isNav) {
       final urlTuple =
           getUrlFromMethod(md: node, mparams: params, element: element);
@@ -100,8 +101,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           throw ArgumentError.value(
               "nestedType param of Url annotation should be a class annotated with PState and  extends NestedNavState ");
         }
-        nestedNavs![getFullTypeName(nestedNavElement)] =
-            "${element.name.substring(2)}Actions.$name()";
+        nestedNavTypeName = getFullTypeName(nestedNavElement);
+        nestedNavs!.add(NestedNavsInfo(
+            typeName: nestedNavTypeName,
+            url: rawUrl!,
+            defaultAction: "${element.name.substring(2)}Actions.$name()"));
       }
     }
     if (body is ExpressionFunctionBody) {
@@ -163,6 +167,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         name: name,
         url: rawUrl,
         params: params,
+        nestedNavTypeName: nestedNavTypeName,
         keysModified: keys
             .map((e) => fields.singleWhere((element) => element.name == e,
                 orElse: () => throw ArgumentError.value(
@@ -641,6 +646,7 @@ Tuple2<String, Set<String>> processMethodStatements(
     newState.dontTouchMe.typeName = ${STATE_VARIABLE}.dontTouchMe.typeName;
     newState.dontTouchMe.initialSetup = ${STATE_VARIABLE}.dontTouchMe.initialSetup;
     newState.dontTouchMe.historyMode = ${STATE_VARIABLE}.dontTouchMe.historyMode;
+    newState.dontTouchMe.rootUrl = ${STATE_VARIABLE}.dontTouchMe.rootUrl;
    
     """ : ""}
     return newState;
@@ -673,13 +679,6 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
     }
     return super.visitSimpleIdentifier(node);
   }
-
-  // @override
-  // dynamic visitDeclaredIdentifier(DeclaredIdentifier node) {
-  //   print(
-  //       "DeclaredIdentifier visit ${node.runtimeType} ${node.identifier.name}");
-  //   return super.visitDeclaredIdentifier(node);
-  // }
 
   bool _isClassMemeber(String name) =>
       element.fields.where((element) => element.name == name).isNotEmpty ||
