@@ -31,6 +31,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   @override
   void initState() {
     super.initState();
+    print("On init NestedRouter");
     navigatorKey = GlobalKey();
   }
 
@@ -54,7 +55,14 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       setStateOnUpdate: ssonup,
       onInitState: (context, state) {
         state.mounted = true;
-        context.dispatch(state.dontTouchMe.initialSetup!);
+        print("on Init State");
+        setStateOnupdate = true;
+        if (!state.dontTouchMe.isDirty) {
+          context.dispatch(state.dontTouchMe.initialSetup!);
+        } else {
+          state.dontTouchMe.isDirty = true;
+        }
+
         final typeName = state.dontTouchMe.typeName;
         state.dontTouchMe.hisotry = history;
         history.nestedNavsHistory[typeName] =
@@ -80,6 +88,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
+        newState.dontTouchMe.isDirty = true;
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
@@ -124,7 +133,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       builder: (context, state) {
         print("before build pages");
         print(
-          "building nested nav $state pages ${state.buildPages()}",
+          "building nested nav $state  ${state.dontTouchMe}",
         );
         print("after buildapges");
         final pages = state.page != null ? [state.page!] : state.buildPages();
@@ -135,7 +144,13 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           onPopPage: (route, dynamic result) {
             if (route.didPop(result)) {
               print("On Pop nested");
-              nestedHistory.goBack();
+              final url = nestedHistory.goBack();
+              print("back url $url , rootUrl : ${state.dontTouchMe.rootUrl}");
+              if (url == null) {
+                // meaning it came back to root
+                print("running init again in pop");
+                context.dispatch(state.dontTouchMe.initialSetup!);
+              }
               return true;
             } else {
               print("Nested pop fail");

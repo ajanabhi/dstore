@@ -641,13 +641,12 @@ Tuple2<String, Set<String>> processMethodStatements(
     ${isNav ? """ 
     newState.dontTouchMe.staticMeta = ${STATE_VARIABLE}.dontTouchMe.staticMeta;
     newState.dontTouchMe.dynamicMeta = ${STATE_VARIABLE}.dontTouchMe.dynamicMeta;
-    newState.dontTouchMe.nestedMeta = ${STATE_VARIABLE}.dontTouchMe.nestedMeta;
     newState.dontTouchMe.hisotry = ${STATE_VARIABLE}.dontTouchMe.hisotry;
     newState.dontTouchMe.typeName = ${STATE_VARIABLE}.dontTouchMe.typeName;
     newState.dontTouchMe.initialSetup = ${STATE_VARIABLE}.dontTouchMe.initialSetup;
     newState.dontTouchMe.historyMode = ${STATE_VARIABLE}.dontTouchMe.historyMode;
     newState.dontTouchMe.rootUrl = ${STATE_VARIABLE}.dontTouchMe.rootUrl;
-   
+    newState.dontTouchMe.isDirty = ${STATE_VARIABLE}.dontTouchMe.isDirty;
     """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}

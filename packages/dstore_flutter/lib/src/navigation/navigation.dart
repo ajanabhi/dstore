@@ -47,6 +47,12 @@ class NavStateDontTouchMe {
   Action? initialSetup; // not null for all nested navs
   late HistoryMode historyMode;
   String? rootUrl;
+  bool isDirty = false;
+
+  @override
+  String toString() {
+    return 'NavStateDontTouchMe(url: $url, staticMeta: $staticMeta, dynamicMeta: $dynamicMeta, hisotry: $hisotry, typeName: $typeName, initialSetup: $initialSetup, historyMode: $historyMode, rootUrl: $rootUrl, isDirty: $isDirty)';
+  }
 }
 
 abstract class NavStateI<M> extends PStateModel<M> {

@@ -241,8 +241,8 @@ String _createPStateNavModel(
       @override
       List<NestedNavStateMeta> getNestedNavs() {
          NestedNavStateMeta getMeta(String psType,String url,Action action) {
-           final state = dontTouchMeStore.getPStateModelFromPSType('psType') as NestedNavStateI;
-           state.dontTOuch.rootUrl = url;
+           final state = dontTouchMeStore.getPStateModelFromPSType(psType) as NestedNavStateI;
+           state.dontTouchMe.rootUrl = url;
            return NestedNavStateMeta(state:state,rootAction:action);
          }
          return [${list}];

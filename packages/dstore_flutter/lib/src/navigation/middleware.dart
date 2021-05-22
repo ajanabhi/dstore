@@ -5,6 +5,7 @@ void _handleNavAction<S extends AppStateI<S>>(
     Action action, Dispatch next, Store<S> store) {
   print("field ${store.getFieldFromAction(action)}");
   final navPayload = action.nav!;
+  print("navPayload $navPayload");
   final navState = store.getPStateModelFromAction(action) as NavStateI;
   String? typeName;
   if (navState is NestedNavStateI) {
@@ -13,7 +14,7 @@ void _handleNavAction<S extends AppStateI<S>>(
   final history = navState.dontTouchMe.hisotry;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory}");
-  if (navPayload.isUrlBased &&
+  if (navPayload.rawUrl != null &&
       typeName != null &&
       !history.nestedNavsHistory.containsKey(typeName)) {
     // nested stack not initialized yet
@@ -21,6 +22,18 @@ void _handleNavAction<S extends AppStateI<S>>(
     final a = history.nestedNavMeta[typeName]!;
     print("modified a $a");
     store.dispatch(a);
+  } else if (navPayload.nestedNavTypeName != null &&
+      history.nestedNavsHistory.containsKey(navPayload.nestedNavTypeName)) {
+    // we're hitting root of nestednav state that is already mounted so lets call initState again
+    print("mounted nested nav , running initState again");
+    final nstate = store.getPStateModelFromPSType(navPayload.nestedNavTypeName!)
+        as NestedNavStateI;
+    final iAction = nstate.dontTouchMe.initialSetup!;
+    store.dispatch(iAction.copyWith(
+        silent: true,
+        afterSilent: (st) {
+          store.dispatch(action);
+        }));
   } else if (!navState.meta.blockSameUrl ||
       navState.meta.navOptions?.reload == true) {
     //
