@@ -66,10 +66,10 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       onInitState: (context, state) {
         state.mounted = true;
         print("on Init State");
+        final a = state.dontTouchMe.initialSetup!;
+        initStateAction = a;
         if (!state.dontTouchMe.isDirty) {
           state.dontTouchMe.isDirty = true;
-          final a = state.dontTouchMe.initialSetup!;
-          initStateAction = a;
           context.dispatch(a);
         }
         final typeName = state.dontTouchMe.typeName;
@@ -79,7 +79,10 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         nestedHistory = history.nestedNavsHistory[typeName]!;
         final nestedOrigin = history.nestedNavOrigins[typeName];
         nestedHistory.originAction = nestedOrigin;
+        nestedHistory.rootUrl = history.url;
         nestedHistory.historyMode = state.dontTouchMe.historyMode;
+        nestedHistory.parentStackTypeName = history.currentActiveNestedNav;
+        nestedHistory.parentNavKey = history.currentNavKey;
         history.nestedNavOrigins.remove(typeName);
         history.currentActiveNestedNav = typeName;
         navState = state;
@@ -159,11 +162,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
                   if (route.didPop(result)) {
                     print("On Pop nested");
                     nestedHistory.goBack();
-                    if (!nestedHistory.canGoBack) {
-                      // meaning it came back to root
-                      print("running init again in pop");
-                      context.dispatch(state.dontTouchMe.initialSetup!);
-                    }
                     return true;
                   } else {
                     print("Nested pop fail");

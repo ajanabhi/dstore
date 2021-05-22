@@ -38,11 +38,18 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       fn(uri, _dispatch);
     } else {
       // match in dynamic paths
+      print("Looking  in dynamic paths ${navState.dontTouchMe.dynamicMeta}");
       final r = 'r"$path"';
-      final regExp = pathToRegExp(r);
-      final dfn = navState.dontTouchMe.dynamicMeta.entries
-          .singleWhereOrNull((de) => regExp.hasMatch(de.key))
-          ?.value;
+      // final regExp = pathToRegExp(r);
+      final dfn =
+          navState.dontTouchMe.dynamicMeta.entries.singleWhereOrNull((de) {
+        print("Key ${de.key} path $path");
+        final regExp = pathToRegExp(de.key);
+        final result = regExp.hasMatch(path);
+        print("Result $result");
+        return result;
+      })?.value;
+      print("dyn function $dfn");
       if (dfn == null) {
         _dispatch(navState.notFoundAction(uri));
       } else {
@@ -128,13 +135,17 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   void prepareStateFromNestedStacks(
       {required History history,
       required NavStateI state,
-      required List<NestedNavStateMeta> nestedNavsMeta}) {
+      required List<NestedNavStateMeta> nestedNavsMeta,
+      NestedNavStateI? parent}) {
     nestedNavsMeta.forEach((nnavmeta) {
       final nnav = nnavmeta.state;
       final rmeta = nnav.getNestedNavs();
       if (rmeta.isNotEmpty) {
         prepareStateFromNestedStacks(
-            history: history, state: state, nestedNavsMeta: rmeta);
+            history: history,
+            state: state,
+            nestedNavsMeta: rmeta,
+            parent: nnav);
       }
       nnav.dontTouchMe.hisotry = history;
       state.dontTouchMe.staticMeta.addAll(nnav.dontTouchMe.staticMeta);
@@ -156,16 +167,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     }
   }
 
-  @override
-  Future<bool> popRoute() async {
-    print("popRoute");
-    final currentActiveNestedNav = history.currentActiveNestedNav;
-    print("currentActiveNestedNav $currentActiveNestedNav");
-    if (currentActiveNestedNav != null) {
-      print("hmm ${history.nestedNavsHistory[currentActiveNestedNav]}");
-      final nestedHistory = history.nestedNavsHistory[currentActiveNestedNav]!;
-      print("nested");
-      print("Nested history Mode : ${nestedHistory.historyMode}");
+  Future<bool> _popNestedStack(
+      {required GlobalKey<NavigatorState> navKey,
+      required String cuurentNestedKey}) async {
+    final nestedHistory = history.nestedNavsHistory[cuurentNestedKey]!;
+    print("popping nestedstack $nestedHistory");
+    if (nestedHistory.historyMode == HistoryMode.stack) {
       if (nestedHistory.historyMode == HistoryMode.tabs) {
         if (nestedHistory.canGoBack) {
           nestedHistory.goBack();
@@ -175,11 +182,34 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
         print("curentNavkey ${history.currentNavKey}");
         final currentNestedNavKey = history.currentNavKey!;
         print("currentNavKey $currentNestedNavKey");
-        final r = await currentNestedNavKey.currentState!.maybePop();
+        final r = await navKey.currentState!.maybePop();
         print("result $r");
         if (r) {
           return true;
         }
+      }
+    }
+    if (nestedHistory.parentStackTypeName != null) {
+      print("going up stack");
+      return _popNestedStack(
+          cuurentNestedKey: nestedHistory.parentStackTypeName!,
+          navKey: nestedHistory.parentNavKey!);
+    } else {
+      return false;
+    }
+  }
+
+  @override
+  Future<bool> popRoute() async {
+    print("popRoute");
+    final currentActiveNestedNav = history.currentActiveNestedNav;
+    print("currentActiveNestedNav $currentActiveNestedNav");
+    if (currentActiveNestedNav != null) {
+      final result = await _popNestedStack(
+          navKey: history.currentNavKey!,
+          cuurentNestedKey: currentActiveNestedNav);
+      if (result) {
+        return true;
       }
     }
     print("forwarding to global ${history.historyMode}");

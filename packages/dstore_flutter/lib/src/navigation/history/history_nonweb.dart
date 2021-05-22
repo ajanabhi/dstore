@@ -33,8 +33,15 @@ class HistoryImpl extends History {
   }
 
   @override
-  void goBack() {
-    if (canGoBack) {
+  void goBack({String? burl, bool reloadBack = false}) {
+    if (burl != null) {
+      print("going back to url $burl");
+      if (reloadBack) {
+        g_listener(Uri.parse(url));
+      } else {
+        informUrlListeners();
+      }
+    } else if (canGoBack) {
       _source.removeLast();
       final url = _source.last;
       this.url = url;
@@ -84,4 +91,8 @@ class HistoryImpl extends History {
 
   @override
   String? get backUrl => canGoBack ? _source[_source.length - 2] : null;
+
+  @override
+  // TODO: implement currentUrl
+  String? get currentUrl => throw UnimplementedError();
 }

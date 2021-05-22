@@ -12,8 +12,9 @@ abstract class History {
   bool urlChangedInSystem = false;
   void push(String url);
   void replace(String url);
-  void goBack();
+  void goBack({String? burl, bool reloadBack = false});
   String? get backUrl;
+  String? get currentUrl;
   bool get canGoBack;
   void go(int number);
   void setInitialUrl(String url);
@@ -36,44 +37,57 @@ abstract class History {
 
 class NestedNavHistory {
   final History history;
-  final List<String> _source = [];
+  late String rootUrl;
+  final List<String> source = [];
   Action? nestedInitialStateAction;
   Action? originAction;
   late HistoryMode historyMode;
+  String? parentStackTypeName;
+  GlobalKey<NavigatorState>? parentNavKey;
   final nestedNavMeta = <String, Action>{};
 
   NestedNavHistory({required this.history});
   void push(String url) {
-    _source.add(url);
+    source.add(url);
     history.url = url;
     history.informUrlListeners(url);
   }
 
   void replace(String url) {
-    if (_source.isNotEmpty) {
-      _source.removeLast();
+    if (source.isNotEmpty) {
+      source.removeLast();
     }
-    _source.add(url);
+    source.add(url);
     history.url = url;
     history.informUrlListeners(url);
   }
 
   void goBack() {
     if (canGoBack) {
-      _source.removeLast();
+      source.removeLast();
       String? url;
-      if (_source.isNotEmpty) {
-        url = _source.last;
+      if (source.isNotEmpty) {
+        url = source.last;
         history.url = url;
+      } else {
+        history.url = rootUrl;
       }
-      history.informUrlListeners(url);
+      history.goBack(burl: history.url, reloadBack: true);
+    } else {
+      history.url = rootUrl;
+      history.goBack(burl: history.url, reloadBack: true);
     }
   }
 
   String? get backUrl =>
-      (canGoBack && _source.length > 1) ? _source[_source.length - 2] : null;
+      (canGoBack && source.length > 1) ? source[source.length - 2] : null;
 
-  bool get canGoBack => _source.isNotEmpty;
+  bool get canGoBack => source.isNotEmpty;
+
+  @override
+  String toString() {
+    return 'NestedNavHistory(history: $history, Source : $source,nestedInitialStateAction: $nestedInitialStateAction, originAction: $originAction, historyMode: $historyMode, parentStackTypeName: $parentStackTypeName, parentNavKey: $parentNavKey)';
+  }
 }
 
 History createHistory() => HistoryImpl();

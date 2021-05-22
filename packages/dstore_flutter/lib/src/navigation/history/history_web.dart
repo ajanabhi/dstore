@@ -36,7 +36,7 @@ class HistoryImpl extends History {
   }
 
   @override
-  void goBack() {
+  void goBack({String? burl, bool reloadBack = false}) {
     if (canGoBack) {
       _source.removeLast();
     }
@@ -79,4 +79,8 @@ class HistoryImpl extends History {
       ul(Uri.parse(pUrl ?? url));
     });
   }
+
+  @override
+  // TODO: implement currentUrl
+  String? get currentUrl => throw UnimplementedError();
 }
