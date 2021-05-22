@@ -27,7 +27,9 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   late NestedNavStateI navState;
   late Dispatch _dispatch;
   late final GlobalKey<NavigatorState> navigatorKey;
+  late Action initStateAction;
   bool setStateOnupdate = false;
+  bool prepared = false;
   @override
   void initState() {
     super.initState();
@@ -45,6 +47,8 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   void didUpdateWidget(covariant NestedRouter<AS, S> oldWidget) {
     super.didUpdateWidget(oldWidget);
     print("Updating nested router widget");
+    context.dispatch(initStateAction);
+    setStateOnupdate = true;
   }
 
   @override
@@ -62,21 +66,17 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       onInitState: (context, state) {
         state.mounted = true;
         print("on Init State");
-        setStateOnupdate = true;
         if (!state.dontTouchMe.isDirty) {
           state.dontTouchMe.isDirty = true;
-          context.dispatch(state.dontTouchMe.initialSetup!);
+          final a = state.dontTouchMe.initialSetup!;
+          initStateAction = a;
+          context.dispatch(a);
         }
         final typeName = state.dontTouchMe.typeName;
         state.dontTouchMe.hisotry = history;
         history.nestedNavsHistory[typeName] =
             NestedNavHistory(history: history);
         nestedHistory = history.nestedNavsHistory[typeName]!;
-        if (state.page != null) {
-          nestedHistory.historyMode = HistoryMode.tabs;
-        } else {
-          nestedHistory.historyMode = HistoryMode.stack;
-        }
         final nestedOrigin = history.nestedNavOrigins[typeName];
         nestedHistory.originAction = nestedOrigin;
         nestedHistory.historyMode = state.dontTouchMe.historyMode;
@@ -86,6 +86,11 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         history.currentNavKey = navigatorKey;
         print("hitory currentNavKey ${history.currentNavKey}");
         print("nestedOrigin  ${nestedHistory.originAction}");
+      },
+      onInitialBuild: (context, state) {
+        prepared = true;
+        setStateOnupdate = true;
+        setState(() {});
         if (nestedHistory.originAction != null) {
           final a = nestedHistory.originAction!;
           nestedHistory.originAction = null;
@@ -93,7 +98,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
-        history.currentNavKey = navigatorKey;
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
@@ -123,6 +127,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
           scheduleMicrotask(() => _dispatch(a));
           return false;
         } else {
+          history.currentNavKey = navigatorKey;
           print("nestedrouter in update");
           _updateUrl();
           history.currentActiveNestedNav = newState.dontTouchMe.typeName;
@@ -134,6 +139,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         final typeName = state.dontTouchMe.typeName;
         history.nestedNavsHistory.remove(typeName);
         history.currentNavKey = null;
+        history.currentActiveNestedNav = null;
         print("setting current nav null");
         state.mounted = false;
       },
@@ -145,26 +151,27 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         print("after buildapges");
         final pages = state.page != null ? [state.page!] : state.buildPages();
 
-        return Navigator(
-          key: navigatorKey,
-          pages: pages,
-          onPopPage: (route, dynamic result) {
-            if (route.didPop(result)) {
-              print("On Pop nested");
-              final url = nestedHistory.goBack();
-              print("back url $url , rootUrl : ${state.dontTouchMe.rootUrl}");
-              if (url == null) {
-                // meaning it came back to root
-                print("running init again in pop");
-                context.dispatch(state.dontTouchMe.initialSetup!);
-              }
-              return true;
-            } else {
-              print("Nested pop fail");
-              return false;
-            }
-          },
-        );
+        return prepared
+            ? Navigator(
+                key: navigatorKey,
+                pages: pages,
+                onPopPage: (route, dynamic result) {
+                  if (route.didPop(result)) {
+                    print("On Pop nested");
+                    nestedHistory.goBack();
+                    if (!nestedHistory.canGoBack) {
+                      // meaning it came back to root
+                      print("running init again in pop");
+                      context.dispatch(state.dontTouchMe.initialSetup!);
+                    }
+                    return true;
+                  } else {
+                    print("Nested pop fail");
+                    return false;
+                  }
+                },
+              )
+            : SizedBox.shrink();
       },
     );
   }
@@ -176,7 +183,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
     } else {
       if (navState.dontTouchMe.url != null) {
         final url = navState.dontTouchMe.url!;
-        // print("pushing url ${navState.dontTouchMeUrl}");
+        print("pushing url ${navState.dontTouchMe.url}");
         if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
           nestedHistory.replace(url);
         } else {

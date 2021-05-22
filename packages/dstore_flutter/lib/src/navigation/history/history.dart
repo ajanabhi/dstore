@@ -40,10 +40,12 @@ class NestedNavHistory {
   Action? nestedInitialStateAction;
   Action? originAction;
   late HistoryMode historyMode;
+  final nestedNavMeta = <String, Action>{};
 
   NestedNavHistory({required this.history});
   void push(String url) {
     _source.add(url);
+    history.url = url;
     history.informUrlListeners(url);
   }
 
@@ -56,17 +58,20 @@ class NestedNavHistory {
     history.informUrlListeners(url);
   }
 
-  String? goBack() {
+  void goBack() {
     if (canGoBack) {
       _source.removeLast();
       String? url;
       if (_source.isNotEmpty) {
         url = _source.last;
-        return url;
+        history.url = url;
       }
       history.informUrlListeners(url);
     }
   }
+
+  String? get backUrl =>
+      (canGoBack && _source.length > 1) ? _source[_source.length - 2] : null;
 
   bool get canGoBack => _source.isNotEmpty;
 }

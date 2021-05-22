@@ -13,12 +13,16 @@ class UrlBuilder extends StatefulWidget {
 class _UrlBuilderState extends State<UrlBuilder> {
   VoidCallback? urlUnSubscriber;
   late UriListener listener;
+  late Uri uri;
   @override
   void initState() {
     super.initState();
     listener = (Uri hurl) {
       WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-        setState(() {});
+        setState(() {
+          print("calling setstate in url builder $hurl");
+          uri = hurl;
+        });
       });
     };
   }
@@ -28,11 +32,12 @@ class _UrlBuilderState extends State<UrlBuilder> {
     super.didChangeDependencies();
     urlUnSubscriber?.call();
     urlUnSubscriber = context.dnavigation.dotTouchmeHistory.listenUrl(listener);
+    uri = Uri.parse(context.dnavigation.url);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(Uri.parse(context.dnavigation.url));
+    return widget.builder(uri);
   }
 
   @override

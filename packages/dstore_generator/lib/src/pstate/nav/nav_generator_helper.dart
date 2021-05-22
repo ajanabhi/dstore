@@ -38,7 +38,7 @@ Future<String> generatePStateNavForClassElement(
   final typeParamsWithBounds = typeParamsTuple.item2;
   final typeParams = typeParamsTuple.item1;
   final name = element.name.substring(2);
-  final nestedNavs = inf == "NavStateI" ? <NestedNavsInfo>[] : null;
+  final nestedNavs = <NestedNavsInfo>[];
   final visitor = PStateAstVisitor(
       element: element,
       isPersitable: false,

@@ -75,7 +75,9 @@ class HistoryImpl extends History {
 
   @override
   void informUrlListeners([String? pUrl]) {
+    print("informing url slisterners pUrl $pUrl");
     _urlListeners.forEach((ul) {
+      print("listerner $ul");
       ul(Uri.parse(pUrl ?? url));
     });
   }

@@ -22,19 +22,28 @@ void _handleNavAction<S extends AppStateI<S>>(
     final a = history.nestedNavMeta[typeName]!;
     print("modified a $a");
     store.dispatch(a);
-  } else if (navPayload.nestedNavTypeName != null &&
-      history.nestedNavsHistory.containsKey(navPayload.nestedNavTypeName)) {
-    // we're hitting root of nestednav state that is already mounted so lets call initState again
-    print("mounted nested nav , running initState again");
-    final nstate = store.getPStateModelFromPSType(navPayload.nestedNavTypeName!)
-        as NestedNavStateI;
-    final iAction = nstate.dontTouchMe.initialSetup!;
-    store.dispatch(iAction.copyWith(
-        silent: true,
-        afterSilent: (st) {
-          store.dispatch(action);
-        }));
-  } else if (!navState.meta.blockSameUrl ||
+  }
+  // else if (navPayload.nestedNavTypeName != null &&
+  //     history.nestedNavsHistory.containsKey(navPayload.nestedNavTypeName)) {
+  //   // we're hitting root of nestednav state that is already mounted so lets call initState again
+  //   print("mounted nested nav , running initState again");
+  //   if (!navPayload.processedNested) {
+  //     final nstate =
+  //         store.getPStateModelFromPSType(navPayload.nestedNavTypeName!)
+  //             as NestedNavStateI;
+  //     final iAction = nstate.dontTouchMe.initialSetup!;
+  //     store.dispatch(iAction.copyWith(
+  //         silent: true,
+  //         afterSilent: (st) {
+  //           store.dispatch(action.copyWith(
+  //               nav: action.nav?.copyWith(processedNested: true)));
+  //         }));
+  //   } else {
+  //     next(action);
+  //   }
+  // }
+
+  else if (!navState.meta.blockSameUrl ||
       navState.meta.navOptions?.reload == true) {
     //
     next(action);

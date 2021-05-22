@@ -62,18 +62,8 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           onInitState: (context, state) {
             state.dontTouchMe.hisotry = history;
             final nestedNavs = state.getNestedNavs();
-            if (nestedNavs.isNotEmpty) {
-              nestedNavs.forEach((nnavmeta) {
-                final nnav = nnavmeta.state;
-                nnav.dontTouchMe.hisotry = history;
-                state.dontTouchMe.staticMeta
-                    .addAll(nnav.dontTouchMe.staticMeta);
-                state.dontTouchMe.dynamicMeta
-                    .addAll(nnav.dontTouchMe.dynamicMeta);
-                history.nestedNavMeta[nnav.dontTouchMe.typeName] =
-                    nnavmeta.rootAction;
-              });
-            }
+            prepareStateFromNestedStacks(
+                history: history, state: state, nestedNavsMeta: nestedNavs);
             _navState = state;
             history.blockSameUrl = state.meta.blockSameUrl;
             history.fallBackNestedStackNonInitializationAction =
@@ -133,6 +123,24 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                 : SizedBox.shrink();
           },
         )));
+  }
+
+  void prepareStateFromNestedStacks(
+      {required History history,
+      required NavStateI state,
+      required List<NestedNavStateMeta> nestedNavsMeta}) {
+    nestedNavsMeta.forEach((nnavmeta) {
+      final nnav = nnavmeta.state;
+      final rmeta = nnav.getNestedNavs();
+      if (rmeta.isNotEmpty) {
+        prepareStateFromNestedStacks(
+            history: history, state: state, nestedNavsMeta: rmeta);
+      }
+      nnav.dontTouchMe.hisotry = history;
+      state.dontTouchMe.staticMeta.addAll(nnav.dontTouchMe.staticMeta);
+      state.dontTouchMe.dynamicMeta.addAll(nnav.dontTouchMe.dynamicMeta);
+      history.nestedNavMeta[nnav.dontTouchMe.typeName] = nnavmeta.rootAction;
+    });
   }
 
   void _updateUrl({required NavStateI navState}) {
