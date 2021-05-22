@@ -164,8 +164,11 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           return true;
         }
       } else {
+        print("curentNavkey ${history.currentNavKey}");
         final currentNestedNavKey = history.currentNavKey!;
+        print("currentNavKey $currentNestedNavKey");
         final r = await currentNestedNavKey.currentState!.maybePop();
+        print("result $r");
         if (r) {
           return true;
         }

@@ -42,6 +42,12 @@ class _NestedRouterState<AS extends AppStateI<AS>,
   }
 
   @override
+  void didUpdateWidget(covariant NestedRouter<AS, S> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("Updating nested router widget");
+  }
+
+  @override
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
     var ssonup = false;
@@ -58,11 +64,9 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         print("on Init State");
         setStateOnupdate = true;
         if (!state.dontTouchMe.isDirty) {
-          context.dispatch(state.dontTouchMe.initialSetup!);
-        } else {
           state.dontTouchMe.isDirty = true;
+          context.dispatch(state.dontTouchMe.initialSetup!);
         }
-
         final typeName = state.dontTouchMe.typeName;
         state.dontTouchMe.hisotry = history;
         history.nestedNavsHistory[typeName] =
@@ -80,6 +84,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         history.currentActiveNestedNav = typeName;
         navState = state;
         history.currentNavKey = navigatorKey;
+        print("hitory currentNavKey ${history.currentNavKey}");
         print("nestedOrigin  ${nestedHistory.originAction}");
         if (nestedHistory.originAction != null) {
           final a = nestedHistory.originAction!;
@@ -88,13 +93,14 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
-        newState.dontTouchMe.isDirty = true;
+        history.currentNavKey = navigatorKey;
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
         nestedHistory.nestedInitialStateAction =
             newState.meta.initialStateAction;
         print("Newstate of nestedrouter $newState");
+        print("hitory currentNavKey ${history.currentNavKey}");
         if (newState.meta.redirectToAction != null) {
           print("Nested Router in redirect");
           final meta = newState.meta;
@@ -128,6 +134,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         final typeName = state.dontTouchMe.typeName;
         history.nestedNavsHistory.remove(typeName);
         history.currentNavKey = null;
+        print("setting current nav null");
         state.mounted = false;
       },
       builder: (context, state) {
