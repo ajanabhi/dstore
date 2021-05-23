@@ -93,6 +93,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       onInitialBuild: (context, state) {
         prepared = true;
         setStateOnupdate = true;
+        setBeforeLeave(history, state);
         setState(() {});
         if (nestedHistory.originAction != null) {
           final a = nestedHistory.originAction!;
@@ -101,6 +102,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
       },
       shouldRebuild: (context, prevState, newState) {
+        setBeforeLeave(history, newState);
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
@@ -159,6 +161,12 @@ class _NestedRouterState<AS extends AppStateI<AS>,
                 key: navigatorKey,
                 pages: pages,
                 onPopPage: (route, dynamic result) {
+                  if (history.beforeLeave != null) {
+                    final result = history.beforeLeave!(context.store.state);
+                    if (!result) {
+                      return false;
+                    }
+                  }
                   if (route.didPop(result)) {
                     print("On Pop nested");
                     nestedHistory.goBack();

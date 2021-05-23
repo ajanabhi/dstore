@@ -634,7 +634,7 @@ class _SelectorListener {
   @override
   int get hashCode => selector.hashCode ^ listener.hashCode;
 }
-
+@optionalTypeArgs
 abstract class AppStateI<S> {
   S copyWithMap(Map<String, dynamic> map);
   Map<String, PStateModel<dynamic>> toMap();

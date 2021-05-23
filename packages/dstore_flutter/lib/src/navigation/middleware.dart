@@ -14,6 +14,15 @@ void _handleNavAction<S extends AppStateI<S>>(
   final history = navState.dontTouchMe.hisotry;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory}");
+  if (history.beforeLeave != null) {
+    final result = history.beforeLeave!(store.state);
+    if (!result) {
+      print(
+          "Skiping nav action $action , because its prevent by beforeLeave function");
+      return;
+    }
+  }
+
   if (navPayload.rawUrl != null &&
       typeName != null &&
       !history.nestedNavsHistory.containsKey(typeName)) {

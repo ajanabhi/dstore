@@ -25,6 +25,7 @@ abstract class History {
   String? currentActiveNestedNav;
   late HistoryMode historyMode;
   GlobalKey<NavigatorState>? currentNavKey;
+  BeforeLeaveFn? beforeLeave;
 
   late Action Function(NavStateI navState)
       fallBackNestedStackNonInitializationAction;

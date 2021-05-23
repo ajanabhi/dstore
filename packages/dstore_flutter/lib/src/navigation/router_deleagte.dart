@@ -19,6 +19,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   NavStateI get navState => _navState!;
   VoidCallback? unsubscribeHistoryListener;
   late Dispatch _dispatch;
+  late Store _store;
   bool _preparedState = false;
   DRouterDelegate({required this.selector, this.shell = IdentityFn})
       : navigatorKey = GlobalKey<NavigatorState>() {
@@ -62,6 +63,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   @override
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
+    _store = context.store;
     return NavigationProvider(
         dotTouchmeHistory: history,
         child: shell(SelectorBuilder<S, NavStateI>(
@@ -79,10 +81,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
           },
           onInitialBuild: (context, state) {
             _preparedState = true;
+            setBeforeLeave(history, state);
             handleUriChange(Uri.parse(history.url));
           },
           shouldRebuild: (context, prevState, newState) {
             newState.dontTouchMe.hisotry = history;
+            setBeforeLeave(history, newState);
             if (newState.meta.redirectToAction != null) {
               print("NavParent inredirect");
               final meta = newState.meta;
@@ -117,6 +121,13 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
                     pages:
                         state.page != null ? [state.page!] : state.buildPages(),
                     onPopPage: (route, dynamic result) {
+                      if (history.beforeLeave != null) {
+                        final result =
+                            history.beforeLeave!(context.store.state);
+                        if (!result) {
+                          return false;
+                        }
+                      }
                       if (route.didPop(result)) {
                         print("On Pop nested");
                         history.goBack();
@@ -174,6 +185,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     print("popping nestedstack $nestedHistory");
     if (nestedHistory.historyMode == HistoryMode.stack) {
       if (nestedHistory.historyMode == HistoryMode.tabs) {
+        if (history.beforeLeave != null) {
+          final result = history.beforeLeave!(_store.state);
+          if (!result) {
+            return true;
+          }
+        }
         if (nestedHistory.canGoBack) {
           nestedHistory.goBack();
           return true;
@@ -214,6 +231,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     }
     print("forwarding to global ${history.historyMode}");
     if (history.historyMode == HistoryMode.tabs) {
+      if (history.beforeLeave != null) {
+        final result = history.beforeLeave!(_store.state);
+        if (!result) {
+          return true;
+        }
+      }
       if (history.canGoBack) {
         history.goBack();
         return true;
@@ -241,6 +264,15 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   void dispose() {
     unsubscribeHistoryListener?.call();
     super.dispose();
+  }
+}
+
+void setBeforeLeave(History history, NavStateI state) {
+  if (state.meta.beforeLeave != null) {
+    history.beforeLeave = state.meta.beforeLeave;
+    state.meta.beforeLeave = null;
+  } else {
+    history.beforeLeave = null;
   }
 }
 
