@@ -10,7 +10,7 @@ export "nested_router.dart";
 export "middleware.dart";
 export "url_builder.dart";
 
-typedef BeforeLeaveFn<S> = bool Function(S appState);
+typedef BeforeLeaveFn<S> = bool Function(AppStateI appState);
 
 enum HistoryUpdate { push, replace }
 
