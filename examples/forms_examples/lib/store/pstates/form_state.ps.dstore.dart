@@ -8,7 +8,7 @@ part of 'form_state.dart';
 
 @immutable
 class FormState extends PStateModel<FormState> {
-  final FormField<SimpleForm>? simpleForm;
+  final FormField<SimpleForm> simpleForm;
 
   _$FormStateCopyWith<FormState> get copyWith =>
       __$FormStateCopyWithImpl<FormState>(this, IdentityFn);
@@ -42,7 +42,7 @@ class FormState extends PStateModel<FormState> {
 abstract class $FormStateCopyWith<O> {
   factory $FormStateCopyWith(FormState value, O Function(FormState) then) =
       _$FormStateCopyWithImpl<O>;
-  O call({FormField<SimpleForm>? simpleForm});
+  O call({FormField<SimpleForm> simpleForm});
 }
 
 class _$FormStateCopyWithImpl<O> implements $FormStateCopyWith<O> {
@@ -55,14 +55,14 @@ class _$FormStateCopyWithImpl<O> implements $FormStateCopyWith<O> {
     return _then(_value.copyWith(
         simpleForm: simpleForm == dimmutable
             ? _value.simpleForm
-            : simpleForm as FormField<SimpleForm>?));
+            : simpleForm as FormField<SimpleForm>));
   }
 }
 
 abstract class _$FormStateCopyWith<O> implements $FormStateCopyWith<O> {
   factory _$FormStateCopyWith(FormState value, O Function(FormState) then) =
       __$FormStateCopyWithImpl<O>;
-  O call({FormField<SimpleForm>? simpleForm});
+  O call({FormField<SimpleForm> simpleForm});
 }
 
 class __$FormStateCopyWithImpl<O> extends _$FormStateCopyWithImpl<O>
@@ -78,7 +78,7 @@ class __$FormStateCopyWithImpl<O> extends _$FormStateCopyWithImpl<O>
     return _then(FormState(
         simpleForm: simpleForm == dimmutable
             ? _value.simpleForm
-            : simpleForm as FormField<SimpleForm>?));
+            : simpleForm as FormField<SimpleForm>));
   }
 }
 

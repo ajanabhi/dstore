@@ -40,6 +40,7 @@ Store<AppState> createStore(
         "snack": SnackStateMeta
       },
       stateCreator: () => AppState(),
+      appVersion: '1.0.0+1',
       networkOptions: networkOptions,
       middlewares: middlewares,
       handleError: handleError,

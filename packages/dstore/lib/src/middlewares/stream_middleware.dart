@@ -18,7 +18,7 @@ dynamic streamMiddleware<S extends AppStateI<S>>(
 void _processStreamAction<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) {
   final field = store.getFieldFromAction(action) as StreamField;
-  if (field.listening) {
+  if (field.listening == true) {
     //  already listening
     store.dispatch(action.copyWith(
         internal: ActionInternal(

@@ -6,7 +6,7 @@ part 'login_screen_selectors.dstore.dart';
 
 @Selectors()
 class $_LoginScreenSelectors {
-  static FormField<LoginFormKey, LoginForm> loginForm(AppState state) {
+  static FormField<LoginForm> loginForm(AppState state) {
     return state.loginScreen.loginForm;
   }
 }

@@ -47,7 +47,7 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
           : generateOpsTypeForQuery(
               schema: schema, query: query, doc: doc, name: tn, api: api);
       ops.add(op);
-      logger.shout("Query is $op");
+      // logger.shout("Query is $op");
     } else if (field.isConst) {
       final fe = element.fields.singleWhere((element) => element.name == name);
       final v = fe.computeConstantValue()!;

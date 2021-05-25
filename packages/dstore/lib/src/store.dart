@@ -152,7 +152,7 @@ class Store<S extends AppStateI<S>> {
           final sk = _pStateTypeToStateKeyMap[e["type"]]!;
           final psm = internalMeta[sk]!;
           final httpMeta = psm.httpMetaMap?[e["name"]];
-          return Action<dynamic>.fromJson(e, httpMeta);
+          return Action.fromJson<dynamic>(e, httpMeta);
         });
         _offlineActions.addAll(actions);
       }

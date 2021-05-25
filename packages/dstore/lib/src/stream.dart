@@ -22,20 +22,20 @@ void $_StreamField<D, E>({
   bool completed = false,
 }) {}
 
-extension StreamFieldExtension<D, E> on StreamField<D, E> {
-  T when<T>(
-      {required T Function() listening,
-      required T Function(D data) data,
-      required T Function(E error) error,
-      required T Function() completed}) {
-    if (this.data != null) {
-      return data(this.data!);
-    } else if (this.error != null) {
-      return error(this.error!);
-    } else if (this.completed) {
-      return completed();
-    } else {
-      return listening();
-    }
-  }
-}
+// extension StreamFieldExtension<D, E> on StreamField<D, E> {
+//   T when<T>(
+//       {required T Function() listening,
+//       required T Function(D data) data,
+//       required T Function(E error) error,
+//       required T Function() completed}) {
+//     if (this.data != null) {
+//       return data(this.data!);
+//     } else if (this.error != null) {
+//       return error(this.error!);
+//     } else if (this.completed) {
+//       return completed();
+//     } else {
+//       return listening();
+//     }
+//   }
+// }

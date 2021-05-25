@@ -15,23 +15,20 @@ abstract class FormFieldObject<M> {
 }
 
 @DImmutable()
-abstract class FormField<F extends FormFieldObject<F>> with _$FormField<F> {
-  const factory FormField(
-      {required F value,
-      required Map<String, Function> validators,
-      @Default(<String, String>{}) Map<String, String> errors,
-      @Default(<String, bool>{}) Map<String, bool> touched,
-      @Default(false) bool isValid,
-      @Default(false) bool isSubmitting,
-      @Default(false) bool isValidating,
-      @Default(false) bool validateOnChange,
-      @Default(false) bool validateOnBlur,
-      List<String>? internalKeysChanged,
-      @Default("") String internalAName,
-      @Default("") String internalAType}) = _FormField<F>;
-}
+class $_FormField<F extends FormFieldObject<F>> {
+  late F value;
+  late Map<String, Function> validators;
+  Map<String, String> errors = {};
+  Map<String, bool> touched = {};
+  bool isValid = false;
+  bool isSubmitting = false;
+  bool isValidating = false;
+  bool validateOnChange = false;
+  bool validateOnBlur = false;
+  List<String>? internalKeysChanged;
+  String internalAName = "";
+  String internalAType = "";
 
-extension FormFieldExt on FormField {
   bool isFieldKeyValid(dynamic key) {
     final name = key.toString().split(".").last;
     final v = validators[name];

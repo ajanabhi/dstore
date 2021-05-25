@@ -5,11 +5,26 @@ part 'nav.ps.dstore.dart';
 
 @PState(nav: true)
 class $_NavState extends NavStateI<dynamic> {
+  String id = "";
   @override
   List<Page> buildPages() {
     return [];
   }
 
   @Url("/")
-  void home() {}
+  void home() {
+    this.id = "1";
+  }
+
+  @override
+  Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+    // TODO: implement fallBackNestedStackNonInitializationAction
+    throw UnimplementedError();
+  }
+
+  @override
+  Action notFoundAction(Uri uri) {
+    // TODO: implement notFoundAction
+    throw UnimplementedError();
+  }
 }

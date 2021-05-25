@@ -175,8 +175,8 @@ Hello_todoData Hello_todoDataDeserializer(int status, dynamic json) =>
     inputSerializer: GraphqlRequestInput.toJson,
     inputDeserializer: Hello_todoInputDeserializer,
     responseDeserializer: Hello_todoDataDeserializer)
-class Hello_todo = HttpField<GraphqlRequestInput<Null>, Hello_todoData, dynamic>
-    with EmptyMixin;
+typedef Hello_todo
+    = HttpField<GraphqlRequestInput<Null>, Hello_todoData, String>;
 
 @HttpRequest(
     method: "POST",
@@ -192,8 +192,7 @@ class Hello_todo = HttpField<GraphqlRequestInput<Null>, Hello_todoData, dynamic>
     inputSerializer: GraphqlRequestInput.toJson,
     inputDeserializer: Hello_todoInputDeserializer,
     responseDeserializer: Hello_todoDataDeserializer)
-class Hello_todoT<T> = HttpField<GraphqlRequestInput<Null>, T, dynamic>
-    with EmptyMixin;
+typedef Hello_todoT<T> = HttpField<GraphqlRequestInput<Null>, T, String>;
 
 @JsonSerializable()
 class Hello_utData {
@@ -419,8 +418,7 @@ Hello_utData Hello_utDataDeserializer(int status, dynamic json) =>
     inputSerializer: GraphqlRequestInput.toJson,
     inputDeserializer: Hello_utInputDeserializer,
     responseDeserializer: Hello_utDataDeserializer)
-class Hello_ut = HttpField<GraphqlRequestInput<Null>, Hello_utData, dynamic>
-    with EmptyMixin;
+typedef Hello_ut = HttpField<GraphqlRequestInput<Null>, Hello_utData, String>;
 
 @HttpRequest(
     method: "POST",
@@ -439,5 +437,4 @@ class Hello_ut = HttpField<GraphqlRequestInput<Null>, Hello_utData, dynamic>
     inputSerializer: GraphqlRequestInput.toJson,
     inputDeserializer: Hello_utInputDeserializer,
     responseDeserializer: Hello_utDataDeserializer)
-class Hello_utT<T> = HttpField<GraphqlRequestInput<Null>, T, dynamic>
-    with EmptyMixin;
+typedef Hello_utT<T> = HttpField<GraphqlRequestInput<Null>, T, String>;

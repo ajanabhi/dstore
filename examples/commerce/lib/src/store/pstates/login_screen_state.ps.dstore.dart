@@ -8,7 +8,7 @@ part of 'login_screen_state.dart';
 
 @immutable
 class LoginScreenState extends PStateModel<LoginScreenState> {
-  final FormField<LoginFormKey, LoginForm> loginForm;
+  final FormField<LoginForm> loginForm;
 
   final StreamField<FirebasePhoneVerification, Object> phoneVerification;
 
@@ -16,16 +16,18 @@ class LoginScreenState extends PStateModel<LoginScreenState> {
       __$LoginScreenStateCopyWithImpl<LoginScreenState>(this, IdentityFn);
 
   LoginScreenState(
-      {this.loginForm = const FormField(
-          value: LoginForm(),
-          validateOnChange: true,
-          validators: LoginFormValidators),
-      this.phoneVerification = const StreamField()});
+      {FormField<LoginForm>? loginForm,
+      this.phoneVerification = const StreamField()})
+      : loginForm = loginForm ??
+            FormField(
+                value: LoginForm(),
+                validateOnChange: true,
+                validators: LoginFormValidators);
 
   @override
   LoginScreenState copyWithMap(Map<String, dynamic> map) => LoginScreenState(
       loginForm: map.containsKey("loginForm")
-          ? map["loginForm"] as FormField<LoginFormKey, LoginForm>
+          ? map["loginForm"] as FormField<LoginForm>
           : this.loginForm,
       phoneVerification: map.containsKey("phoneVerification")
           ? map["phoneVerification"]
@@ -58,7 +60,7 @@ abstract class $LoginScreenStateCopyWith<O> {
           LoginScreenState value, O Function(LoginScreenState) then) =
       _$LoginScreenStateCopyWithImpl<O>;
   O call(
-      {FormField<LoginFormKey, LoginForm> loginForm,
+      {FormField<LoginForm> loginForm,
       StreamField<FirebasePhoneVerification, Object> phoneVerification});
 }
 
@@ -75,7 +77,7 @@ class _$LoginScreenStateCopyWithImpl<O>
     return _then(_value.copyWith(
         loginForm: loginForm == dimmutable
             ? _value.loginForm
-            : loginForm as FormField<LoginFormKey, LoginForm>,
+            : loginForm as FormField<LoginForm>,
         phoneVerification: phoneVerification == dimmutable
             ? _value.phoneVerification
             : phoneVerification
@@ -89,7 +91,7 @@ abstract class _$LoginScreenStateCopyWith<O>
           LoginScreenState value, O Function(LoginScreenState) then) =
       __$LoginScreenStateCopyWithImpl<O>;
   O call(
-      {FormField<LoginFormKey, LoginForm> loginForm,
+      {FormField<LoginForm> loginForm,
       StreamField<FirebasePhoneVerification, Object> phoneVerification});
 }
 
@@ -110,7 +112,7 @@ class __$LoginScreenStateCopyWithImpl<O>
     return _then(LoginScreenState(
         loginForm: loginForm == dimmutable
             ? _value.loginForm
-            : loginForm as FormField<LoginFormKey, LoginForm>,
+            : loginForm as FormField<LoginForm>,
         phoneVerification: phoneVerification == dimmutable
             ? _value.phoneVerification
             : phoneVerification
@@ -125,7 +127,7 @@ abstract class LoginScreenStateActions {
   static Action<dynamic> loginForm(FormReq req) {
     return Action<dynamic>(
         name:
-            "Field(Name : loginForm Type : FormField<LoginFormKey, LoginForm> Value : FormField(value: LoginForm(), validateOnChange: true, validators: LoginFormValidators) isOptional : false annotations : [] isNamed: false).name}",
+            "Field(Name : loginForm Type : FormField<LoginForm> Value : FormField(value: LoginForm(), validateOnChange: true, validators: LoginFormValidators) isOptional : false annotations : [] isNamed: false).name}",
         type: _LoginScreenState_FullPath,
         form: req);
   }

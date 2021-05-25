@@ -7,66 +7,224 @@ part of 'http.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$HttpMeta<PP, QP, I, R, E, T> {
-  R Function(int, dynamic) get responseDeserializer;
-  dynamic Function(int, R)? get responseSerializer;
-  HttpField<dynamic, dynamic, dynamic> Function(
-      HttpField<dynamic, dynamic, dynamic>,
-      HttpField<dynamic, dynamic, dynamic>)? get transformer;
-  dynamic Function(I)? get inputSerializer;
-  Future<dynamic> Function(I)? get inputStorageSerializer;
-  I Function(dynamic)? get inputDeserializer;
-  E Function(int, dynamic)? get errorDeserializer;
-  PP Function(dynamic)? get pathParamsDeserializer;
-  dynamic Function(PP)? get pathParamsSerializer;
-  QP Function(dynamic)? get queryParamsDeserializer;
-  dynamic Function(QP)? get queryParamsSerializer;
+class HttpField<I, R, E> {
+  final R? data;
 
-  $HttpMetaCopyWith<PP, QP, I, R, E, T, HttpMeta<PP, QP, I, R, E, T>>
-      get copyWith;
+  final HttpError<E>? error;
+
+  final Map<String, String>? responseHeaders;
+
+  final int? status;
+
+  final HttpProgress? progress;
+
+  final AbortController? abortController;
+
+  final bool optimistic;
+
+  final bool loading;
+
+  final bool completed;
+
+  final bool offline;
+
+  _$HttpFieldCopyWith<I, R, E, HttpField<I, R, E>> get copyWith =>
+      __$HttpFieldCopyWithImpl<I, R, E, HttpField<I, R, E>>(this, IdentityFn);
+
+  const HttpField(
+      {this.data,
+      this.error,
+      this.responseHeaders,
+      this.status,
+      this.progress,
+      this.abortController,
+      this.optimistic = false,
+      this.loading = false,
+      this.completed = false,
+      this.offline = false});
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is HttpField &&
+        o.data == data &&
+        o.error == error &&
+        o.responseHeaders == responseHeaders &&
+        o.status == status &&
+        o.progress == progress &&
+        o.abortController == abortController &&
+        o.optimistic == optimistic &&
+        o.loading == loading &&
+        o.completed == completed &&
+        o.offline == offline;
+  }
+
+  @override
+  int get hashCode =>
+      data.hashCode ^
+      error.hashCode ^
+      responseHeaders.hashCode ^
+      status.hashCode ^
+      progress.hashCode ^
+      abortController.hashCode ^
+      optimistic.hashCode ^
+      loading.hashCode ^
+      completed.hashCode ^
+      offline.hashCode;
+
+  @override
+  String toString() =>
+      "HttpField(data: ${this.data}, error: ${this.error}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";
 }
 
-class _HttpMeta<PP, QP, I, R, E, T> implements HttpMeta<PP, QP, I, R, E, T> {
-  @override
-  final R Function(int, dynamic) responseDeserializer;
+abstract class $HttpFieldCopyWith<I, R, E, O> {
+  factory $HttpFieldCopyWith(
+          HttpField<I, R, E> value, O Function(HttpField<I, R, E>) then) =
+      _$HttpFieldCopyWithImpl<I, R, E, O>;
+  O call(
+      {R? data,
+      HttpError<E>? error,
+      Map<String, String>? responseHeaders,
+      int? status,
+      HttpProgress? progress,
+      AbortController? abortController,
+      bool optimistic,
+      bool loading,
+      bool completed,
+      bool offline});
+}
+
+class _$HttpFieldCopyWithImpl<I, R, E, O>
+    implements $HttpFieldCopyWith<I, R, E, O> {
+  final HttpField<I, R, E> _value;
+  final O Function(HttpField<I, R, E>) _then;
+  _$HttpFieldCopyWithImpl(this._value, this._then);
 
   @override
+  O call(
+      {Object? data = dimmutable,
+      Object? error = dimmutable,
+      Object? responseHeaders = dimmutable,
+      Object? status = dimmutable,
+      Object? progress = dimmutable,
+      Object? abortController = dimmutable,
+      Object? optimistic = dimmutable,
+      Object? loading = dimmutable,
+      Object? completed = dimmutable,
+      Object? offline = dimmutable}) {
+    return _then(_value.copyWith(
+        data: data == dimmutable ? _value.data : data as R?,
+        error: error == dimmutable ? _value.error : error as HttpError<E>?,
+        responseHeaders: responseHeaders == dimmutable
+            ? _value.responseHeaders
+            : responseHeaders as Map<String, String>?,
+        status: status == dimmutable ? _value.status : status as int?,
+        progress: progress == dimmutable
+            ? _value.progress
+            : progress as HttpProgress?,
+        abortController: abortController == dimmutable
+            ? _value.abortController
+            : abortController as AbortController?,
+        optimistic:
+            optimistic == dimmutable ? _value.optimistic : optimistic as bool,
+        loading: loading == dimmutable ? _value.loading : loading as bool,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool,
+        offline: offline == dimmutable ? _value.offline : offline as bool));
+  }
+}
+
+abstract class _$HttpFieldCopyWith<I, R, E, O>
+    implements $HttpFieldCopyWith<I, R, E, O> {
+  factory _$HttpFieldCopyWith(
+          HttpField<I, R, E> value, O Function(HttpField<I, R, E>) then) =
+      __$HttpFieldCopyWithImpl<I, R, E, O>;
+  O call(
+      {R? data,
+      HttpError<E>? error,
+      Map<String, String>? responseHeaders,
+      int? status,
+      HttpProgress? progress,
+      AbortController? abortController,
+      bool optimistic,
+      bool loading,
+      bool completed,
+      bool offline});
+}
+
+class __$HttpFieldCopyWithImpl<I, R, E, O>
+    extends _$HttpFieldCopyWithImpl<I, R, E, O>
+    implements _$HttpFieldCopyWith<I, R, E, O> {
+  __$HttpFieldCopyWithImpl(
+      HttpField<I, R, E> _value, O Function(HttpField<I, R, E>) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  HttpField<I, R, E> get _value => super._value;
+
+  @override
+  O call(
+      {Object? data = dimmutable,
+      Object? error = dimmutable,
+      Object? responseHeaders = dimmutable,
+      Object? status = dimmutable,
+      Object? progress = dimmutable,
+      Object? abortController = dimmutable,
+      Object? optimistic = dimmutable,
+      Object? loading = dimmutable,
+      Object? completed = dimmutable,
+      Object? offline = dimmutable}) {
+    return _then(HttpField(
+        data: data == dimmutable ? _value.data : data as R?,
+        error: error == dimmutable ? _value.error : error as HttpError<E>?,
+        responseHeaders: responseHeaders == dimmutable
+            ? _value.responseHeaders
+            : responseHeaders as Map<String, String>?,
+        status: status == dimmutable ? _value.status : status as int?,
+        progress: progress == dimmutable
+            ? _value.progress
+            : progress as HttpProgress?,
+        abortController: abortController == dimmutable
+            ? _value.abortController
+            : abortController as AbortController?,
+        optimistic:
+            optimistic == dimmutable ? _value.optimistic : optimistic as bool,
+        loading: loading == dimmutable ? _value.loading : loading as bool,
+        completed:
+            completed == dimmutable ? _value.completed : completed as bool,
+        offline: offline == dimmutable ? _value.offline : offline as bool));
+  }
+}
+
+class HttpMeta<PP, QP, I, R, E, T> {
+  final R Function(int status, dynamic resp) responseDeserializer;
+
   final dynamic Function(int, R)? responseSerializer;
 
-  @override
-  final HttpField<dynamic, dynamic, dynamic> Function(
-      HttpField<dynamic, dynamic, dynamic>,
-      HttpField<dynamic, dynamic, dynamic>)? transformer;
+  final HttpField Function(HttpField currentField, HttpField newField)?
+      transformer;
 
-  @override
   final dynamic Function(I)? inputSerializer;
 
-  @override
   final Future<dynamic> Function(I)? inputStorageSerializer;
 
-  @override
   final I Function(dynamic)? inputDeserializer;
 
-  @override
-  final E Function(int, dynamic)? errorDeserializer;
+  final E Function(int status, dynamic resp)? errorDeserializer;
 
-  @override
   final PP Function(dynamic)? pathParamsDeserializer;
 
-  @override
   final dynamic Function(PP)? pathParamsSerializer;
 
-  @override
   final QP Function(dynamic)? queryParamsDeserializer;
 
-  @override
   final dynamic Function(QP)? queryParamsSerializer;
 
   _$HttpMetaCopyWith<PP, QP, I, R, E, T, HttpMeta<PP, QP, I, R, E, T>>
       get copyWith => __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T,
           HttpMeta<PP, QP, I, R, E, T>>(this, IdentityFn);
 
-  const _HttpMeta(
+  const HttpMeta(
       {required this.responseDeserializer,
       this.responseSerializer,
       this.transformer,
@@ -82,7 +240,7 @@ class _HttpMeta<PP, QP, I, R, E, T> implements HttpMeta<PP, QP, I, R, E, T> {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _HttpMeta &&
+    return o is HttpMeta &&
         o.responseDeserializer == responseDeserializer &&
         o.responseSerializer == responseSerializer &&
         o.transformer == transformer &&
@@ -120,16 +278,14 @@ abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
           O Function(HttpMeta<PP, QP, I, R, E, T>) then) =
       _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
-      {R Function(int, dynamic) responseDeserializer,
+      {R Function(int status, dynamic resp) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
-      HttpField<dynamic, dynamic, dynamic> Function(
-              HttpField<dynamic, dynamic, dynamic>,
-              HttpField<dynamic, dynamic, dynamic>)?
+      HttpField Function(HttpField currentField, HttpField newField)?
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(int, dynamic)? errorDeserializer,
+      E Function(int status, dynamic resp)? errorDeserializer,
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
@@ -158,15 +314,14 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
     return _then(_value.copyWith(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
-            : responseDeserializer as R Function(int, dynamic),
+            : responseDeserializer as R Function(int status, dynamic resp),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
             : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField<dynamic, dynamic, dynamic> Function(
-                HttpField<dynamic, dynamic, dynamic>,
-                HttpField<dynamic, dynamic, dynamic>)?,
+            : transformer as HttpField Function(
+                HttpField currentField, HttpField newField)?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,
@@ -178,7 +333,7 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(int, dynamic)?,
+            : errorDeserializer as E Function(int status, dynamic resp)?,
         pathParamsDeserializer: pathParamsDeserializer == dimmutable
             ? _value.pathParamsDeserializer
             : pathParamsDeserializer as PP Function(dynamic)?,
@@ -200,16 +355,14 @@ abstract class _$HttpMetaCopyWith<PP, QP, I, R, E, T, O>
           O Function(HttpMeta<PP, QP, I, R, E, T>) then) =
       __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>;
   O call(
-      {R Function(int, dynamic) responseDeserializer,
+      {R Function(int status, dynamic resp) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
-      HttpField<dynamic, dynamic, dynamic> Function(
-              HttpField<dynamic, dynamic, dynamic>,
-              HttpField<dynamic, dynamic, dynamic>)?
+      HttpField Function(HttpField currentField, HttpField newField)?
           transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
-      E Function(int, dynamic)? errorDeserializer,
+      E Function(int status, dynamic resp)? errorDeserializer,
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
@@ -242,15 +395,14 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
     return _then(HttpMeta(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
-            : responseDeserializer as R Function(int, dynamic),
+            : responseDeserializer as R Function(int status, dynamic resp),
         responseSerializer: responseSerializer == dimmutable
             ? _value.responseSerializer
             : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField<dynamic, dynamic, dynamic> Function(
-                HttpField<dynamic, dynamic, dynamic>,
-                HttpField<dynamic, dynamic, dynamic>)?,
+            : transformer as HttpField Function(
+                HttpField currentField, HttpField newField)?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,
@@ -262,7 +414,7 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : inputDeserializer as I Function(dynamic)?,
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
-            : errorDeserializer as E Function(int, dynamic)?,
+            : errorDeserializer as E Function(int status, dynamic resp)?,
         pathParamsDeserializer: pathParamsDeserializer == dimmutable
             ? _value.pathParamsDeserializer
             : pathParamsDeserializer as PP Function(dynamic)?,
@@ -278,75 +430,38 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
   }
 }
 
-mixin _$HttpPayload<PP, QP, I, R, E, T> {
-  String get url;
-  I? get data;
-  String get method;
-  HttpResponseType get responseType;
-  R? get optimisticResponse;
-  int? get optimisticHttpStatus;
-  bool get offline;
-  Map<String, dynamic>? get headers;
-  QP? get queryParams;
-  PP? get pathParams;
-  int? get sendTimeout;
-  int? get receiveTieout;
-  bool get abortable;
-
-  $HttpPayloadCopyWith<PP, QP, I, R, E, T, HttpPayload<PP, QP, I, R, E, T>>
-      get copyWith;
-}
-
-class _HttpPayload<PP, QP, I, R, E, T>
-    implements HttpPayload<PP, QP, I, R, E, T> {
-  @override
+class HttpPayload<PP, QP, I, R, E, T> {
   final String url;
 
-  @override
   final I? data;
 
-  @override
   final String method;
 
-  @override
   final HttpResponseType responseType;
 
-  @override
   final R? optimisticResponse;
 
-  @override
   final int? optimisticHttpStatus;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool offline;
 
-  @override
   final Map<String, dynamic>? headers;
 
-  @override
   final QP? queryParams;
 
-  @override
   final PP? pathParams;
 
-  @override
   final int? sendTimeout;
 
-  @override
   final int? receiveTieout;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool abortable;
 
   _$HttpPayloadCopyWith<PP, QP, I, R, E, T, HttpPayload<PP, QP, I, R, E, T>>
       get copyWith => __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T,
           HttpPayload<PP, QP, I, R, E, T>>(this, IdentityFn);
 
-  const _HttpPayload(
+  const HttpPayload(
       {required this.url,
       this.data,
       required this.method,
@@ -361,10 +476,120 @@ class _HttpPayload<PP, QP, I, R, E, T>
       this.receiveTieout,
       this.abortable = false});
 
+  static HttpPayload fromJson<PP, QP, I, R, E, T>(
+      Map<String, dynamic> map, HttpMeta<PP, QP, I, R, E, T> meta) {
+    final url = map["url"] as String;
+    final method = map["method"] as String;
+    final responseType =
+        HttpResponseTypeExt.fromValue(map["responseType"] as String)!;
+    final dataObj = map["data"] as Map<String, dynamic>?;
+    I? data;
+    if (dataObj != null) {
+      if (meta.inputDeserializer == null) {
+        throw ArgumentError.value(
+            "You should provide inputDeserializer for http field");
+      }
+      data = meta.inputDeserializer!(data);
+    }
+    var optimisticResponse = map["optimisticResponse"] as R?;
+    if (optimisticResponse != null) {
+      optimisticResponse = meta.responseDeserializer(200, optimisticResponse);
+    }
+    final inputTypeS = map["inputType"] as String?;
+    HttpInputType? inputType;
+    if (inputTypeS != null) {
+      inputType = HttpInputTypeExt.fromValue(inputTypeS);
+    }
+    final headers = map["headers"] as Map<String, dynamic>?;
+    var queryParamsObj = map["queryParams"] as Map<String, dynamic>?;
+    QP? queryParams;
+    if (queryParamsObj != null) {
+      if (meta.queryParamsDeserializer == null) {
+        throw ArgumentError.value(
+            "You should specify queryParamsDeserializer in HttpMeta   to deserialize payload");
+      }
+      queryParams = meta.queryParamsDeserializer!(queryParams);
+    }
+    final pathParamsObj = map["pathParams"] as Map<String, dynamic>?;
+    PP? pathParams;
+    if (pathParamsObj != null) {
+      if (meta.pathParamsDeserializer == null) {
+        throw ArgumentError.value(
+            "You should specify pathParamsDeserializer in HttpMeta to deserialize payload");
+      }
+      pathParams = meta.pathParamsDeserializer!(pathParamsObj);
+    }
+    final sendTimeout = map["sendTimeout"] as int?;
+    final receiveTieout = map["receiveTieout"] as int?;
+    final abortable = map["abortable"] as bool;
+    return HttpPayload<PP, QP, I, R, E, T>(
+        url: url,
+        method: method,
+        responseType: responseType,
+        data: data,
+        optimisticResponse: optimisticResponse,
+        headers: headers,
+        queryParams: queryParams,
+        pathParams: pathParams,
+        sendTimeout: sendTimeout,
+        receiveTieout: receiveTieout,
+        abortable: abortable);
+  }
+
+  Map<String, dynamic> toJson(HttpMeta meta) {
+    final map = <String, dynamic>{};
+    map["url"] = url;
+    map["method"] = method;
+    if (data != null) {
+      if (meta.inputSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide inputSerializer for http field");
+      }
+      map["data"] = meta.inputSerializer!(data);
+    }
+    map["responseType"] = responseType.value;
+    if (optimisticResponse != null && optimisticHttpStatus != null) {
+      if (meta.responseSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide responseSerializer for http field");
+      }
+      map["optimisticResponse"] =
+          meta.responseSerializer!(optimisticHttpStatus!, optimisticResponse);
+    }
+    if (headers != null) {
+      map["headers"] = headers;
+    }
+    if (headers != null) {
+      map["queryParams"] = queryParams;
+    }
+    if (sendTimeout != null) {
+      map["sendTimeout"] = sendTimeout;
+    }
+    if (receiveTieout != null) {
+      map["receiveTieout"] = receiveTieout;
+    }
+    if (queryParams != null) {
+      if (meta.queryParamsSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide queryParamsSerializer in HttpMeta to serialize payload");
+      }
+      map["queryParams"] = meta.queryParamsSerializer!(queryParams);
+    }
+    if (pathParams != null) {
+      if (meta.pathParamsSerializer == null) {
+        throw ArgumentError.value(
+            "You should provide pathParamsSerializer in HttpMeta to serialize payload");
+      }
+      map["pathParams"] = meta.pathParamsSerializer!(pathParams);
+    }
+    map["abortable"] = abortable;
+    return map;
+  }
+
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _HttpPayload &&
+    return o is HttpPayload &&
         o.url == url &&
         o.data == data &&
         o.method == method &&

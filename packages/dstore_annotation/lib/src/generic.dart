@@ -7,7 +7,8 @@ class AppStateAnnotation {
 }
 
 class DImmutable {
-  const DImmutable();
+  final bool isJsonSerializable;
+  const DImmutable({this.isJsonSerializable = false});
 }
 
 const dimmutable = DImmutable();

@@ -7,7 +7,7 @@ part 'login_screen_state.ps.dstore.dart';
 
 @PState()
 class $_LoginScreenState {
-  FormField<LoginFormKey, LoginForm> loginForm = FormField(
+  FormField<LoginForm> loginForm = FormField(
       value: LoginForm(),
       validateOnChange: true,
       validators: LoginFormValidators);

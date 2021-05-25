@@ -344,6 +344,7 @@ OutputType _getResponseType(
     required Map<String, ResponseOrReference> responses,
     required String name}) {
   var responseType = "";
+  var errorResponseType = "";
   Response getResponseFromResponseOrRef(ResponseOrReference ror) {
     if (ror.ref != null) {
       final refname = ror.ref!.$ref.replaceFirst("#/components/responses/", "");
@@ -358,7 +359,8 @@ OutputType _getResponseType(
     }
   }
 
-  String getTypeFromResponse(Response resp, String objName) {
+  String getTypeFromResponse(Response resp, String objName,
+      {bool isError = false}) {
     if (resp.content == null) {
       return "Null";
     }
@@ -367,19 +369,24 @@ OutputType _getResponseType(
       throw ArgumentError.value(
           "You should provide content type and mediatype in requestBody content $name");
     }
-    if (responseType.isEmpty) {
-      final key = content.entries.first.key;
-      if (key.startsWith("application/json")) {
-        responseType = HttpResponseType.JSON.toString();
-      } else if (key.startsWith("text/plain")) {
-        responseType = HttpResponseType.STRING.toString();
-      } else if (key.startsWith("application/octet-stream")) {
-        responseType = HttpResponseType.BYTES.toString();
-      } else if (key.startsWith("image/")) {
-        responseType = HttpResponseType.BYTES.toString();
-      } else {
-        responseType = HttpResponseType.JSON.toString();
-      }
+
+    final key = content.entries.first.key;
+    String v;
+    if (key.startsWith("application/json")) {
+      v = HttpResponseType.JSON.toString();
+    } else if (key.startsWith("text/plain")) {
+      v = HttpResponseType.STRING.toString();
+    } else if (key.startsWith("application/octet-stream")) {
+      v = HttpResponseType.BYTES.toString();
+    } else if (key.startsWith("image/")) {
+      v = HttpResponseType.BYTES.toString();
+    } else {
+      v = HttpResponseType.JSON.toString();
+    }
+    if (isError) {
+      errorResponseType = v;
+    } else {
+      responseType = v;
     }
     final r1 = content.entries.first.value.schema;
     final typeName = _getTypeName(sor: r1, objectName: name);
@@ -388,7 +395,8 @@ OutputType _getResponseType(
   }
 
   String getTypeFromMultipleResponses(
-      List<MapEntry<String, ResponseOrReference>> list, String name) {
+      List<MapEntry<String, ResponseOrReference>> list, String name,
+      {bool isError = false}) {
     final acceesors = <String>[];
     final serializeCases = <String>[];
     final deserializeCases = <String>[];
@@ -397,7 +405,8 @@ OutputType _getResponseType(
     final ctors = <String>[];
     list.forEach((e) {
       final resp = getResponseFromResponseOrRef(e.value);
-      final type = getTypeFromResponse(resp, "${name}_${e.key}");
+      final type =
+          getTypeFromResponse(resp, "${name}_${e.key}", isError: isError);
       final status = e.key;
       ctors.add("""
         $name.R$status($type value):_value = value;
@@ -410,10 +419,11 @@ OutputType _getResponseType(
       //serialize
       final toJsonReturn =
           type == "Null" ? "null" : "input.r${status}!.toJson()";
-      if (responseType == HttpResponseType.STRING.toString()) {
+      final reType = isError ? errorResponseType : responseType;
+      if (reType == HttpResponseType.STRING.toString()) {
         if (status == "default") {
           serializeDefaultCase = """
-           "default":
+           default:
              return input.toString(); 
           """;
         } else {
@@ -422,12 +432,23 @@ OutputType _getResponseType(
             return input.toString();
         """;
         }
-      } else if (responseType == HttpResponseType.BYTES.toString()) {
+      } else if (reType == HttpResponseType.BYTES.toString()) {
+        if (status == "default") {
+          serializeDefaultCase = """
+           default:
+             return input as List<int>; 
+          """;
+        } else {
+          serializeCase = """
+          case "$status":
+            return input as List<int>;
+        """;
+        }
       } else {
         // assume its json
         if (status == "default") {
           serializeDefaultCase = """
-           "default":
+           default:
              return $toJsonReturn; 
           """;
         } else {
@@ -438,10 +459,10 @@ OutputType _getResponseType(
         }
       }
       var deserializeCase = "";
-      if (responseType == HttpResponseType.STRING.toString()) {
+      if (reType == HttpResponseType.STRING.toString()) {
         if (status == "default") {
           deserializeDefaultCase = """
-           "default":
+           default:
              return $name(input.toString()); 
           """;
         } else {
@@ -450,16 +471,16 @@ OutputType _getResponseType(
             return $name(input.toString());
         """;
         }
-      } else if (responseType == HttpResponseType.BYTES.toString()) {
+      } else if (reType == HttpResponseType.BYTES.toString()) {
         if (status == "default") {
           deserializeDefaultCase = """
-           "default":
-             return $name(input.toString()); 
+           default:
+             return $name(input as List<int>); 
           """;
         } else {
           deserializeCase = """
           case "$status":
-            return $name(input.toString());
+            return $name(input as List<int>);
         """;
         }
       } else {
@@ -469,7 +490,7 @@ OutputType _getResponseType(
             : "${type}.fromJson(input as Map<String,dynamic>)";
         if (status == "default") {
           deserializeDefaultCase = """
-           "default":
+           default:
              return $name.R$status($fromJsonValue); 
           """;
         } else {
@@ -482,6 +503,19 @@ OutputType _getResponseType(
       serializeCases.add(serializeCase);
       deserializeCases.add(deserializeCase);
     });
+    if (serializeDefaultCase.isEmpty) {
+      serializeDefaultCase = """
+      default: 
+          throw ArgumentError.value("There is no repsonse matched to \$status");
+      """;
+    }
+
+    if (deserializeDefaultCase.isEmpty) {
+      deserializeDefaultCase = """
+      default: 
+          throw ArgumentError.value("There is no repsonse matched to \$status");
+      """;
+    }
 
     final toJson = """
     
@@ -489,8 +523,6 @@ OutputType _getResponseType(
        switch(status.toString()){
          ${serializeCases.join("\n")}
          ${serializeDefaultCase}
-         default: 
-          throw ArgumentError.value("There is no repsonse matched to \$status");
        }
      }
     """;
@@ -500,8 +532,6 @@ OutputType _getResponseType(
          switch(status.toString()){
          ${deserializeCases.join("\n")}
          ${deserializeDefaultCase}
-         default: 
-          throw ArgumentError.value("There is no repsonse matched to \$status");
        }
      }
    """;
@@ -554,13 +584,13 @@ OutputType _getResponseType(
   if (errors.length == 1) {
     final s1 = errors.first.value;
     final resp = getResponseFromResponseOrRef(s1);
-    errorType = getTypeFromResponse(resp, errorName);
+    errorType = getTypeFromResponse(resp, errorName, isError: true);
   } else {
-    errorType = getTypeFromMultipleResponses(errors, errorName);
+    errorType = getTypeFromMultipleResponses(errors, errorName, isError: true);
   }
   String serializer;
   String deserializer;
-  if (successType == "String") {
+  if (responseType == HttpResponseType.STRING.toString()) {
     serializer = "${successName}Serializer";
     types.add("""
       String $serializer(int status,String input) => input;
@@ -569,7 +599,17 @@ OutputType _getResponseType(
     types.add("""
       String $deserializer(int status,dynamic input) => input.toString(); 
     """);
+  } else if (responseType == HttpResponseType.BYTES.toString()) {
+    serializer = "${successName}Serializer";
+    types.add("""
+      String $serializer(int status,List<int> input) => input;
+    """);
+    deserializer = "${successName}Deserializer";
+    types.add("""
+      String $deserializer(int status,dynamic input) => input as List<int>; 
+    """);
   } else {
+    // assume its json
     serializer = "${successType}.toJsonStatic";
     deserializer = "${successType}.fromJsonStatic";
   }
@@ -587,6 +627,7 @@ OutputType _getResponseType(
      String $errorDeserializer(int status,dynamic input) => input.toString(); 
     """);
   } else {
+    // assume its json
     errorSerializer = "${errorName}.toJsonStatic";
     errorDeserializer = "${errorName}.fromJsonStatic";
   }
@@ -760,6 +801,9 @@ String _getTypeName(
     case "date-time":
     case "dateTime":
     case "password":
+      if (schema.format == "binary") {
+        return "List<int>$nullable";
+      }
       return "String$nullable";
     case "boolean":
       return "bool$nullable";

@@ -19,7 +19,7 @@ class SimpleForm implements FormFieldObject<SimpleForm> {
 
   final RangeValues rangeRating;
 
-  final DateTime? date;
+  final DateTime date;
 
   _$SimpleFormCopyWith<SimpleForm> get copyWith =>
       __$SimpleFormCopyWithImpl<SimpleForm>(this, IdentityFn);
@@ -88,7 +88,7 @@ abstract class $SimpleFormCopyWith<O> {
       bool? c1,
       double rating,
       RangeValues rangeRating,
-      DateTime? date});
+      DateTime date});
 }
 
 class _$SimpleFormCopyWithImpl<O> implements $SimpleFormCopyWith<O> {
@@ -112,7 +112,7 @@ class _$SimpleFormCopyWithImpl<O> implements $SimpleFormCopyWith<O> {
         rangeRating: rangeRating == dimmutable
             ? _value.rangeRating
             : rangeRating as RangeValues,
-        date: date == dimmutable ? _value.date : date as DateTime?));
+        date: date == dimmutable ? _value.date : date as DateTime));
   }
 }
 
@@ -125,7 +125,7 @@ abstract class _$SimpleFormCopyWith<O> implements $SimpleFormCopyWith<O> {
       bool? c1,
       double rating,
       RangeValues rangeRating,
-      DateTime? date});
+      DateTime date});
 }
 
 class __$SimpleFormCopyWithImpl<O> extends _$SimpleFormCopyWithImpl<O>
@@ -152,7 +152,7 @@ class __$SimpleFormCopyWithImpl<O> extends _$SimpleFormCopyWithImpl<O>
         rangeRating: rangeRating == dimmutable
             ? _value.rangeRating
             : rangeRating as RangeValues,
-        date: date == dimmutable ? _value.date : date as DateTime?));
+        date: date == dimmutable ? _value.date : date as DateTime));
   }
 }
 

@@ -76,47 +76,8 @@ class __$LocalCopyWithImpl<O> extends _$LocalCopyWithImpl<O>
 
 const _Local_FullPath = "/store/pstates/local/Local";
 
-abstract class LocalActions {
-  static Action<Hello_todo> todos(
-      {bool abortable = false,
-      bool offline = false,
-      Map<String, dynamic>? headers,
-      Hello_todoData? optimisticResponse,
-      Hello_todo? mock,
-      Duration? debounce}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
-    return Action<Hello_todo>(
-        name: "todos",
-        type: _Local_FullPath,
-        http: HttpPayload<Null, Null, GraphqlRequestInput<Null>, Hello_todoData,
-                dynamic, dynamic>(
-            data: GraphqlRequestInput(query: """query todo{
-      todo {
-        text
-      } 
-    }"""),
-            abortable: abortable,
-            offline: offline,
-            headers: headers,
-            optimisticResponse: optimisticResponse,
-            url: "http://localhost:4000/",
-            method: "POST",
-            responseType: HttpResponseType.JSON),
-        debounce: debounce);
-  }
-}
+abstract class LocalActions {}
 
 Local Local_DS() => Local(todos: Hello_todo());
 
-final LocalMeta =
-    PStateMeta<Local>(type: _Local_FullPath, ds: Local_DS, httpMetaMap: {
-  "todos": HttpMeta<Null, Null, GraphqlRequestInput<Null>, Hello_todoData,
-          dynamic, dynamic>(
-      inputSerializer: GraphqlRequestInput.toJson,
-      inputDeserializer: Hello_todoInputDeserializer,
-      responseSerializer: Hello_todoDataSerializer,
-      responseDeserializer: Hello_todoDataDeserializer)
-});
+final LocalMeta = PStateMeta<Local>(type: _Local_FullPath, ds: Local_DS);

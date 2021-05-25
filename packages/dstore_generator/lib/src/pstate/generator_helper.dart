@@ -323,7 +323,7 @@ String _generateActionsCreators({
 
     return """
       static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
       
       static Action<${mockName}> ${m.name}Mock($mockName mock) {

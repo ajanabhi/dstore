@@ -7,86 +7,39 @@ part of 'form.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$FormField<F extends FormFieldObject<F>> {
-  F get value;
-  Map<String, Function> get validators;
-  Map<String, String> get errors;
-  Map<String, bool> get touched;
-  bool get isValid;
-  bool get isSubmitting;
-  bool get isValidating;
-  bool get validateOnChange;
-  bool get validateOnBlur;
-  List<String>? get internalKeysChanged;
-  String get internalAName;
-  String get internalAType;
-
-  $FormFieldCopyWith<F, FormField<F>> get copyWith;
-}
-
-class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
-  @override
+class FormField<F extends FormFieldObject<F>> {
   final F value;
 
-  @override
   final Map<String, Function> validators;
 
-  @override
-  @Default(<String, String>{})
-  @JsonKey(defaultValue: const <String, String>{})
   final Map<String, String> errors;
 
-  @override
-  @Default(<String, bool>{})
-  @JsonKey(defaultValue: const <String, bool>{})
   final Map<String, bool> touched;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool isValid;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool isSubmitting;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool isValidating;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool validateOnChange;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool validateOnBlur;
 
-  @override
   final List<String>? internalKeysChanged;
 
-  @override
-  @Default("")
-  @JsonKey(defaultValue: "")
   final String internalAName;
 
-  @override
-  @Default("")
-  @JsonKey(defaultValue: "")
   final String internalAType;
 
   _$FormFieldCopyWith<F, FormField<F>> get copyWith =>
       __$FormFieldCopyWithImpl<F, FormField<F>>(this, IdentityFn);
 
-  const _FormField(
+  const FormField(
       {required this.value,
       required this.validators,
-      this.errors = const <String, String>{},
-      this.touched = const <String, bool>{},
+      this.errors = const {},
+      this.touched = const {},
       this.isValid = false,
       this.isSubmitting = false,
       this.isValidating = false,
@@ -96,10 +49,16 @@ class _FormField<F extends FormFieldObject<F>> implements FormField<F> {
       this.internalAName = "",
       this.internalAType = ""});
 
+  bool isFieldKeyValid(dynamic key) {
+    final name = key.toString().split(".").last;
+    final v = validators[name];
+    return v == null || touched.containsKey(name) && !errors.containsKey(name);
+  }
+
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _FormField &&
+    return o is FormField &&
         o.value == value &&
         o.validators == validators &&
         o.errors == errors &&

@@ -7,49 +7,30 @@ part of 'pstate.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$AsyncActionField {
-  bool get loading;
-  bool get completed;
-  dynamic get error;
-
-  @JsonKey(ignore: true)
-  $AsyncActionFieldCopyWith<AsyncActionField> get copyWith;
-  Map<String, dynamic> toJson();
-}
-
 @JsonSerializable()
-class _AsyncActionField implements AsyncActionField {
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
+class AsyncActionField {
   final bool loading;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool completed;
 
-  @override
-  @Default(null)
-  @JsonKey(defaultValue: null)
-  final dynamic error;
+  final dynamic? error;
 
   @JsonKey(ignore: true)
   _$AsyncActionFieldCopyWith<AsyncActionField> get copyWith =>
       __$AsyncActionFieldCopyWithImpl<AsyncActionField>(this, IdentityFn);
 
-  const _AsyncActionField(
+  const AsyncActionField(
       {this.loading = false, this.completed = false, this.error});
 
-  factory _AsyncActionField.fromJson(Map<String, dynamic> json) =>
-      _$_AsyncActionFieldFromJson(json);
+  factory AsyncActionField.fromJson(Map<String, dynamic> json) =>
+      _$AsyncActionFieldFromJson(json);
 
-  Map<String, dynamic> toJson() => _$_AsyncActionFieldToJson(this);
+  Map<String, dynamic> toJson() => _$AsyncActionFieldToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _AsyncActionField &&
+    return o is AsyncActionField &&
         o.loading == loading &&
         o.completed == completed &&
         o.error == error;
@@ -63,14 +44,11 @@ class _AsyncActionField implements AsyncActionField {
       "AsyncActionField(loading: ${this.loading}, completed: ${this.completed}, error: ${this.error})";
 }
 
-AsyncActionField _$AsyncActionFieldFromJson(Map<String, dynamic> json) =>
-    _AsyncActionField.fromJson(json);
-
 abstract class $AsyncActionFieldCopyWith<O> {
   factory $AsyncActionFieldCopyWith(
           AsyncActionField value, O Function(AsyncActionField) then) =
       _$AsyncActionFieldCopyWithImpl<O>;
-  O call({bool loading, bool completed, dynamic error});
+  O call({bool loading, bool completed, dynamic? error});
 }
 
 class _$AsyncActionFieldCopyWithImpl<O>
@@ -88,7 +66,7 @@ class _$AsyncActionFieldCopyWithImpl<O>
         loading: loading == dimmutable ? _value.loading : loading as bool,
         completed:
             completed == dimmutable ? _value.completed : completed as bool,
-        error: error == dimmutable ? _value.error : error as dynamic));
+        error: error == dimmutable ? _value.error : error as dynamic?));
   }
 }
 
@@ -97,7 +75,7 @@ abstract class _$AsyncActionFieldCopyWith<O>
   factory _$AsyncActionFieldCopyWith(
           AsyncActionField value, O Function(AsyncActionField) then) =
       __$AsyncActionFieldCopyWithImpl<O>;
-  O call({bool loading, bool completed, dynamic error});
+  O call({bool loading, bool completed, dynamic? error});
 }
 
 class __$AsyncActionFieldCopyWithImpl<O>
@@ -119,6 +97,6 @@ class __$AsyncActionFieldCopyWithImpl<O>
         loading: loading == dimmutable ? _value.loading : loading as bool,
         completed:
             completed == dimmutable ? _value.completed : completed as bool,
-        error: error == dimmutable ? _value.error : error as dynamic));
+        error: error == dimmutable ? _value.error : error as dynamic?));
   }
 }

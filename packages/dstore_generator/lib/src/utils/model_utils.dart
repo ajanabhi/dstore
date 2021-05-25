@@ -111,7 +111,7 @@ abstract class ModelUtils {
           type: _getFinalTypeOfField(f),
           name: name,
           annotations: annotations,
-          isOptional: f.isOptional ? f.isOptional : f.type.endsWith("?"));
+          isOptional: f.type.endsWith("?") ? true : f.isOptional);
     }).toList();
   }
 
@@ -328,6 +328,9 @@ abstract class ModelUtils {
       {required List<Field> fields,
       required String className,
       String annotations = "",
+      String methods = "",
+      String typeParams = "",
+      String typeParamsWithBounds = "",
       bool isJsonSerializable = false,
       bool addStaticSerializeDeserialize = false,
       bool addOverrideAnnotation = false,
@@ -337,18 +340,20 @@ abstract class ModelUtils {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
     }
-
+    final tpwb = typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>";
     final hasFields = fields.isNotEmpty;
     return """
    $annotations 
-   class $className $extendClass $mixins {
+   class $className$tpwb $extendClass $mixins {
          
-     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)}
-     
-     ${hasFields ? ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: "") : ""}
+     ${ModelUtils.getFinalFieldsFromFieldsList(fields, addOverrideAnnotation: addOverrideAnnotation)} 
+
+     ${hasFields ? ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: typeParams) : ""}
       
      ${ModelUtils.createConstructorFromFieldsList(className, fields)}
-     
+      
+      $methods
+
       ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
 
       ${isJsonSerializable ? ModelUtils.createToJson(className) : ""} 
@@ -364,7 +369,7 @@ abstract class ModelUtils {
      ${createToStringFromFieldsList(className, fields)}
     }
 
-    ${hasFields ? ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: "", typeParams: "") : ""}
+    ${hasFields ? ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: typeParamsWithBounds, typeParams: typeParams) : ""}
     """;
   }
 

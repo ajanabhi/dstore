@@ -126,10 +126,10 @@ String generateOpsTypeForQuery({
     $responseSerializerFn
     $responseDeserializerFunction
     $req
-    typedef $name = HttpField<$inputType, $responseType, dynamic>;
+    typedef $name = HttpField<$inputType, $responseType, String>;
 
     $req
-    typedef ${name}T<T> = HttpField<$inputType, T, dynamic>;
+    typedef ${name}T<T> = HttpField<$inputType, T, String>;
   """;
   } else {
     // subscription
@@ -152,7 +152,7 @@ String generateOpsTypeForQuery({
     $types    
     $responseDeserializerFunction
     $req
-    typedef = WebSocketField<$inputType, $responseType, dynamic>;
+    typedef = WebSocketField<$inputType, $responseType, String>;
 
     $req
     typedef ${name}T<T> = WebSocketField<$inputType, T, dynamic>;

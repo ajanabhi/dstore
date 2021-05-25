@@ -1,8 +1,11 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:build/build.dart';
+import 'package:dstore_generator/src/dimmutable/vistors.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 
-String generateDImmutableFromFunction(FunctionElement element) {
+Future<String> generateDImmutableFromFunction(
+    {required FunctionElement element, required BuildStep buildStep}) async {
   if (!element.name.startsWith("\$_")) {
     throw NotAllowedError(
         "dimmutable function name should start with \$_ , but you specified ${element.name}");
@@ -17,8 +20,18 @@ String generateDImmutableFromFunction(FunctionElement element) {
     print(element);
     print(element.defaultValueCode);
   });
-  final fields = AstUtils.convertParamElementsToFields(element.parameters);
 
+  final visitor = DImmutableFunctionVisitor();
+  final ast = await AstUtils.getAstNodeFromElement(element, buildStep);
+  ast.childEntities.forEach((element) {
+    print(
+        "function element entity ${element} runtime type ${element.runtimeType}");
+  });
+  ast.visitChildren(visitor);
+  print("visitor fields ${visitor.fields}");
+
+  final fields = ModelUtils.processFields(visitor.fields);
+  print("dimmutable function fields $fields");
   return """
     
     class $className$tpwb {

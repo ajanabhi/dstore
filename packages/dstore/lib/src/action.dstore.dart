@@ -7,82 +7,41 @@ part of 'action.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-mixin _$Action<M> {
-  String get name;
-  String get type;
-  bool get isAsync;
-  NavPayload? get nav;
-  Map<String, dynamic>? get payload;
-  HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? get http;
-  WebSocketPayload<dynamic, dynamic, dynamic>? get ws;
-  dynamic get extra;
-  ActionInternal? get internal;
-  StreamPayload? get stream;
-  Duration? get debounce;
-  void Function(PStateModel<dynamic>)? get afterSilent;
-  bool get silent;
-  M? get mock;
-  FormReq? get form;
-
-  $ActionCopyWith<M, Action<M>> get copyWith;
-}
-
-class _Action<M> implements Action<M> {
-  @override
+class Action<M> {
   final String name;
 
-  @override
   final String type;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool isAsync;
 
-  @override
   final NavPayload? nav;
 
-  @override
   final Map<String, dynamic>? payload;
 
-  @override
-  final HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http;
+  final HttpPayload? http;
 
-  @override
   final WebSocketPayload<dynamic, dynamic, dynamic>? ws;
 
-  @override
-  @Default(null)
-  @JsonKey(defaultValue: null)
-  final dynamic extra;
+  final dynamic? extra;
 
-  @override
   final ActionInternal? internal;
 
-  @override
   final StreamPayload? stream;
 
-  @override
   final Duration? debounce;
 
-  @override
-  final void Function(PStateModel<dynamic>)? afterSilent;
+  final void Function(PStateModel state)? afterSilent;
 
-  @override
-  @Default(false)
-  @JsonKey(defaultValue: false)
   final bool silent;
 
-  @override
   final M? mock;
 
-  @override
   final FormReq? form;
 
   _$ActionCopyWith<M, Action<M>> get copyWith =>
       __$ActionCopyWithImpl<M, Action<M>>(this, IdentityFn);
 
-  const _Action(
+  const Action(
       {required this.name,
       required this.type,
       this.isAsync = false,
@@ -99,10 +58,40 @@ class _Action<M> implements Action<M> {
       this.mock,
       this.form});
 
+  bool get isProcessed => internal?.processed ?? false;
+  Map<String, dynamic> toJson({HttpMeta? httpMeta}) {
+    final map = <String, dynamic>{};
+    if (http != null && httpMeta == null) {
+      throw ArgumentError.value(
+          "You should provide httpmeta if action has http field");
+    }
+    map["name"] = name;
+    map["type"] = type;
+    map["http"] = http?.toJson(httpMeta!);
+    return map;
+  }
+
+  String get id => "$type.$name";
+  static Action fromJson<M>(Map<String, dynamic> map, HttpMeta? httpMeta) {
+    final name = map["name"] as String;
+    final type = map["type"] as String;
+    final httpMap = map["http"] as Map<String, dynamic>?;
+    HttpPayload? http;
+    if (httpMap != null) {
+      if (httpMeta == null) {
+        throw ArgumentError.value(
+            "You should provide httpMeta for http actions");
+      }
+      http = HttpPayload.fromJson<dynamic, dynamic, dynamic, dynamic, dynamic,
+          dynamic>(httpMap, httpMeta);
+    }
+    return Action<M>(name: name, type: type, http: http);
+  }
+
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _Action &&
+    return o is Action &&
         o.name == name &&
         o.type == type &&
         o.isAsync == isAsync &&
@@ -152,13 +141,13 @@ abstract class $ActionCopyWith<M, O> {
       bool isAsync,
       NavPayload? nav,
       Map<String, dynamic>? payload,
-      HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
+      HttpPayload? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
-      dynamic extra,
+      dynamic? extra,
       ActionInternal? internal,
       StreamPayload? stream,
       Duration? debounce,
-      void Function(PStateModel<dynamic>)? afterSilent,
+      void Function(PStateModel state)? afterSilent,
       bool silent,
       M? mock,
       FormReq? form});
@@ -194,14 +183,11 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
-        http: http == dimmutable
-            ? _value.http
-            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic,
-                dynamic>?,
+        http: http == dimmutable ? _value.http : http as HttpPayload?,
         ws: ws == dimmutable
             ? _value.ws
             : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
-        extra: extra == dimmutable ? _value.extra : extra as dynamic,
+        extra: extra == dimmutable ? _value.extra : extra as dynamic?,
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
@@ -210,7 +196,7 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         afterSilent: afterSilent == dimmutable
             ? _value.afterSilent
-            : afterSilent as void Function(PStateModel<dynamic>)?,
+            : afterSilent as void Function(PStateModel state)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));
@@ -226,13 +212,13 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       bool isAsync,
       NavPayload? nav,
       Map<String, dynamic>? payload,
-      HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic, dynamic>? http,
+      HttpPayload? http,
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
-      dynamic extra,
+      dynamic? extra,
       ActionInternal? internal,
       StreamPayload? stream,
       Duration? debounce,
-      void Function(PStateModel<dynamic>)? afterSilent,
+      void Function(PStateModel state)? afterSilent,
       bool silent,
       M? mock,
       FormReq? form});
@@ -271,14 +257,11 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         payload: payload == dimmutable
             ? _value.payload
             : payload as Map<String, dynamic>?,
-        http: http == dimmutable
-            ? _value.http
-            : http as HttpPayload<dynamic, dynamic, dynamic, dynamic, dynamic,
-                dynamic>?,
+        http: http == dimmutable ? _value.http : http as HttpPayload?,
         ws: ws == dimmutable
             ? _value.ws
             : ws as WebSocketPayload<dynamic, dynamic, dynamic>?,
-        extra: extra == dimmutable ? _value.extra : extra as dynamic,
+        extra: extra == dimmutable ? _value.extra : extra as dynamic?,
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
@@ -287,41 +270,30 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
         afterSilent: afterSilent == dimmutable
             ? _value.afterSilent
-            : afterSilent as void Function(PStateModel<dynamic>)?,
+            : afterSilent as void Function(PStateModel state)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?));
   }
 }
 
-mixin _$ActionInternal {
-  bool get processed;
-  ActionInternalType get type;
-  dynamic get data;
-
-  $ActionInternalCopyWith<ActionInternal> get copyWith;
-}
-
-class _ActionInternal implements ActionInternal {
-  @override
+class ActionInternal {
   final bool processed;
 
-  @override
   final ActionInternalType type;
 
-  @override
   final dynamic data;
 
   _$ActionInternalCopyWith<ActionInternal> get copyWith =>
       __$ActionInternalCopyWithImpl<ActionInternal>(this, IdentityFn);
 
-  const _ActionInternal(
+  const ActionInternal(
       {required this.processed, required this.type, required this.data});
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is _ActionInternal &&
+    return o is ActionInternal &&
         o.processed == processed &&
         o.type == type &&
         o.data == data;

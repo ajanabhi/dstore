@@ -9,8 +9,8 @@ import 'package:source_gen/source_gen.dart';
 
 class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
   @override
-  String generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) {
+  Future<String> generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) async {
     try {
       logger.shout("Genertating DImmutable for ${element.name}");
       ansiColorDisabled = false;
@@ -18,10 +18,16 @@ class DImmutableGenerator extends GeneratorForAnnotation<DImmutable> {
         throw UnsupportedError(
             "DImmutable should only be used on classes or function");
       }
+      if (element.name?.startsWith("\$_") != true) {
+        throw ArgumentError.value(
+            "dimmutable function or class should start with \$_");
+      }
       if (element is ClassElement) {
-        return generateDImmutableFromClass(element);
+        return await generateDImmutableFromClass(
+            element: element, buildStep: buildStep);
       } else {
-        return generateDImmutableFromFunction(element as FunctionElement);
+        return await generateDImmutableFromFunction(
+            element: element as FunctionElement, buildStep: buildStep);
       }
     } catch (e, st) {
       logger.error(

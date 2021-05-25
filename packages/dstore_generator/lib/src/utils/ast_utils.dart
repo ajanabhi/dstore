@@ -90,9 +90,7 @@ abstract class AstUtils {
       {bool dim = false}) {
     return params.map((param) {
       final name = param.name;
-      final type = param.type != null
-          ? param.type.getDisplayString(withNullability: true)
-          : "dynamic";
+      final type = param.type.getDisplayString(withNullability: true);
       var defaultValue = param.defaultValueCode;
 
       var annotations = param.metadata.map((e) => e.toSource()).toList();

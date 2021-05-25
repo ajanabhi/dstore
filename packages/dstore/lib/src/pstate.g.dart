@@ -6,15 +6,15 @@ part of 'pstate.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_AsyncActionField _$_AsyncActionFieldFromJson(Map<String, dynamic> json) {
-  return _AsyncActionField(
-    loading: json['loading'] as bool? ?? false,
-    completed: json['completed'] as bool? ?? false,
+AsyncActionField _$AsyncActionFieldFromJson(Map<String, dynamic> json) {
+  return AsyncActionField(
+    loading: json['loading'] as bool,
+    completed: json['completed'] as bool,
     error: json['error'],
   );
 }
 
-Map<String, dynamic> _$_AsyncActionFieldToJson(_AsyncActionField instance) =>
+Map<String, dynamic> _$AsyncActionFieldToJson(AsyncActionField instance) =>
     <String, dynamic>{
       'loading': instance.loading,
       'completed': instance.completed,

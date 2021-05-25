@@ -110,6 +110,15 @@ abstract class DioOpsActions {
             responseType: HttpResponseType.JSON),
         debounce: debounce);
   }
+
+  static Action<
+      HttpField<Null, OBReadAccount6Object,
+          GetAccountsResponse_Error>> getAccountMock(
+      HttpField<Null, OBReadAccount6Object, GetAccountsResponse_Error> mock) {
+    return Action<
+            HttpField<Null, OBReadAccount6Object, GetAccountsResponse_Error>>(
+        name: "getAccount", type: _DioOps_FullPath, mock: mock);
+  }
 }
 
 DioOps DioOps_DS() => DioOps(getAccount: GetAccounts());

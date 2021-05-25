@@ -28,6 +28,7 @@ Store<AppState> createStore(
   return Store<AppState>(
       internalMeta: <String, PStateMeta>{"formState": FormStateMeta},
       stateCreator: () => AppState(),
+      appVersion: '1.0.0+1',
       networkOptions: networkOptions,
       middlewares: middlewares,
       handleError: handleError,

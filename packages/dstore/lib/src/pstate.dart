@@ -11,16 +11,11 @@ typedef ReducerFn = dynamic Function(dynamic state, Action action);
 
 typedef AReducerFn = Future<dynamic> Function(dynamic state, Action action);
 
-@dimmutable
-abstract class AsyncActionField with _$AsyncActionField {
-  @JsonSerializable()
-  const factory AsyncActionField(
-      {@Default(false) bool loading,
-      @Default(false) bool completed,
-      @Default(null) dynamic error}) = _AsyncActionField;
-
-  factory AsyncActionField.fromJson(Map<String, dynamic> json) =>
-      _$AsyncActionFieldFromJson(json);
+@DImmutable(isJsonSerializable: true)
+class $_AsyncActionField {
+  bool loading = false;
+  bool completed = false;
+  dynamic? error;
 }
 
 abstract class PStateModel<M> {

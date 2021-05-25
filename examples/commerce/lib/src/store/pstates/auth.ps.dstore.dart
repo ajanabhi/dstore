@@ -26,8 +26,8 @@ class Auth extends PStateModel<Auth> {
   Auth(
       {this.loggedout = false,
       this.user = const StreamField(),
-      this.verificationId = null,
-      this.userDetails = null,
+      this.verificationId,
+      this.userDetails,
       this.getUserDetails = const AsyncActionField(),
       this.signout = const AsyncActionField()});
 
@@ -231,33 +231,50 @@ class AuthSetVerificationIdResult implements ToMap {
 
 abstract class AuthActions {
   static Action<AuthGetUserDetailsResult> getUserDetails(
-      {Duration? debounce, AuthGetUserDetailsResult? mock}) {
+      {Duration? debounce, bool silent = false}) {
     return Action<AuthGetUserDetailsResult>(
         name: "getUserDetails",
+        silent: silent,
         type: _Auth_FullPath,
-        mock: mock,
         isAsync: true,
         debounce: debounce);
+  }
+
+  static Action<AuthGetUserDetailsResult> getUserDetailsMock(
+      AuthGetUserDetailsResult mock) {
+    return Action<AuthGetUserDetailsResult>(
+        name: "getUserDetails", type: _Auth_FullPath, mock: mock);
   }
 
   static Action<AuthSignoutResult> signout(
-      {Duration? debounce, AuthSignoutResult? mock}) {
+      {Duration? debounce, bool silent = false}) {
     return Action<AuthSignoutResult>(
         name: "signout",
+        silent: silent,
         type: _Auth_FullPath,
-        mock: mock,
         isAsync: true,
         debounce: debounce);
   }
 
+  static Action<AuthSignoutResult> signoutMock(AuthSignoutResult mock) {
+    return Action<AuthSignoutResult>(
+        name: "signout", type: _Auth_FullPath, mock: mock);
+  }
+
   static Action<AuthSetVerificationIdResult> setVerificationId(
-      {required String verificationId, AuthSetVerificationIdResult? mock}) {
+      {required String verificationId, bool silent = false}) {
     return Action<AuthSetVerificationIdResult>(
         name: "setVerificationId",
+        silent: silent,
         type: _Auth_FullPath,
         payload: <String, dynamic>{"verificationId": verificationId},
-        mock: mock,
         isAsync: false);
+  }
+
+  static Action<AuthSetVerificationIdResult> setVerificationIdMock(
+      AuthSetVerificationIdResult mock) {
+    return Action<AuthSetVerificationIdResult>(
+        name: "setVerificationId", type: _Auth_FullPath, mock: mock);
   }
 
   static Action<Iterable<User?>> user(

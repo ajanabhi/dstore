@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'dart:html';
 
 import 'package:dstore/dstore.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel_fork/web_socket_channel.dart';
 
 enum GraphqlMessages {
   connection_init,

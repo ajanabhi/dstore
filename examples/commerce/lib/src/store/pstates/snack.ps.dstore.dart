@@ -93,13 +93,19 @@ class SnackStateSetMessageResult implements ToMap {
 
 abstract class SnackStateActions {
   static Action<SnackStateSetMessageResult> setMessage(
-      {required String message, SnackStateSetMessageResult? mock}) {
+      {required String message, bool silent = false}) {
     return Action<SnackStateSetMessageResult>(
         name: "setMessage",
+        silent: silent,
         type: _SnackState_FullPath,
         payload: <String, dynamic>{"message": message},
-        mock: mock,
         isAsync: false);
+  }
+
+  static Action<SnackStateSetMessageResult> setMessageMock(
+      SnackStateSetMessageResult mock) {
+    return Action<SnackStateSetMessageResult>(
+        name: "setMessage", type: _SnackState_FullPath, mock: mock);
   }
 }
 

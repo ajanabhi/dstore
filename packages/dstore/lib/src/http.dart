@@ -1,6 +1,5 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
-import "package:json_annotation/json_annotation.dart";
 
 part "http.dstore.dart";
 
@@ -15,93 +14,59 @@ abstract class AbortController {
   void abort();
 }
 
-class HttpField<I, R, E> {
-  final bool loading;
-  final R? data;
-  final HttpError<E>? error;
-  final Map<String, String>? responseHeaders;
-  final int? status;
-  final bool completed;
-  final bool optimistic;
-  final bool offline;
-  final AbortController? abortController;
+class HttpProgress {
+  final int current;
+  final int total;
 
-  const HttpField(
-      {this.loading = false,
-      this.data,
-      this.error,
-      this.responseHeaders,
-      this.status,
-      this.offline = false,
-      this.abortController,
-      this.completed = false,
-      this.optimistic = false});
-
-  HttpField<I, R, E> copyWith(
-      {bool? loading,
-      Optional<R?> data = optionalDefault,
-      Optional<AbortController?> abortController = optionalDefault,
-      Optional<HttpError<E>?> error = optionalDefault,
-      Optional<Map<String, String>?> responseHeaders = optionalDefault,
-      Optional<int?> status = optionalDefault,
-      bool? completed,
-      bool? offline,
-      bool? optimistic}) {
-    return HttpField(
-        loading: loading ?? this.loading,
-        data: data == optionalDefault ? this.data : data.value,
-        error: error == optionalDefault ? this.error : error.value,
-        abortController: abortController == optionalDefault
-            ? this.abortController
-            : abortController.value,
-        completed: completed ?? this.completed,
-        responseHeaders: responseHeaders == optionalDefault
-            ? this.responseHeaders
-            : responseHeaders.value,
-        status: status == optionalDefault ? this.status : status.value,
-        optimistic: optimistic ?? this.optimistic,
-        offline: offline ?? this.offline);
-  }
+  HttpProgress({required this.current, required this.total});
 }
 
+@dimmutable
+void $_HttpField<I, R, E>(
+    R? data,
+    HttpError<E>? error,
+    Map<String, String>? responseHeaders,
+    int? status,
+    HttpProgress? progress,
+    AbortController? abortController,
+    {bool optimistic = false,
+    bool loading = false,
+    bool completed = false,
+    bool offline = false}) {}
+
 @DImmutable()
-abstract class HttpMeta<PP, QP, I, R, E, T>
-    with _$HttpMeta<PP, QP, I, R, E, T> {
-  const factory HttpMeta({
-    required R Function(int status, dynamic resp) responseDeserializer,
-    dynamic Function(int, R)? responseSerializer,
-    HttpField Function(HttpField currentField, HttpField newField)? transformer,
-    dynamic Function(I)? inputSerializer,
-    Future<dynamic> Function(I)? inputStorageSerializer,
-    I Function(dynamic)? inputDeserializer,
-    E Function(int status, dynamic resp)? errorDeserializer,
-    PP Function(dynamic)? pathParamsDeserializer,
-    dynamic Function(PP)? pathParamsSerializer,
-    QP Function(dynamic)? queryParamsDeserializer,
-    dynamic Function(QP)? queryParamsSerializer,
-  }) = _HttpMeta<PP, QP, I, R, E, T>;
+class $_HttpMeta<PP, QP, I, R, E, T> {
+  late R Function(int status, dynamic resp) responseDeserializer;
+  dynamic Function(int, R)? responseSerializer;
+  HttpField Function(HttpField currentField, HttpField newField)? transformer;
+  dynamic Function(I)? inputSerializer;
+  Future<dynamic> Function(I)? inputStorageSerializer;
+  I Function(dynamic)? inputDeserializer;
+  E Function(int status, dynamic resp)? errorDeserializer;
+  PP Function(dynamic)? pathParamsDeserializer;
+  dynamic Function(PP)? pathParamsSerializer;
+  QP Function(dynamic)? queryParamsDeserializer;
+  dynamic Function(QP)? queryParamsSerializer;
 }
 
 @DImmutable()
 @optionalTypeArgs
-abstract class HttpPayload<PP, QP, I, R, E, T>
-    with _$HttpPayload<PP, QP, I, R, E, T> {
-  const factory HttpPayload(
-      {required String url,
-      I? data,
-      required String method,
-      required HttpResponseType responseType,
-      R? optimisticResponse,
-      int? optimisticHttpStatus,
-      @Default(false) bool offline,
-      Map<String, dynamic>? headers,
-      QP? queryParams,
-      PP? pathParams,
-      int? sendTimeout,
-      int? receiveTieout,
-      @Default(false) bool abortable}) = _HttpPayload<PP, QP, I, R, E, T>;
+abstract class $_HttpPayload<PP, QP, I, R, E, T> {
+  late String url;
+  I? data;
+  late String method;
+  late HttpResponseType responseType;
+  late R? optimisticResponse;
+  int? optimisticHttpStatus;
+  bool offline = false;
+  Map<String, dynamic>? headers;
+  QP? queryParams;
+  PP? pathParams;
+  int? sendTimeout;
+  int? receiveTieout;
+  bool abortable = false;
 
-  factory HttpPayload.fromJson(
+  static HttpPayload fromJson<PP, QP, I, R, E, T>(
       Map<String, dynamic> map, HttpMeta<PP, QP, I, R, E, T> meta) {
     final url = map["url"] as String;
     final method = map["method"] as String;
@@ -149,7 +114,7 @@ abstract class HttpPayload<PP, QP, I, R, E, T>
     final receiveTieout = map["receiveTieout"] as int?;
     final abortable = map["abortable"] as bool;
 
-    return HttpPayload(
+    return HttpPayload<PP, QP, I, R, E, T>(
         url: url,
         method: method,
         responseType: responseType,
@@ -162,9 +127,7 @@ abstract class HttpPayload<PP, QP, I, R, E, T>
         receiveTieout: receiveTieout,
         abortable: abortable);
   }
-}
 
-extension HttpPayloadExt on HttpPayload {
   Map<String, dynamic> toJson(HttpMeta meta) {
     final map = <String, dynamic>{};
     map["url"] = url;
