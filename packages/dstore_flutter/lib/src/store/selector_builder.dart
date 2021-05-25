@@ -42,6 +42,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
   late I _state;
   void Function()? _lsitener;
   Store<S>? storeRef;
+  late Widget _w;
   @override
   void initState() {
     super.initState();
@@ -58,6 +59,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
       _lsitener = () {
         final prevState = _state;
         _state = widget.selector.fn(store.state);
+        _w = widget.builder(context, _state);
         widget.onStateChange?.call(context, prevState, _state);
         final shouldRebuild =
             widget.shouldRebuild?.call(context, prevState, _state);
@@ -68,6 +70,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
         }
       };
       _state = widget.selector.fn(store.state);
+      _w = widget.builder(context, _state);
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       if (storeRef == null) {
         storeRef = store;
@@ -90,10 +93,12 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
       _unsubFn = store.subscribeSelector(widget.selector, _lsitener!);
       final prevState = _state;
       _state = widget.selector.fn(store.state);
+      _w = widget.builder(context, _state);
       widget.onStateChange?.call(context, prevState, _state);
     } else if (widget.setStateOnUpdate) {
       final store = context.storeTyped<S>();
       _state = widget.selector.fn(store.state);
+      _w = widget.builder(context, _state);
     }
   }
 
@@ -110,6 +115,6 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, _state);
+    return _w;
   }
 }

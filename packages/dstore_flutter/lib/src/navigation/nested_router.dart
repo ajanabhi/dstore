@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_flutter/dstore_flutter.dart';
 import 'package:dstore_flutter/src/navigation/history/history.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' hide Action;
 import "./navigation_provider.dart";
 
@@ -74,8 +75,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         }
         final typeName = state.dontTouchMe.typeName;
         state.dontTouchMe.hisotry = history;
-        history.nestedNavsHistory[typeName] =
-            NestedNavHistory(history: history);
+        history.nestedNavsHistory[typeName] = createNestedNavHistory(history);
         nestedHistory = history.nestedNavsHistory[typeName]!;
         final nestedOrigin = history.nestedNavOrigins[typeName];
         nestedHistory.originAction = nestedOrigin;
@@ -95,10 +95,17 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         setStateOnupdate = true;
         setBeforeLeave(history, state);
         setState(() {});
+        print("nested router in  initialbuild ${nestedHistory.originAction}");
         if (nestedHistory.originAction != null) {
           final a = nestedHistory.originAction!;
           nestedHistory.originAction = null;
           scheduleMicrotask(() => _dispatch(a));
+        }
+        if (state.dontTouchMe.isDirty &&
+            state.dontTouchMe.previousStackedUrls.isNotEmpty) {
+          state.dontTouchMe.previousStackedUrls.forEach((url) {
+            nestedHistory.push(url);
+          });
         }
       },
       shouldRebuild: (context, prevState, newState) {
@@ -106,8 +113,6 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         newState.dontTouchMe.hisotry = history;
         navState = newState;
         navState.mounted = true;
-        nestedHistory.nestedInitialStateAction =
-            newState.meta.initialStateAction;
         print("Newstate of nestedrouter $newState");
         print("hitory currentNavKey ${history.currentNavKey}");
         if (newState.meta.redirectToAction != null) {
@@ -149,35 +154,44 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         state.mounted = false;
       },
       builder: (context, state) {
-        print("before build pages");
-        print(
-          "building nested nav $state  ${state.dontTouchMe}",
-        );
-        print("after buildapges");
-        final pages = state.page != null ? [state.page!] : state.buildPages();
-
-        return prepared
-            ? Navigator(
-                key: navigatorKey,
-                pages: pages,
-                onPopPage: (route, dynamic result) {
-                  if (history.beforeLeave != null) {
-                    final result = history.beforeLeave!(context.store.state);
-                    if (!result) {
-                      return false;
-                    }
-                  }
-                  if (route.didPop(result)) {
-                    print("On Pop nested");
-                    nestedHistory.goBack();
-                    return true;
-                  } else {
-                    print("Nested pop fail");
-                    return false;
-                  }
-                },
-              )
-            : SizedBox.shrink();
+        if (prepared) {
+          print("before build pages");
+          print(
+            "building nested nav $state  ${state.dontTouchMe}",
+          );
+          print("after buildapges");
+          final pages = state.page != null ? [state.page!] : state.buildPages();
+          if (state.dontTouchMe.historyMode == HistoryMode.stack) {
+            final sUrls = state.dontTouchMe.previousStackedUrls;
+            if (pages.length == 1) {
+              sUrls.clear();
+            } else if (pages.length <= sUrls.length) {
+              sUrls.removeLast();
+            } else if (pages.length > sUrls.length) {
+              print("dontTouchMe url $state.dontTouchMe.url");
+              sUrls.add(state.dontTouchMe.url!);
+            }
+          }
+          return Navigator(
+            key: navigatorKey,
+            pages: pages,
+            onPopPage: (route, dynamic result) {
+              if (!handleBeforeLeave(history: history, store: context.store)) {
+                return false;
+              }
+              if (route.didPop(result)) {
+                print("On Pop nested");
+                nestedHistory.goBack();
+                return true;
+              } else {
+                print("Nested pop fail");
+                return false;
+              }
+            },
+          );
+        } else {
+          return SizedBox.shrink();
+        }
       },
     );
   }

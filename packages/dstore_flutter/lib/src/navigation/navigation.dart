@@ -10,7 +10,14 @@ export "nested_router.dart";
 export "middleware.dart";
 export "url_builder.dart";
 
-typedef BeforeLeaveFn<S> = bool Function(AppStateI appState);
+typedef BeforeLeaveFn<S> = BeforeLeaveResult Function(AppStateI appState);
+
+class BeforeLeaveResult {
+  final bool allowToLeave;
+  final WidgetBuilder? dialogBuilder;
+
+  BeforeLeaveResult({required this.allowToLeave, this.dialogBuilder});
+}
 
 enum HistoryUpdate { push, replace }
 
@@ -22,19 +29,19 @@ class NavConfigMeta {
   Action?
       originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
   NavOptions? navOptions;
-  Action? initialStateAction; // only for nested navs
+  // Action? initialStateAction; // only for nested navs
   bool blockSameUrl;
-  NavConfigMeta(
-      {this.beforeLeave,
-      this.redirectToAction,
-      this.originAction,
-      this.navOptions,
-      this.blockSameUrl = false,
-      this.initialStateAction});
+  NavConfigMeta({
+    this.beforeLeave,
+    this.redirectToAction,
+    this.originAction,
+    this.navOptions,
+    this.blockSameUrl = false,
+  });
 
   @override
   String toString() {
-    return 'NavConfigMeta(beforeLeave: $beforeLeave, redirectToAction: $redirectToAction, originAction: $originAction, navOptions: $navOptions, initialStateAction: $initialStateAction)';
+    return 'NavConfigMeta(beforeLeave: $beforeLeave, redirectToAction: $redirectToAction, originAction: $originAction, navOptions: $navOptions, )';
   }
 }
 
@@ -48,6 +55,8 @@ class NavStateDontTouchMe {
   late HistoryMode historyMode;
   String? rootUrl;
   bool isDirty = false;
+  final List<String> previousStackedUrls =
+      []; // only for   nestednav with stack history mode
 
   @override
   String toString() {

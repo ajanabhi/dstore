@@ -628,25 +628,27 @@ Tuple2<String, Set<String>> processMethodStatements(
         "There should be atleast one assignemtn operation for class fields");
   }
   final keys = mutationStatements.map((e) => e.key).toSet();
+  final specialKeys = <String>[];
   final statementsStr =
       convertStatementResultsToString(statementResults, keys).join("\n");
   print("hellokeys $keys");
+  if (isNav) {
+    //  _DStoreState.meta
+    if (!keys.contains("meta") &&
+        !statementsStr.contains("${STATE_VARIABLE}.meta")) {
+      specialKeys.add("meta: NavConfigMeta()");
+    }
+  }
+  final spl = specialKeys.isEmpty ? "" : ",${specialKeys.join(",")}";
   final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
     ${(historyEnabled || url != null || isNav) ? """
-    final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
+    final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")}$spl);
     ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
-    ${url != null ? " newState.dontTouchMe.url = '$url';" : ""}
     ${isNav ? """ 
-    newState.dontTouchMe.staticMeta = ${STATE_VARIABLE}.dontTouchMe.staticMeta;
-    newState.dontTouchMe.dynamicMeta = ${STATE_VARIABLE}.dontTouchMe.dynamicMeta;
-    newState.dontTouchMe.hisotry = ${STATE_VARIABLE}.dontTouchMe.hisotry;
-    newState.dontTouchMe.typeName = ${STATE_VARIABLE}.dontTouchMe.typeName;
-    newState.dontTouchMe.initialSetup = ${STATE_VARIABLE}.dontTouchMe.initialSetup;
-    newState.dontTouchMe.historyMode = ${STATE_VARIABLE}.dontTouchMe.historyMode;
-    newState.dontTouchMe.rootUrl = ${STATE_VARIABLE}.dontTouchMe.rootUrl;
-    newState.dontTouchMe.isDirty = ${STATE_VARIABLE}.dontTouchMe.isDirty;
+    newState.dontTouchMe = ${STATE_VARIABLE}.dontTouchMe;
+    ${url != null ? " newState.dontTouchMe.url = '$url';" : "newState.dontTouchMe.url = null;"}
     """ : ""}
     return newState;
     """ : "return ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});"}

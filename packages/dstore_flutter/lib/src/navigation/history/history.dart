@@ -10,12 +10,14 @@ abstract class History {
   abstract bool blockSameUrl;
   VoidCallback listen(UriListener listener);
   bool urlChangedInSystem = false;
-  void push(String url);
-  void replace(String url);
+  void push(String url, {bool nested = false});
+  void replace(String url, {bool nested = false});
   void goBack({String? burl, bool reloadBack = false});
   String? get backUrl;
   String? get currentUrl;
   bool get canGoBack;
+  bool isPreventModal = false;
+  bool isBrowserBackPreventModal = false;
   void go(int number);
   void setInitialUrl(String url);
   void informUrlListeners([String? url]);
@@ -26,6 +28,7 @@ abstract class History {
   late HistoryMode historyMode;
   GlobalKey<NavigatorState>? currentNavKey;
   BeforeLeaveFn? beforeLeave;
+  late final GlobalKey<NavigatorState> globalNavKey;
 
   late Action Function(NavStateI navState)
       fallBackNestedStackNonInitializationAction;
@@ -36,59 +39,21 @@ abstract class History {
   final nestedNavMeta = <String, Action>{};
 }
 
-class NestedNavHistory {
-  final History history;
+abstract class NestedNavHistory {
+  late History history;
   late String rootUrl;
-  final List<String> source = [];
-  Action? nestedInitialStateAction;
   Action? originAction;
   late HistoryMode historyMode;
   String? parentStackTypeName;
   GlobalKey<NavigatorState>? parentNavKey;
   final nestedNavMeta = <String, Action>{};
-
-  NestedNavHistory({required this.history});
-  void push(String url) {
-    source.add(url);
-    history.url = url;
-    history.informUrlListeners(url);
-  }
-
-  void replace(String url) {
-    if (source.isNotEmpty) {
-      source.removeLast();
-    }
-    source.add(url);
-    history.url = url;
-    history.informUrlListeners(url);
-  }
-
-  void goBack() {
-    if (canGoBack) {
-      source.removeLast();
-      String? url;
-      if (source.isNotEmpty) {
-        url = source.last;
-        history.url = url;
-      } else {
-        history.url = rootUrl;
-      }
-      history.goBack(burl: history.url, reloadBack: true);
-    } else {
-      history.url = rootUrl;
-      history.goBack(burl: history.url, reloadBack: true);
-    }
-  }
-
-  String? get backUrl =>
-      (canGoBack && source.length > 1) ? source[source.length - 2] : null;
-
-  bool get canGoBack => source.isNotEmpty;
-
-  @override
-  String toString() {
-    return 'NestedNavHistory(history: $history, Source : $source,nestedInitialStateAction: $nestedInitialStateAction, originAction: $originAction, historyMode: $historyMode, parentStackTypeName: $parentStackTypeName, parentNavKey: $parentNavKey)';
-  }
+  bool get canGoBack;
+  void goBack();
+  void push(String url);
+  void replace(String url);
 }
 
 History createHistory() => HistoryImpl();
+
+NestedNavHistory createNestedNavHistory(History history) =>
+    NestedNavHistoryImpl(history: history);
