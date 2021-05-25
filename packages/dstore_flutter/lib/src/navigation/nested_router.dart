@@ -104,7 +104,9 @@ class _NestedRouterState<AS extends AppStateI<AS>,
         if (state.dontTouchMe.isDirty &&
             state.dontTouchMe.previousStackedUrls.isNotEmpty) {
           state.dontTouchMe.previousStackedUrls.forEach((url) {
-            nestedHistory.push(url);
+            if (url != null) {
+              nestedHistory.push(url);
+            }
           });
         }
       },
@@ -169,7 +171,7 @@ class _NestedRouterState<AS extends AppStateI<AS>,
               sUrls.removeLast();
             } else if (pages.length > sUrls.length) {
               print("dontTouchMe url $state.dontTouchMe.url");
-              sUrls.add(state.dontTouchMe.url!);
+              sUrls.add(state.dontTouchMe.url);
             }
           }
           return Navigator(

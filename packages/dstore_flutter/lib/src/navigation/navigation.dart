@@ -55,7 +55,7 @@ class NavStateDontTouchMe {
   late HistoryMode historyMode;
   String? rootUrl;
   bool isDirty = false;
-  final List<String> previousStackedUrls =
+  final List<String?> previousStackedUrls =
       []; // only for   nestednav with stack history mode
 
   @override
