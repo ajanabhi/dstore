@@ -40,10 +40,12 @@ class PStateStorageMeta<S extends PStateModel<S>, SM> {
   final dynamic Function(S) serializer;
   final S Function(SM) deserializer;
   final bool encryptonRest;
+  final PStatePersitMigratorFn? migrator;
 
   const PStateStorageMeta(
       {this.encryptonRest = false,
       required this.serializer,
+      this.migrator,
       required this.deserializer});
 }
 

@@ -10,6 +10,8 @@ abstract class PersitantStorage<AT> {
   Future<void> clear();
   Future<void> saveOfflineActions(AT? actions);
   Future<AT?> getOfflineActions();
+  Future<String?> getVersion();
+  Future<void> setversion(String appVersion);
 }
 
 enum StorageWriteMode { DISKFIRST, DISKLAST }

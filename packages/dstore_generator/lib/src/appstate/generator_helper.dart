@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_generator/src/utils/utils.dart';
 
 String createAppState(FunctionElement element) {
   final name = element.name.substring(2);
@@ -28,6 +29,7 @@ String createAppState(FunctionElement element) {
     bool useEqualsComparision = false}) {
       return Store<$name>(internalMeta :$meta ,
       stateCreator: () => $name(),
+      appVersion: '${DBuilderOptions.psBuilderOptions.appVersion}',
       networkOptions:networkOptions,
       middlewares:middlewares,
       handleError:handleError,

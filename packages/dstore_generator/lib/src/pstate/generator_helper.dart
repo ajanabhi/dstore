@@ -71,6 +71,7 @@ Future<String> generatePStateForClassElement(
       modelName: modelName,
       fields: fields,
       psDeps: psDeps,
+      persitMigrator: pstate.interMigratorName,
       methods: methods,
       actionsMeta: actionsmeta,
       httpMeta: actionsInfo.httpMeta,
@@ -120,10 +121,8 @@ String getPStateMeta(
     required Map<String, List<String>> actionsMeta,
     required bool isPersiable,
     required int? historyLimit,
+    String? persitMigrator,
     bool isNav = false,
-    // String navStaticMeta = "{}",
-    // String navDynamicMeta = "{}",
-    // String navNestedMeta = "{}",
     NavDontTouchMe? navDontTouchMe,
     required String httpMeta,
     required List<PStateMethod> methods}) {
@@ -154,6 +153,9 @@ String getPStateMeta(
     final smParams = <String>[];
     smParams.add("serializer: _\$${modelName}ToJson");
     smParams.add("deserializer: _\$${modelName}FromJson");
+    if (persitMigrator != null) {
+      smParams.add("migrator: $persitMigrator");
+    }
     params.add(
         "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
@@ -265,13 +267,14 @@ extension PStateExtension on ClassElement {
     final navBlockSameUrl = reader.peek("navBlockSameUrl")?.boolValue;
     final nonConstClassesWithDefaultValues =
         reader.getStringList("nonConstClassesWithDefaultValues");
-
+    final persitMigrator = reader.functionNameForField("persitMigrator");
     return PState(
         persist: persit,
         enableHistory: enableHistory ?? false,
         nav: nav,
         historyLimit: historyLimit,
         nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues,
+        interMigratorName: persitMigrator,
         navBlockSameUrl: navBlockSameUrl);
   }
 }

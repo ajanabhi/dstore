@@ -1,5 +1,7 @@
-import 'package:dstore_annotation/dstore_annotation.dart';
+import 'dart:io';
+
 import 'package:dstore_generator/src/utils/utils.dart';
+import 'package:yaml/yaml.dart';
 
 abstract class DBuilderOptions {
   static late PStateGeneratorBuildOptions psBuilderOptions;
@@ -10,9 +12,12 @@ enum PersistMode { ExplicitPersist, ExplicitDontPersist }
 class PStateGeneratorBuildOptions {
   final PersistMode? persistMode;
   final List<String> nonConstClassesWithDefaultValues;
+  final String appVersion;
 
   PStateGeneratorBuildOptions(
-      {this.persistMode, required this.nonConstClassesWithDefaultValues});
+      {this.persistMode,
+      required this.nonConstClassesWithDefaultValues,
+      required this.appVersion});
 
   @override
   String toString() => "PStateGeneratorBuildOptions(persitMode: $persistMode)";
@@ -40,8 +45,10 @@ class PStateGeneratorBuildOptions {
           ..._defaultNonConstClassesWithDefaultValues
         ];
       }
+      final appVersion = _getAppVersionnumber();
       final options = PStateGeneratorBuildOptions(
           persistMode: persistMode,
+          appVersion: appVersion,
           nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues);
       logger.shout("PS Builder options $options");
       DBuilderOptions.psBuilderOptions = options;
@@ -50,6 +57,17 @@ class PStateGeneratorBuildOptions {
       rethrow;
     }
   }
+}
+
+String _getAppVersionnumber() {
+  final file = File("./pubspec.yaml");
+  if (file.existsSync()) {
+    final content = file.readAsStringSync();
+    dynamic doc = loadYaml(content);
+    final version = doc["version"] as String?;
+    return version ?? "";
+  }
+  return "";
 }
 
 const _defaultNonConstClassesWithDefaultValues = [

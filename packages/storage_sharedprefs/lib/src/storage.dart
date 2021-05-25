@@ -10,6 +10,8 @@ class StorageSharedPrefs implements PersitantStorage<String> {
   late final SharedPreferences _prefs;
   static const _prefix = "_DSTORE_STORAGE_";
 
+  static const _version_key = "_DSTORE_APP_VERSION_";
+
   StorageSharedPrefs({this.valueType = StorageSharedPrefsValueType.json});
   @override
   Future get(String key) async {
@@ -92,5 +94,15 @@ class StorageSharedPrefs implements PersitantStorage<String> {
   Future<void> saveOfflineActions(String? actions) {
     // TODO: implement saveOfflineActions
     throw UnimplementedError();
+  }
+
+  @override
+  Future<String?> getVersion() async {
+    return _prefs.getString(_version_key);
+  }
+
+  @override
+  Future<void> setversion(String appVersion) async {
+    await _prefs.setString(_version_key, appVersion);
   }
 }

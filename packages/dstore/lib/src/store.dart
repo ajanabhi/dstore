@@ -20,6 +20,7 @@ typedef VoidCallback = void Function();
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
 
 class Store<S extends AppStateI<S>> {
+  final String appVersion;
   final Map<String, PStateMeta<PStateModel<dynamic>>> internalMeta;
   final Map<String, List<_SelectorListener>> selectorListeners = {};
   late final List<Dispatch> _dispatchers;
@@ -40,6 +41,7 @@ class Store<S extends AppStateI<S>> {
   Store(
       {required this.internalMeta,
       this.storageOptions,
+      required this.appVersion,
       this.useEqualsComparision = false,
       NetworkOptions? networkOptions,
       required S Function() stateCreator,
@@ -104,35 +106,43 @@ class Store<S extends AppStateI<S>> {
   void _prepareStoreFromStorage(S Function() stateCreator) async {
     try {
       final storage = storageOptions!.storage;
-      final sState = await storage.getKeys(internalMeta.keys);
+      await storage.init();
+      final sState =
+          await storage.getKeys(internalMeta.values.map((e) => e.type));
       if (sState == null) {
         // meaning running app first time or user deleted app data
+        await storage.setversion(appVersion);
         _prepareNormalStore(stateCreator);
       } else {
         final AppStateI<S> s = stateCreator();
         final map = <String, PStateModel<dynamic>>{};
-        internalMeta.forEach((key, psm) {
+        final oldAppVersion = await storage.getVersion();
+        internalMeta.forEach((key, psm) async {
           if (_pStateTypeToStateKeyMap[psm.type] != null) {
             throw ArgumentError.value(
                 "You already selected same PState before with key ${_pStateTypeToStateKeyMap[psm.type]}  ");
           }
           _pStateTypeToStateKeyMap[psm.type] = key;
-          PStateModel<dynamic> ps;
-
-          ps = psm.ds();
-          final sps = sState[key] as Map<String, dynamic>?;
-          if (sps != null) {
-            ps = ps.copyWithMap(sps) as PStateModel;
-          }
+          dynamic sData = sState[psm.type];
           var ds = psm.ds();
-          ds = sState[key] != null
-              ? ds.copyWithMap(sState[key]! as Map<String, dynamic>)
-                  as PStateModel
-              : ds;
+          if (sData != null) {
+            final sm = psm.sm!;
+            if (sm.migrator != null) {
+              sData = sm.migrator!(
+                  oldAppVersion ?? "", sData as Map<String, dynamic>);
+              await storage.set(
+                  key: psm.type,
+                  value:
+                      sData); // store new value back to disk to be updated with appVersion number
+            }
+            ds = sm.deserializer(sData);
+          }
+
           _setStoreDepsForPState(ds, this);
           map[key] = ds;
         });
         _state = s.copyWithMap(map);
+        await storage.setversion(appVersion);
       }
       final offA = await storage.getOfflineActions() as String?;
       if (offA != null) {
@@ -234,14 +244,14 @@ class Store<S extends AppStateI<S>> {
       }
     }
     if (action.silent) {
-      // TODO update storage
       print("Silent Action");
-      gsMap[sk] = newS;
-      print("NewState $newS");
-      _state = _state.copyWithMap(gsMap);
-      if (action.afterSilent != null) {
-        action.afterSilent!(newS);
-      }
+      _handleSilentActionStateChange(
+          stateKey: sk,
+          previousState: currentS,
+          psm: psm,
+          action: action,
+          newGlobalStateMap: gsMap,
+          newState: newS);
     } else if (!identical(newS, currentS)) {
       gsMap[sk] = newS;
       _handleStateChange(
@@ -318,6 +328,66 @@ class Store<S extends AppStateI<S>> {
           stateKey: stateKey,
           previousState: previousState,
           currentState: newState);
+    }
+  }
+
+  void _handleSilentActionStateChange(
+      {required String stateKey,
+      required PStateModel<dynamic> previousState,
+      required PStateMeta psm,
+      required Action<dynamic> action,
+      required Map<String, dynamic> newGlobalStateMap,
+      required PStateModel<dynamic> newState}) async {
+    if (psm.sm != null) {
+      print("_handleStateChange");
+      assert(storageOptions != null);
+      final so = storageOptions!;
+      if (so.writeMode == StorageWriteMode.DISKFIRST) {
+        try {
+          final dynamic data = psm.sm!.serializer(newState);
+          await storage!.set(key: psm.type, value: data);
+        } on StorageError catch (e) {
+          final sa = await so.onWriteError(e, this, action);
+          if (sa == StorageWriteErrorAction.ignore) {
+            _setStoreDepsForPState(previousState, null);
+            _setStoreDepsForPState(newState, this);
+            _state = _state.copyWithMap(newGlobalStateMap);
+            if (action.afterSilent != null) {
+              action.afterSilent!(newState);
+            }
+          }
+        } catch (e) {
+          rethrow;
+        }
+      } else {
+        _state = _state.copyWithMap(newGlobalStateMap);
+        try {
+          final dynamic data = psm.sm!.serializer(newState);
+          await storage!.set(key: psm.type, value: data);
+        } on StorageError catch (e) {
+          final sa = await so.onWriteError(e, this, action);
+          if (sa == StorageWriteErrorAction.revert_state_changes) {
+            newState = previousState;
+            previousState = newState;
+            newGlobalStateMap[stateKey] = newState;
+            _setStoreDepsForPState(previousState, null);
+            _setStoreDepsForPState(newState, this);
+            _state = _state.copyWithMap(newGlobalStateMap);
+          }
+        } catch (e) {
+          rethrow;
+        }
+        if (action.afterSilent != null) {
+          action.afterSilent!(newState);
+        }
+      }
+    } else {
+      _setStoreDepsForPState(previousState, null);
+      _setStoreDepsForPState(newState, this);
+      _state = _state.copyWithMap(newGlobalStateMap);
+      if (action.afterSilent != null) {
+        action.afterSilent!(newState);
+      }
     }
   }
 
