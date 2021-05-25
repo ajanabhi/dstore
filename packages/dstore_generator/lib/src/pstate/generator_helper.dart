@@ -305,7 +305,7 @@ String _generateActionsCreators({
     }
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     mockModels.add(_createMockModel(name: mockName, fields: m.keysModified));
-    paramsList.add("$mockName? mock");
+    // paramsList.add("$mockName? mock");
     paramsList.add("bool silent = false");
     final params = paramsList.join(", ");
 
@@ -321,6 +321,10 @@ String _generateActionsCreators({
     return """
       static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
          return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} ${payload},mock:mock,isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+      }
+      
+      static Action<${mockName}> ${m.name}Mock($mockName mock) {
+        return Action<$mockName>(name:"${m.name}",type:${type},mock:mock);
       }
     """;
   }).join("\n");

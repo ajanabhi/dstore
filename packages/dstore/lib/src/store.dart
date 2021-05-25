@@ -31,6 +31,7 @@ class Store<S extends AppStateI<S>> {
   void Function()? _onReadyListener;
   final bool useEqualsComparision;
   final StoreErrorHandle handleError;
+  late final internalMocksMap = <String, Action>{};
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
@@ -224,7 +225,13 @@ class Store<S extends AppStateI<S>> {
               "action ${action.id} is stream action , looks like you didn't added stream middleware while creating store!");
         }
       }
-      newS = psm.reducer!(currentS, action) as PStateModel;
+      dynamic mock = internalMocksMap[action.id];
+      if (mock != null) {
+        mock = mock as ToMap;
+        newS = currentS.copyWithMap(mock.toMap()) as PStateModel;
+      } else {
+        newS = psm.reducer!(currentS, action) as PStateModel;
+      }
     }
     if (action.silent) {
       // TODO update storage
@@ -531,6 +538,18 @@ class Store<S extends AppStateI<S>> {
 
   /* public methods  */
 
+  void internalAddMock(Action action) {
+    if (action.mock == null) {
+      throw ArgumentError.value(
+          "mock action should contain mock field not null");
+    }
+    internalMocksMap[action.id] = action;
+  }
+
+  void internalRemoveMock(Action action) {
+    internalMocksMap.remove(action.id);
+  }
+
   String getStateKeyForPstateType(String psType) {
     final sk = _pStateTypeToStateKeyMap[psType];
     if (sk == null) {
@@ -634,6 +653,7 @@ class _SelectorListener {
   @override
   int get hashCode => selector.hashCode ^ listener.hashCode;
 }
+
 @optionalTypeArgs
 abstract class AppStateI<S> {
   S copyWithMap(Map<String, dynamic> map);

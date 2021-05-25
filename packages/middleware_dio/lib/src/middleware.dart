@@ -267,10 +267,25 @@ dynamic createDioMiddleware<S extends AppStateI<S>>(
     [DioMiddlewareOptions? options]) {
   final dio = Dio();
   return (Store<S> store, Dispatch next, Action action) {
-    if (action.isProcessed || action.http == null) {
+    if (action.isProcessed) {
       return next(action);
     }
-    _processHttpAction(options, store, action, dio);
+    dynamic mock = store.internalMocksMap[action.id]?.mock;
+    if (mock != null) {
+      // final mock
+      mock = mock as HttpField;
+      return store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, data: mock, type: ActionInternalType.FIELD)));
+    }
+    if (action.http == null) {
+      return next(action);
+    }
+
+    DstoreDevUtils.handleUnCaughtError(
+        store: store,
+        action: action,
+        callback: () => _processHttpAction(options, store, action, dio));
   };
 }
 
