@@ -47,9 +47,7 @@ Future<String> generatePStateNavForClassElement(
       isNav: true);
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
-  final methods = visitor.methods
-      .where((m) => !navStateRegularMethods.contains(m.name))
-      .toList();
+  final methods = visitor.methods.where((m) => !m.isRegular).toList();
   logger.shout("nav visitor methods $methods");
   var fields = visitor.fields;
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
@@ -60,10 +58,8 @@ Future<String> generatePStateNavForClassElement(
 
   fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
-  final regularMethods = visitor.methods
-      .where((m) => navStateRegularMethods.contains(m.name))
-      .map((m) => m.body)
-      .join("\n");
+  final regularMethods =
+      visitor.methods.where((m) => m.isRegular).map((m) => m.body).join("\n");
 
   print("methods : ${methods.map((e) => e.keysModified)}");
   final isPageUsed = visitor.methods

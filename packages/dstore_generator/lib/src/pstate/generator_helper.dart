@@ -43,7 +43,9 @@ Future<String> generatePStateForClassElement(
       await AstUtils.getAstNodeFromElement(element, buildStep, resolve: false);
   astNode.visitChildren(visitor);
   var fields = visitor.fields;
-  final methods = visitor.methods;
+  final methods = visitor.methods.where((m) => !m.isRegular).toList();
+  final regularMaethods =
+      visitor.methods.where((m) => m.isRegular).map((m) => m.body).join("\n");
   final psDeps = visitor.psDeps;
   print("psdeps ${visitor.psDeps}");
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
@@ -82,7 +84,7 @@ Future<String> generatePStateForClassElement(
     annotations.add("@JsonSerializable()");
   }
   final result = """
-       ${_createPStateModel(fields: fields, psDeps: psDeps, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
+       ${_createPStateModel(fields: fields, regularMethods: regularMaethods, psDeps: psDeps, name: modelName, annotations: annotations, typaParamsWithBounds: typeParamsWithBounds, typeParams: typeParams, enableHistory: pstate.enableHistory)}
        const $typeVariable = "$typePath";
        ${actions}
         ${pstateMeta}
@@ -408,6 +410,7 @@ String _createPStateModel(
     required String name,
     required List<String> annotations,
     required String typeParams,
+    required String regularMethods,
     required bool enableHistory,
     required String typaParamsWithBounds}) {
   final isJson = annotations.singleWhereOrNull(
@@ -441,6 +444,7 @@ String _createPStateModel(
       class ${name} extends PStateModel<$name> $m {
   
         ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
+        $regularMethods
         $psFeilds
         ${ModelUtils.getCopyWithField(name)}
         ${ModelUtils.createConstructorFromFieldsList(name, fields, addConst: false)}

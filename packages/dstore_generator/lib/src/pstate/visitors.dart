@@ -51,12 +51,16 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     if (isNav) {
       logger.shout("Annot ${node.metadata.firstOrNull?.elementAnnotation}");
     }
-    if (isNav && navStateRegularMethods.contains(name)) {
+    final methodElement = element.methods.singleWhere((me) => me.name == name);
+    final regularAnnot = methodElement.annotationFromType(RegularMethod);
+    if (regularAnnot != null ||
+        (isNav && navStateRegularMethods.contains(name))) {
       logger.shout("buildPages : ${node.toSource()}");
       methods.add(PStateMethod(
           isAsync: false,
           name: name,
           params: [],
+          isRegular: true,
           keysModified: [],
           body: node.toSource()));
       return;

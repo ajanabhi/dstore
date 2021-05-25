@@ -14,6 +14,10 @@ class PState {
       this.nav});
 }
 
+class RegularMethod {
+  const RegularMethod();
+}
+
 class ExcludeThisKeyWhilePersit {
   const ExcludeThisKeyWhilePersit();
 }
