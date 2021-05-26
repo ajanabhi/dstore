@@ -183,6 +183,10 @@ String convertHttpFieldInfoToAction(
       : hf.fieldType;
   params.add("$mockType? mock");
   params.add("Duration? debounce");
+  params.add("bool listenSendProgress = false");
+  payloadFields.add("listenSendProgress:listenSendProgress");
+  params.add("bool listenReceiveProgress = false");
+  payloadFields.add("listenReceiveProgress:listenReceiveProgress");
   final mergeHeaders = hf.headers != null
       ? "headers = <String,dynamic>{...<String,String>${hf.headers},...headers ?? <String,String>{}};"
       : "";

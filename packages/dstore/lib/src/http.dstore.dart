@@ -455,6 +455,10 @@ class HttpPayload<PP, QP, I, R, E, T> {
 
   final int? receiveTieout;
 
+  final bool listenSendProgress;
+
+  final bool listenReceiveProgress;
+
   final bool abortable;
 
   _$HttpPayloadCopyWith<PP, QP, I, R, E, T, HttpPayload<PP, QP, I, R, E, T>>
@@ -474,6 +478,8 @@ class HttpPayload<PP, QP, I, R, E, T> {
       this.pathParams,
       this.sendTimeout,
       this.receiveTieout,
+      this.listenSendProgress = false,
+      this.listenReceiveProgress = false,
       this.abortable = false});
 
   static HttpPayload fromJson<PP, QP, I, R, E, T>(
@@ -602,6 +608,8 @@ class HttpPayload<PP, QP, I, R, E, T> {
         o.pathParams == pathParams &&
         o.sendTimeout == sendTimeout &&
         o.receiveTieout == receiveTieout &&
+        o.listenSendProgress == listenSendProgress &&
+        o.listenReceiveProgress == listenReceiveProgress &&
         o.abortable == abortable;
   }
 
@@ -619,11 +627,13 @@ class HttpPayload<PP, QP, I, R, E, T> {
       pathParams.hashCode ^
       sendTimeout.hashCode ^
       receiveTieout.hashCode ^
+      listenSendProgress.hashCode ^
+      listenReceiveProgress.hashCode ^
       abortable.hashCode;
 
   @override
   String toString() =>
-      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, headers: ${this.headers}, queryParams: ${this.queryParams}, pathParams: ${this.pathParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, abortable: ${this.abortable})";
+      "HttpPayload(url: ${this.url}, data: ${this.data}, method: ${this.method}, responseType: ${this.responseType}, optimisticResponse: ${this.optimisticResponse}, optimisticHttpStatus: ${this.optimisticHttpStatus}, offline: ${this.offline}, headers: ${this.headers}, queryParams: ${this.queryParams}, pathParams: ${this.pathParams}, sendTimeout: ${this.sendTimeout}, receiveTieout: ${this.receiveTieout}, listenSendProgress: ${this.listenSendProgress}, listenReceiveProgress: ${this.listenReceiveProgress}, abortable: ${this.abortable})";
 }
 
 abstract class $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
@@ -643,6 +653,8 @@ abstract class $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
       PP? pathParams,
       int? sendTimeout,
       int? receiveTieout,
+      bool listenSendProgress,
+      bool listenReceiveProgress,
       bool abortable});
 }
 
@@ -666,6 +678,8 @@ class _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? pathParams = dimmutable,
       Object? sendTimeout = dimmutable,
       Object? receiveTieout = dimmutable,
+      Object? listenSendProgress = dimmutable,
+      Object? listenReceiveProgress = dimmutable,
       Object? abortable = dimmutable}) {
     return _then(_value.copyWith(
         url: url == dimmutable ? _value.url : url as String,
@@ -694,6 +708,12 @@ class _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
         receiveTieout: receiveTieout == dimmutable
             ? _value.receiveTieout
             : receiveTieout as int?,
+        listenSendProgress: listenSendProgress == dimmutable
+            ? _value.listenSendProgress
+            : listenSendProgress as bool,
+        listenReceiveProgress: listenReceiveProgress == dimmutable
+            ? _value.listenReceiveProgress
+            : listenReceiveProgress as bool,
         abortable:
             abortable == dimmutable ? _value.abortable : abortable as bool));
   }
@@ -717,6 +737,8 @@ abstract class _$HttpPayloadCopyWith<PP, QP, I, R, E, T, O>
       PP? pathParams,
       int? sendTimeout,
       int? receiveTieout,
+      bool listenSendProgress,
+      bool listenReceiveProgress,
       bool abortable});
 }
 
@@ -744,6 +766,8 @@ class __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? pathParams = dimmutable,
       Object? sendTimeout = dimmutable,
       Object? receiveTieout = dimmutable,
+      Object? listenSendProgress = dimmutable,
+      Object? listenReceiveProgress = dimmutable,
       Object? abortable = dimmutable}) {
     return _then(HttpPayload(
         url: url == dimmutable ? _value.url : url as String,
@@ -772,6 +796,12 @@ class __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
         receiveTieout: receiveTieout == dimmutable
             ? _value.receiveTieout
             : receiveTieout as int?,
+        listenSendProgress: listenSendProgress == dimmutable
+            ? _value.listenSendProgress
+            : listenSendProgress as bool,
+        listenReceiveProgress: listenReceiveProgress == dimmutable
+            ? _value.listenReceiveProgress
+            : listenReceiveProgress as bool,
         abortable:
             abortable == dimmutable ? _value.abortable : abortable as bool));
   }

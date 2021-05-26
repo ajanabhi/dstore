@@ -64,6 +64,8 @@ abstract class $_HttpPayload<PP, QP, I, R, E, T> {
   PP? pathParams;
   int? sendTimeout;
   int? receiveTieout;
+  bool listenSendProgress = false;
+  bool listenReceiveProgress = false;
   bool abortable = false;
 
   static HttpPayload fromJson<PP, QP, I, R, E, T>(

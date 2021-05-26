@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:dstore/dstore.dart';
 
-//TODO upload download progress
-
 class _DioAbort extends AbortController {
   final CancelToken token;
   _DioAbort(this.token);
@@ -193,10 +191,34 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         }
       }
     }
+    dynamic onReceiveProgress;
+    if (payload.listenReceiveProgress) {
+      onReceiveProgress = (int got, int total) {
+        store.dispatch(action.copyWith(
+            internal: ActionInternal(
+                processed: true,
+                type: ActionInternalType.FIELD,
+                data: field.copyWith(
+                    progress: HttpProgress(current: got, total: total)))));
+      };
+    }
+    dynamic onSendProgress;
+    if (payload.listenSendProgress) {
+      onSendProgress = (int sent, int total) {
+        store.dispatch(action.copyWith(
+            internal: ActionInternal(
+                processed: true,
+                type: ActionInternalType.FIELD,
+                data: field.copyWith(
+                    progress: HttpProgress(current: sent, total: total)))));
+      };
+    }
     response = await dio.request(payload.url,
         data: data,
         queryParameters: payload.queryParams,
         cancelToken: cancelToken,
+        onReceiveProgress: onReceiveProgress,
+        onSendProgress: onSendProgress,
         options: options);
   } on DioError catch (e) {
     _handleDioError(e: e, action: action, store: store);
