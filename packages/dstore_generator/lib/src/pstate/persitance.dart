@@ -4,6 +4,7 @@ import 'package:dstore_generator/src/utils/utils.dart';
 
 bool isPersitable(PState pstate) {
   final persistMode = DBuilderOptions.psBuilderOptions.persistMode;
+  print("persistMode $persistMode pstate ${pstate.persist}");
   if (persistMode == null && pstate.persist != null) {
     throw ArgumentError.value(
         "You should provide pesistMode option in build.yaml for dstore|ps builder");

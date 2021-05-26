@@ -2,26 +2,47 @@ import 'package:dstore/dstore.dart';
 import 'package:dstore_test/dstore_test.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_async_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_history_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_persist2.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_persist3_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_persist_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_persitance_migratorps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_ps.dart';
 
 part "app_state.dstore.dart";
 
 @AppStateAnnotation()
 void $_AppState(
-    Simple simple, SimpleAsync simpleAsync, SimpleHistory simpleHistory) {}
+  Simple simple,
+  SimpleAsync simpleAsync,
+  SimpleHistory simpleHistory,
+  SimplePersist simplePersist,
+  SimplePersist2 simplePersist2,
+  SimplePersist3 simplePersist3,
+  SimplePersitanceMigrator simplePersitanceMigrator,
+) {}
 
 final store = createStore(
     handleError: (error) {
       print("Uncaught error in store  $error");
     },
     storageOptions: StorageOptions(
-      storage: InMemoryStorage(),
+      storage: InMemoryStorage(initialValues: <String, dynamic>{
+        "$simplePersistTypeName": {"x": 1},
+        "$simplePersist2TypeName": {"y": 2},
+        "$simplePersistMigratorTypename": {"name": 1}
+      }, errorKeys: [
+        simplePersist2TypeName,
+        simplePersist3TypeName
+      ]),
       onWriteError: (error, store, action) async {
-        print("storage write error $error");
+        print("storage write error $error action $action");
+        if (action.type == simplePersist3TypeName) {
+          return StorageWriteErrorAction.revert_state_changes;
+        }
         return StorageWriteErrorAction.ignore;
       },
       onReadError: (dynamic error) {
-        print("Read error");
+        print("Storage Read error $error");
       },
     ));
 

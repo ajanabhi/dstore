@@ -22,8 +22,10 @@ class StoreTester<S extends AppStateI<S>> {
   StoreTester({required this.store, bool waitForStorage = false}) {
     if (waitForStorage && store.storageOptions != null) {
       isReady = false;
-      store.listenForReadyState(() {
-        handleReady();
+      store.listenForReadyState((error, st) {
+        if (error != null) {
+          handleReady();
+        }
       });
     } else {
       isReady = true;

@@ -32,8 +32,8 @@ mixin PStateStoreDepsMixin {
 }
 
 class PStateStorageMeta<S extends PStateModel<S>, SM> {
-  final dynamic Function(S) serializer;
-  final S Function(SM) deserializer;
+  final dynamic Function(dynamic) serializer;
+  final S Function(dynamic) deserializer;
   final bool encryptonRest;
   final PStatePersitMigratorFn? migrator;
 

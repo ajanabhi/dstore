@@ -1,3 +1,4 @@
+import 'package:dstore_test_suite/src/store/app_state.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_ps.dart';
 import 'package:dstore_test_suite/tests.dart';
 import 'package:test/test.dart';

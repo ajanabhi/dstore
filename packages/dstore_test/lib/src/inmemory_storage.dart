@@ -1,6 +1,11 @@
 import 'package:dstore/dstore.dart';
 
 class InMemoryStorage extends PersitantStorage {
+  final Map<String, dynamic> initialValues;
+  final List<String> errorKeys;
+  InMemoryStorage(
+      {this.initialValues = const <String, dynamic>{},
+      this.errorKeys = const []}) {}
   final prefs = <String, dynamic>{};
   @override
   Future<void> clear() async {
@@ -32,10 +37,15 @@ class InMemoryStorage extends PersitantStorage {
   }
 
   @override
-  Future<void> init() async {}
+  Future<void> init() async {
+    prefs.addAll(initialValues);
+  }
 
   @override
   Future<void> set({required String key, required dynamic value}) async {
+    if (errorKeys.contains(key)) {
+      throw GenericStorageError("notable to persist");
+    }
     prefs[key] = value;
   }
 

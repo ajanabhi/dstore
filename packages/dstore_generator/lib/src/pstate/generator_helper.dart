@@ -16,6 +16,7 @@ import "dart:convert";
 Future<String> generatePStateForClassElement(
     ClassElement element, BuildStep buildStep) async {
   final pstate = element.getPState();
+  print("pstate value for ${element.name} : $pstate");
   if (pstate.nav == true) {
     return await generatePStateNavForClassElement(element, pstate, buildStep);
   }
@@ -89,8 +90,51 @@ Future<String> generatePStateForClassElement(
        const $typeVariable = "$typePath";
        ${actions}
         ${pstateMeta}
+        ${isPerssit ? getStorageSerializerAndDeserializer(className: modelName, fields: fields) : ""}
     """;
   return result;
+}
+
+String getStorageSerializerAndDeserializer(
+    {required String className, required List<Field> fields}) {
+  //  final serializer =
+  final sName = "${className}StorageSerializer";
+  final storageSerializer = """
+      dynamic $sName(dynamic value) {
+        final s = value as $className;
+        return s.toJson();
+      }
+    """;
+  final dName = "${className}StorageDeserializer";
+  var storageDeserializer = """
+       $className $dName(dynamic value) {
+         return $className.fromJson(value as Map<String,dynamic>);
+       }
+    """;
+  final defaultFields =
+      fields.where((f) => f.value != null && f.value != "null").toList();
+  if (defaultFields.isNotEmpty) {
+    final patch = defaultFields.map((e) {
+      final name = e.name;
+      final value = e.value;
+      return """
+         if(!json.containsKey('$name')) {
+           
+         }
+      """;
+    });
+    // storageDeserializer = """
+    //  $className $dName(dynamic value) {
+    //      final json = value as Map<String,dynamic>;
+
+    //      return $className.fromJson(json);
+    //    }
+    // """;
+  }
+  return """
+   $storageSerializer
+   $storageDeserializer
+  """;
 }
 
 Map<String, List<String>> _getActionsmeta(
@@ -149,16 +193,22 @@ String getPStateMeta(
   // if (psDeps.isNotEmpty) {
   //   params.add('psDeps: [${psDeps.map((e) => '"${e.value}"').join(", ")}]');
   // }
+
   if (isPersiable) {
+    final sName = "${modelName}StorageSerializer";
+
+    final dsName = "${modelName}StorageDeserializer";
+
     final smParams = <String>[];
-    smParams.add("serializer: _\$${modelName}ToJson");
-    smParams.add("deserializer: _\$${modelName}FromJson");
+    smParams.add("serializer: $sName");
+    smParams.add("deserializer: $dsName");
     if (persitMigrator != null) {
       smParams.add("migrator: $persitMigrator");
     }
     params.add(
         "sm: PStateStorageMeta<$modelName,Map<String,dynamic>>(${smParams.join(", ")})");
   }
+
   if (enableHistory) {
     params.add("enableHistory: true");
     params.add("actionsMeta: ${jsonEncode(actionsMeta)}");
@@ -183,7 +233,6 @@ String getPStateMeta(
   return """
        $syncReducerFunctionStr
        $asyncReducerFubctionStr
-       
        $defaultStateFn
 
        final ${modelName}Meta = PStateMeta<${modelName}>(${params.join(", ")});
@@ -263,8 +312,9 @@ extension PStateExtension on ClassElement {
       throw ArgumentError.value(
           "${this.name}  class should be annotated with @Pstate annotation");
     }
+    print("pstateannot ${this.name} $annot");
     final reader = ConstantReader(annot.computeConstantValue());
-    final persit = reader.peek("persit")?.boolValue;
+    final persist = reader.peek("persist")?.boolValue;
     final enableHistory = reader.peek("enableHistory")?.boolValue;
     final historyLimit = reader.peek("historyLimit")?.intValue;
     final nav = reader.peek("nav")?.boolValue;
@@ -273,7 +323,7 @@ extension PStateExtension on ClassElement {
         reader.getStringList("nonConstClassesWithDefaultValues");
     final persitMigrator = reader.functionNameForField("persitMigrator");
     return PState(
-        persist: persit,
+        persist: persist,
         enableHistory: enableHistory ?? false,
         nav: nav,
         historyLimit: historyLimit,

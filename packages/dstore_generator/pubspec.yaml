@@ -23,7 +23,6 @@ dependencies:
   open_api_schema:
     path: ../../../open_api_schema/
   path_to_regexp: 
-  json_annotation: ^4.0.1
   dstore_annotation:
     path: ../dstore_annotation
   dstore_dgraph:

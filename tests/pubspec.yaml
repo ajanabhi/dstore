@@ -14,11 +14,19 @@ dependencies:
  dstore:
    path: ../packages/dstore/ 
  dstore_test:
-   path: ../packages/dstore_test/    
+   path: ../packages/dstore_test/ 
+ time:      
 
 dev_dependencies:
   test: ^1.14.4
-  build_runner: 
+  build_runner:
+  json_serializable: 
+    path: ../../json_serializable.dart/json_serializable
+       
   dstore_generator:
     path: ../packages/dstore_generator/  
   grinder: 
+
+dependency_overrides:
+  json_annotation:
+    path: ../../json_serializable.dart/json_annotation/  

@@ -1,7 +1,3 @@
-import 'dart:convert';
-import 'dart:io';
-
-import 'package:dio/dio.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:json_annotation/json_annotation.dart';

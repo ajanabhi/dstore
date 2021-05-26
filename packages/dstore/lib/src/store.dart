@@ -17,6 +17,7 @@ typedef Callback = dynamic Function();
 typedef VoidCallback = void Function();
 
 typedef SelectorUnSubscribeFn = dynamic Function(UnSubscribeOptions? options);
+typedef StoreOnReadyListenerFn = void Function(Object? error, Object? st);
 
 class Store<S extends AppStateI<S>> {
   final String appVersion;
@@ -28,7 +29,7 @@ class Store<S extends AppStateI<S>> {
   late S _state;
   var isReady = false;
   final StorageOptions? storageOptions;
-  void Function()? _onReadyListener;
+  StoreOnReadyListenerFn? _onReadyListener;
   final bool useEqualsComparision;
   final StoreErrorHandle handleError;
   late final internalMocksMap = <String, Action>{};
@@ -95,7 +96,7 @@ class Store<S extends AppStateI<S>> {
     }
   }
 
-  void listenForReadyState(void Function() fn) {
+  void listenForReadyState(StoreOnReadyListenerFn fn) {
     _onReadyListener = fn;
   }
 
@@ -117,7 +118,9 @@ class Store<S extends AppStateI<S>> {
         final AppStateI<S> s = stateCreator();
         final map = <String, PStateModel<dynamic>>{};
         final oldAppVersion = await storage.getVersion();
-        internalMeta.forEach((key, psm) async {
+        await Future.wait(internalMeta.entries.map((e) async {
+          final key = e.key;
+          final psm = e.value;
           if (_pStateTypeToStateKeyMap[psm.type] != null) {
             throw ArgumentError.value(
                 "You already selected same PState before with key ${_pStateTypeToStateKeyMap[psm.type]}  ");
@@ -129,7 +132,7 @@ class Store<S extends AppStateI<S>> {
             final sm = psm.sm!;
             if (sm.migrator != null) {
               sData = sm.migrator!(
-                  oldAppVersion ?? "", sData as Map<String, dynamic>);
+                  oldAppVersion ?? "", sData as Map<String, dynamic>, ds);
               await storage.set(
                   key: psm.type,
                   value:
@@ -140,7 +143,8 @@ class Store<S extends AppStateI<S>> {
 
           _setStoreDepsForPState(ds, this);
           map[key] = ds;
-        });
+        }));
+        print("copying map $map");
         _state = s.copyWithMap(map);
         await storage.setversion(appVersion);
       }
@@ -155,10 +159,13 @@ class Store<S extends AppStateI<S>> {
         _offlineActions.addAll(actions);
       }
       isReady = true;
-      _onReadyListener?.call();
+      _onReadyListener?.call(null, null);
       _processOfflineActions();
-    } catch (e) {
-      rethrow;
+    } catch (e, st) {
+      print("Error in storage setup $e");
+      print(st);
+      _onReadyListener?.call(e, st);
+      storageOptions!.onReadError(e);
     }
   }
 
@@ -312,6 +319,7 @@ class Store<S extends AppStateI<S>> {
           final dynamic data = psm.sm!.serializer(newState);
           await storage!.set(key: psm.type, value: data);
         } on StorageError catch (e) {
+          print("catched storage error in disk last $e");
           final sa = await so.onWriteError(e, this, action);
           if (sa == StorageWriteErrorAction.revert_state_changes) {
             newState = previousState;
@@ -326,6 +334,7 @@ class Store<S extends AppStateI<S>> {
                 currentState: newState);
           }
         } catch (e) {
+          print("uncaught error $e");
           rethrow;
         }
         if (action.afterComplete != null) {

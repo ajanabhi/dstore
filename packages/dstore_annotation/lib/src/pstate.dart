@@ -1,5 +1,5 @@
 typedef PStatePersitMigratorFn = Map<String, dynamic> Function(
-    String oldVersion, Map<String, dynamic> data);
+    String oldVersion, Map<String, dynamic> data, dynamic defaultState);
 
 class PState {
   final bool? persist;
@@ -19,6 +19,11 @@ class PState {
       this.interMigratorName,
       this.nonConstClassesWithDefaultValues,
       this.nav});
+
+  @override
+  String toString() {
+    return 'PState(persist: $persist, enableHistory: $enableHistory, historyLimit: $historyLimit, nav: $nav, navBlockSameUrl: $navBlockSameUrl, nonConstClassesWithDefaultValues: $nonConstClassesWithDefaultValues, persitMigrator: $persitMigrator, interMigratorName: $interMigratorName)';
+  }
 }
 
 class RegularMethod {

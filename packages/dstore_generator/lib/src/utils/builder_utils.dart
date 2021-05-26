@@ -26,6 +26,7 @@ class PStateGeneratorBuildOptions {
     try {
       PersistMode? persistMode;
       final pms = config["persistMode"] as String?;
+      print("pms $pms");
       if (pms != null) {
         if (pms != "ExplicitPersist" && pms != "ExplicitDontPersist") {
           throw ArgumentError.value(
