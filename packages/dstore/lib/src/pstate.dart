@@ -56,6 +56,7 @@ class PStateMeta<S extends PStateModel<S>> {
 
   final PStateStorageMeta<S, dynamic>? sm;
   final bool enableHistory;
+
   // final int? historyLimit;
 
   const PStateMeta(

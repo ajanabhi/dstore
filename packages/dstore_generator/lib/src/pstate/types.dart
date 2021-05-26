@@ -6,10 +6,12 @@ class ActionsInfo {
   final String actions;
   final String httpMeta;
   final List<String> specialActions;
+  final String? canProcessOfflineAction;
 
   ActionsInfo(
       {required this.actions,
       required this.httpMeta,
+      this.canProcessOfflineAction,
       required this.specialActions});
 }
 
@@ -30,6 +32,7 @@ class HttpFieldInfo {
   final String errorDeserializer;
   final String method;
   final String? queryParamsType;
+  final String? canProcessOfflineAction;
   final String? pathParamsType;
   final GraphqlRequestPart? graphqlQuery;
   final String responseType;
@@ -41,6 +44,7 @@ class HttpFieldInfo {
     this.errorType,
     required this.fieldType,
     this.inputType,
+    this.canProcessOfflineAction,
     required this.inputTypeEnum,
     required this.responseType,
     required this.responseTypeEnum,

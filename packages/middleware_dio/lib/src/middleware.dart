@@ -97,6 +97,7 @@ void _handleDioError(
           error.type == HttpErrorType.ConnectTimeout)) {
     store.addOfflineAction(action);
     store.dispatch(action.copyWith(
+        offlinedAt: DateTime.now(),
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
@@ -142,12 +143,28 @@ String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
   return result;
 }
 
+Future<bool> _canProcessHtpAction(
+    {required HttpMeta? meta, required Action action}) async {
+  if (action.offlinedAt != null && meta?.canProcessOfflineAction != null) {
+    return meta!.canProcessOfflineAction!(action);
+  } else {
+    return true;
+  }
+}
+
 void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     Action action, Dio dio) async {
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
   final field = store.getFieldFromAction(action) as HttpField;
+  final canProcess = await _canProcessHtpAction(meta: meta, action: action);
+  if (!canProcess) {
+    print(
+        "Action $action is skipped because its blocked by offline can process  action");
+    return;
+  }
+  action = action.copyWith(offlinedAt: null);
   CancelToken? cancelToken;
   AbortController? abortController;
   if (payload.abortable) {
@@ -279,38 +296,6 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   }
 }
 
-class DioMiddlewareOptions {
-  final Map<String, GlobalHttpOptions Function()> urlOptions;
-
-  DioMiddlewareOptions({required this.urlOptions});
-}
-
-dynamic createDioMiddleware<S extends AppStateI<S>>(
-    [DioMiddlewareOptions? options]) {
-  final dio = Dio();
-  return (Store<S> store, Dispatch next, Action action) {
-    if (action.isProcessed) {
-      return next(action);
-    }
-    dynamic mock = store.internalMocksMap[action.id]?.mock;
-    if (mock != null) {
-      // final mock
-      mock = mock as HttpField;
-      return store.dispatch(action.copyWith(
-          internal: ActionInternal(
-              processed: true, data: mock, type: ActionInternalType.FIELD)));
-    }
-    if (action.http == null) {
-      return next(action);
-    }
-
-    DstoreDevUtils.handleUnCaughtError(
-        store: store,
-        action: action,
-        callback: () => _processHttpAction(options, store, action, dio));
-  };
-}
-
 Future<Response> createPersistedGraphqlQuery(
     {required HttpPayload payload,
     required Options options,
@@ -341,4 +326,36 @@ bool isPersistQueryNotFoundError(Response response) {
         .isNotEmpty;
   }
   return result;
+}
+
+class DioMiddlewareOptions {
+  final Map<String, GlobalHttpOptions Function()> urlOptions;
+
+  DioMiddlewareOptions({required this.urlOptions});
+}
+
+dynamic createDioMiddleware<S extends AppStateI<S>>(
+    [DioMiddlewareOptions? options]) {
+  final dio = Dio();
+  return (Store<S> store, Dispatch next, Action action) {
+    if (action.isProcessed) {
+      return next(action);
+    }
+    dynamic mock = store.internalMocksMap[action.id]?.mock;
+    if (mock != null) {
+      // final mock
+      mock = mock as HttpField;
+      return store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, data: mock, type: ActionInternalType.FIELD)));
+    }
+    if (action.http == null) {
+      return next(action);
+    }
+
+    DstoreDevUtils.handleUnCaughtError(
+        store: store,
+        action: action,
+        callback: () => _processHttpAction(options, store, action, dio));
+  };
 }

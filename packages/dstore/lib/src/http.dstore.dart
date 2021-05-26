@@ -212,6 +212,8 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   final E Function(int status, dynamic resp)? errorDeserializer;
 
+  final Future<bool> Function(Action)? canProcessOfflineAction;
+
   final PP Function(dynamic)? pathParamsDeserializer;
 
   final dynamic Function(PP)? pathParamsSerializer;
@@ -232,6 +234,7 @@ class HttpMeta<PP, QP, I, R, E, T> {
       this.inputStorageSerializer,
       this.inputDeserializer,
       this.errorDeserializer,
+      this.canProcessOfflineAction,
       this.pathParamsDeserializer,
       this.pathParamsSerializer,
       this.queryParamsDeserializer,
@@ -248,6 +251,7 @@ class HttpMeta<PP, QP, I, R, E, T> {
         o.inputStorageSerializer == inputStorageSerializer &&
         o.inputDeserializer == inputDeserializer &&
         o.errorDeserializer == errorDeserializer &&
+        o.canProcessOfflineAction == canProcessOfflineAction &&
         o.pathParamsDeserializer == pathParamsDeserializer &&
         o.pathParamsSerializer == pathParamsSerializer &&
         o.queryParamsDeserializer == queryParamsDeserializer &&
@@ -263,6 +267,7 @@ class HttpMeta<PP, QP, I, R, E, T> {
       inputStorageSerializer.hashCode ^
       inputDeserializer.hashCode ^
       errorDeserializer.hashCode ^
+      canProcessOfflineAction.hashCode ^
       pathParamsDeserializer.hashCode ^
       pathParamsSerializer.hashCode ^
       queryParamsDeserializer.hashCode ^
@@ -270,7 +275,7 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   @override
   String toString() =>
-      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer}, pathParamsDeserializer: ${this.pathParamsDeserializer}, pathParamsSerializer: ${this.pathParamsSerializer}, queryParamsDeserializer: ${this.queryParamsDeserializer}, queryParamsSerializer: ${this.queryParamsSerializer})";
+      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer}, canProcessOfflineAction: ${this.canProcessOfflineAction}, pathParamsDeserializer: ${this.pathParamsDeserializer}, pathParamsSerializer: ${this.pathParamsSerializer}, queryParamsDeserializer: ${this.queryParamsDeserializer}, queryParamsSerializer: ${this.queryParamsSerializer})";
 }
 
 abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
@@ -286,6 +291,7 @@ abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
       E Function(int status, dynamic resp)? errorDeserializer,
+      Future<bool> Function(Action)? canProcessOfflineAction,
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
@@ -307,6 +313,7 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? inputStorageSerializer = dimmutable,
       Object? inputDeserializer = dimmutable,
       Object? errorDeserializer = dimmutable,
+      Object? canProcessOfflineAction = dimmutable,
       Object? pathParamsDeserializer = dimmutable,
       Object? pathParamsSerializer = dimmutable,
       Object? queryParamsDeserializer = dimmutable,
@@ -334,6 +341,9 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
             : errorDeserializer as E Function(int status, dynamic resp)?,
+        canProcessOfflineAction: canProcessOfflineAction == dimmutable
+            ? _value.canProcessOfflineAction
+            : canProcessOfflineAction as Future<bool> Function(Action)?,
         pathParamsDeserializer: pathParamsDeserializer == dimmutable
             ? _value.pathParamsDeserializer
             : pathParamsDeserializer as PP Function(dynamic)?,
@@ -363,6 +373,7 @@ abstract class _$HttpMetaCopyWith<PP, QP, I, R, E, T, O>
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
       E Function(int status, dynamic resp)? errorDeserializer,
+      Future<bool> Function(Action)? canProcessOfflineAction,
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
@@ -388,6 +399,7 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? inputStorageSerializer = dimmutable,
       Object? inputDeserializer = dimmutable,
       Object? errorDeserializer = dimmutable,
+      Object? canProcessOfflineAction = dimmutable,
       Object? pathParamsDeserializer = dimmutable,
       Object? pathParamsSerializer = dimmutable,
       Object? queryParamsDeserializer = dimmutable,
@@ -415,6 +427,9 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
         errorDeserializer: errorDeserializer == dimmutable
             ? _value.errorDeserializer
             : errorDeserializer as E Function(int status, dynamic resp)?,
+        canProcessOfflineAction: canProcessOfflineAction == dimmutable
+            ? _value.canProcessOfflineAction
+            : canProcessOfflineAction as Future<bool> Function(Action)?,
         pathParamsDeserializer: pathParamsDeserializer == dimmutable
             ? _value.pathParamsDeserializer
             : pathParamsDeserializer as PP Function(dynamic)?,

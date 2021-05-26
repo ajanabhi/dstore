@@ -82,9 +82,12 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
   final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
   String? transformer;
+  String? canProcessOfflineAction;
   if (reqExtAnnot != null) {
     final reqE = ConstantReader(reqExtAnnot.computeConstantValue());
     transformer = reqE.functionNameForField("transformer");
+    canProcessOfflineAction =
+        reqE.functionNameForField("canProcessOfflineAction");
   }
 
   return HttpFieldInfo(
@@ -99,6 +102,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       responseSerializer: responseSerializer,
       inputType: inputType,
       errorType: errorType,
+      canProcessOfflineAction: canProcessOfflineAction,
       responseDeserializer: responseDeserializer,
       errorDeserializer: errorDeserializer,
       queryParamsType: queryParamsType,

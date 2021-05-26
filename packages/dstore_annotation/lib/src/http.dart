@@ -79,8 +79,10 @@ class GraphqlRequestPart {
       'GraphqlRequestPart(query: $query, hash: $hash, useGetForPersist: $useGetForPersist)';
 }
 
-class HttpRequestExtension<T> {
-  final T Function(T)? transformer;
+class HttpRequestExtension {
+  final dynamic Function(dynamic)?
+      transformer; // make sure input and return type are HttpField
+  final Future<bool> Function(dynamic)? canProcessOfflineAction;
 
-  const HttpRequestExtension({this.transformer});
+  const HttpRequestExtension({this.transformer, this.canProcessOfflineAction});
 }

@@ -43,6 +43,7 @@ class $_HttpMeta<PP, QP, I, R, E, T> {
   Future<dynamic> Function(I)? inputStorageSerializer;
   I Function(dynamic)? inputDeserializer;
   E Function(int status, dynamic resp)? errorDeserializer;
+  Future<bool> Function(Action)? canProcessOfflineAction;
   PP Function(dynamic)? pathParamsDeserializer;
   dynamic Function(PP)? pathParamsSerializer;
   QP Function(dynamic)? queryParamsDeserializer;
@@ -51,7 +52,7 @@ class $_HttpMeta<PP, QP, I, R, E, T> {
 
 @DImmutable()
 @optionalTypeArgs
-abstract class $_HttpPayload<PP, QP, I, R, E, T> {
+class $_HttpPayload<PP, QP, I, R, E, T> {
   late String url;
   I? data;
   late String method;

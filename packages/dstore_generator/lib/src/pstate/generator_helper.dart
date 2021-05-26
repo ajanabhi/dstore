@@ -238,6 +238,9 @@ ActionsInfo _getActionsInfo(
     if (h.responseSerializer != null) {
       params.add("responseSerializer: ${h.responseSerializer}");
     }
+    if (h.canProcessOfflineAction != null) {
+      params.add("canProcessOfflineAction: ${h.canProcessOfflineAction}");
+    }
     params.add("responseDeserializer: ${h.responseDeserializer}");
     final value =
         "HttpMeta<${pType},${qType},${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";

@@ -27,6 +27,7 @@ abstract class $_Action<M> {
   bool silent = false;
   M? mock;
   FormReq? form;
+  DateTime? offlinedAt;
   bool get isProcessed => internal?.processed ?? false;
   // currently only http actions support offline functionality
   Map<String, dynamic> toJson({HttpMeta? httpMeta}) {
@@ -38,6 +39,7 @@ abstract class $_Action<M> {
     map["name"] = name;
     map["type"] = type;
     map["http"] = http?.toJson(httpMeta!);
+    map["offlinedAt"] = offlinedAt?.millisecondsSinceEpoch;
     return map;
   }
 
@@ -45,6 +47,10 @@ abstract class $_Action<M> {
   static Action fromJson<M>(Map<String, dynamic> map, HttpMeta? httpMeta) {
     final name = map["name"] as String;
     final type = map["type"] as String;
+    final offlinedAtInt = map["offlinedAt"] as int?;
+    final offlinedAt = offlinedAtInt != null
+        ? DateTime.fromMillisecondsSinceEpoch(offlinedAtInt)
+        : null;
     final httpMap = map["http"] as Map<String, dynamic>?;
     HttpPayload? http;
     if (httpMap != null) {
@@ -55,7 +61,8 @@ abstract class $_Action<M> {
       http = HttpPayload.fromJson<dynamic, dynamic, dynamic, dynamic, dynamic,
           dynamic>(httpMap, httpMeta);
     }
-    return Action<M>(name: name, type: type, http: http);
+    return Action<M>(
+        name: name, type: type, http: http, offlinedAt: offlinedAt);
   }
 }
 
