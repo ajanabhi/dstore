@@ -160,6 +160,13 @@ abstract class SimpleHistoryActions {
         type: _SimpleHistory_FullPath,
         psHistoryPayload: PSHistoryPayload(keysModified: []));
   }
+
+  static Action<dynamic> clearHistory() {
+    return Action<dynamic>(
+        name: "clearHistory",
+        type: _SimpleHistory_FullPath,
+        psHistoryPayload: PSHistoryPayload(keysModified: []));
+  }
 }
 
 dynamic SimpleHistory_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {

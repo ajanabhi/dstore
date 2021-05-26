@@ -48,8 +48,9 @@ class Store<S extends AppStateI<S>> {
       List<Middleware<S>>? middlewares,
       S? initialState}) {
     middlewares ??= [];
+    middlewares.add(psHistoryMiddleware);
     middlewares.add(asyncMiddleware);
-    _dispatchers = _createDispatchers([psHistoryMiddleware, ...middlewares]);
+    _dispatchers = _createDispatchers(middlewares);
     _setNetworkOptions(networkOptions);
     if (storageOptions != null) {
       _prepareStoreFromStorage(stateCreator);
@@ -103,7 +104,9 @@ class Store<S extends AppStateI<S>> {
   void _prepareStoreFromStorage(S Function() stateCreator) async {
     try {
       final storage = storageOptions!.storage;
+      print("preparing store from storage");
       await storage.init();
+      print("after init");
       final sState =
           await storage.getKeys(internalMeta.values.map((e) => e.type));
       if (sState == null) {
@@ -189,6 +192,7 @@ class Store<S extends AppStateI<S>> {
     middlewares.reversed.forEach((m) {
       final next = dispatchers.last;
       dispatchers.add((Action<dynamic> action) {
+        print("executing dispatcher");
         m(this, next, action);
       });
     });
@@ -667,6 +671,7 @@ class Store<S extends AppStateI<S>> {
 
   dynamic dispatch(Action<dynamic> action) {
     print("Dispatching Action $action");
+    print("dispatchers length ${_dispatchers.length}");
     _dispatchers[0](action);
   }
 

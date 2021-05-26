@@ -17,8 +17,36 @@ extension on Map<dynamic, dynamic> {
 
 class StoreTester<S extends AppStateI<S>> {
   final Store<S> store;
+  final queue = <Action>[];
+  bool isReady = false;
+  StoreTester({required this.store, bool waitForStorage = false}) {
+    if (waitForStorage && store.storageOptions != null) {
+      isReady = false;
+      store.listenForReadyState(() {
+        handleReady();
+      });
+    } else {
+      isReady = true;
+    }
+  }
 
-  StoreTester(this.store);
+  S get state => store.state;
+
+  void handleReady() {
+    isReady = true;
+    queue.forEach((element) {
+      dispatch(element);
+    });
+    queue.clear();
+  }
+
+  dynamic dispatch(Action action) {
+    if (!isReady) {
+      queue.add(action);
+    } else {
+      store.dispatch(action);
+    }
+  }
 
   void testAction<M extends ToMap>(Action<M> action, M result,
       {bool throwsException = false}) {

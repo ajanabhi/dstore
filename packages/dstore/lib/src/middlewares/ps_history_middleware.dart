@@ -9,11 +9,14 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
   final payload = action.psHistoryPayload!;
   final currentState =
       store.getPStateModelFromAction(action) as PStateHistoryMixin;
+  print("_handlePsHistoryAction $currentState");
   if (action.name == "undo") {
     if (currentState.canUndo) {
       final initialState = store.getDefaultStateForAcion(action);
       final state =
-          currentState.dontTouchMePSHistory.internalUndo(initialState);
+          currentState.dontTouchMePSHistory.internalUndo(initialState)!;
+      (state as PStateHistoryMixin).dontTouchMePSHistory =
+          currentState.dontTouchMePSHistory;
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true, type: ActionInternalType.PSTATE, data: state)));
@@ -25,6 +28,7 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
   }
 
   if (action.name == "redo") {
+    print("executing ");
     if (currentState.canRedo) {
       final state = currentState.dontTouchMePSHistory
           .internalRedo(currentState as PStateModel);
@@ -37,7 +41,16 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
       return;
     }
   }
-
+  if (action.name == "clearHistory") {
+    if (currentState.canRedo || currentState.canUndo) {
+      currentState.dontTouchMePSHistory.internalClear();
+      print("cleared history");
+      return;
+    } else {
+      print("nothing to clear");
+      return;
+    }
+  }
   next(action.copyWith(afterComplete: (newState) {
     final hState = newState as PStateHistoryMixin;
     final keys = payload.keysModified;
@@ -49,7 +62,7 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
 
 dynamic psHistoryMiddleware<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) {
-  print("Async middleware $action next $next store $store ");
+  print("psHistoryMiddleware $action next $next store $store ");
   if (action.isProcessed) {
     return next(action);
   }

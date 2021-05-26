@@ -380,6 +380,10 @@ String _generateActionsCreators({
        static Action<dynamic> redo() {
        return Action<dynamic>(name:"redo",type:${type},psHistoryPayload : PSHistoryPayload(keysModified:[]));
      }
+
+      static Action<dynamic> clearHistory() {
+       return Action<dynamic>(name:"clearHistory",type:${type},psHistoryPayload : PSHistoryPayload(keysModified:[]));
+     }
     
     """;
   }

@@ -10,16 +10,21 @@ part of 'app_state.dart';
 class AppState implements AppStateI<AppState> {
   late final Simple simple;
   late final SimpleAsync simpleAsync;
+  late final SimpleHistory simpleHistory;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..simple = map.containsKey('simple') ? map['simple'] as Simple : this.simple
     ..simpleAsync = map.containsKey('simpleAsync')
         ? map['simpleAsync'] as SimpleAsync
-        : this.simpleAsync;
+        : this.simpleAsync
+    ..simpleHistory = map.containsKey('simpleHistory')
+        ? map['simpleHistory'] as SimpleHistory
+        : this.simpleHistory;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
         "simple": this.simple,
-        "simpleAsync": this.simpleAsync
+        "simpleAsync": this.simpleAsync,
+        "simpleHistory": this.simpleHistory
       };
 }
 
@@ -32,7 +37,8 @@ Store<AppState> createStore(
   return Store<AppState>(
       internalMeta: <String, PStateMeta>{
         "simple": SimpleMeta,
-        "simpleAsync": SimpleAsyncMeta
+        "simpleAsync": SimpleAsyncMeta,
+        "simpleHistory": SimpleHistoryMeta
       },
       stateCreator: () => AppState(),
       appVersion: '1.0.0',

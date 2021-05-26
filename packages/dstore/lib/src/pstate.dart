@@ -97,8 +97,10 @@ class PStateHistory<S extends PStateModel<S>> {
   S? internalRedo(S currentState) {
     if (canRedo) {
       final patch = _redos.removeFirst();
+      print("pacth $patch");
       _history.addLast(patch);
       final newState = currentState.copyWithMap(patch) as PStateHistoryMixin;
+      print("newState after redo $newState");
       newState._psHistory = this;
       return newState as S;
     }

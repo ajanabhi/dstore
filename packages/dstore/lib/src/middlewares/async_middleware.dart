@@ -50,6 +50,7 @@ dynamic asyncMiddleware<S extends AppStateI<S>>(
     return;
   }
   if (!action.isAsync) {
+    print("going to next in async");
     return next(action);
   }
   DstoreDevUtils.handleUnCaughtError(
