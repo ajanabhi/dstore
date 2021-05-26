@@ -5,12 +5,14 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 enum StorageSharedPrefsValueType { json, bytearray }
 
-class StorageSharedPrefs implements PersitantStorage<String> {
+class StorageSharedPrefs implements PersitantStorage {
   final StorageSharedPrefsValueType valueType;
   late final SharedPreferences _prefs;
   static const _prefix = "_DSTORE_STORAGE_";
 
   static const _version_key = "_DSTORE_APP_VERSION_";
+
+  static const _off_actions_key_prefix = "_DSTORE_OFFLINE_ACTION_";
 
   StorageSharedPrefs({this.valueType = StorageSharedPrefsValueType.json});
   @override
@@ -30,12 +32,14 @@ class StorageSharedPrefs implements PersitantStorage<String> {
     return result;
   }
 
+  Set<String> allKeys() => _prefs.getKeys();
+
   @override
   Future<Map<String, dynamic>?> getKeys(Iterable<String> keys) async {
     final keysToget = keys.toSet();
-    final allKeys = _prefs.getKeys();
-    await _removeNotUsedKeys(allKeys, keysToget);
-    if (allKeys.isEmpty) {
+    final aKeys = allKeys();
+    await _removeNotUsedKeys(aKeys, keysToget);
+    if (aKeys.isEmpty) {
       return null;
     }
     final result = <String, dynamic>{};
@@ -85,15 +89,15 @@ class StorageSharedPrefs implements PersitantStorage<String> {
   }
 
   @override
-  Future<String?> getOfflineActions() {
-    // TODO: implement getOfflineActions
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> saveOfflineActions(String? actions) {
-    // TODO: implement saveOfflineActions
-    throw UnimplementedError();
+  Future<List<Map<String, dynamic>>> getOfflineActions() async {
+    final result = <Map<String, dynamic>>[];
+    allKeys().forEach((key) async {
+      if (key.startsWith(_off_actions_key_prefix)) {
+        final v = _prefs.getString(key);
+        result.add(jsonDecode(v!) as Map<String, dynamic>);
+      }
+    });
+    return result;
   }
 
   @override
@@ -104,5 +108,27 @@ class StorageSharedPrefs implements PersitantStorage<String> {
   @override
   Future<void> setversion(String appVersion) async {
     await _prefs.setString(_version_key, appVersion);
+  }
+
+  @override
+  Future<void> setOfflineAction(String key, dynamic value) async {
+    switch (valueType) {
+      case StorageSharedPrefsValueType.json:
+        await _prefs.setString(
+            "$_off_actions_key_prefix$key", jsonEncode(value));
+        break;
+      case StorageSharedPrefsValueType.bytearray:
+        // TODO: Handle this case.
+        break;
+    }
+  }
+
+  @override
+  Future<void> clearOfflineActions() async {
+    allKeys().forEach((k) async {
+      if (k.startsWith(_off_actions_key_prefix)) {
+        await _prefs.remove(k);
+      }
+    });
   }
 }

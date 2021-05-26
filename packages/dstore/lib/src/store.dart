@@ -28,7 +28,7 @@ class Store<S extends AppStateI<S>> {
   final Map<String, Timer> internalDebounceTimers = {};
   late S _state;
   var isReady = false;
-  final StorageOptions<dynamic>? storageOptions;
+  final StorageOptions? storageOptions;
   void Function()? _onReadyListener;
   final bool useEqualsComparision;
   final StoreErrorHandle handleError;
@@ -37,7 +37,7 @@ class Store<S extends AppStateI<S>> {
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
 
-  PersitantStorage<dynamic>? get storage => storageOptions?.storage;
+  PersitantStorage? get storage => storageOptions?.storage;
   Store(
       {required this.internalMeta,
       this.storageOptions,
@@ -71,12 +71,12 @@ class Store<S extends AppStateI<S>> {
     }
   }
 
-  void _processOfflineActions() {
+  void _processOfflineActions() async {
     if (_offlineActions.isNotEmpty) {
       final ac = [..._offlineActions];
       _offlineActions.clear();
       if (storage != null) {
-        storage!.saveOfflineActions(null);
+        await storage!.clearOfflineActions();
       }
       ac.forEach((action) {
         dispatch(action);
@@ -84,16 +84,14 @@ class Store<S extends AppStateI<S>> {
     }
   }
 
-  void addOfflineAction(Action<dynamic> action) {
+  Future<void> addOfflineAction(Action<dynamic> action) async {
     assert(networkOptions != null);
     _offlineActions.add(action);
     if (storage != null) {
-      final json = jsonEncode(_offlineActions.map((e) {
-        final psm = getPStateMetaFromAction(e);
-        final httpMeta = psm.httpMetaMap?[e.name];
-        return e.toJson(httpMeta: httpMeta);
-      }));
-      storage!.saveOfflineActions(json);
+      final psm = getPStateMetaFromAction(action);
+      final httpMeta = psm.httpMetaMap?[action.name];
+      final data = action.toJson(httpMeta: httpMeta);
+      await storage!.setOfflineAction(action.id, data);
     }
   }
 
@@ -144,11 +142,9 @@ class Store<S extends AppStateI<S>> {
         _state = s.copyWithMap(map);
         await storage.setversion(appVersion);
       }
-      final offA = await storage.getOfflineActions() as String?;
-      if (offA != null) {
-        final actions =
-            (jsonDecode(offA) as List<Map<String, dynamic>>).map((e) {
-          // final psm = getPStateMetaFromAction(e);
+      final offA = await storage.getOfflineActions();
+      if (offA.isNotEmpty) {
+        final actions = offA.map((e) {
           final sk = _pStateTypeToStateKeyMap[e["type"]]!;
           final psm = internalMeta[sk]!;
           final httpMeta = psm.httpMetaMap?[e["name"]];

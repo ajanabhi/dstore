@@ -311,11 +311,6 @@ InputType? _getInputTypeFromReqoRRef(
   final c = rb.content.entries.first;
   contentType = c.key;
   type = _getTypeName(sor: c.value.schema, objectName: name);
-  // } else {
-  //   for (final c in rb.content.entries) {
-
-  //   }
-  // }
 
   final serializerName = "${name}Serializer";
   final deserializerName = "${name}Deserializer";
