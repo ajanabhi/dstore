@@ -71,7 +71,9 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
 }
 
 String convertWebSocketFieldInfoToAction(
-    {required WebSocketFieldInfo wsi, required String type}) {
+    {required WebSocketFieldInfo wsi,
+    required String type,
+    bool psHistoryEnabled = false}) {
   final name = wsi.name;
   final params = <String>[];
   final payloadParams = <String>[];
@@ -114,10 +116,15 @@ String convertWebSocketFieldInfoToAction(
 
   params.add("bool unsubscribe = false");
   payloadParams.add("unsubscribe: unsubscribe");
+  var psHistoryPayload = "";
+  if (psHistoryEnabled) {
+    psHistoryPayload =
+        ",psHistoryPayload : PSHistoryPayload(keysModified:['${name}'])";
+  }
 
   return """
-    static Action ${wsi.name}({${params.join(", ")}}) {
-      return Action(name: "$name", type: $type, ws: WebSocketPayload(${payloadParams.join(",")}));
+    static Action ${name}({${params.join(", ")}}) {
+      return Action(name: "$name", type: $type, ws: WebSocketPayload(${payloadParams.join(",")})$psHistoryPayload);
     }
    """;
 }

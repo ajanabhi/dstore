@@ -20,17 +20,19 @@ class StoreTester<S extends AppStateI<S>> {
 
   StoreTester(this.store);
 
-  void testAction<M extends ToMap>(Action<M> action, M result) {
+  void testAction<M extends ToMap>(Action<M> action, M result,
+      {bool throwsException = false}) {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     final after = store.getPStateModelFromAction(action);
-    expect(identical(before, after), false);
+    expect(identical(before, after), throwsException ? true : false);
     final mockMap = result.toMap();
     if (mockMap.isEmpty) {
       expect(before, after);
     } else {
       final afterMap = after.toMap();
       final beforeMap = before.toMap();
+      print("afterMap $afterMap , beforeMap $beforeMap");
       mockMap.forEach((key, dynamic value) {
         expect(value, afterMap[key]);
         beforeMap.remove(key);
@@ -40,7 +42,7 @@ class StoreTester<S extends AppStateI<S>> {
   }
 
   Future<void> testAsyncAction<M extends ToMap>(Action<M> action, M result,
-      {Duration? timeout, int interval = 4}) async {
+      {Duration? timeout, int interval = 4, AsyncActionField? af}) async {
     assert(action.isAsync == true);
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
@@ -51,7 +53,15 @@ class StoreTester<S extends AppStateI<S>> {
     expect(identical(before, after), false);
     final mockMap = result.toMap();
     if (mockMap.isEmpty) {
-      expect(before, after);
+      if (af == null) {
+        expect(before, after);
+      } else {
+        final afterMap = after.toMap();
+        final beforeMap = before.toMap();
+        expect(afterMap[action.name], af);
+        beforeMap.remove(action.name);
+        expect(beforeMap.identicalMembers(afterMap), true);
+      }
     } else {
       final afterMap = after.toMap();
       final beforeMap = before.toMap();

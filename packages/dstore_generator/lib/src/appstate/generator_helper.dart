@@ -24,7 +24,7 @@ String createAppState(FunctionElement element) {
   final createStore = """
     
     Store<$name> createStore({required StoreErrorHandle handleError, List<Middleware<$name>>? middlewares,
-    StorageOptions<dynamic>? storageOptions,
+    StorageOptions? storageOptions,
     NetworkOptions? networkOptions,
     bool useEqualsComparision = false}) {
       return Store<$name>(internalMeta :$meta ,

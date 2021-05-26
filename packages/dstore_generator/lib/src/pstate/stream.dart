@@ -29,12 +29,19 @@ StreamFieldInfo? _getStreamFieldInfoForElement(FieldElement element) {
 }
 
 String convertStreamFieldInfoToAction(
-    {required StreamFieldInfo sfi, required String type}) {
+    {required StreamFieldInfo sfi,
+    required String type,
+    bool psHistoryEnabled = false}) {
   final name = sfi.name;
   final mockType = "Iterable<${sfi.outputType}>";
+  var psHistoryPayload = "";
+  if (psHistoryEnabled) {
+    psHistoryPayload =
+        ",psHistoryPayload : PSHistoryPayload(keysModified:['${name}'])";
+  }
   return """
    static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType? mock}) {
-     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError));
+     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError)$psHistoryPayload);
    }
   """;
 }

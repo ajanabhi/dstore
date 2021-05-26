@@ -484,9 +484,9 @@ String converForEachStatementResultToString(
   final call = "${mi.target}.${mi.methodName}";
   final body =
       convertStatementResultsToString(fesr.statementResults, keys).join("\n");
-  return """${call}((${params}) => {
+  return """${call}((${params}) {
      ${body}
-  }) """;
+  }); """;
 }
 
 String convertTryStatementResultToString(
@@ -649,7 +649,7 @@ Tuple2<String, Set<String>> processMethodStatements(
     ${statementsStr}
     ${(historyEnabled || url != null || isNav) ? """
     final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")}$spl);
-    ${historyEnabled ? " newState.internalPSHistory = ${STATE_VARIABLE}.internalPSHistory;" : ""}
+    ${historyEnabled ? " newState.dontTouchMePSHistory = ${STATE_VARIABLE}.dontTouchMePSHistory;" : ""}
     ${isNav ? """ 
     newState.dontTouchMe = ${STATE_VARIABLE}.dontTouchMe;
     ${url != null ? " newState.dontTouchMe.url = '$url';" : "newState.dontTouchMe.url = null;"}
@@ -664,28 +664,45 @@ Tuple2<String, Set<String>> processMethodStatements(
 class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   final ClassElement element;
   final bool isNav;
-  final List<String> navFields = [];
+  final List<String> allowedClassMembers = [];
+  final List<String> allowedMethods = [];
+  final List<String> notAllowedClassMembers = [];
 
   MethodAstVisitor({required this.element, required this.isNav}) {
     if (isNav) {
-      navFields.addAll(navStateFeilds);
+      allowedClassMembers.addAll(navStateFeilds);
     }
+    allowedClassMembers.addAll(element.fields.map((e) => e.name));
+
+    allowedMethods.addAll(element.methods
+        .where((m) => m.annotationFromType(RegularMethod) != null)
+        .map((e) => e.name));
+    print("allowedClassMembers $allowedClassMembers");
+    notAllowedClassMembers.addAll(element.methods
+        .where((m) => m.annotationFromType(RegularMethod) == null)
+        .map((e) => e.name));
+    print("notAllowedClassMembers $notAllowedClassMembers");
   }
 
   @override
   dynamic visitSimpleIdentifier(SimpleIdentifier node) {
     final name = node.name;
     print(
-        "visitSimpleIdentifier $name , Parent ${node.parent}, ${node.parent.runtimeType} pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ${_isClassMemeber(name)}");
-    if (_isClassMemeber(name) && node.parent == null) {
+        "visitSimpleIdentifier $name , Parent ${node.parent}, ${node.parent.runtimeType} pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ");
+    if ((allowedClassMembers.contains(name) && node.parent == null) ||
+        (allowedMethods.contains(name) &&
+            node.parent?.toString().startsWith("this.") != true)) {
       print(element.fields.map((e) => e.name));
       throw NotAllowedError(
           "You should access class memeber ${name} with this. prefix , example : this.${name} , if $name is not a class memeber probably you're shadowing variable if thats the case please use different name for your local variable");
     }
+
+    if (notAllowedClassMembers.contains(name) &&
+        (node.parent == null ||
+            node.parent?.toString().startsWith("this.") == true)) {
+      throw NotAllowedError(
+          "You shouldnt call action method with name '${name}' inside any other method, if you want to reuse logic use methods with @RegularMethod() annotation ");
+    }
     return super.visitSimpleIdentifier(node);
   }
-
-  bool _isClassMemeber(String name) =>
-      element.fields.where((element) => element.name == name).isNotEmpty ||
-      navFields.contains(name);
 }

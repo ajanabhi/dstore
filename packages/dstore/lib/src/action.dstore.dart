@@ -7,6 +7,76 @@ part of 'action.dart';
 // DImmutableGenerator
 // **************************************************************************
 
+class PSHistoryPayload {
+  final List<String> keysModified;
+
+  _$PSHistoryPayloadCopyWith<PSHistoryPayload> get copyWith =>
+      __$PSHistoryPayloadCopyWithImpl<PSHistoryPayload>(this, IdentityFn);
+
+  const PSHistoryPayload({required this.keysModified});
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is PSHistoryPayload && o.keysModified == keysModified;
+  }
+
+  @override
+  int get hashCode => keysModified.hashCode;
+
+  @override
+  String toString() => "PSHistoryPayload(keysModified: ${this.keysModified})";
+}
+
+abstract class $PSHistoryPayloadCopyWith<O> {
+  factory $PSHistoryPayloadCopyWith(
+          PSHistoryPayload value, O Function(PSHistoryPayload) then) =
+      _$PSHistoryPayloadCopyWithImpl<O>;
+  O call({List<String> keysModified});
+}
+
+class _$PSHistoryPayloadCopyWithImpl<O>
+    implements $PSHistoryPayloadCopyWith<O> {
+  final PSHistoryPayload _value;
+  final O Function(PSHistoryPayload) _then;
+  _$PSHistoryPayloadCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? keysModified = dimmutable}) {
+    return _then(_value.copyWith(
+        keysModified: keysModified == dimmutable
+            ? _value.keysModified
+            : keysModified as List<String>));
+  }
+}
+
+abstract class _$PSHistoryPayloadCopyWith<O>
+    implements $PSHistoryPayloadCopyWith<O> {
+  factory _$PSHistoryPayloadCopyWith(
+          PSHistoryPayload value, O Function(PSHistoryPayload) then) =
+      __$PSHistoryPayloadCopyWithImpl<O>;
+  O call({List<String> keysModified});
+}
+
+class __$PSHistoryPayloadCopyWithImpl<O>
+    extends _$PSHistoryPayloadCopyWithImpl<O>
+    implements _$PSHistoryPayloadCopyWith<O> {
+  __$PSHistoryPayloadCopyWithImpl(
+      PSHistoryPayload _value, O Function(PSHistoryPayload) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  PSHistoryPayload get _value => super._value;
+
+  @override
+  O call({Object? keysModified = dimmutable}) {
+    return _then(PSHistoryPayload(
+        keysModified: keysModified == dimmutable
+            ? _value.keysModified
+            : keysModified as List<String>));
+  }
+}
+
 class Action<M> {
   final String name;
 
@@ -26,11 +96,13 @@ class Action<M> {
 
   final ActionInternal? internal;
 
+  final PSHistoryPayload? psHistoryPayload;
+
   final StreamPayload? stream;
 
   final Duration? debounce;
 
-  final void Function(PStateModel state)? afterSilent;
+  final void Function(PStateModel state)? afterComplete;
 
   final bool silent;
 
@@ -53,9 +125,10 @@ class Action<M> {
       this.ws,
       this.extra,
       this.internal,
+      this.psHistoryPayload,
       this.stream,
       this.debounce,
-      this.afterSilent,
+      this.afterComplete,
       this.silent = false,
       this.mock,
       this.form,
@@ -110,9 +183,10 @@ class Action<M> {
         o.ws == ws &&
         o.extra == extra &&
         o.internal == internal &&
+        o.psHistoryPayload == psHistoryPayload &&
         o.stream == stream &&
         o.debounce == debounce &&
-        o.afterSilent == afterSilent &&
+        o.afterComplete == afterComplete &&
         o.silent == silent &&
         o.mock == mock &&
         o.form == form &&
@@ -130,9 +204,10 @@ class Action<M> {
       ws.hashCode ^
       extra.hashCode ^
       internal.hashCode ^
+      psHistoryPayload.hashCode ^
       stream.hashCode ^
       debounce.hashCode ^
-      afterSilent.hashCode ^
+      afterComplete.hashCode ^
       silent.hashCode ^
       mock.hashCode ^
       form.hashCode ^
@@ -140,7 +215,7 @@ class Action<M> {
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, nav: ${this.nav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, stream: ${this.stream}, debounce: ${this.debounce}, afterSilent: ${this.afterSilent}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form}, offlinedAt: ${this.offlinedAt})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, nav: ${this.nav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, psHistoryPayload: ${this.psHistoryPayload}, stream: ${this.stream}, debounce: ${this.debounce}, afterComplete: ${this.afterComplete}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form}, offlinedAt: ${this.offlinedAt})";
 }
 
 abstract class $ActionCopyWith<M, O> {
@@ -156,9 +231,10 @@ abstract class $ActionCopyWith<M, O> {
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
       dynamic? extra,
       ActionInternal? internal,
+      PSHistoryPayload? psHistoryPayload,
       StreamPayload? stream,
       Duration? debounce,
-      void Function(PStateModel state)? afterSilent,
+      void Function(PStateModel state)? afterComplete,
       bool silent,
       M? mock,
       FormReq? form,
@@ -181,9 +257,10 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
       Object? ws = dimmutable,
       Object? extra = dimmutable,
       Object? internal = dimmutable,
+      Object? psHistoryPayload = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
-      Object? afterSilent = dimmutable,
+      Object? afterComplete = dimmutable,
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable,
@@ -204,12 +281,15 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
+        psHistoryPayload: psHistoryPayload == dimmutable
+            ? _value.psHistoryPayload
+            : psHistoryPayload as PSHistoryPayload?,
         stream: stream == dimmutable ? _value.stream : stream as StreamPayload?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
-        afterSilent: afterSilent == dimmutable
-            ? _value.afterSilent
-            : afterSilent as void Function(PStateModel state)?,
+        afterComplete: afterComplete == dimmutable
+            ? _value.afterComplete
+            : afterComplete as void Function(PStateModel state)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?,
@@ -232,9 +312,10 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       WebSocketPayload<dynamic, dynamic, dynamic>? ws,
       dynamic? extra,
       ActionInternal? internal,
+      PSHistoryPayload? psHistoryPayload,
       StreamPayload? stream,
       Duration? debounce,
-      void Function(PStateModel state)? afterSilent,
+      void Function(PStateModel state)? afterComplete,
       bool silent,
       M? mock,
       FormReq? form,
@@ -260,9 +341,10 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
       Object? ws = dimmutable,
       Object? extra = dimmutable,
       Object? internal = dimmutable,
+      Object? psHistoryPayload = dimmutable,
       Object? stream = dimmutable,
       Object? debounce = dimmutable,
-      Object? afterSilent = dimmutable,
+      Object? afterComplete = dimmutable,
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable,
@@ -283,12 +365,15 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         internal: internal == dimmutable
             ? _value.internal
             : internal as ActionInternal?,
+        psHistoryPayload: psHistoryPayload == dimmutable
+            ? _value.psHistoryPayload
+            : psHistoryPayload as PSHistoryPayload?,
         stream: stream == dimmutable ? _value.stream : stream as StreamPayload?,
         debounce:
             debounce == dimmutable ? _value.debounce : debounce as Duration?,
-        afterSilent: afterSilent == dimmutable
-            ? _value.afterSilent
-            : afterSilent as void Function(PStateModel state)?,
+        afterComplete: afterComplete == dimmutable
+            ? _value.afterComplete
+            : afterComplete as void Function(PStateModel state)?,
         silent: silent == dimmutable ? _value.silent : silent as bool,
         mock: mock == dimmutable ? _value.mock : mock as M?,
         form: form == dimmutable ? _value.form : form as FormReq?,

@@ -59,13 +59,13 @@ Future<String> generatePStateForClassElement(
   final typeVariable = "_${modelName}_FullPath";
   final actionsInfo = _getActionsInfo(
     element: element,
-    visitor: visitor,
+    fields: fields,
+    methods: methods,
     modelName: modelName,
     enableHistory: pstate.enableHistory,
     type: typeVariable,
   );
-  final actionsmeta =
-      _getActionsmeta(visitor.methods, actionsInfo.specialActions);
+  final actionsmeta = _getActionsmeta(methods, actionsInfo.specialActions);
   final actions = actionsInfo.actions;
   final pstateMeta = getPStateMeta(
       modelName: modelName,
@@ -192,7 +192,8 @@ String getPStateMeta(
 
 ActionsInfo _getActionsInfo(
     {required ClassElement element,
-    required PStateAstVisitor visitor,
+    required List<PStateMethod> methods,
+    required List<Field> fields,
     required String modelName,
     required bool enableHistory,
     required String type}) {
@@ -203,14 +204,14 @@ ActionsInfo _getActionsInfo(
   specialActions.addAll(streamFields.map((e) => e.name));
   final websocketFields = getWebSocketFields(element.fields);
   specialActions.addAll(websocketFields.map((e) => e.name));
-  final formFields = visitor.fields
-      .where((f) => f.type.toString().startsWith("FormField"))
-      .toList();
+  final formFields =
+      fields.where((f) => f.type.toString().startsWith("FormField")).toList();
   final actions = _generateActionsCreators(
-      methods: visitor.methods,
+      methods: methods,
       modelName: modelName,
       type: type,
       streamFields: streamFields,
+      psHistoryEnabled: enableHistory,
       websocketFields: websocketFields,
       formFields: formFields,
       httpFields: httpFields);
@@ -294,6 +295,7 @@ String _generateActionsCreators({
   List<WebSocketFieldInfo> websocketFields = const [],
   Iterable<Field> formFields = const [],
   required String modelName,
+  bool psHistoryEnabled = false,
   required String type,
 }) {
   final mockModels = <String>[];
@@ -311,7 +313,6 @@ String _generateActionsCreators({
     }
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     mockModels.add(_createMockModel(name: mockName, fields: m.keysModified));
-    // paramsList.add("$mockName? mock");
     paramsList.add("bool silent = false");
     final params = paramsList.join(", ");
 
@@ -323,37 +324,65 @@ String _generateActionsCreators({
     if (payload.isNotEmpty) {
       payload = ", payload: ${payload}";
     }
+    var psHistoryPayload = "";
+    if (psHistoryEnabled) {
+      psHistoryPayload =
+          ",psHistoryPayload : PSHistoryPayload(keysModified:${jsonEncode(m.keysModified.map((e) => e.name).toList())})";
+    }
 
     return """
       static Action<$mockName> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+         return Action<$mockName>(name:"${m.name}",silent:silent,type:${type} $psHistoryPayload ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
       
       static Action<${mockName}> ${m.name}Mock($mockName mock) {
-        return Action<$mockName>(name:"${m.name}",type:${type},mock:mock);
+        return Action<$mockName>(name:"${m.name}",type:${type}, mock:mock$psHistoryPayload);
       }
     """;
   }).join("\n");
   final httpActions = httpFields
       .map((hf) => convertHttpFieldInfoToAction(
-          hf: hf, type: type, modelName: modelName))
+          hf: hf,
+          type: type,
+          modelName: modelName,
+          psHistoryEnabled: psHistoryEnabled))
       .join("\n");
 
   final streamActions = streamFields
-      .map((e) => convertStreamFieldInfoToAction(sfi: e, type: type))
+      .map((e) => convertStreamFieldInfoToAction(
+          sfi: e, type: type, psHistoryEnabled: psHistoryEnabled))
       .join("\n");
 
   final websocketActions = websocketFields
-      .map((e) => convertWebSocketFieldInfoToAction(wsi: e, type: type))
+      .map((e) => convertWebSocketFieldInfoToAction(
+          wsi: e, type: type, psHistoryEnabled: psHistoryEnabled))
       .join("\n");
 
   final formActions = formFields.map((ff) {
+    var psHistoryPayload = "";
+    if (psHistoryEnabled) {
+      psHistoryPayload =
+          ",psHistoryPayload : PSHistoryPayload(keysModified:['${ff.name}'])";
+    }
     return """
    static Action<dynamic> ${ff.name}(FormReq req) {
-     return Action<dynamic>(name:"$ff.name}",type:${type},form:req);
+     return Action<dynamic>(name:"${ff.name}",type:${type},form:req$psHistoryPayload);
    }
    """;
   }).join("\n");
+
+  var undoRedoActions = "";
+  if (psHistoryEnabled) {
+    undoRedoActions = """
+     static Action<dynamic> undo() {
+       return Action<dynamic>(name:"undo",type:${type},psHistoryPayload : PSHistoryPayload(keysModified:[]));
+     }
+       static Action<dynamic> redo() {
+       return Action<dynamic>(name:"redo",type:${type},psHistoryPayload : PSHistoryPayload(keysModified:[]));
+     }
+    
+    """;
+  }
 
   return """
       ${mockModels.join("\n")}
@@ -364,6 +393,7 @@ String _generateActionsCreators({
          ${formActions}
          ${streamActions}
          ${websocketActions}
+         ${undoRedoActions}
      }
   """;
 }

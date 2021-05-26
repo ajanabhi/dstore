@@ -10,6 +10,11 @@ import 'package:dstore_annotation/dstore_annotation.dart';
 part "action.dstore.dart";
 
 @dimmutable
+class $_PSHistoryPayload {
+  late List<String> keysModified;
+}
+
+@dimmutable
 @optionalTypeArgs
 abstract class $_Action<M> {
   late String name;
@@ -21,9 +26,10 @@ abstract class $_Action<M> {
   WebSocketPayload<dynamic, dynamic, dynamic>? ws;
   dynamic? extra;
   ActionInternal? internal;
+  PSHistoryPayload? psHistoryPayload;
   StreamPayload? stream;
   Duration? debounce;
-  void Function(PStateModel state)? afterSilent;
+  void Function(PStateModel state)? afterComplete;
   bool silent = false;
   M? mock;
   FormReq? form;

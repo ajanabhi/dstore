@@ -11,4 +11,7 @@ class DStoreError {
   final Action<dynamic>? action;
 
   DStoreError({required this.e, required this.st, this.action});
+
+  @override
+  String toString() => 'DStoreError(e: $e, st: $st, action: $action)';
 }

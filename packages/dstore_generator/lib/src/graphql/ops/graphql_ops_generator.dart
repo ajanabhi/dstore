@@ -142,7 +142,6 @@ String generateOpsTypeForQuery({
     """;
     final req = """
    @WebSocketRequest(
-    ,
     url: "${api.wsUrl}",
     graphqlQuery: $graphqlQuery,
     inputSerializer: $inputSerilizer,

@@ -128,7 +128,8 @@ GraphqlRequestPart? getGraphqlRequestPartFromDartObj(
 String convertHttpFieldInfoToAction(
     {required HttpFieldInfo hf,
     required String type,
-    required String modelName}) {
+    required String modelName,
+    bool psHistoryEnabled = false}) {
   final params = <String>[];
   final payloadFields = <String>[];
   if (hf.queryParamsType != null) {
@@ -194,14 +195,20 @@ String convertHttpFieldInfoToAction(
   final mergeHeaders = hf.headers != null
       ? "headers = <String,dynamic>{...<String,String>${hf.headers},...headers ?? <String,String>{}};"
       : "";
+
+  var psHistoryPayload = "";
+  if (psHistoryEnabled) {
+    psHistoryPayload =
+        ",psHistoryPayload : PSHistoryPayload(keysModified:['${hf.name}'])";
+  }
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
         $mergeHeaders
-        return Action<$mockType>(name:"${hf.name}",type:${type},silent:silent,http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce);
+        return Action<$mockType>(name:"${hf.name}",type:${type},silent:silent,http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce$psHistoryPayload);
       }
 
       static Action<${mockType}> ${hf.name}Mock($mockType mock) {
-        return Action<$mockType>(name:"${hf.name}",type:${type},mock:mock);
+        return Action<$mockType>(name:"${hf.name}",type:${type},mock:mock$psHistoryPayload);
       }
     """;
 }

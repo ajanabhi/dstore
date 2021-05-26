@@ -11,10 +11,7 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:tuple/tuple.dart';
 
 const navStateFeilds = [
-  "page",
-  "redirectToAction",
-  "beforeLeave",
-  "historyUpdate"
+  "meta",
 ];
 
 const navStateRegularMethods = [

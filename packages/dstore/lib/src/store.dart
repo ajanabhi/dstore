@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:dstore/dstore.dart';
 import 'package:dstore/src/action.dart';
 import 'package:dstore/src/extensions.dart';
@@ -50,7 +49,7 @@ class Store<S extends AppStateI<S>> {
       S? initialState}) {
     middlewares ??= [];
     middlewares.add(asyncMiddleware);
-    _dispatchers = _createDispatchers(middlewares);
+    _dispatchers = _createDispatchers([psHistoryMiddleware, ...middlewares]);
     _setNetworkOptions(networkOptions);
     if (storageOptions != null) {
       _prepareStoreFromStorage(stateCreator);
@@ -197,67 +196,74 @@ class Store<S extends AppStateI<S>> {
   }
 
   dynamic _defaultDispatch(Action<dynamic> action) {
-    final sk = getStateKeyForPstateType(action.type);
-    final psm = internalMeta[sk]!;
-    final gsMap = _state.toMap();
-    final currentS = gsMap[sk]!;
-    var newS = currentS;
-    if (action.isProcessed) {
-      // processed by middlewares
-      if (action.internal?.type == ActionInternalType.FIELD) {
-        final csMap = currentS.toMap();
-        csMap[action.name] = action.internal!.data;
-        newS = currentS.copyWithMap(csMap) as PStateModel;
-      } else if (action.internal!.type == ActionInternalType.PSTATE) {
-        newS = action.internal!.data as PStateModel;
-      }
-    } else {
-      if (DstoreDevUtils.isDebugMode) {
-        if (action.ws != null) {
-          throw ArgumentError.value(
-              "action ${action.id} is a websocket action , looks like you didnt added websocket middleware while creating store!");
+    dynamic processDefaultDispatch(Action action) {
+      final sk = getStateKeyForPstateType(action.type);
+      final psm = internalMeta[sk]!;
+      final gsMap = _state.toMap();
+      final currentS = gsMap[sk]!;
+      var newS = currentS;
+      if (action.isProcessed) {
+        // processed by middlewares
+        if (action.internal?.type == ActionInternalType.FIELD) {
+          final csMap = currentS.toMap();
+          csMap[action.name] = action.internal!.data;
+          newS = currentS.copyWithMap(csMap) as PStateModel;
+        } else if (action.internal!.type == ActionInternalType.PSTATE) {
+          newS = action.internal!.data as PStateModel;
         }
-        if (action.http != null) {
-          throw ArgumentError.value(
-              "action ${action.id} is a http action , looks like you didnt added http middleware while creating store!");
-        }
-        if (action.form != null) {
-          throw ArgumentError.value(
-              "action ${action.id} is form action , looks like you didnt added form middleware while creating store!");
-        }
-
-        if (action.stream != null) {
-          throw ArgumentError.value(
-              "action ${action.id} is stream action , looks like you didn't added stream middleware while creating store!");
-        }
-      }
-      dynamic mock = internalMocksMap[action.id];
-      if (mock != null) {
-        mock = mock as ToMap;
-        newS = currentS.copyWithMap(mock.toMap()) as PStateModel;
       } else {
-        newS = psm.reducer!(currentS, action) as PStateModel;
+        if (DstoreDevUtils.isDebugMode) {
+          if (action.ws != null) {
+            throw ArgumentError.value(
+                "action ${action.id} is a websocket action , looks like you didnt added websocket middleware while creating store!");
+          }
+          if (action.http != null) {
+            throw ArgumentError.value(
+                "action ${action.id} is a http action , looks like you didnt added http middleware while creating store!");
+          }
+          if (action.form != null) {
+            throw ArgumentError.value(
+                "action ${action.id} is form action , looks like you didnt added form middleware while creating store!");
+          }
+
+          if (action.stream != null) {
+            throw ArgumentError.value(
+                "action ${action.id} is stream action , looks like you didn't added stream middleware while creating store!");
+          }
+        }
+        dynamic mock = internalMocksMap[action.id];
+        if (mock != null) {
+          mock = mock as ToMap;
+          newS = currentS.copyWithMap(mock.toMap()) as PStateModel;
+        } else {
+          newS = psm.reducer!(currentS, action) as PStateModel;
+        }
+      }
+      if (action.silent) {
+        print("Silent Action");
+        _handleSilentActionStateChange(
+            stateKey: sk,
+            previousState: currentS,
+            psm: psm,
+            action: action,
+            newGlobalStateMap: gsMap,
+            newState: newS);
+      } else if (!identical(newS, currentS)) {
+        gsMap[sk] = newS;
+        _handleStateChange(
+            stateKey: sk,
+            previousState: currentS,
+            psm: psm,
+            action: action,
+            newGlobalStateMap: gsMap,
+            newState: newS);
       }
     }
-    if (action.silent) {
-      print("Silent Action");
-      _handleSilentActionStateChange(
-          stateKey: sk,
-          previousState: currentS,
-          psm: psm,
-          action: action,
-          newGlobalStateMap: gsMap,
-          newState: newS);
-    } else if (!identical(newS, currentS)) {
-      gsMap[sk] = newS;
-      _handleStateChange(
-          stateKey: sk,
-          previousState: currentS,
-          psm: psm,
-          action: action,
-          newGlobalStateMap: gsMap,
-          newState: newS);
-    }
+
+    DstoreDevUtils.handleUnCaughtError(
+        store: this,
+        action: action,
+        callback: () => processDefaultDispatch(action));
   }
 
   void _handleStateChange(
@@ -285,6 +291,9 @@ class Store<S extends AppStateI<S>> {
                 stateKey: stateKey,
                 previousState: previousState,
                 currentState: newState);
+            if (action.afterComplete != null) {
+              action.afterComplete!(newState);
+            }
           }
         } catch (e) {
           rethrow;
@@ -315,6 +324,9 @@ class Store<S extends AppStateI<S>> {
         } catch (e) {
           rethrow;
         }
+        if (action.afterComplete != null) {
+          action.afterComplete!(newState);
+        }
       }
     } else {
       _setStoreDepsForPState(previousState, null);
@@ -324,6 +336,9 @@ class Store<S extends AppStateI<S>> {
           stateKey: stateKey,
           previousState: previousState,
           currentState: newState);
+      if (action.afterComplete != null) {
+        action.afterComplete!(newState);
+      }
     }
   }
 
@@ -348,8 +363,8 @@ class Store<S extends AppStateI<S>> {
             _setStoreDepsForPState(previousState, null);
             _setStoreDepsForPState(newState, this);
             _state = _state.copyWithMap(newGlobalStateMap);
-            if (action.afterSilent != null) {
-              action.afterSilent!(newState);
+            if (action.afterComplete != null) {
+              action.afterComplete!(newState);
             }
           }
         } catch (e) {
@@ -373,16 +388,16 @@ class Store<S extends AppStateI<S>> {
         } catch (e) {
           rethrow;
         }
-        if (action.afterSilent != null) {
-          action.afterSilent!(newState);
+        if (action.afterComplete != null) {
+          action.afterComplete!(newState);
         }
       }
     } else {
       _setStoreDepsForPState(previousState, null);
       _setStoreDepsForPState(newState, this);
       _state = _state.copyWithMap(newGlobalStateMap);
-      if (action.afterSilent != null) {
-        action.afterSilent!(newState);
+      if (action.afterComplete != null) {
+        action.afterComplete!(newState);
       }
     }
   }
@@ -633,6 +648,11 @@ class Store<S extends AppStateI<S>> {
     final sk = getStateKeyForPstateType(psType);
     final gsMap = state.toMap();
     return gsMap[sk]!;
+  }
+
+  PStateModel<dynamic> getDefaultStateForAcion(Action<dynamic> action) {
+    final psm = getPStateMetaFromAction(action);
+    return psm.ds();
   }
 
   dynamic getFieldFromAction(Action<dynamic> action) {

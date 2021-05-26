@@ -4,32 +4,6 @@ import 'package:dstore/src/store.dart';
 import 'package:dstore/src/types.dart';
 import 'package:dstore/src/utils/utils.dart';
 
-dynamic asyncMiddleware<S extends AppStateI<S>>(
-    Store<S> store, Dispatch next, Action<dynamic> action) {
-  print("Async middleware $action next $next store $store ");
-  if (action.isProcessed) {
-    return next(action);
-  }
-  dynamic mock = store.internalMocksMap[action.id]?.mock;
-  if (mock != null) {
-    // final mock
-    mock = mock as ToMap;
-    final model = store.getPStateModelFromAction(action);
-    dynamic newS = model.copyWithMap(mock.toMap());
-    store.dispatch(action.copyWith(
-        internal: ActionInternal(
-            processed: true, data: newS, type: ActionInternalType.PSTATE)));
-    return;
-  }
-  if (!action.isAsync) {
-    return next(action);
-  }
-  DstoreDevUtils.handleUnCaughtError(
-      store: store,
-      action: action,
-      callback: () => _handleAsyncAction(store, next, action));
-}
-
 void _handleAsyncAction<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) async {
   final sk = store.getStateKeyForPstateType(action.type);
@@ -56,4 +30,30 @@ void _handleAsyncAction<S extends AppStateI<S>>(
             type: ActionInternalType.FIELD,
             data: AsyncActionField(error: e, completed: true))));
   }
+}
+
+dynamic asyncMiddleware<S extends AppStateI<S>>(
+    Store<S> store, Dispatch next, Action<dynamic> action) {
+  print("Async middleware $action next $next store $store ");
+  if (action.isProcessed) {
+    return next(action);
+  }
+  dynamic mock = store.internalMocksMap[action.id]?.mock;
+  if (mock != null) {
+    // final mock
+    mock = mock as ToMap;
+    final model = store.getPStateModelFromAction(action);
+    dynamic newS = model.copyWithMap(mock.toMap());
+    store.dispatch(action.copyWith(
+        internal: ActionInternal(
+            processed: true, data: newS, type: ActionInternalType.PSTATE)));
+    return;
+  }
+  if (!action.isAsync) {
+    return next(action);
+  }
+  DstoreDevUtils.handleUnCaughtError(
+      store: store,
+      action: action,
+      callback: () => _handleAsyncAction(store, next, action));
 }

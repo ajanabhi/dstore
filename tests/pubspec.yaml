@@ -1,6 +1,6 @@
 name: dstore_test_suite
 description: A starting point for Dart libraries or applications.
-# version: 1.0.0
+version: 1.0.0
 # homepage: https://www.example.com
 
 environment:
@@ -11,6 +11,10 @@ dependencies:
    sdk: flutter 
  dstore_flutter:
    path: ../packages/dstore_flutter/
+ dstore:
+   path: ../packages/dstore/ 
+ dstore_test:
+   path: ../packages/dstore_test/    
 
 dev_dependencies:
   test: ^1.14.4
