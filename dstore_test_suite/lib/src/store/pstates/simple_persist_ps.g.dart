@@ -8,7 +8,7 @@ part of 'simple_persist_ps.dart';
 
 SimplePersist _$SimplePersistFromJson(Map<String, dynamic> json) =>
     SimplePersist(
-      x: json['x'] as int? ?? 0,
+      x: json['x'] as int,
     );
 
 Map<String, dynamic> _$SimplePersistToJson(SimplePersist instance) =>

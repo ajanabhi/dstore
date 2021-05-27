@@ -36,6 +36,7 @@ class HttpFieldInfo {
   final String? pathParamsType;
   final GraphqlRequestPart? graphqlQuery;
   final String responseType;
+  final bool persitDataBetweenFetches;
 
   HttpFieldInfo({
     required this.name,
@@ -56,6 +57,7 @@ class HttpFieldInfo {
     required this.method,
     this.inputSerializer,
     this.transformer,
+    this.persitDataBetweenFetches = false,
     required this.queryParamsType,
     this.graphqlQuery,
   });

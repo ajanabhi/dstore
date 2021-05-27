@@ -48,6 +48,7 @@ class $_HttpMeta<PP, QP, I, R, E, T> {
   dynamic Function(PP)? pathParamsSerializer;
   QP Function(dynamic)? queryParamsDeserializer;
   dynamic Function(QP)? queryParamsSerializer;
+  bool persitDataBetweenFetches = false;
 }
 
 @DImmutable()

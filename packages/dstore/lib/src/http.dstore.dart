@@ -222,6 +222,8 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   final dynamic Function(QP)? queryParamsSerializer;
 
+  final bool persitDataBetweenFetches;
+
   _$HttpMetaCopyWith<PP, QP, I, R, E, T, HttpMeta<PP, QP, I, R, E, T>>
       get copyWith => __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T,
           HttpMeta<PP, QP, I, R, E, T>>(this, IdentityFn);
@@ -238,7 +240,8 @@ class HttpMeta<PP, QP, I, R, E, T> {
       this.pathParamsDeserializer,
       this.pathParamsSerializer,
       this.queryParamsDeserializer,
-      this.queryParamsSerializer});
+      this.queryParamsSerializer,
+      this.persitDataBetweenFetches = false});
 
   @override
   bool operator ==(Object o) {
@@ -255,7 +258,8 @@ class HttpMeta<PP, QP, I, R, E, T> {
         o.pathParamsDeserializer == pathParamsDeserializer &&
         o.pathParamsSerializer == pathParamsSerializer &&
         o.queryParamsDeserializer == queryParamsDeserializer &&
-        o.queryParamsSerializer == queryParamsSerializer;
+        o.queryParamsSerializer == queryParamsSerializer &&
+        o.persitDataBetweenFetches == persitDataBetweenFetches;
   }
 
   @override
@@ -271,11 +275,12 @@ class HttpMeta<PP, QP, I, R, E, T> {
       pathParamsDeserializer.hashCode ^
       pathParamsSerializer.hashCode ^
       queryParamsDeserializer.hashCode ^
-      queryParamsSerializer.hashCode;
+      queryParamsSerializer.hashCode ^
+      persitDataBetweenFetches.hashCode;
 
   @override
   String toString() =>
-      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer}, canProcessOfflineAction: ${this.canProcessOfflineAction}, pathParamsDeserializer: ${this.pathParamsDeserializer}, pathParamsSerializer: ${this.pathParamsSerializer}, queryParamsDeserializer: ${this.queryParamsDeserializer}, queryParamsSerializer: ${this.queryParamsSerializer})";
+      "HttpMeta(responseDeserializer: ${this.responseDeserializer}, responseSerializer: ${this.responseSerializer}, transformer: ${this.transformer}, inputSerializer: ${this.inputSerializer}, inputStorageSerializer: ${this.inputStorageSerializer}, inputDeserializer: ${this.inputDeserializer}, errorDeserializer: ${this.errorDeserializer}, canProcessOfflineAction: ${this.canProcessOfflineAction}, pathParamsDeserializer: ${this.pathParamsDeserializer}, pathParamsSerializer: ${this.pathParamsSerializer}, queryParamsDeserializer: ${this.queryParamsDeserializer}, queryParamsSerializer: ${this.queryParamsSerializer}, persitDataBetweenFetches: ${this.persitDataBetweenFetches})";
 }
 
 abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
@@ -295,7 +300,8 @@ abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
-      dynamic Function(QP)? queryParamsSerializer});
+      dynamic Function(QP)? queryParamsSerializer,
+      bool persitDataBetweenFetches});
 }
 
 class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
@@ -317,7 +323,8 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? pathParamsDeserializer = dimmutable,
       Object? pathParamsSerializer = dimmutable,
       Object? queryParamsDeserializer = dimmutable,
-      Object? queryParamsSerializer = dimmutable}) {
+      Object? queryParamsSerializer = dimmutable,
+      Object? persitDataBetweenFetches = dimmutable}) {
     return _then(_value.copyWith(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
@@ -355,7 +362,10 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : queryParamsDeserializer as QP Function(dynamic)?,
         queryParamsSerializer: queryParamsSerializer == dimmutable
             ? _value.queryParamsSerializer
-            : queryParamsSerializer as dynamic Function(QP)?));
+            : queryParamsSerializer as dynamic Function(QP)?,
+        persitDataBetweenFetches: persitDataBetweenFetches == dimmutable
+            ? _value.persitDataBetweenFetches
+            : persitDataBetweenFetches as bool));
   }
 }
 
@@ -377,7 +387,8 @@ abstract class _$HttpMetaCopyWith<PP, QP, I, R, E, T, O>
       PP Function(dynamic)? pathParamsDeserializer,
       dynamic Function(PP)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
-      dynamic Function(QP)? queryParamsSerializer});
+      dynamic Function(QP)? queryParamsSerializer,
+      bool persitDataBetweenFetches});
 }
 
 class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
@@ -403,7 +414,8 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
       Object? pathParamsDeserializer = dimmutable,
       Object? pathParamsSerializer = dimmutable,
       Object? queryParamsDeserializer = dimmutable,
-      Object? queryParamsSerializer = dimmutable}) {
+      Object? queryParamsSerializer = dimmutable,
+      Object? persitDataBetweenFetches = dimmutable}) {
     return _then(HttpMeta(
         responseDeserializer: responseDeserializer == dimmutable
             ? _value.responseDeserializer
@@ -441,7 +453,10 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : queryParamsDeserializer as QP Function(dynamic)?,
         queryParamsSerializer: queryParamsSerializer == dimmutable
             ? _value.queryParamsSerializer
-            : queryParamsSerializer as dynamic Function(QP)?));
+            : queryParamsSerializer as dynamic Function(QP)?,
+        persitDataBetweenFetches: persitDataBetweenFetches == dimmutable
+            ? _value.persitDataBetweenFetches
+            : persitDataBetweenFetches as bool));
   }
 }
 

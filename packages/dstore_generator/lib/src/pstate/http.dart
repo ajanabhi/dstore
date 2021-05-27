@@ -19,15 +19,30 @@ List<HttpFieldInfo> getHttpFields(List<FieldElement> fields) {
   return result;
 }
 
-HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
-  var ht = element.type;
+HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
+    {bool isTypeDef = true}) {
+  late InterfaceType ht;
+  ElementAnnotation? anot;
+  if (isTypeDef) {
+    if (!element.type.toString().startsWith("HttpField<")) {
+      return null;
+    }
+    ht = element.type as InterfaceType;
+    anot = element.type.aliasElement?.annotationFromType(HttpRequest);
+  } else {
+    // empty mixin classes
+    final hto = AstUtils.isSubTypeof(element.type, "HttpField");
+    if (hto == null) {
+      return null;
+    }
+    ht = hto;
+    anot = element.type.element?.annotationFromType(HttpRequest);
+  }
+
   print(
       "Getting http for field ${element.type} ${element.type.runtimeType} Alias ${element.type.aliasElement}");
   // final ht = AstUtils.isSubTypeof(type, "HttpField");
-  if (!ht.toString().startsWith("HttpField<")) {
-    return null;
-  }
-  ht = ht as InterfaceType;
+
   if (ht.typeArguments.length != 3) {
     throw ArgumentError.value(
         "You should specify all 3 generic types of HttpField");
@@ -39,7 +54,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       ht.typeArguments[1].getDisplayString(withNullability: true));
   final errorType = replaceEndStar(
       ht.typeArguments[2].getDisplayString(withNullability: true));
-  final anot = element.type.aliasElement?.annotationFromType(HttpRequest);
+
   if (anot == null) {
     throw ArgumentError.value("You should anotate type ${ht} with HttpRequest");
   }
@@ -83,11 +98,14 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
 
   String? transformer;
   String? canProcessOfflineAction;
+  var persitDataBetweenFetches = false;
   if (reqExtAnnot != null) {
     final reqE = ConstantReader(reqExtAnnot.computeConstantValue());
     transformer = reqE.functionNameForField("transformer");
     canProcessOfflineAction =
         reqE.functionNameForField("canProcessOfflineAction");
+    persitDataBetweenFetches =
+        reqE.peek("persitDataBetweenFetches")?.boolValue ?? false;
   }
 
   return HttpFieldInfo(
@@ -109,6 +127,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element) {
       inputSerializer: inputSerializer,
       responseType: responseType,
       pathParamsType: pathParamsType,
+      persitDataBetweenFetches: persitDataBetweenFetches,
       transformer: transformer,
       graphqlQuery: graphqlQuery);
 }
@@ -201,12 +220,13 @@ String convertHttpFieldInfoToAction(
     psHistoryPayload =
         ",psHistoryPayload : PSHistoryPayload(keysModified:['${hf.name}'])";
   }
+
   return """
       static Action<${mockType}> ${hf.name}({${params.join(", ")}}) {
         $mergeHeaders
         return Action<$mockType>(name:"${hf.name}",type:${type},silent:silent,http:HttpPayload<${ppType},${qpType},${hf.inputType},${hf.responseType},${hf.errorType},dynamic>(${payloadFields.join(", ")}),debounce:debounce$psHistoryPayload);
       }
-
+      
       static Action<${mockType}> ${hf.name}Mock($mockType mock) {
         return Action<$mockType>(name:"${hf.name}",type:${type},mock:mock$psHistoryPayload);
       }

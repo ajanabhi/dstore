@@ -1,4 +1,6 @@
+import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/appstate/app_state_generator.dart';
 import 'package:dstore_generator/src/denum/denum_generator.dart';
 import 'package:dstore_generator/src/dunion/union_generator.dart';
@@ -17,6 +19,16 @@ import 'package:dstore_generator/src/utils/builder_utils.dart';
 import 'package:source_gen/source_gen.dart';
 
 var lDebugMode = true;
+
+class RGen extends GeneratorForAnnotation<RegularMethod> {
+  @override
+  String generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
+    return """
+      typedef HelloT = HttpField<String>;
+    """;
+  }
+}
 
 /// Builds generators for `build_runner` to run
 Builder dstorePSGen(BuilderOptions options) {
@@ -52,6 +64,7 @@ Builder dstoreGen(BuilderOptions options) {
         FireStoreSchemaGenerator(),
         FireStoreOpsGenerator(),
         DImmutableGenerator(),
+        RGen(),
       ],
       '.dstore.dart',
       header: '''

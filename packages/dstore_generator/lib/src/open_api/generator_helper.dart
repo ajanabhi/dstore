@@ -15,10 +15,10 @@ Future<String> createOpenApi(
   final openAPi = element.openAPiAnnotation;
   final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
   final url = _getUrl(schema);
-  final pathTypes = _convertPaths(schema: schema, url: url);
   getScalarsFromSchemaComponents(schema);
-  createTopLevelObjects(schema);
   logger.shout("sclarasMap $scalarasAndArraysMap");
+  createTopLevelObjects(schema);
+  final pathTypes = _convertPaths(schema: schema, url: url);
   return """
     ${types.join("\n")}
     ${pathTypes}
@@ -268,6 +268,11 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
        typedef $oid = HttpField<$inputType, $responseType, $errorType>;
       
       """;
+      // final dapi = """
+      //  @HttpRequest( ${params.join(", ")} )
+      //  class $oid = HttpField<$inputType, $responseType, $errorType> with EmptyMixin;
+      // """;
+
       pathTypes.add(dapi);
     });
   });
@@ -369,7 +374,7 @@ OutputType _getResponseType(
     String v;
     if (key.startsWith("application/json")) {
       v = HttpResponseType.JSON.toString();
-    } else if (key.startsWith("text/plain")) {
+    } else if (key.startsWith("text")) {
       v = HttpResponseType.STRING.toString();
     } else if (key.startsWith("application/octet-stream")) {
       v = HttpResponseType.BYTES.toString();
@@ -773,7 +778,8 @@ String _getTypeName(
     {required SchemaOrReference sor, required String objectName}) {
   if (sor.ref != null) {
     final refName = _getRefRawName(sor.ref!.$ref);
-
+    print(
+        "looking for ref $refName ${scalarasAndArraysMap[refName]} map $scalarasAndArraysMap");
     return scalarasAndArraysMap[refName] ?? "${refName.cpatialize}Object";
   }
   final schema = sor.schema!;

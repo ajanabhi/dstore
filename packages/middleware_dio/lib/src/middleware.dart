@@ -65,7 +65,10 @@ void _handleDioError(
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
-  final field = store.getFieldFromAction(action) as HttpField;
+  var field = store.getFieldFromAction(action);
+  print("is HttpField ${field is HttpField}");
+  field = field as HttpField;
+  final persistDataBetweenFetches = meta?.persitDataBetweenFetches ?? false;
   late HttpError error;
   switch (e.type) {
     case DioErrorType.connectTimeout:
@@ -101,9 +104,15 @@ void _handleDioError(
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: field.copyWith(loading: false, offline: true))));
+            data: HttpField(
+                loading: false,
+                offline: true,
+                data: persistDataBetweenFetches ? field.data : null))));
   } else {
-    var ef = HttpField(error: error);
+    var ef = HttpField(
+        error: error,
+        completed: true,
+        data: persistDataBetweenFetches ? field.data : null);
     if (meta?.transformer != null) {
       ef = meta?.transformer!(field, ef) as dynamic;
     }
@@ -157,13 +166,17 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
-  final field = store.getFieldFromAction(action) as HttpField;
+  var field = store.getFieldFromAction(action);
+  print("is HttpField ${field is HttpField}");
+  field = field as HttpField;
+
   final canProcess = await _canProcessHtpAction(meta: meta, action: action);
   if (!canProcess) {
     print(
         "Action $action is skipped because its blocked by offline can process  action");
     return;
   }
+  final persistDataBetweenFetches = meta?.persitDataBetweenFetches ?? false;
   action = action.copyWith(offlinedAt: null);
   CancelToken? cancelToken;
   AbortController? abortController;
@@ -178,15 +191,19 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
             processed: true,
             type: ActionInternalType.FIELD,
             data: HttpField(
-                data: payload.optimisticResponse,
-                abortController: abortController,
-                optimistic: true))));
+              data: payload.optimisticResponse,
+              abortController: abortController,
+              optimistic: true,
+            ))));
   } else {
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: HttpField(loading: true, abortController: abortController))));
+            data: HttpField(
+                loading: true,
+                abortController: abortController,
+                data: persistDataBetweenFetches ? field.data : null))));
   }
   late final Response? response;
   try {
@@ -230,20 +247,23 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
                     progress: HttpProgress(current: sent, total: total)))));
       };
     }
-    response = await dio.request(payload.url,
+    print("Sending request to server $url ");
+    response = await dio.request(url,
         data: data,
         queryParameters: payload.queryParams,
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         onSendProgress: onSendProgress,
         options: options);
+    print(
+        "Response from server ${response.data} status : ${response.statusCode}");
   } on DioError catch (e) {
     _handleDioError(e: e, action: action, store: store);
   } catch (e) {
     rethrow;
   }
   void handleGraphqlResponse(Response response) {
-    late HttpField hf;
+    // late HttpField hf;
     HttpError? ge;
     if (response.data["errors"] != null) {
       // in graphql response we will get errors from successfull response also
@@ -256,13 +276,15 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     if (response.data["data"] != null) {
       rdata = meta!.responseDeserializer(200, response.data["data"]);
     }
-    hf = HttpField(error: ge, data: rdata);
+    var hf = field.copyWith(error: ge, data: rdata, completed: true);
     if (meta?.transformer != null) {
       hf = meta!.transformer!(field, hf);
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
-            processed: true, type: ActionInternalType.FIELD, data: hf)));
+            processed: true,
+            type: ActionInternalType.FIELD,
+            data: field.copyWith(data: hf.data, error: hf.error))));
   }
 
   if (response != null) {
@@ -282,10 +304,10 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         handleGraphqlResponse(response);
       }
     } else {
-      late HttpField hf;
       var data =
           meta!.responseDeserializer(response.statusCode ?? 200, response.data);
-      hf = HttpField(data: data);
+      var hf = field.copyWith(data: data, completed: true);
+      print("Sending response $hf");
       if (meta.transformer != null) {
         hf = meta.transformer!(field, hf);
       }
@@ -334,7 +356,7 @@ class DioMiddlewareOptions {
   DioMiddlewareOptions({required this.urlOptions});
 }
 
-dynamic createDioMiddleware<S extends AppStateI<S>>(
+Middleware<S> createDioMiddleware<S extends AppStateI<S>>(
     [DioMiddlewareOptions? options]) {
   final dio = Dio();
   return (Store<S> store, Dispatch next, Action action) {

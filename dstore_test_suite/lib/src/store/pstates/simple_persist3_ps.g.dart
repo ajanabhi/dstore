@@ -8,7 +8,7 @@ part of 'simple_persist3_ps.dart';
 
 SimplePersist3 _$SimplePersist3FromJson(Map<String, dynamic> json) =>
     SimplePersist3(
-      p3: json['p3'] as int? ?? 0,
+      p3: json['p3'] as int,
     );
 
 Map<String, dynamic> _$SimplePersist3ToJson(SimplePersist3 instance) =>

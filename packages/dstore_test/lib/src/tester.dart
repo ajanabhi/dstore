@@ -106,6 +106,21 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
+  Future<void> testHttpAction<M>(Action<M> action, M result,
+      {Duration? timeout, int interval = 4}) async {
+    assert(action.http != null);
+    final before = store.getPStateModelFromAction(action);
+    store.dispatch(action);
+    await waitForAction(action, timeout: timeout, interval: interval);
+    final after = store.getPStateModelFromAction(action);
+    expect(identical(before, after), false);
+    final afterMap = after.toMap();
+    expect(afterMap[action.name], result);
+    final beforeMap = before.toMap();
+    beforeMap.remove(action.name);
+    expect(beforeMap.identicalMembers(afterMap), true);
+  }
+
   Future<void> testStreamAction<M extends Iterable<dynamic>>(
       Action<M> action, M result) async {
     assert(action.stream != null);
@@ -146,6 +161,7 @@ class StoreTester<S extends AppStateI<S>> {
         done = field.completed;
       }
       if (field is HttpField) {
+        print("Its http field in tester $field");
         done = field.completed;
       }
       // print("checking for done : $done");

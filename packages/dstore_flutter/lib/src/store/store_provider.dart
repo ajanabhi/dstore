@@ -21,7 +21,7 @@ class _StoreProviderState extends State<StoreProvider> {
   void initState() {
     super.initState();
     if (!widget.store.isReady) {
-      widget.store.listenForReadyState(() {
+      widget.store.listenForReadyState((error, st) {
         setState(() {});
       });
     }

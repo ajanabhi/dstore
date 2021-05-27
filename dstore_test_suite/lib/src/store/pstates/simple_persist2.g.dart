@@ -16,7 +16,7 @@ Map<String, dynamic> _$HelloToJson(Hello instance) => <String, dynamic>{
 
 SimplePersist2 _$SimplePersist2FromJson(Map<String, dynamic> json) =>
     SimplePersist2(
-      p2: json['p2'] as int? ?? 0,
+      p2: json['p2'] as int,
     );
 
 Map<String, dynamic> _$SimplePersist2ToJson(SimplePersist2 instance) =>

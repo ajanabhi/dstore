@@ -83,6 +83,10 @@ class HttpRequestExtension {
   final dynamic Function(dynamic)?
       transformer; // make sure input and return type are HttpField
   final Future<bool> Function(dynamic)? canProcessOfflineAction;
+  final bool persitDataBetweenFetches;
 
-  const HttpRequestExtension({this.transformer, this.canProcessOfflineAction});
+  const HttpRequestExtension(
+      {this.transformer,
+      this.canProcessOfflineAction,
+      this.persitDataBetweenFetches = false});
 }

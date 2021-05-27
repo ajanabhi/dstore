@@ -6,6 +6,7 @@ import "./pstates/async_methods.dart" as asyncmethods;
 import "./pstates/sync_methods.dart" as syncmethods;
 import "./pstates/history_pstate.dart" as historypstate;
 import "./pstates/perssit_pstate.dart" as persistpstate;
+import "./pstates/http_pstate.dart" as httppstate;
 
 void main() {
   setUpAll(() async {
@@ -31,6 +32,7 @@ void main() {
   syncmethods.main();
   historypstate.main();
   persistpstate.main();
+  httppstate.main();
   group('Store tests', () {
     test("should get appVersion from pubspec", () {
       expect(store.appVersion, "1.0.0");

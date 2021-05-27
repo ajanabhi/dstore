@@ -291,6 +291,9 @@ ActionsInfo _getActionsInfo(
     if (h.canProcessOfflineAction != null) {
       params.add("canProcessOfflineAction: ${h.canProcessOfflineAction}");
     }
+    if (h.persitDataBetweenFetches) {
+      params.add("persitDataBetweenFetches: true");
+    }
     params.add("responseDeserializer: ${h.responseDeserializer}");
     final value =
         "HttpMeta<${pType},${qType},${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";

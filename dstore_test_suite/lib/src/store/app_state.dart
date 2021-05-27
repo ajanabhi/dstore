@@ -1,5 +1,7 @@
 import 'package:dstore/dstore.dart';
+import 'package:dstore_middleware_dio/middleware_dio.dart';
 import 'package:dstore_test/dstore_test.dart';
+import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_async_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_history_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persist2.dart';
@@ -12,23 +14,24 @@ part "app_state.dstore.dart";
 
 @AppStateAnnotation()
 void $_AppState(
-  Simple simple,
-  SimpleAsync simpleAsync,
-  SimpleHistory simpleHistory,
-  SimplePersist simplePersist,
-  SimplePersist2 simplePersist2,
-  SimplePersist3 simplePersist3,
-  SimplePersitanceMigrator simplePersitanceMigrator,
-) {}
+    Simple simple,
+    SimpleAsync simpleAsync,
+    SimpleHistory simpleHistory,
+    SimplePersist simplePersist,
+    SimplePersist2 simplePersist2,
+    SimplePersist3 simplePersist3,
+    SimplePersitanceMigrator simplePersitanceMigrator,
+    SimpleHttp simpleHttp) {}
 
 final store = createStore(
     handleError: (error) {
       print("Uncaught error in store  $error");
     },
+    middlewares: [createDioMiddleware<AppState>()],
     storageOptions: StorageOptions(
       storage: InMemoryStorage(initialValues: <String, dynamic>{
         "$simplePersistTypeName": {"x": 1},
-        "$simplePersist2TypeName": {"y": 2},
+        // "$simplePersist2TypeName": {"y": 2},
         "$simplePersistMigratorTypename": {"name": 1}
       }, errorKeys: [
         simplePersist2TypeName,
