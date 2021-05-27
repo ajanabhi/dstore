@@ -106,16 +106,21 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  Future<void> testHttpAction<M>(Action<M> action, M result,
+  Future<void> testHttpAction<M>(Action<M> action, List<M> result,
       {Duration? timeout, int interval = 4}) async {
     assert(action.http != null);
     final before = store.getPStateModelFromAction(action);
-    store.dispatch(action);
+    final expectedResult = <M>[];
+    final statesListener = (PStateModel state) {
+      final map = state.toMap();
+      expectedResult.add(map[action.name] as M);
+    };
+    store.dispatch(action.copyWith(afterComplete: statesListener));
     await waitForAction(action, timeout: timeout, interval: interval);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
+    expect(result, expectedResult);
     final afterMap = after.toMap();
-    expect(afterMap[action.name], result);
     final beforeMap = before.toMap();
     beforeMap.remove(action.name);
     expect(beforeMap.identicalMembers(afterMap), true);
@@ -153,6 +158,7 @@ class StoreTester<S extends AppStateI<S>> {
 
     var done = false;
     Timer? timeoutTimer;
+
     final periodicTimer =
         Timer.periodic(Duration(milliseconds: interval), (timer) {
       final dynamic field = store.getFieldFromAction(action);

@@ -345,6 +345,9 @@ class Store<S extends AppStateI<S>> {
       _setStoreDepsForPState(previousState, null);
       _setStoreDepsForPState(newState, this);
       _state = _state.copyWithMap(newGlobalStateMap);
+      if (action.name == "ping") {
+        print("Ping state changed ${action.name} ${action.afterComplete}");
+      }
       _notifyListeners(
           stateKey: stateKey,
           previousState: previousState,

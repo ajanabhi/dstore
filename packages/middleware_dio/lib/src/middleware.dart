@@ -104,13 +104,17 @@ void _handleDioError(
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: HttpField(
+            data: field.copyWith(
                 loading: false,
                 offline: true,
+                error: null,
+                completed: true,
                 data: persistDataBetweenFetches ? field.data : null))));
   } else {
-    var ef = HttpField(
+    var ef = field.copyWith(
         error: error,
+        loading: false,
+        offline: false,
         completed: true,
         data: persistDataBetweenFetches ? field.data : null);
     if (meta?.transformer != null) {
@@ -190,7 +194,9 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: HttpField(
+            data: field.copyWith(
+              error: null,
+              completed: false,
               data: payload.optimisticResponse,
               abortController: abortController,
               optimistic: true,
@@ -200,8 +206,12 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: HttpField(
+            data: field.copyWith(
                 loading: true,
+                completed: false,
+                error: null,
+                offline: false,
+                optimistic: false,
                 abortController: abortController,
                 data: persistDataBetweenFetches ? field.data : null))));
   }
