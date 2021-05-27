@@ -12,8 +12,8 @@ const APPLICATION_OCTET_STREAM = "application/octet-stream";
 
 Future<String> createOpenApi(
     {required ClassElement element, required BuildStep buildStep}) async {
-  final openAPi = element.openAPiAnnotation;
-  final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi);
+  openAPi = element.openAPiAnnotation;
+  final schema = await OpenApiSchemaUtils.getOpenApiSchema(openAPi!);
   final url = _getUrl(schema);
   getScalarsFromSchemaComponents(schema);
   logger.shout("sclarasMap $scalarasAndArraysMap");
@@ -602,11 +602,11 @@ OutputType _getResponseType(
   } else if (responseType == HttpResponseType.BYTES.toString()) {
     serializer = "${successName}Serializer";
     types.add("""
-      String $serializer(int status,List<int> input) => input;
+      List<int> $serializer(int status,List<int> input) => input;
     """);
     deserializer = "${successName}Deserializer";
     types.add("""
-      String $deserializer(int status,dynamic input) => input as List<int>; 
+      List<int> $deserializer(int status,dynamic input) => input as List<int>; 
     """);
   } else {
     // assume its json
@@ -670,9 +670,11 @@ List<String> _getParamsInPath(String path) {
 
 final types = <String>[];
 final scalarasAndArraysMap = <String, String>{};
+OpenApi? openAPi;
 
 void clearOpenApiGlobals() {
   types.clear();
+  openAPi = null;
   scalarasAndArraysMap.clear();
 }
 
@@ -691,7 +693,11 @@ extension OPenAPiAnnoExtonElement on Element {
     }
     final http = getOpenAPiHttpConfig(httpObj);
 
-    return OpenApi(file: file, http: http);
+    final collectionEquality =
+        dt.getEnumField("collectionEquality", CollectionEquality.values);
+
+    return OpenApi(
+        file: file, http: http, collectionEquality: collectionEquality);
   }
 }
 
@@ -863,6 +869,7 @@ void _createDartModelFromSchemaObject(Schema schema, String name) {
       className: name,
       isJsonSerializable: true,
       addStaticSerializeDeserialize: true,
+      collectionEquality: openAPi!.collectionEquality,
       addStatusToStaticSerializer: true);
   types.add(result);
 }

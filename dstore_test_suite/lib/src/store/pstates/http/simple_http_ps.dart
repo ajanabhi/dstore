@@ -5,4 +5,6 @@ part 'simple_http_ps.ps.dstore.dart';
 @PState()
 class $_SimpleHttp {
   helloPing ping = helloPing();
+  helloJson json = helloJson();
+  HelloOctet octet = HelloOctet();
 }

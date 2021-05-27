@@ -3,6 +3,7 @@ import 'package:build/build.dart';
 import 'package:dstore_generator/src/dimmutable/vistors.dart';
 import 'package:dstore_generator/src/errors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
+import "./class_generator_helper.dart";
 
 Future<String> generateDImmutableFromFunction(
     {required FunctionElement element, required BuildStep buildStep}) async {
@@ -10,11 +11,11 @@ Future<String> generateDImmutableFromFunction(
     throw NotAllowedError(
         "dimmutable function name should start with \$_ , but you specified ${element.name}");
   }
+  final dim = element.getDImmutableAnnotation();
   final className = element.name.substring(2);
   final isJsonSerializable = false;
   final tuple = AstUtils.getTypeParamsAndBounds(element.typeParameters);
   final typeParamsWithBounds = tuple.item2;
-  final tpwb = typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>";
   final typeParams = tuple.item1;
   element.parameters.forEach((element) {
     print(element);
@@ -33,26 +34,7 @@ Future<String> generateDImmutableFromFunction(
   final fields = ModelUtils.processFields(visitor.fields);
   print("dimmutable function fields $fields");
   return """
+    ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, className: className, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJsonSerializable, toMap: dim.toMap, copyWithMap: dim.copyWithMap, collectionEquality: dim.collectionEquality)}
     
-    class $className$tpwb {
-         
-     ${ModelUtils.getFinalFieldsFromFieldsList(fields)}
-     
-     ${ModelUtils.getCopyWithField(className, addJsonKey: isJsonSerializable, typeParams: typeParams)}
-      
-     ${ModelUtils.createConstructorFromFieldsList(className, fields)}
-     
-     ${isJsonSerializable ? ModelUtils.createFromJson(className) : ""}
-
-     ${isJsonSerializable ? ModelUtils.createToJson(className) : ""}
-
-     ${ModelUtils.createEqualsFromFieldsList(className, fields)}
-
-     ${ModelUtils.createHashcodeFromFieldsList(fields)}
-
-     ${ModelUtils.createToStringFromFieldsList(className, fields)}
-    }
-
-    ${ModelUtils.createCopyWithClasses(name: className, fields: fields, typeParamsWithBounds: typeParamsWithBounds, typeParams: typeParams)}
   """;
 }

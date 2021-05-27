@@ -72,6 +72,19 @@ class HttpField<I, R, E> {
       completed.hashCode ^
       offline.hashCode;
 
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        "data": this.data,
+        "error": this.error,
+        "responseHeaders": this.responseHeaders,
+        "status": this.status,
+        "progress": this.progress,
+        "abortController": this.abortController,
+        "optimistic": this.optimistic,
+        "loading": this.loading,
+        "completed": this.completed,
+        "offline": this.offline
+      };
+
   @override
   String toString() =>
       "HttpField(data: ${this.data}, error: ${this.error}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";

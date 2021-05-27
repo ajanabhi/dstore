@@ -325,6 +325,8 @@ extension PStateExtension on ClassElement {
     final nonConstClassesWithDefaultValues =
         reader.getStringList("nonConstClassesWithDefaultValues");
     final persitMigrator = reader.functionNameForField("persitMigrator");
+    final collectionEquality =
+        reader.getEnumField("collectionEquality", CollectionEquality.values);
     return PState(
         persist: persist,
         enableHistory: enableHistory ?? false,
@@ -332,6 +334,7 @@ extension PStateExtension on ClassElement {
         historyLimit: historyLimit,
         nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues,
         interMigratorName: persitMigrator,
+        collectionEquality: collectionEquality,
         navBlockSameUrl: navBlockSameUrl);
   }
 }

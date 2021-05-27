@@ -1,3 +1,5 @@
+import 'package:dstore_annotation/dstore_annotation.dart';
+
 typedef PStatePersitMigratorFn = Map<String, dynamic> Function(
     String oldVersion, Map<String, dynamic> data, dynamic defaultState);
 
@@ -10,6 +12,7 @@ class PState {
   final List<String>? nonConstClassesWithDefaultValues;
   final PStatePersitMigratorFn? persitMigrator;
   final String? interMigratorName;
+  final CollectionEquality? collectionEquality;
   const PState(
       {this.persist,
       this.enableHistory = false,
@@ -18,6 +21,7 @@ class PState {
       this.persitMigrator,
       this.interMigratorName,
       this.nonConstClassesWithDefaultValues,
+      this.collectionEquality,
       this.nav});
 
   @override

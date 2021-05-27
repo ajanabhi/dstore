@@ -6,13 +6,14 @@ part of 'local.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ErrorObject _$ErrorObjectFromJson(Map<String, dynamic> json) => ErrorObject(
-      code: json['code'] as int,
-      message: json['message'] as String,
+helloJsonResponse _$helloJsonResponseFromJson(Map<String, dynamic> json) =>
+    helloJsonResponse(
+      name: json['name'] as String,
+      count: json['count'] as int,
     );
 
-Map<String, dynamic> _$ErrorObjectToJson(ErrorObject instance) =>
+Map<String, dynamic> _$helloJsonResponseToJson(helloJsonResponse instance) =>
     <String, dynamic>{
-      'code': instance.code,
-      'message': instance.message,
+      'name': instance.name,
+      'count': instance.count,
     };

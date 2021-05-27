@@ -32,3 +32,4 @@ dev_dependencies:
 dependency_overrides:
   json_annotation:
     path: ../../json_serializable.dart/json_annotation/  
+  meta: ^1.4.0  

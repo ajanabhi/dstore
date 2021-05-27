@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
 
@@ -314,14 +315,52 @@ abstract class ModelUtils {
     return "factory ${name}.fromJson(Map<String,dynamic> json) => _\$${name}FromJson(json);";
   }
 
-  static String createEqualsFromFieldsList(String name, List<Field> fields) {
-    return """
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-    return o is $name && ${fields.map((f) => "o.${f.name} == ${f.name}").join(" && ")};
+  static String createEqualsFromFieldsList(String name, List<Field> fields,
+      {CollectionEquality? collectionEquality}) {
+    String getCollectionEquality(
+        CollectionEquality colE, String name, String type) {
+      final isCollectionType = type.startsWith("List") ||
+          type.startsWith("Iterable") ||
+          type.startsWith("Map") ||
+          type.startsWith("Set");
+      if (isCollectionType) {
+        final params = "$name,o.$name";
+        if (colE == CollectionEquality.equals) {
+          if (type.startsWith("List")) {
+            return "ListEquality().equals($params)";
+          } else if (type.startsWith("Map")) {
+            return "MapEquality().equals($params)";
+          } else if (type.startsWith("Set")) {
+            return "SetEquality().equals($params)";
+          } else if (type.startsWith("Iterable")) {
+            return "IterableEquality().equals($params)";
+          }
+        } else {
+          if (colE == CollectionEquality.deep_equals) {
+            return "DeepCollectionEquality().equals($params)";
+          } else {
+            return "DeepCollectionEquality.unordered().equals($params)";
+          }
+        }
+      }
+      return "o.${name} == $name";
     }
-  """;
+
+    final ops = fields.map((f) {
+      final type = f.type;
+      final name = f.name;
+      if (collectionEquality != null) {
+        return getCollectionEquality(collectionEquality, name, type);
+      }
+      return "o.${name} == $name";
+    }).join(" && ");
+    return """
+      @override
+      bool operator ==(Object o) {
+        if (identical(this, o)) return true;
+        return o is $name && $ops;
+        }
+      """;
   }
 
   static String createDefaultDartModelFromFeilds(
@@ -336,6 +375,9 @@ abstract class ModelUtils {
       bool addOverrideAnnotation = false,
       String extendClass = "",
       String mixins = "",
+      bool toMap = false,
+      bool copyWithMap = false,
+      CollectionEquality? collectionEquality,
       bool addStatusToStaticSerializer = false}) {
     if (annotations.isEmpty && isJsonSerializable) {
       annotations = "@JsonSerializable()";
@@ -365,6 +407,10 @@ abstract class ModelUtils {
       ${hasFields ? ModelUtils.createEqualsFromFieldsList(className, fields) : ""}
 
       ${hasFields ? ModelUtils.createHashcodeFromFieldsList(fields) : ""}
+
+      ${toMap ? ModelUtils.createToMapFromFieldsList(fields) : ""}
+
+      ${copyWithMap ? ModelUtils.createCopyWithMapFromFieldsList(className, fields) : ""}
 
      ${createToStringFromFieldsList(className, fields)}
     }

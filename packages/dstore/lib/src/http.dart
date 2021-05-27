@@ -21,7 +21,7 @@ class HttpProgress {
   HttpProgress({required this.current, required this.total});
 }
 
-@dimmutable
+@DImmutable(toMap: true)
 void $_HttpField<I, R, E>(
     R? data,
     HttpError<E>? error,

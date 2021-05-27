@@ -10,34 +10,52 @@ part of 'simple_http_ps.dart';
 class SimpleHttp extends PStateModel<SimpleHttp> {
   final helloPing ping;
 
+  final helloJson json;
+
+  final HelloOctet octet;
+
   _$SimpleHttpCopyWith<SimpleHttp> get copyWith =>
       __$SimpleHttpCopyWithImpl<SimpleHttp>(this, IdentityFn);
 
-  SimpleHttp({this.ping = const helloPing()});
+  SimpleHttp(
+      {this.ping = const helloPing(),
+      this.json = const helloJson(),
+      this.octet = const HelloOctet()});
 
   @override
   SimpleHttp copyWithMap(Map<String, dynamic> map) => SimpleHttp(
-      ping: map.containsKey("ping") ? map["ping"] as helloPing : this.ping);
+      ping: map.containsKey("ping") ? map["ping"] as helloPing : this.ping,
+      json: map.containsKey("json") ? map["json"] as helloJson : this.json,
+      octet:
+          map.containsKey("octet") ? map["octet"] as HelloOctet : this.octet);
 
-  Map<String, dynamic> toMap() => <String, dynamic>{"ping": this.ping};
+  Map<String, dynamic> toMap() => <String, dynamic>{
+        "ping": this.ping,
+        "json": this.json,
+        "octet": this.octet
+      };
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is SimpleHttp && o.ping == ping;
+    return o is SimpleHttp &&
+        o.ping == ping &&
+        o.json == json &&
+        o.octet == octet;
   }
 
   @override
-  int get hashCode => ping.hashCode;
+  int get hashCode => ping.hashCode ^ json.hashCode ^ octet.hashCode;
 
   @override
-  String toString() => "SimpleHttp(ping: ${this.ping})";
+  String toString() =>
+      "SimpleHttp(ping: ${this.ping}, json: ${this.json}, octet: ${this.octet})";
 }
 
 abstract class $SimpleHttpCopyWith<O> {
   factory $SimpleHttpCopyWith(SimpleHttp value, O Function(SimpleHttp) then) =
       _$SimpleHttpCopyWithImpl<O>;
-  O call({helloPing ping});
+  O call({helloPing ping, helloJson json, HelloOctet octet});
 }
 
 class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
@@ -46,16 +64,21 @@ class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
   _$SimpleHttpCopyWithImpl(this._value, this._then);
 
   @override
-  O call({Object? ping = dimmutable}) {
+  O call(
+      {Object? ping = dimmutable,
+      Object? json = dimmutable,
+      Object? octet = dimmutable}) {
     return _then(_value.copyWith(
-        ping: ping == dimmutable ? _value.ping : ping as helloPing));
+        ping: ping == dimmutable ? _value.ping : ping as helloPing,
+        json: json == dimmutable ? _value.json : json as helloJson,
+        octet: octet == dimmutable ? _value.octet : octet as HelloOctet));
   }
 }
 
 abstract class _$SimpleHttpCopyWith<O> implements $SimpleHttpCopyWith<O> {
   factory _$SimpleHttpCopyWith(SimpleHttp value, O Function(SimpleHttp) then) =
       __$SimpleHttpCopyWithImpl<O>;
-  O call({helloPing ping});
+  O call({helloPing ping, helloJson json, HelloOctet octet});
 }
 
 class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
@@ -67,9 +90,14 @@ class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
   SimpleHttp get _value => super._value;
 
   @override
-  O call({Object? ping = dimmutable}) {
-    return _then(
-        SimpleHttp(ping: ping == dimmutable ? _value.ping : ping as helloPing));
+  O call(
+      {Object? ping = dimmutable,
+      Object? json = dimmutable,
+      Object? octet = dimmutable}) {
+    return _then(SimpleHttp(
+        ping: ping == dimmutable ? _value.ping : ping as helloPing,
+        json: json == dimmutable ? _value.json : json as helloJson,
+        octet: octet == dimmutable ? _value.octet : octet as HelloOctet));
   }
 }
 
@@ -108,9 +136,76 @@ abstract class SimpleHttpActions {
     return Action<HttpField<Null, String, String>>(
         name: "ping", type: _SimpleHttp_FullPath, mock: mock);
   }
+
+  static Action<HttpField<Null, helloJsonResponse, String>> json(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      helloJsonResponse? optimisticResponse,
+      HttpField<Null, helloJsonResponse, String>? mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    return Action<HttpField<Null, helloJsonResponse, String>>(
+        name: "json",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, Null, helloJsonResponse, String, dynamic>(
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/json",
+            method: "GET",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<Null, helloJsonResponse, String>> jsonMock(
+      HttpField<Null, helloJsonResponse, String> mock) {
+    return Action<HttpField<Null, helloJsonResponse, String>>(
+        name: "json", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<HttpField<Null, List<int>, String>> octet(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      List<int>? optimisticResponse,
+      HttpField<Null, List<int>, String>? mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    return Action<HttpField<Null, List<int>, String>>(
+        name: "octet",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, Null, List<int>, String, dynamic>(
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/octet",
+            method: "GET",
+            responseType: HttpResponseType.BYTES,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<Null, List<int>, String>> octetMock(
+      HttpField<Null, List<int>, String> mock) {
+    return Action<HttpField<Null, List<int>, String>>(
+        name: "octet", type: _SimpleHttp_FullPath, mock: mock);
+  }
 }
 
-SimpleHttp SimpleHttp_DS() => SimpleHttp(ping: helloPing());
+SimpleHttp SimpleHttp_DS() =>
+    SimpleHttp(ping: helloPing(), json: helloJson(), octet: HelloOctet());
 
 final SimpleHttpMeta = PStateMeta<SimpleHttp>(
     type: _SimpleHttp_FullPath,
@@ -118,5 +213,11 @@ final SimpleHttpMeta = PStateMeta<SimpleHttp>(
     httpMetaMap: {
       "ping": HttpMeta<Null, Null, Null, String, String, dynamic>(
           responseSerializer: helloPingResponse_SuccessSerializer,
-          responseDeserializer: helloPingResponse_SuccessDeserializer)
+          responseDeserializer: helloPingResponse_SuccessDeserializer),
+      "json": HttpMeta<Null, Null, Null, helloJsonResponse, String, dynamic>(
+          responseSerializer: helloJsonResponse.toJsonStatic,
+          responseDeserializer: helloJsonResponse.fromJsonStatic),
+      "octet": HttpMeta<Null, Null, Null, List<int>, String, dynamic>(
+          responseSerializer: HelloOctetResponse_SuccessSerializer,
+          responseDeserializer: HelloOctetResponse_SuccessDeserializer)
     });

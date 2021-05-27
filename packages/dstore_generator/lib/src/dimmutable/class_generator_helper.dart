@@ -3,7 +3,6 @@ import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/dimmutable/vistors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 Future<String> generateDImmutableFromClass(
@@ -22,7 +21,7 @@ Future<String> generateDImmutableFromClass(
   print("Params : $fields");
   final isJosnSerializable = dim.isJsonSerializable;
   final result = """
-      ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, methods: methods, className: name, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable)}
+      ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, methods: methods, className: name, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable, collectionEquality: dim.collectionEquality, toMap: dim.toMap, copyWithMap: dim.copyWithMap)}
     """;
   return result;
 }
@@ -36,6 +35,14 @@ extension DImmutableEllementExt on Element {
     }
     final reader = ConstantReader(annot.computeConstantValue());
     final isJsonSerializable = reader.read("isJsonSerializable").boolValue;
-    return DImmutable(isJsonSerializable: isJsonSerializable);
+    final collectionEquality =
+        reader.getEnumField("collectionEquality", CollectionEquality.values);
+    final toMap = reader.peek("toMap")?.boolValue ?? false;
+    final copyWithMap = reader.peek("copyWithMap")?.boolValue ?? false;
+    return DImmutable(
+        isJsonSerializable: isJsonSerializable,
+        collectionEquality: collectionEquality,
+        toMap: toMap,
+        copyWithMap: copyWithMap);
   }
 }

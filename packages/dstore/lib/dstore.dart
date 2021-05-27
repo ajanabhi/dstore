@@ -17,3 +17,10 @@ export 'src/types.dart';
 export "package:dstore_annotation/dstore_annotation.dart";
 export "package:meta/meta.dart"
     show immutable, nonVirtual, visibleForTesting, optionalTypeArgs;
+export "package:collection/collection.dart"
+    show
+        ListEquality,
+        SetEquality,
+        MapEquality,
+        IterableEquality,
+        DeepCollectionEquality;

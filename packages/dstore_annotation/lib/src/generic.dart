@@ -8,7 +8,14 @@ class AppStateAnnotation {
 
 class DImmutable {
   final bool isJsonSerializable;
-  const DImmutable({this.isJsonSerializable = false});
+  final CollectionEquality? collectionEquality;
+  final bool toMap;
+  final bool copyWithMap;
+  const DImmutable(
+      {this.isJsonSerializable = false,
+      this.collectionEquality,
+      this.toMap = false,
+      this.copyWithMap = false});
 }
 
 const dimmutable = DImmutable();
@@ -38,3 +45,5 @@ class Validator {
 class DUnion {
   const DUnion();
 }
+
+enum CollectionEquality { equals, deep_equals, deep_equals_unordered }

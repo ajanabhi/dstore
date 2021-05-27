@@ -107,7 +107,7 @@ class StoreTester<S extends AppStateI<S>> {
   }
 
   Future<void> testHttpAction<M>(Action<M> action, List<M> result,
-      {Duration? timeout, int interval = 4}) async {
+      {Duration? timeout, bool mapEquals = false, int interval = 4}) async {
     assert(action.http != null);
     final before = store.getPStateModelFromAction(action);
     final expectedResult = <M>[];
@@ -119,9 +119,15 @@ class StoreTester<S extends AppStateI<S>> {
     await waitForAction(action, timeout: timeout, interval: interval);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
-    expect(result, expectedResult);
     final afterMap = after.toMap();
     final beforeMap = before.toMap();
+    // final beforeFieldMap =
+    // final field =
+    if (mapEquals) {
+      // expect(actual, matcher);
+    } else {
+      expect(result, expectedResult);
+    }
     beforeMap.remove(action.name);
     expect(beforeMap.identicalMembers(afterMap), true);
   }
