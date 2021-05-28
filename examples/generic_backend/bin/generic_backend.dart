@@ -29,6 +29,9 @@ Handler init() {
     print("Octet Result $result");
     return result;
   });
+  app.get("/optimistic-fail", () {
+    throw Exception();
+  });
   app.get("/file", () => File("siva.jpeg"));
   app.get("/siva", () => File("siva.jpeg").readAsBytesSync());
   app.get("/stream", () => generateStream());

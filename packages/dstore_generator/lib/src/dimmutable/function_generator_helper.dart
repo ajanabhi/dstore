@@ -33,8 +33,15 @@ Future<String> generateDImmutableFromFunction(
 
   final fields = ModelUtils.processFields(visitor.fields);
   print("dimmutable function fields $fields");
+
+  final interfaces = <String>[];
+  if (dim.toMap || dim.copyWithMap) {
+    interfaces.add("ToMap<$className>");
+  }
+  final i = interfaces.isNotEmpty ? "implements ${interfaces.join(", ")}" : "";
+  final ext = "$i";
   return """
-    ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, className: className, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJsonSerializable, toMap: dim.toMap, copyWithMap: dim.copyWithMap, collectionEquality: dim.collectionEquality)}
+    ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, extendClass: ext, className: className, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJsonSerializable, toMap: dim.toMap, copyWithMap: dim.copyWithMap, collectionEquality: dim.collectionEquality)}
     
   """;
 }

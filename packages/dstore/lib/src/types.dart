@@ -1,3 +1,5 @@
+import 'package:dstore/dstore.dart';
+
 class Optional<T> {
   final T value;
   const Optional(this.value);
@@ -29,6 +31,8 @@ extension NullOptionalExt on Null? {
   dynamic get optional => Optional(this);
 }
 
-abstract class ToMap {
+@optionalTypeArgs
+abstract class ToMap<M> {
   Map<String, dynamic> toMap();
+  M copyWithMap(Map<String, dynamic> map);
 }

@@ -1,3 +1,4 @@
+import 'package:dstore/dstore.dart';
 import 'package:dstore_test_suite/src/store/api/openapi/local.dart';
 import 'package:dstore_test_suite/src/store/app_state.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
@@ -46,13 +47,27 @@ void main() {
       ]);
     });
 
-    test("should handle octet responses", () async {
-      await storeTester.testHttpAction(SimpleHttpActions.octet(), [
-        HelloOctet(
-          loading: true,
-        ),
-        HelloOctet(data: [1, 2], completed: true)
-      ]);
+    test("should handle optimistic responses", () async {
+      await storeTester.testHttpAction(
+          SimpleHttpActions.octet(optimisticResponse: [1, 2]),
+          [
+            HelloOctet(optimistic: true, data: [1, 2]),
+            HelloOctet(data: [1, 2], completed: true)
+          ],
+          mapEquals: true);
+    });
+    test("should handle optimistic fail cases", () async {
+      await storeTester.testHttpAction(
+        SimpleHttpActions.optFail(optimisticResponse: "one"),
+        [
+          OptimisticFail(optimistic: true, data: "one"),
+          OptimisticFail(
+              completed: true,
+              optimistic: true,
+              errorType: HttpErrorType.Response,
+              error: "Internal Server Error")
+        ],
+      );
     });
   });
 }

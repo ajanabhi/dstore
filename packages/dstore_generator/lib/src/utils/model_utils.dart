@@ -384,6 +384,14 @@ abstract class ModelUtils {
     }
     final tpwb = typeParamsWithBounds.isEmpty ? "" : "<$typeParamsWithBounds>";
     final hasFields = fields.isNotEmpty;
+    final defualtToMap = """
+        @override
+        Map<String,dynamic> toMap() => throw UnimplementedError();
+        """;
+    final defaultCopyWihMap = """
+        @override
+        $className copyWithMap(Map<String,dynamic> map) => throw UnimplementedError();
+    """;
     return """
    $annotations 
    class $className$tpwb $extendClass $mixins {
@@ -408,9 +416,9 @@ abstract class ModelUtils {
 
       ${hasFields ? ModelUtils.createHashcodeFromFieldsList(fields) : ""}
 
-      ${toMap ? ModelUtils.createToMapFromFieldsList(fields) : ""}
+      ${toMap ? ModelUtils.createToMapFromFieldsList(fields) : copyWithMap ? defualtToMap : ""}
 
-      ${copyWithMap ? ModelUtils.createCopyWithMapFromFieldsList(className, fields) : ""}
+      ${copyWithMap ? ModelUtils.createCopyWithMapFromFieldsList(className, fields) : toMap ? defaultCopyWihMap : ""}
 
      ${createToStringFromFieldsList(className, fields)}
     }

@@ -203,11 +203,11 @@ class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
 
 const _Simple_FullPath = "/store/pstates/simple_ps/Simple";
 
-class SimpleIncrmentResult implements ToMap {
+class SimpleIncrmentResult implements ToMap<SimpleIncrmentResult> {
   final int? count;
 
   const SimpleIncrmentResult({this.count});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (count != null) {
@@ -216,13 +216,17 @@ class SimpleIncrmentResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleIncrmentResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleSetNameResult implements ToMap {
+class SimpleSetNameResult implements ToMap<SimpleSetNameResult> {
   final String? name;
 
   const SimpleSetNameResult({this.name});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (name != null) {
@@ -231,13 +235,17 @@ class SimpleSetNameResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleSetNameResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleSetPersonTypeResult implements ToMap {
+class SimpleSetPersonTypeResult implements ToMap<SimpleSetPersonTypeResult> {
   final String? personType;
 
   const SimpleSetPersonTypeResult({this.personType});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (personType != null) {
@@ -246,13 +254,17 @@ class SimpleSetPersonTypeResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleSetPersonTypeResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleAreYouCoolGeekResult implements ToMap {
+class SimpleAreYouCoolGeekResult implements ToMap<SimpleAreYouCoolGeekResult> {
   final bool? coolGeek;
 
   const SimpleAreYouCoolGeekResult({this.coolGeek});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (coolGeek != null) {
@@ -261,13 +273,18 @@ class SimpleAreYouCoolGeekResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleAreYouCoolGeekResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleAreYouWantToVisitTheseRiversResult implements ToMap {
+class SimpleAreYouWantToVisitTheseRiversResult
+    implements ToMap<SimpleAreYouWantToVisitTheseRiversResult> {
   final List<String>? riversToVisit;
 
   const SimpleAreYouWantToVisitTheseRiversResult({this.riversToVisit});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (riversToVisit != null) {
@@ -276,13 +293,19 @@ class SimpleAreYouWantToVisitTheseRiversResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleAreYouWantToVisitTheseRiversResult copyWithMap(
+          Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleDidYouVisitedAkandaBharathResult implements ToMap {
+class SimpleDidYouVisitedAkandaBharathResult
+    implements ToMap<SimpleDidYouVisitedAkandaBharathResult> {
   final bool? areYouSafeOnThisPlant;
 
   const SimpleDidYouVisitedAkandaBharathResult({this.areYouSafeOnThisPlant});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (areYouSafeOnThisPlant != null) {
@@ -291,13 +314,19 @@ class SimpleDidYouVisitedAkandaBharathResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleDidYouVisitedAkandaBharathResult copyWithMap(
+          Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleIsHeListeningOnLoopResult implements ToMap {
+class SimpleIsHeListeningOnLoopResult
+    implements ToMap<SimpleIsHeListeningOnLoopResult> {
   final bool? listeningonLoop;
 
   const SimpleIsHeListeningOnLoopResult({this.listeningonLoop});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (listeningonLoop != null) {
@@ -306,13 +335,18 @@ class SimpleIsHeListeningOnLoopResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleIsHeListeningOnLoopResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleShouldHandleGeneralStatementResult implements ToMap {
+class SimpleShouldHandleGeneralStatementResult
+    implements ToMap<SimpleShouldHandleGeneralStatementResult> {
   final bool? general;
 
   const SimpleShouldHandleGeneralStatementResult({this.general});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (general != null) {
@@ -321,6 +355,11 @@ class SimpleShouldHandleGeneralStatementResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleShouldHandleGeneralStatementResult copyWithMap(
+          Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
 abstract class SimpleActions {

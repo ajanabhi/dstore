@@ -20,8 +20,14 @@ Future<String> generateDImmutableFromClass(
   final name = element.name.substring(2);
   print("Params : $fields");
   final isJosnSerializable = dim.isJsonSerializable;
+  final interfaces = <String>[];
+  if (dim.toMap || dim.copyWithMap) {
+    interfaces.add("ToMap<$name>");
+  }
+  final i = interfaces.isNotEmpty ? "implements ${interfaces.join(", ")}" : "";
+  final ext = "$i";
   final result = """
-      ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, methods: methods, className: name, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable, collectionEquality: dim.collectionEquality, toMap: dim.toMap, copyWithMap: dim.copyWithMap)}
+      ${ModelUtils.createDefaultDartModelFromFeilds(fields: fields, extendClass: ext, methods: methods, className: name, typeParams: typeParams, typeParamsWithBounds: typeParamsWithBounds, isJsonSerializable: isJosnSerializable, collectionEquality: dim.collectionEquality, toMap: dim.toMap, copyWithMap: dim.copyWithMap)}
     """;
   return result;
 }

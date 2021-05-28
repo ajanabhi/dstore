@@ -7,4 +7,12 @@ class $_SimpleHttp {
   helloPing ping = helloPing();
   helloJson json = helloJson();
   HelloOctet octet = HelloOctet();
+  OptimisticFail optFail = OptimisticFail();
+  @HttpRequestExtension(transformer: pingTransform)
+  helloJsonTransform<int> pinInt = helloJsonTransform();
+}
+
+helloJsonTransform<int> pingTransform(
+    helloJsonTransform<int> input, helloJsonResponse responseFromServer) {
+  return input;
 }

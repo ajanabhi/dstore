@@ -50,7 +50,7 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  void testAction<M extends ToMap>(Action<M> action, M result,
+  void testAction<M extends ToMap<dynamic>>(Action<M> action, M result,
       {bool throwsException = false}) {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
@@ -71,7 +71,8 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  Future<void> testAsyncAction<M extends ToMap>(Action<M> action, M result,
+  Future<void> testAsyncAction<M extends ToMap<dynamic>>(
+      Action<M> action, M result,
       {Duration? timeout, int interval = 4, AsyncActionField? af}) async {
     assert(action.isAsync == true);
     final before = store.getPStateModelFromAction(action);
@@ -119,15 +120,16 @@ class StoreTester<S extends AppStateI<S>> {
     await waitForAction(action, timeout: timeout, interval: interval);
     final after = store.getPStateModelFromAction(action);
     expect(identical(before, after), false);
-    final afterMap = after.toMap();
-    final beforeMap = before.toMap();
-    // final beforeFieldMap =
-    // final field =
+
     if (mapEquals) {
-      // expect(actual, matcher);
+      final resultMap = result.map((e) => (e as ToMap).toMap());
+      final expectedMap = expectedResult.map((e) => (e as ToMap).toMap());
+      expect(resultMap, expectedMap);
     } else {
       expect(result, expectedResult);
     }
+    final afterMap = after.toMap();
+    final beforeMap = before.toMap();
     beforeMap.remove(action.name);
     expect(beforeMap.identicalMembers(afterMap), true);
   }
@@ -173,7 +175,6 @@ class StoreTester<S extends AppStateI<S>> {
         done = field.completed;
       }
       if (field is HttpField) {
-        print("Its http field in tester $field");
         done = field.completed;
       }
       // print("checking for done : $done");

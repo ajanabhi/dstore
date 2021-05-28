@@ -294,9 +294,13 @@ ActionsInfo _getActionsInfo(
     if (h.persitDataBetweenFetches) {
       params.add("persitDataBetweenFetches: true");
     }
+    if (h.transformer != null) {
+      params.add("transformer: ${h.transformer}");
+    }
     params.add("responseDeserializer: ${h.responseDeserializer}");
+
     final value =
-        "HttpMeta<${pType},${qType},${h.inputType},${h.responseType},${h.errorType},dynamic>(${params.join(", ")})";
+        "HttpMeta<${pType},${qType},${h.inputType},${h.responseType},${h.errorType},${h.transformType}>(${params.join(", ")})";
 
     return """ "$key" : $value """;
   }).join(", ");
@@ -488,17 +492,19 @@ String _createMockModel({required String name, required List<Field> fields}) {
     }
   }).join("\n");
   return """
-    class $name implements ToMap {
+    class $name implements ToMap<$name> {
      
      $finalFields
 
      const ${name}({$ctorParams});
-
+     @override
      Map<String,dynamic> toMap() {
        final map = <String,dynamic>{};
         $toMapStatements
        return map;
      }
+      @override
+      $name copyWithMap(Map<String,dynamic> map) => throw UnimplementedError();
     }
   
   """;

@@ -20,7 +20,7 @@ class StoreTester<S extends AppStateI<S>> {
 
   StoreTester(this.store);
 
-  void testAction<M extends ToMap>(Action<M> action, M result) {
+  void testAction<M extends ToMap<dynamic>>(Action<M> action, M result) {
     final before = store.getPStateModelFromAction(action);
     store.dispatch(action);
     final after = store.getPStateModelFromAction(action);
@@ -39,7 +39,8 @@ class StoreTester<S extends AppStateI<S>> {
     }
   }
 
-  Future<void> testAsyncAction<M extends ToMap>(Action<M> action, M result,
+  Future<void> testAsyncAction<M extends ToMap<dynamic>>(
+      Action<M> action, M result,
       {Duration? timeout, int interval = 4}) async {
     assert(action.isAsync == true);
     final before = store.getPStateModelFromAction(action);

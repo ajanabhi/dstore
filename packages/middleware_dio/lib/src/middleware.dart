@@ -62,6 +62,7 @@ Options _getOptions(
 
 void _handleDioError(
     {required DioError e, required Action action, required Store store}) {
+  print("handling dio Error $e");
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
@@ -69,30 +70,34 @@ void _handleDioError(
   print("is HttpField ${field is HttpField}");
   field = field as HttpField;
   final persistDataBetweenFetches = meta?.persitDataBetweenFetches ?? false;
-  late HttpError error;
+  dynamic error;
+  late HttpErrorType errorType;
   switch (e.type) {
     case DioErrorType.connectTimeout:
-      error = HttpError(type: HttpErrorType.ConnectTimeout, message: e.message);
+      errorType = HttpErrorType.ConnectTimeout;
       break;
     case DioErrorType.sendTimeout:
-      error = HttpError(type: HttpErrorType.SendTimeout, message: e.message);
+      errorType = HttpErrorType.SendTimeout;
+
       break;
     case DioErrorType.receiveTimeout:
-      error = HttpError(type: HttpErrorType.ReceiveTimeout, message: e.message);
+      errorType = HttpErrorType.ReceiveTimeout;
       break;
     case DioErrorType.response:
-      var re = e.response!;
+      var re = e.response!.data;
+      print("Response Error $re");
       if (meta?.errorDeserializer != null) {
-        re = meta?.errorDeserializer!(re.statusCode ?? 500, re.data);
+        re = meta?.errorDeserializer!(re.statusCode ?? 500, re);
       }
-      error = HttpError(type: HttpErrorType.Response, error: re);
+      errorType = HttpErrorType.Response;
+      error = re;
       break;
     case DioErrorType.cancel:
-      error = HttpError(type: HttpErrorType.Aborted, message: e.message);
+      errorType = HttpErrorType.Aborted;
       break;
 
     default:
-      error = HttpError(type: HttpErrorType.Default, message: e.message);
+      errorType = HttpErrorType.Default;
       break;
   }
   if (payload.offline &&
@@ -113,6 +118,7 @@ void _handleDioError(
   } else {
     var ef = field.copyWith(
         error: error,
+        errorType: errorType,
         loading: false,
         offline: false,
         completed: true,
@@ -270,6 +276,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   } on DioError catch (e) {
     _handleDioError(e: e, action: action, store: store);
   } catch (e) {
+    print("uncaught error in http $e");
     rethrow;
   }
   void handleGraphqlResponse(Response response) {

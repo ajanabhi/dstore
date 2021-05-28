@@ -50,6 +50,7 @@ class HttpRequest {
   final Map<String, String>? headers;
   final String? queryParamsType;
   final String? pathParamsType;
+  final String? originalResponseType;
 
   const HttpRequest({
     required this.method,
@@ -63,6 +64,7 @@ class HttpRequest {
     this.queryParamsType,
     this.inputDeserializer,
     this.errorDeserializer,
+    this.originalResponseType,
     this.graphqlQuery,
   });
 }
@@ -80,8 +82,7 @@ class GraphqlRequestPart {
 }
 
 class HttpRequestExtension {
-  final dynamic Function(dynamic)?
-      transformer; // make sure input and return type are HttpField
+  final Function? transformer; // make sure input and return type are HttpField
   final Future<bool> Function(dynamic)? canProcessOfflineAction;
   final bool persitDataBetweenFetches;
 

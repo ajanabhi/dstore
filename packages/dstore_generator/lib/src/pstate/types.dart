@@ -36,6 +36,7 @@ class HttpFieldInfo {
   final String? pathParamsType;
   final GraphqlRequestPart? graphqlQuery;
   final String responseType;
+  final String? transformType;
   final bool persitDataBetweenFetches;
 
   HttpFieldInfo({
@@ -49,6 +50,7 @@ class HttpFieldInfo {
     required this.inputTypeEnum,
     required this.responseType,
     required this.responseTypeEnum,
+    this.transformType,
     required this.responseDeserializer,
     required this.errorDeserializer,
     this.responseSerializer,

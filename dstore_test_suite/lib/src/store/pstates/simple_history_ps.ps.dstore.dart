@@ -80,11 +80,12 @@ class __$SimpleHistoryCopyWithImpl<O> extends _$SimpleHistoryCopyWithImpl<O>
 const _SimpleHistory_FullPath =
     "/store/pstates/simple_history_ps/SimpleHistory";
 
-class SimpleHistoryIncrementResult implements ToMap {
+class SimpleHistoryIncrementResult
+    implements ToMap<SimpleHistoryIncrementResult> {
   final int? count;
 
   const SimpleHistoryIncrementResult({this.count});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (count != null) {
@@ -93,13 +94,18 @@ class SimpleHistoryIncrementResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleHistoryIncrementResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleHistoryDecrementResult implements ToMap {
+class SimpleHistoryDecrementResult
+    implements ToMap<SimpleHistoryDecrementResult> {
   final int? count;
 
   const SimpleHistoryDecrementResult({this.count});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (count != null) {
@@ -108,6 +114,10 @@ class SimpleHistoryDecrementResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleHistoryDecrementResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
 abstract class SimpleHistoryActions {

@@ -262,11 +262,15 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
       if (pathParamsType != null) {
         params.add('pathParamsType: "${pathParamsType}"');
       }
-
+      final transformParams = [...params];
+      transformParams.add("originalResponseType: '$responseType'");
       final dapi = """
-       @HttpRequest( ${params.join(", ")} )
+       @HttpRequest(${params.join(", ")} )
        typedef $oid = HttpField<$inputType, $responseType, $errorType>;
-      
+        
+        // use this when you want to transform original http response type(like when you want to store only part of response or paginations etc)
+       @HttpRequest(${transformParams.join(", ")} )
+       typedef ${oid}Transform<T> = HttpField<$inputType, T, $errorType>;
       """;
       // final dapi = """
       //  @HttpRequest( ${params.join(", ")} )

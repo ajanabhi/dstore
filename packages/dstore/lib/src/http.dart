@@ -24,16 +24,20 @@ class HttpProgress {
 @DImmutable(toMap: true)
 void $_HttpField<I, R, E>(
     R? data,
-    HttpError<E>? error,
+    E? error,
     Map<String, String>? responseHeaders,
     int? status,
     HttpProgress? progress,
+    HttpErrorType? errorType,
     AbortController? abortController,
     {bool optimistic = false,
     bool loading = false,
     bool completed = false,
     bool offline = false}) {}
 
+// final HttpErrorType type;
+//   final String? message;
+//   final RE? error;
 @DImmutable()
 class $_HttpMeta<PP, QP, I, R, E, T> {
   late R Function(int status, dynamic resp) responseDeserializer;

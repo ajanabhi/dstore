@@ -50,7 +50,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
 
   String? inputType = replaceEndStar(
       ht.typeArguments[0].getDisplayString(withNullability: true));
-  final responseType = replaceEndStar(
+  var responseType = replaceEndStar(
       ht.typeArguments[1].getDisplayString(withNullability: true));
   final errorType = replaceEndStar(
       ht.typeArguments[2].getDisplayString(withNullability: true));
@@ -94,14 +94,37 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
   final inputDeserializer = reader.functionNameForField("inputDeserializer");
   final headersMap = reader.getStringMapForField("headers");
   final headers = headersMap != null ? jsonEncode(headersMap) : null;
-  final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
 
+  final originalResponseType = reader.peek("originalResponseType")?.stringValue;
+  var transformType = "Null";
+  if (originalResponseType != null) {
+    transformType = responseType;
+    responseType = originalResponseType;
+  }
   String? transformer;
   String? canProcessOfflineAction;
   var persitDataBetweenFetches = false;
+  final reqExtAnnot = element.annotationFromType(HttpRequestExtension);
   if (reqExtAnnot != null) {
     final reqE = ConstantReader(reqExtAnnot.computeConstantValue());
-    transformer = reqE.functionNameForField("transformer");
+    transformer = reqE.functionNameForField("transformer", validateFn: (ex) {
+      final params = ex.parameters;
+      final at = element.type.aliasElement?.name;
+      final error =
+          "transformer function should contain two paramaeter one ${at} other one is $responseType and return type is $at";
+      if (params.length != 2) {
+        return error;
+      }
+      print("Return type ${ex.returnType}");
+      if (!ex.returnType.toString().startsWith(element.type.toString())) {
+        return error;
+      }
+      final p1 = params.first.type.toString();
+      final p2 = params.last.type.toString();
+      if (p1.startsWith(at!) || p2 != responseType) {
+        return error;
+      }
+    });
     canProcessOfflineAction =
         reqE.functionNameForField("canProcessOfflineAction");
     persitDataBetweenFetches =
@@ -120,6 +143,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
       responseSerializer: responseSerializer,
       inputType: inputType,
       errorType: errorType,
+      transformType: transformType,
       canProcessOfflineAction: canProcessOfflineAction,
       responseDeserializer: responseDeserializer,
       errorDeserializer: errorDeserializer,
@@ -130,6 +154,12 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
       persitDataBetweenFetches: persitDataBetweenFetches,
       transformer: transformer,
       graphqlQuery: graphqlQuery);
+}
+
+String? validateTransformerFn(ExecutableElement? executableElement) {
+  if (executableElement != null) {
+    final params = executableElement.parameters;
+  }
 }
 
 GraphqlRequestPart? getGraphqlRequestPartFromDartObj(

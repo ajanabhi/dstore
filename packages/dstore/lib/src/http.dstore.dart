@@ -7,16 +7,18 @@ part of 'http.dart';
 // DImmutableGenerator
 // **************************************************************************
 
-class HttpField<I, R, E> {
+class HttpField<I, R, E> implements ToMap<HttpField> {
   final R? data;
 
-  final HttpError<E>? error;
+  final E? error;
 
   final Map<String, String>? responseHeaders;
 
   final int? status;
 
   final HttpProgress? progress;
+
+  final HttpErrorType? errorType;
 
   final AbortController? abortController;
 
@@ -37,6 +39,7 @@ class HttpField<I, R, E> {
       this.responseHeaders,
       this.status,
       this.progress,
+      this.errorType,
       this.abortController,
       this.optimistic = false,
       this.loading = false,
@@ -52,6 +55,7 @@ class HttpField<I, R, E> {
         o.responseHeaders == responseHeaders &&
         o.status == status &&
         o.progress == progress &&
+        o.errorType == errorType &&
         o.abortController == abortController &&
         o.optimistic == optimistic &&
         o.loading == loading &&
@@ -66,6 +70,7 @@ class HttpField<I, R, E> {
       responseHeaders.hashCode ^
       status.hashCode ^
       progress.hashCode ^
+      errorType.hashCode ^
       abortController.hashCode ^
       optimistic.hashCode ^
       loading.hashCode ^
@@ -78,6 +83,7 @@ class HttpField<I, R, E> {
         "responseHeaders": this.responseHeaders,
         "status": this.status,
         "progress": this.progress,
+        "errorType": this.errorType,
         "abortController": this.abortController,
         "optimistic": this.optimistic,
         "loading": this.loading,
@@ -86,8 +92,11 @@ class HttpField<I, R, E> {
       };
 
   @override
+  HttpField copyWithMap(Map<String, dynamic> map) => throw UnimplementedError();
+
+  @override
   String toString() =>
-      "HttpField(data: ${this.data}, error: ${this.error}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";
+      "HttpField(data: ${this.data}, error: ${this.error}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, errorType: ${this.errorType}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";
 }
 
 abstract class $HttpFieldCopyWith<I, R, E, O> {
@@ -96,10 +105,11 @@ abstract class $HttpFieldCopyWith<I, R, E, O> {
       _$HttpFieldCopyWithImpl<I, R, E, O>;
   O call(
       {R? data,
-      HttpError<E>? error,
+      E? error,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
+      HttpErrorType? errorType,
       AbortController? abortController,
       bool optimistic,
       bool loading,
@@ -120,6 +130,7 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
       Object? responseHeaders = dimmutable,
       Object? status = dimmutable,
       Object? progress = dimmutable,
+      Object? errorType = dimmutable,
       Object? abortController = dimmutable,
       Object? optimistic = dimmutable,
       Object? loading = dimmutable,
@@ -127,7 +138,7 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
       Object? offline = dimmutable}) {
     return _then(_value.copyWith(
         data: data == dimmutable ? _value.data : data as R?,
-        error: error == dimmutable ? _value.error : error as HttpError<E>?,
+        error: error == dimmutable ? _value.error : error as E?,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,
@@ -135,6 +146,9 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
         progress: progress == dimmutable
             ? _value.progress
             : progress as HttpProgress?,
+        errorType: errorType == dimmutable
+            ? _value.errorType
+            : errorType as HttpErrorType?,
         abortController: abortController == dimmutable
             ? _value.abortController
             : abortController as AbortController?,
@@ -154,10 +168,11 @@ abstract class _$HttpFieldCopyWith<I, R, E, O>
       __$HttpFieldCopyWithImpl<I, R, E, O>;
   O call(
       {R? data,
-      HttpError<E>? error,
+      E? error,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
+      HttpErrorType? errorType,
       AbortController? abortController,
       bool optimistic,
       bool loading,
@@ -182,6 +197,7 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
       Object? responseHeaders = dimmutable,
       Object? status = dimmutable,
       Object? progress = dimmutable,
+      Object? errorType = dimmutable,
       Object? abortController = dimmutable,
       Object? optimistic = dimmutable,
       Object? loading = dimmutable,
@@ -189,7 +205,7 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
       Object? offline = dimmutable}) {
     return _then(HttpField(
         data: data == dimmutable ? _value.data : data as R?,
-        error: error == dimmutable ? _value.error : error as HttpError<E>?,
+        error: error == dimmutable ? _value.error : error as E?,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,
@@ -197,6 +213,9 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
         progress: progress == dimmutable
             ? _value.progress
             : progress as HttpProgress?,
+        errorType: errorType == dimmutable
+            ? _value.errorType
+            : errorType as HttpErrorType?,
         abortController: abortController == dimmutable
             ? _value.abortController
             : abortController as AbortController?,
@@ -214,8 +233,8 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   final dynamic Function(int, R)? responseSerializer;
 
-  final HttpField Function(HttpField currentField, HttpField newField)?
-      transformer;
+  final HttpField<I, T, E> Function(
+      HttpField<I, T, E> currentField, R response)? transformer;
 
   final dynamic Function(I)? inputSerializer;
 

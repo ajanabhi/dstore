@@ -125,11 +125,12 @@ class __$SimpleAsyncCopyWithImpl<O> extends _$SimpleAsyncCopyWithImpl<O>
 
 const _SimpleAsync_FullPath = "/store/pstates/simple_async_ps/SimpleAsync";
 
-class SimpleAsyncDelayedSetResult implements ToMap {
+class SimpleAsyncDelayedSetResult
+    implements ToMap<SimpleAsyncDelayedSetResult> {
   final int? x;
 
   const SimpleAsyncDelayedSetResult({this.x});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (x != null) {
@@ -138,13 +139,18 @@ class SimpleAsyncDelayedSetResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleAsyncDelayedSetResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
-class SimpleAsyncShouldCatchErrorsResult implements ToMap {
+class SimpleAsyncShouldCatchErrorsResult
+    implements ToMap<SimpleAsyncShouldCatchErrorsResult> {
   final int? x;
 
   const SimpleAsyncShouldCatchErrorsResult({this.x});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (x != null) {
@@ -153,6 +159,10 @@ class SimpleAsyncShouldCatchErrorsResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimpleAsyncShouldCatchErrorsResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
 abstract class SimpleAsyncActions {

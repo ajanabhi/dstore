@@ -1,3 +1,4 @@
+import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/session.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/constant/value.dart';
@@ -23,13 +24,14 @@ abstract class AstUtils {
         final session = library.session;
         AstNode node;
         if (resolve) {
-          final le = await session.getResolvedLibraryByElement(library);
+          final le = await session.getResolvedLibraryByElement2(library)
+              as ResolvedLibraryResult;
+
           node = le.getElementDeclaration(element)!.node;
         } else {
-          node = session
-              .getParsedLibraryByElement(library)
-              .getElementDeclaration(element)!
-              .node;
+          final pr = session.getParsedLibraryByElement2(library)
+              as ParsedLibraryResult;
+          node = pr.getElementDeclaration(element)!.node;
         }
         return node;
       } on InconsistentAnalysisException {

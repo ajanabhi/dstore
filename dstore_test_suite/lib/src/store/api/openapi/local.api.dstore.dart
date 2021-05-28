@@ -116,6 +116,18 @@ String HelloOctetResponse_ErrorSerializer(int status, String input) => input;
 String HelloOctetResponse_ErrorDeserializer(int status, dynamic input) =>
     input.toString();
 
+String OptimisticFailResponse_SuccessSerializer(int status, String input) =>
+    input;
+
+String OptimisticFailResponse_SuccessDeserializer(int status, dynamic input) =>
+    input.toString();
+
+String OptimisticFailResponse_ErrorSerializer(int status, String input) =>
+    input;
+
+String OptimisticFailResponse_ErrorDeserializer(int status, dynamic input) =>
+    input.toString();
+
 @HttpRequest(
     method: "GET",
     url: "http://localhost:8080/",
@@ -124,6 +136,17 @@ String HelloOctetResponse_ErrorDeserializer(int status, dynamic input) =>
     responseDeserializer: helloPingResponse_SuccessDeserializer,
     errorDeserializer: helloPingResponse_ErrorDeserializer)
 typedef helloPing = HttpField<Null, String, String>;
+
+// use this when you want to transform original http response type(like when you want to store only part of response or paginations etc)
+@HttpRequest(
+    method: "GET",
+    url: "http://localhost:8080/",
+    responseType: HttpResponseType.STRING,
+    responseSerializer: helloPingResponse_SuccessSerializer,
+    responseDeserializer: helloPingResponse_SuccessDeserializer,
+    errorDeserializer: helloPingResponse_ErrorDeserializer,
+    originalResponseType: 'String')
+typedef helloPingTransform<T> = HttpField<Null, T, String>;
 
 @HttpRequest(
     method: "GET",
@@ -134,6 +157,17 @@ typedef helloPing = HttpField<Null, String, String>;
     errorDeserializer: helloJsonResponse_ErrorDeserializer)
 typedef helloJson = HttpField<Null, helloJsonResponse, String>;
 
+// use this when you want to transform original http response type(like when you want to store only part of response or paginations etc)
+@HttpRequest(
+    method: "GET",
+    url: "http://localhost:8080/json",
+    responseType: HttpResponseType.JSON,
+    responseSerializer: helloJsonResponse.toJsonStatic,
+    responseDeserializer: helloJsonResponse.fromJsonStatic,
+    errorDeserializer: helloJsonResponse_ErrorDeserializer,
+    originalResponseType: 'helloJsonResponse')
+typedef helloJsonTransform<T> = HttpField<Null, T, String>;
+
 @HttpRequest(
     method: "GET",
     url: "http://localhost:8080/octet",
@@ -142,3 +176,34 @@ typedef helloJson = HttpField<Null, helloJsonResponse, String>;
     responseDeserializer: HelloOctetResponse_SuccessDeserializer,
     errorDeserializer: HelloOctetResponse_ErrorDeserializer)
 typedef HelloOctet = HttpField<Null, List<int>, String>;
+
+// use this when you want to transform original http response type(like when you want to store only part of response or paginations etc)
+@HttpRequest(
+    method: "GET",
+    url: "http://localhost:8080/octet",
+    responseType: HttpResponseType.BYTES,
+    responseSerializer: HelloOctetResponse_SuccessSerializer,
+    responseDeserializer: HelloOctetResponse_SuccessDeserializer,
+    errorDeserializer: HelloOctetResponse_ErrorDeserializer,
+    originalResponseType: 'List<int>')
+typedef HelloOctetTransform<T> = HttpField<Null, T, String>;
+
+@HttpRequest(
+    method: "GET",
+    url: "http://localhost:8080/optimistic-fail",
+    responseType: HttpResponseType.STRING,
+    responseSerializer: OptimisticFailResponse_SuccessSerializer,
+    responseDeserializer: OptimisticFailResponse_SuccessDeserializer,
+    errorDeserializer: OptimisticFailResponse_ErrorDeserializer)
+typedef OptimisticFail = HttpField<Null, String, String>;
+
+// use this when you want to transform original http response type(like when you want to store only part of response or paginations etc)
+@HttpRequest(
+    method: "GET",
+    url: "http://localhost:8080/optimistic-fail",
+    responseType: HttpResponseType.STRING,
+    responseSerializer: OptimisticFailResponse_SuccessSerializer,
+    responseDeserializer: OptimisticFailResponse_SuccessDeserializer,
+    errorDeserializer: OptimisticFailResponse_ErrorDeserializer,
+    originalResponseType: 'String')
+typedef OptimisticFailTransform<T> = HttpField<Null, T, String>;

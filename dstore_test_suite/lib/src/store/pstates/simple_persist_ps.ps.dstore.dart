@@ -83,11 +83,11 @@ class __$SimplePersistCopyWithImpl<O> extends _$SimplePersistCopyWithImpl<O>
 const _SimplePersist_FullPath =
     "/store/pstates/simple_persist_ps/SimplePersist";
 
-class SimplePersistSetXResult implements ToMap {
+class SimplePersistSetXResult implements ToMap<SimplePersistSetXResult> {
   final int? x;
 
   const SimplePersistSetXResult({this.x});
-
+  @override
   Map<String, dynamic> toMap() {
     final map = <String, dynamic>{};
     if (x != null) {
@@ -96,6 +96,10 @@ class SimplePersistSetXResult implements ToMap {
 
     return map;
   }
+
+  @override
+  SimplePersistSetXResult copyWithMap(Map<String, dynamic> map) =>
+      throw UnimplementedError();
 }
 
 abstract class SimplePersistActions {

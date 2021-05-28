@@ -57,6 +57,15 @@ void generateSpec() {
             },
           )),
           "default": defaultResponse
+        })),
+        "/optimistic-fail": PathItem(
+            get: Operation(operationId: "OptimisticFail", responses: {
+          "200": ResponseOrReference(Response(
+            content: {
+              "${ContentTypes.textHtml}": MediaType(schema: stringSchema)
+            },
+          )),
+          "default": defaultResponse
         }))
       });
 
