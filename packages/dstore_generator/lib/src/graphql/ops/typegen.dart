@@ -376,6 +376,8 @@ String getDType(GField gf, String type) {
   }
 }
 
+final unionsListSerializers = <String>[];
+
 String getTypes(OperationVisitor visitor, String name) {
   final list = <GType>[];
   final fragmentMap = visitor.fragmentFieldsMap;
@@ -392,9 +394,12 @@ String getTypes(OperationVisitor visitor, String name) {
       : createVariableType(visitor.variables, "${name}Variables");
   return """
     $response
+     ${unionsListSerializers.join("\n")}
     $variables
   """;
 }
+
+// LocalOps_usersData_users_helloa
 
 Field converGFieldToField(GField field) {
   final name = field.name;
@@ -435,9 +440,33 @@ String convertGTypeToDartType(GType gtype) {
     }
     if (f.gType != null && f.gType!.unions.isNotEmpty) {
       // union field we need special getter
+
       final tn = f.gType!.name;
-      jkFields.add("fromJson: $tn.fromJson");
-      jkFields.add("toJson: ${tn}.toJson");
+      var fj = "$tn.fromJson";
+      var tj = "$tn.toJson";
+      if (f.type.startsWith("List")) {
+        print("Got union list field ${f.type} ");
+        final toJsonName = "${tn}ListSerializer";
+        tj = toJsonName;
+        final isOp = f.type.endsWith("?");
+        final isUnionOp = f.gType!.isOptional;
+        final toJson = getListUnionToJson(
+            name: tn,
+            isUnionOp: isUnionOp,
+            isOp: isOp,
+            serializerName: toJsonName);
+        unionsListSerializers.add(toJson);
+        final fromJsonName = "${tn}ListDeserializer";
+        fj = fromJsonName;
+        final fromJson = getListFromJson(
+            name: tn,
+            isUnionOp: isUnionOp,
+            isOp: isOp,
+            serializerName: fromJsonName);
+        unionsListSerializers.add(fromJson);
+      }
+      jkFields.add("fromJson: $fj");
+      jkFields.add("toJson: $tj");
     }
 
     if (jkFields.isNotEmpty) {
@@ -448,6 +477,52 @@ String convertGTypeToDartType(GType gtype) {
   }).toList();
   return ModelUtils.createDefaultDartModelFromFeilds(
       fields: fields, className: name, isJsonSerializable: true);
+}
+
+String getListFromJson(
+    {required String name,
+    required bool isOp,
+    required bool isUnionOp,
+    required String serializerName}) {
+  final op = isOp ? "?" : "";
+  final uop = isUnionOp ? "?" : "";
+  final nullCond = isOp
+      ? """
+    if(input == null) {
+      return null;
+    }
+  """
+      : "";
+  return """
+    
+    List<$name$uop>$op $serializerName(Object$op input) {
+      $nullCond
+      return (input as List<dynamic>).map((dynamic e) => $name.fromJson(e as Map<String,dynamic>$uop)).toList();
+    }
+  
+  """;
+}
+
+String getListUnionToJson(
+    {required String name,
+    required bool isOp,
+    required bool isUnionOp,
+    required String serializerName}) {
+  final op = isOp ? "?" : "";
+  final uop = isUnionOp ? "?" : "";
+  final nullCond = isOp
+      ? """
+    if(input == null) {
+      return null;
+    }
+  """
+      : "";
+  return """
+    List<Map<String,dynamic>$uop>$op  $serializerName(List<$name$uop>$op input) {
+        $nullCond
+        return input.map((m) => $name.toJson(m)).toList();
+    }
+  """;
 }
 
 String _covertUnionOrInterfaceToDartModel(GType gtype) {

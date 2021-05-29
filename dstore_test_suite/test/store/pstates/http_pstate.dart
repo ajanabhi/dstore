@@ -25,6 +25,7 @@ offline can process /not process
 Graphql 
 queries
 mutations
+hashed queries
 
 
 */
