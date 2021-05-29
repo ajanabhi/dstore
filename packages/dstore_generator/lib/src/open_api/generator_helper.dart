@@ -244,8 +244,8 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
           schema: schema, ror: op.requestBody, name: "${oid}RequestBody");
       var inputType = "Null";
       if (it != null) {
-        params.add('inputDeserializer: ${it.serializer}');
-        params.add('inputSerializer: ${it.deserializer}');
+        params.add('inputDeserializer: ${it.deserializer}');
+        params.add('inputSerializer: ${it.serializer}');
         inputType = it.type;
       }
 
@@ -326,10 +326,13 @@ InputType? _getInputTypeFromReqoRRef(
 
   final serializerName = "${name}Serializer";
   final deserializerName = "${name}Deserializer";
-  ;
-  if (type == "String") {
+  if (contentType.startsWith("text")) {
     types.add(" $type $serializerName($type input) => input;");
     types.add("$type $deserializerName(dynamic input) => input as $type;");
+  } else if (contentType.startsWith("application/octet-stream")) {
+    types.add(" $type $serializerName($type input) => input;");
+    types.add(
+        "$type $deserializerName(dynamic input) => (input as List<dynamic>).map((dynamic v) => v as int).toList() ;");
   } else {
     types.add("""
       dynamic $serializerName($type input) => input.toJson();

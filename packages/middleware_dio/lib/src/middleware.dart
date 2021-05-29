@@ -101,8 +101,8 @@ void _handleDioError(
       break;
   }
   if (payload.offline &&
-      (error.type == HttpErrorType.Default ||
-          error.type == HttpErrorType.ConnectTimeout)) {
+      (errorType == HttpErrorType.Default ||
+          errorType == HttpErrorType.ConnectTimeout)) {
     store.addOfflineAction(action);
     store.dispatch(action.copyWith(
         offlinedAt: DateTime.now(),
@@ -146,8 +146,7 @@ String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
         throw ArgumentError.value(
             "pathParamsSerializer is missing in HttpMeta for action :  ${action.id}");
       }
-      final pp =
-          meta!.pathParamsSerializer!(pathParams) as Map<String, dynamic>;
+      final pp = meta!.pathParamsSerializer!(pathParams);
       pp.forEach((key, value) {
         result = result.replaceFirst('{${key}}', value.toString());
       });
@@ -157,9 +156,9 @@ String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
         throw ArgumentError.value(
             "queryParamsSerializer is missing in HttpMeta for action :  ${action.id}");
       }
-      final qp =
-          meta!.queryParamsSerializer!(queryParams) as Map<String, dynamic>;
-      result = Uri(path: result, queryParameters: qp).toString();
+      final qp = meta!.queryParamsSerializer!(queryParams);
+      final uri = Uri(path: result, queryParameters: qp);
+      result = "$result?${uri.query}";
     }
   }
   return result;
@@ -252,6 +251,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
                 processed: true,
                 type: ActionInternalType.FIELD,
                 data: field.copyWith(
+                    loading: true,
                     progress: HttpProgress(current: got, total: total)))));
       };
     }
@@ -263,13 +263,13 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
                 processed: true,
                 type: ActionInternalType.FIELD,
                 data: field.copyWith(
+                    loading: true,
                     progress: HttpProgress(current: sent, total: total)))));
       };
     }
     print("Sending request to server $url ");
     response = await dio.request(url,
         data: data,
-        queryParameters: payload.queryParams,
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
         onSendProgress: onSendProgress,
@@ -293,7 +293,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
           .toList();
       ge = HttpError(type: HttpErrorType.Response, error: ea);
     }
-    dynamic? rdata;
+    dynamic rdata;
     if (response.data["data"] != null) {
       rdata = meta!.responseDeserializer(200, response.data["data"]);
     }

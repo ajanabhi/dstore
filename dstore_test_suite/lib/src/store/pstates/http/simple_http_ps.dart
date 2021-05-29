@@ -13,6 +13,16 @@ class $_SimpleHttp {
   @HttpRequestExtension(
       transformer: paginationTransformer, persitDataBetweenFetches: true)
   Pagination pagination = Pagination();
+
+  JsonPost jsPost = JsonPost();
+
+  FormUpload fromUpload = FormUpload();
+
+  UploadProgress uploadProgress = UploadProgress();
+
+  DownloadProgress downloadProgress = DownloadProgress();
+
+  OfflineOp offlineOp = OfflineOp();
 }
 
 helloJsonTransform<int> pingTransform(

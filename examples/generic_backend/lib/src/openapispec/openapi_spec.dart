@@ -21,6 +21,8 @@ final stringBinarySchema =
     SchemaOrReference(Schema(type: "string", format: "binary"));
 final intSchmea = SchemaOrReference(Schema(type: "integer"));
 
+final jsonPostSchema = SchemaOrReference(
+    Schema(type: "object", properties: {"name": stringSchema}));
 void generateSpec() {
   final spec = OpenApiSchema(
       info: Info(title: "", version: ""),
@@ -71,7 +73,10 @@ void generateSpec() {
         })),
         "/pagination/{page}": PathItem(
             get: Operation(operationId: "Pagination", parameters: [
-          ParamOrRef(Parameter(name: "page", o_in: "path", schema: intSchmea))
+          ParamOrRef(Parameter(name: "page", o_in: "path", schema: intSchmea)),
+          ParamOrRef(
+            Parameter(name: "qp", o_in: "query", schema: stringSchema),
+          )
         ], responses: {
           "200": ResponseOrReference(Response(
             content: {
@@ -82,6 +87,75 @@ void generateSpec() {
                 "list": listString,
                 "nextPage": intSchmea
               })))
+            },
+          )),
+          "default": defaultResponse
+        })),
+        "/jsonpost": PathItem(
+            post: Operation(
+                operationId: "JsonPost",
+                requestBody: RequestBodyOrReference(RequestBody(content: {
+                  "${ContentTypes.appJson}": MediaType(schema: jsonPostSchema)
+                })),
+                responses: {
+              "200": ResponseOrReference(Response(
+                content: {
+                  "${ContentTypes.appJson}": MediaType(schema: jsonPostSchema)
+                },
+              )),
+              "default": defaultResponse
+            })),
+        "/form-upload": PathItem(
+            post: Operation(
+                operationId: "FormUpload",
+                requestBody: RequestBodyOrReference(RequestBody(content: {
+                  "${ContentTypes.appJson}": MediaType(
+                      schema:
+                          SchemaOrReference(Schema(type: "object", properties: {
+                    "file": SchemaOrReference(
+                        Schema(type: "string", format: "binary")),
+                    "name": stringSchema
+                  })))
+                })),
+                responses: {
+              "200": ResponseOrReference(Response(
+                content: {
+                  "${ContentTypes.appJson}": MediaType(schema: jsonPostSchema)
+                },
+              )),
+              "default": defaultResponse
+            })),
+        "/uploadprogress": PathItem(
+            post: Operation(
+                operationId: "UploadProgress",
+                requestBody: RequestBodyOrReference(RequestBody(content: {
+                  "${ContentTypes.appOctetStream}": MediaType(
+                      schema: SchemaOrReference(
+                          Schema(type: "string", format: "binary")))
+                })),
+                responses: {
+              "200": ResponseOrReference(Response(
+                content: {
+                  "${ContentTypes.appJson}": MediaType(schema: jsonPostSchema)
+                },
+              )),
+              "default": defaultResponse
+            })),
+        "/download": PathItem(
+            post: Operation(operationId: "DownloadProgress", responses: {
+          "200": ResponseOrReference(Response(
+            content: {
+              "${ContentTypes.appOctetStream}":
+                  MediaType(schema: stringBinarySchema)
+            },
+          )),
+          "default": defaultResponse
+        })),
+        "/offline": PathItem(
+            get: Operation(operationId: "OfflineOp", responses: {
+          "200": ResponseOrReference(Response(
+            content: {
+              "${ContentTypes.textHtml}": MediaType(schema: stringSchema)
             },
           )),
           "default": defaultResponse

@@ -67,12 +67,14 @@ class Store<S extends AppStateI<S>> {
   }
 
   void _handleNetworkStatusChange(bool status) {
+    print("status changed to $status");
     if (status) {
       _processOfflineActions();
     }
   }
 
   void _processOfflineActions() async {
+    print("processing offline actions $_offlineActions");
     if (_offlineActions.isNotEmpty) {
       final ac = [..._offlineActions];
       _offlineActions.clear();
@@ -87,6 +89,7 @@ class Store<S extends AppStateI<S>> {
 
   Future<void> addOfflineAction(Action<dynamic> action) async {
     assert(networkOptions != null);
+    action = action.copyWith(internal: null);
     _offlineActions.add(action);
     if (storage != null) {
       final psm = getPStateMetaFromAction(action);

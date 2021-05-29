@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:dstore/dstore.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 
@@ -19,6 +20,21 @@ class HttpProgress {
   final int total;
 
   HttpProgress({required this.current, required this.total});
+
+  @override
+  String toString() => 'HttpProgress(current: $current, total: $total)';
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+
+    return other is HttpProgress &&
+        other.current == current &&
+        other.total == total;
+  }
+
+  @override
+  int get hashCode => current.hashCode ^ total.hashCode;
 }
 
 @DImmutable(toMap: true)
@@ -40,7 +56,7 @@ class $_HttpMeta<PP, QP, I, R, E, T> {
   late R Function(int status, dynamic resp) responseDeserializer;
   dynamic Function(int, R)? responseSerializer;
   Function? transformer;
-  dynamic Function(I)? inputSerializer;
+  Function? inputSerializer;
   Future<dynamic> Function(I)? inputStorageSerializer;
   I Function(dynamic)? inputDeserializer;
   E Function(int status, dynamic resp)? errorDeserializer;
@@ -48,7 +64,7 @@ class $_HttpMeta<PP, QP, I, R, E, T> {
   PP Function(dynamic)? pathParamsDeserializer;
   Map<String, dynamic> Function(dynamic)? pathParamsSerializer;
   QP Function(dynamic)? queryParamsDeserializer;
-  dynamic Function(dynamic)? queryParamsSerializer;
+  Map<String, dynamic> Function(dynamic)? queryParamsSerializer;
   bool persitDataBetweenFetches = false;
 }
 

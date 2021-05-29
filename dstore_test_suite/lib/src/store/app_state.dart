@@ -23,11 +23,14 @@ void $_AppState(
     SimplePersitanceMigrator simplePersitanceMigrator,
     SimpleHttp simpleHttp) {}
 
+final networkListener = TempNetworkStatusListener();
+
 final store = createStore(
     handleError: (error) {
       print("Uncaught error in store  $error");
     },
-    middlewares: [createDioMiddleware<AppState>()],
+    middlewares: [tempOfflineMiddleware, createDioMiddleware<AppState>()],
+    networkOptions: NetworkOptions(statusListener: networkListener),
     storageOptions: StorageOptions(
       storage: InMemoryStorage(initialValues: <String, dynamic>{
         "$simplePersistTypeName": {"x": 1},

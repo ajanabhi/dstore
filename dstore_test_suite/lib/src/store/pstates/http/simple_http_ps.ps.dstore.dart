@@ -23,6 +23,16 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
       transformer: paginationTransformer, persitDataBetweenFetches: true)
   final Pagination pagination;
 
+  final JsonPost jsPost;
+
+  final FormUpload fromUpload;
+
+  final UploadProgress uploadProgress;
+
+  final DownloadProgress downloadProgress;
+
+  final OfflineOp offlineOp;
+
   _$SimpleHttpCopyWith<SimpleHttp> get copyWith =>
       __$SimpleHttpCopyWithImpl<SimpleHttp>(this, IdentityFn);
 
@@ -32,7 +42,12 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
       this.octet = const HelloOctet(),
       this.optFail = const OptimisticFail(),
       this.pinInt = const helloJsonTransform(),
-      this.pagination = const Pagination()});
+      this.pagination = const Pagination(),
+      this.jsPost = const JsonPost(),
+      this.fromUpload = const FormUpload(),
+      this.uploadProgress = const UploadProgress(),
+      this.downloadProgress = const DownloadProgress(),
+      this.offlineOp = const OfflineOp()});
 
   @override
   SimpleHttp copyWithMap(Map<String, dynamic> map) => SimpleHttp(
@@ -47,7 +62,21 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
           : this.pinInt,
       pagination: map.containsKey("pagination")
           ? map["pagination"] as Pagination
-          : this.pagination);
+          : this.pagination,
+      jsPost:
+          map.containsKey("jsPost") ? map["jsPost"] as JsonPost : this.jsPost,
+      fromUpload: map.containsKey("fromUpload")
+          ? map["fromUpload"] as FormUpload
+          : this.fromUpload,
+      uploadProgress: map.containsKey("uploadProgress")
+          ? map["uploadProgress"] as UploadProgress
+          : this.uploadProgress,
+      downloadProgress: map.containsKey("downloadProgress")
+          ? map["downloadProgress"] as DownloadProgress
+          : this.downloadProgress,
+      offlineOp: map.containsKey("offlineOp")
+          ? map["offlineOp"] as OfflineOp
+          : this.offlineOp);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         "ping": this.ping,
@@ -55,7 +84,12 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
         "octet": this.octet,
         "optFail": this.optFail,
         "pinInt": this.pinInt,
-        "pagination": this.pagination
+        "pagination": this.pagination,
+        "jsPost": this.jsPost,
+        "fromUpload": this.fromUpload,
+        "uploadProgress": this.uploadProgress,
+        "downloadProgress": this.downloadProgress,
+        "offlineOp": this.offlineOp
       };
 
   @override
@@ -67,7 +101,12 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
         o.octet == octet &&
         o.optFail == optFail &&
         o.pinInt == pinInt &&
-        o.pagination == pagination;
+        o.pagination == pagination &&
+        o.jsPost == jsPost &&
+        o.fromUpload == fromUpload &&
+        o.uploadProgress == uploadProgress &&
+        o.downloadProgress == downloadProgress &&
+        o.offlineOp == offlineOp;
   }
 
   @override
@@ -77,11 +116,16 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
       octet.hashCode ^
       optFail.hashCode ^
       pinInt.hashCode ^
-      pagination.hashCode;
+      pagination.hashCode ^
+      jsPost.hashCode ^
+      fromUpload.hashCode ^
+      uploadProgress.hashCode ^
+      downloadProgress.hashCode ^
+      offlineOp.hashCode;
 
   @override
   String toString() =>
-      "SimpleHttp(ping: ${this.ping}, json: ${this.json}, octet: ${this.octet}, optFail: ${this.optFail}, pinInt: ${this.pinInt}, pagination: ${this.pagination})";
+      "SimpleHttp(ping: ${this.ping}, json: ${this.json}, octet: ${this.octet}, optFail: ${this.optFail}, pinInt: ${this.pinInt}, pagination: ${this.pagination}, jsPost: ${this.jsPost}, fromUpload: ${this.fromUpload}, uploadProgress: ${this.uploadProgress}, downloadProgress: ${this.downloadProgress}, offlineOp: ${this.offlineOp})";
 }
 
 abstract class $SimpleHttpCopyWith<O> {
@@ -93,7 +137,12 @@ abstract class $SimpleHttpCopyWith<O> {
       HelloOctet octet,
       OptimisticFail optFail,
       helloJsonTransform<int> pinInt,
-      Pagination pagination});
+      Pagination pagination,
+      JsonPost jsPost,
+      FormUpload fromUpload,
+      UploadProgress uploadProgress,
+      DownloadProgress downloadProgress,
+      OfflineOp offlineOp});
 }
 
 class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
@@ -108,7 +157,12 @@ class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
       Object? octet = dimmutable,
       Object? optFail = dimmutable,
       Object? pinInt = dimmutable,
-      Object? pagination = dimmutable}) {
+      Object? pagination = dimmutable,
+      Object? jsPost = dimmutable,
+      Object? fromUpload = dimmutable,
+      Object? uploadProgress = dimmutable,
+      Object? downloadProgress = dimmutable,
+      Object? offlineOp = dimmutable}) {
     return _then(_value.copyWith(
         ping: ping == dimmutable ? _value.ping : ping as helloPing,
         json: json == dimmutable ? _value.json : json as helloJson,
@@ -120,7 +174,20 @@ class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
             : pinInt as helloJsonTransform<int>,
         pagination: pagination == dimmutable
             ? _value.pagination
-            : pagination as Pagination));
+            : pagination as Pagination,
+        jsPost: jsPost == dimmutable ? _value.jsPost : jsPost as JsonPost,
+        fromUpload: fromUpload == dimmutable
+            ? _value.fromUpload
+            : fromUpload as FormUpload,
+        uploadProgress: uploadProgress == dimmutable
+            ? _value.uploadProgress
+            : uploadProgress as UploadProgress,
+        downloadProgress: downloadProgress == dimmutable
+            ? _value.downloadProgress
+            : downloadProgress as DownloadProgress,
+        offlineOp: offlineOp == dimmutable
+            ? _value.offlineOp
+            : offlineOp as OfflineOp));
   }
 }
 
@@ -133,7 +200,12 @@ abstract class _$SimpleHttpCopyWith<O> implements $SimpleHttpCopyWith<O> {
       HelloOctet octet,
       OptimisticFail optFail,
       helloJsonTransform<int> pinInt,
-      Pagination pagination});
+      Pagination pagination,
+      JsonPost jsPost,
+      FormUpload fromUpload,
+      UploadProgress uploadProgress,
+      DownloadProgress downloadProgress,
+      OfflineOp offlineOp});
 }
 
 class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
@@ -151,7 +223,12 @@ class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
       Object? octet = dimmutable,
       Object? optFail = dimmutable,
       Object? pinInt = dimmutable,
-      Object? pagination = dimmutable}) {
+      Object? pagination = dimmutable,
+      Object? jsPost = dimmutable,
+      Object? fromUpload = dimmutable,
+      Object? uploadProgress = dimmutable,
+      Object? downloadProgress = dimmutable,
+      Object? offlineOp = dimmutable}) {
     return _then(SimpleHttp(
         ping: ping == dimmutable ? _value.ping : ping as helloPing,
         json: json == dimmutable ? _value.json : json as helloJson,
@@ -163,7 +240,20 @@ class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
             : pinInt as helloJsonTransform<int>,
         pagination: pagination == dimmutable
             ? _value.pagination
-            : pagination as Pagination));
+            : pagination as Pagination,
+        jsPost: jsPost == dimmutable ? _value.jsPost : jsPost as JsonPost,
+        fromUpload: fromUpload == dimmutable
+            ? _value.fromUpload
+            : fromUpload as FormUpload,
+        uploadProgress: uploadProgress == dimmutable
+            ? _value.uploadProgress
+            : uploadProgress as UploadProgress,
+        downloadProgress: downloadProgress == dimmutable
+            ? _value.downloadProgress
+            : downloadProgress as DownloadProgress,
+        offlineOp: offlineOp == dimmutable
+            ? _value.offlineOp
+            : offlineOp as OfflineOp));
   }
 }
 
@@ -342,6 +432,7 @@ abstract class SimpleHttpActions {
       Map<String, dynamic>? headers,
       PaginationResponse? optimisticResponse,
       required PaginationPathParams pathParams,
+      required PaginationQueryParams queryParams,
       HttpField<Null, PaginationResponse, String>? mock,
       Duration? debounce,
       bool listenSendProgress = false,
@@ -350,8 +441,8 @@ abstract class SimpleHttpActions {
         name: "pagination",
         type: _SimpleHttp_FullPath,
         silent: silent,
-        http: HttpPayload<PaginationPathParams, Null, Null, PaginationResponse,
-                String, dynamic>(
+        http: HttpPayload<PaginationPathParams, PaginationQueryParams, Null,
+                PaginationResponse, String, dynamic>(
             abortable: abortable,
             offline: offline,
             headers: headers,
@@ -360,6 +451,7 @@ abstract class SimpleHttpActions {
             method: "GET",
             responseType: HttpResponseType.JSON,
             pathParams: pathParams,
+            queryParams: queryParams,
             listenSendProgress: listenSendProgress,
             listenReceiveProgress: listenReceiveProgress),
         debounce: debounce);
@@ -370,6 +462,186 @@ abstract class SimpleHttpActions {
     return Action<HttpField<Null, PaginationResponse, String>>(
         name: "pagination", type: _SimpleHttp_FullPath, mock: mock);
   }
+
+  static Action<HttpField<JsonPostRequestBody, JsonPostResponse, String>>
+      jsPost(
+          {required JsonPostRequestBody input,
+          bool abortable = false,
+          bool silent = false,
+          bool offline = false,
+          Map<String, dynamic>? headers,
+          JsonPostResponse? optimisticResponse,
+          HttpField<JsonPostRequestBody, JsonPostResponse, String>? mock,
+          Duration? debounce,
+          bool listenSendProgress = false,
+          bool listenReceiveProgress = false}) {
+    return Action<HttpField<JsonPostRequestBody, JsonPostResponse, String>>(
+        name: "jsPost",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, JsonPostRequestBody, JsonPostResponse,
+                String, dynamic>(
+            data: input,
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/jsonpost",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<JsonPostRequestBody, JsonPostResponse, String>>
+      jsPostMock(
+          HttpField<JsonPostRequestBody, JsonPostResponse, String> mock) {
+    return Action<HttpField<JsonPostRequestBody, JsonPostResponse, String>>(
+        name: "jsPost", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<HttpField<FormUploadRequestBody, FormUploadResponse, String>>
+      fromUpload(
+          {required FormUploadRequestBody input,
+          bool abortable = false,
+          bool silent = false,
+          bool offline = false,
+          Map<String, dynamic>? headers,
+          FormUploadResponse? optimisticResponse,
+          HttpField<FormUploadRequestBody, FormUploadResponse, String>? mock,
+          Duration? debounce,
+          bool listenSendProgress = false,
+          bool listenReceiveProgress = false}) {
+    return Action<HttpField<FormUploadRequestBody, FormUploadResponse, String>>(
+        name: "fromUpload",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, FormUploadRequestBody, FormUploadResponse,
+                String, dynamic>(
+            data: input,
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/form-upload",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<FormUploadRequestBody, FormUploadResponse, String>>
+      fromUploadMock(
+          HttpField<FormUploadRequestBody, FormUploadResponse, String> mock) {
+    return Action<HttpField<FormUploadRequestBody, FormUploadResponse, String>>(
+        name: "fromUpload", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<HttpField<List<int>, UploadProgressResponse, String>>
+      uploadProgress(
+          {required List<int> input,
+          bool abortable = false,
+          bool silent = false,
+          bool offline = false,
+          Map<String, dynamic>? headers,
+          UploadProgressResponse? optimisticResponse,
+          HttpField<List<int>, UploadProgressResponse, String>? mock,
+          Duration? debounce,
+          bool listenSendProgress = false,
+          bool listenReceiveProgress = false}) {
+    return Action<HttpField<List<int>, UploadProgressResponse, String>>(
+        name: "uploadProgress",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, List<int>, UploadProgressResponse, String,
+                dynamic>(
+            data: input,
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/uploadprogress",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<List<int>, UploadProgressResponse, String>>
+      uploadProgressMock(
+          HttpField<List<int>, UploadProgressResponse, String> mock) {
+    return Action<HttpField<List<int>, UploadProgressResponse, String>>(
+        name: "uploadProgress", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<HttpField<Null, List<int>, String>> downloadProgress(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      List<int>? optimisticResponse,
+      HttpField<Null, List<int>, String>? mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    return Action<HttpField<Null, List<int>, String>>(
+        name: "downloadProgress",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, Null, List<int>, String, dynamic>(
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/download",
+            method: "POST",
+            responseType: HttpResponseType.BYTES,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<Null, List<int>, String>> downloadProgressMock(
+      HttpField<Null, List<int>, String> mock) {
+    return Action<HttpField<Null, List<int>, String>>(
+        name: "downloadProgress", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<HttpField<Null, String, String>> offlineOp(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      String? optimisticResponse,
+      HttpField<Null, String, String>? mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    return Action<HttpField<Null, String, String>>(
+        name: "offlineOp",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, Null, String, String, dynamic>(
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:8080/offline",
+            method: "GET",
+            responseType: HttpResponseType.STRING,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<HttpField<Null, String, String>> offlineOpMock(
+      HttpField<Null, String, String> mock) {
+    return Action<HttpField<Null, String, String>>(
+        name: "offlineOp", type: _SimpleHttp_FullPath, mock: mock);
+  }
 }
 
 SimpleHttp SimpleHttp_DS() => SimpleHttp(
@@ -378,7 +650,12 @@ SimpleHttp SimpleHttp_DS() => SimpleHttp(
     octet: HelloOctet(),
     optFail: OptimisticFail(),
     pinInt: helloJsonTransform(),
-    pagination: Pagination());
+    pagination: Pagination(),
+    jsPost: JsonPost(),
+    fromUpload: FormUpload(),
+    uploadProgress: UploadProgress(),
+    downloadProgress: DownloadProgress(),
+    offlineOp: OfflineOp());
 
 final SimpleHttpMeta = PStateMeta<
     SimpleHttp>(type: _SimpleHttp_FullPath, ds: SimpleHttp_DS, httpMetaMap: {
@@ -399,12 +676,38 @@ final SimpleHttpMeta = PStateMeta<
       responseSerializer: helloJsonResponse.toJsonStatic,
       transformer: pingTransform,
       responseDeserializer: helloJsonResponse.fromJsonStatic),
-  "pagination": HttpMeta<PaginationPathParams, Null, Null, PaginationResponse,
-          String, PaginationResponse>(
+  "pagination": HttpMeta<PaginationPathParams, PaginationQueryParams, Null,
+          PaginationResponse, String, PaginationResponse>(
+      queryParamsSerializer: PaginationQueryParams.toJsonStatic,
+      queryParamsDeserializer: PaginationQueryParams.fromJsonStatic,
       pathParamsSerializer: PaginationPathParams.toJsonStatic,
       pathParamsDeserializer: PaginationPathParams.fromJsonStatic,
       responseSerializer: PaginationResponse.toJsonStatic,
       persitDataBetweenFetches: true,
       transformer: paginationTransformer,
-      responseDeserializer: PaginationResponse.fromJsonStatic)
+      responseDeserializer: PaginationResponse.fromJsonStatic),
+  "jsPost": HttpMeta<Null, Null, JsonPostRequestBody, JsonPostResponse, String,
+          JsonPostResponse>(
+      inputSerializer: JsonPostRequestBodySerializer,
+      inputDeserializer: JsonPostRequestBodyDeserializer,
+      responseSerializer: JsonPostResponse.toJsonStatic,
+      responseDeserializer: JsonPostResponse.fromJsonStatic),
+  "fromUpload": HttpMeta<Null, Null, FormUploadRequestBody, FormUploadResponse,
+          String, FormUploadResponse>(
+      inputSerializer: FormUploadRequestBodySerializer,
+      inputDeserializer: FormUploadRequestBodyDeserializer,
+      responseSerializer: FormUploadResponse.toJsonStatic,
+      responseDeserializer: FormUploadResponse.fromJsonStatic),
+  "uploadProgress": HttpMeta<Null, Null, List<int>, UploadProgressResponse,
+          String, UploadProgressResponse>(
+      inputSerializer: UploadProgressRequestBodySerializer,
+      inputDeserializer: UploadProgressRequestBodyDeserializer,
+      responseSerializer: UploadProgressResponse.toJsonStatic,
+      responseDeserializer: UploadProgressResponse.fromJsonStatic),
+  "downloadProgress": HttpMeta<Null, Null, Null, List<int>, String, List<int>>(
+      responseSerializer: DownloadProgressResponse_SuccessSerializer,
+      responseDeserializer: DownloadProgressResponse_SuccessDeserializer),
+  "offlineOp": HttpMeta<Null, Null, Null, String, String, String>(
+      responseSerializer: OfflineOpResponse_SuccessSerializer,
+      responseDeserializer: OfflineOpResponse_SuccessDeserializer)
 });

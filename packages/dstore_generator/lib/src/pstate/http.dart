@@ -177,11 +177,7 @@ String convertHttpFieldInfoToAction(
     bool psHistoryEnabled = false}) {
   final params = <String>[];
   final payloadFields = <String>[];
-  if (hf.queryParamsType != null) {
-    params.add("required ${hf.queryParamsType} queryParams");
-    payloadFields.add(
-        "queryParams: ${hf.queryParamsType!.startsWith("Map<") ? "queryParams" : "queryParams.toMap()"}");
-  }
+
   if (hf.inputType != "Null") {
     if (hf.inputType!.startsWith("GraphqlRequestInput")) {
       final it = hf.inputType!;

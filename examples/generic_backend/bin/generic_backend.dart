@@ -11,11 +11,6 @@ void main() {
 }
 
 Handler init() {
-  final overrideHeaders = {
-    ACCESS_CONTROL_ALLOW_ORIGIN: '*',
-    'Content-Type': 'application/json'
-  };
-
   final list = <String>[
     "one",
     "two",
@@ -51,6 +46,30 @@ Handler init() {
       return {"list": list.getRange(0, 5).toList(), "nextPage": 2};
     }
     return {"list": list.getRange(5, list.length).toList(), "nextPage": null};
+  });
+  app.post("/jsonpost", (Request request) {
+    print("url body ${request.body}");
+    return {"name": "one"};
+  });
+  app.post("/form-upload", (Request request) async {
+    print("form-upload request ${await request.body.asJson}");
+    return {"name": "one"};
+  });
+  app.post("/uploadprogress", (Request request) async {
+    print("upload progress ${request.body.asBinary}");
+    // final stream = request.body.asBinary;
+    print("stream ");
+    // await stream.forEach((element) {
+    //   print("upload progress $element");
+    // });
+    return {"name": "one"};
+  });
+  app.get("/offline", () {
+    print("offline here");
+    return "online";
+  });
+  app.post("/download", (Request request) {
+    return File("simple.txt");
   });
   app.get("/file", () => File("siva.jpeg"));
   app.get("/siva", () => File("siva.jpeg").readAsBytesSync());
