@@ -100,6 +100,8 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
   if (originalResponseType != null) {
     transformType = responseType;
     responseType = originalResponseType;
+  } else {
+    transformType = responseType;
   }
   String? transformer;
   String? canProcessOfflineAction;
@@ -111,7 +113,7 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
       final params = ex.parameters;
       final at = element.type.aliasElement?.name;
       final error =
-          "transformer function should contain two paramaeter one ${at} other one is $responseType and return type is $at";
+          "transformer function should contain two paramaeter one ${at} other one is $responseType? and return type is $at";
       if (params.length != 2) {
         return error;
       }
@@ -120,8 +122,8 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
         return error;
       }
       final p1 = params.first.type.toString();
-      final p2 = params.last.type.toString();
-      if (p1.startsWith(at!) || p2 != responseType) {
+      final p2 = "${params.last.type.toString()}";
+      if (p1.startsWith(at!) || p2 != "${responseType}?") {
         return error;
       }
     });
@@ -154,12 +156,6 @@ HttpFieldInfo? _getHttpFieldInfo(FieldElement element,
       persitDataBetweenFetches: persitDataBetweenFetches,
       transformer: transformer,
       graphqlQuery: graphqlQuery);
-}
-
-String? validateTransformerFn(ExecutableElement? executableElement) {
-  if (executableElement != null) {
-    final params = executableElement.parameters;
-  }
 }
 
 GraphqlRequestPart? getGraphqlRequestPartFromDartObj(
@@ -232,6 +228,14 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("responseType:${hf.responseTypeEnum}");
   final qpType = hf.queryParamsType ?? "Null";
   final ppType = hf.pathParamsType ?? "Null";
+  if (hf.pathParamsType != null) {
+    params.add("required ${hf.pathParamsType} pathParams");
+    payloadFields.add("pathParams: pathParams");
+  }
+  if (hf.queryParamsType != null) {
+    params.add("required ${hf.queryParamsType} queryParams");
+    payloadFields.add("queryParams: queryParams");
+  }
   final mockType = hf.fieldType.endsWith("?")
       ? hf.fieldType.replaceAll("?", "")
       : hf.fieldType;

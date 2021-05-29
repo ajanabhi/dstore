@@ -233,8 +233,7 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   final dynamic Function(int, R)? responseSerializer;
 
-  final HttpField<I, T, E> Function(
-      HttpField<I, T, E> currentField, R response)? transformer;
+  final Function? transformer;
 
   final dynamic Function(I)? inputSerializer;
 
@@ -248,11 +247,11 @@ class HttpMeta<PP, QP, I, R, E, T> {
 
   final PP Function(dynamic)? pathParamsDeserializer;
 
-  final dynamic Function(PP)? pathParamsSerializer;
+  final Map<String, dynamic> Function(dynamic)? pathParamsSerializer;
 
   final QP Function(dynamic)? queryParamsDeserializer;
 
-  final dynamic Function(QP)? queryParamsSerializer;
+  final dynamic Function(dynamic)? queryParamsSerializer;
 
   final bool persitDataBetweenFetches;
 
@@ -322,17 +321,16 @@ abstract class $HttpMetaCopyWith<PP, QP, I, R, E, T, O> {
   O call(
       {R Function(int status, dynamic resp) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
-      HttpField Function(HttpField currentField, HttpField newField)?
-          transformer,
+      Function? transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
       E Function(int status, dynamic resp)? errorDeserializer,
       Future<bool> Function(Action)? canProcessOfflineAction,
       PP Function(dynamic)? pathParamsDeserializer,
-      dynamic Function(PP)? pathParamsSerializer,
+      Map<String, dynamic> Function(dynamic)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
-      dynamic Function(QP)? queryParamsSerializer,
+      dynamic Function(dynamic)? queryParamsSerializer,
       bool persitDataBetweenFetches});
 }
 
@@ -366,8 +364,7 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField Function(
-                HttpField currentField, HttpField newField)?,
+            : transformer as Function?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,
@@ -388,13 +385,13 @@ class _$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : pathParamsDeserializer as PP Function(dynamic)?,
         pathParamsSerializer: pathParamsSerializer == dimmutable
             ? _value.pathParamsSerializer
-            : pathParamsSerializer as dynamic Function(PP)?,
+            : pathParamsSerializer as Map<String, dynamic> Function(dynamic)?,
         queryParamsDeserializer: queryParamsDeserializer == dimmutable
             ? _value.queryParamsDeserializer
             : queryParamsDeserializer as QP Function(dynamic)?,
         queryParamsSerializer: queryParamsSerializer == dimmutable
             ? _value.queryParamsSerializer
-            : queryParamsSerializer as dynamic Function(QP)?,
+            : queryParamsSerializer as dynamic Function(dynamic)?,
         persitDataBetweenFetches: persitDataBetweenFetches == dimmutable
             ? _value.persitDataBetweenFetches
             : persitDataBetweenFetches as bool));
@@ -409,17 +406,16 @@ abstract class _$HttpMetaCopyWith<PP, QP, I, R, E, T, O>
   O call(
       {R Function(int status, dynamic resp) responseDeserializer,
       dynamic Function(int, R)? responseSerializer,
-      HttpField Function(HttpField currentField, HttpField newField)?
-          transformer,
+      Function? transformer,
       dynamic Function(I)? inputSerializer,
       Future<dynamic> Function(I)? inputStorageSerializer,
       I Function(dynamic)? inputDeserializer,
       E Function(int status, dynamic resp)? errorDeserializer,
       Future<bool> Function(Action)? canProcessOfflineAction,
       PP Function(dynamic)? pathParamsDeserializer,
-      dynamic Function(PP)? pathParamsSerializer,
+      Map<String, dynamic> Function(dynamic)? pathParamsSerializer,
       QP Function(dynamic)? queryParamsDeserializer,
-      dynamic Function(QP)? queryParamsSerializer,
+      dynamic Function(dynamic)? queryParamsSerializer,
       bool persitDataBetweenFetches});
 }
 
@@ -457,8 +453,7 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : responseSerializer as dynamic Function(int, R)?,
         transformer: transformer == dimmutable
             ? _value.transformer
-            : transformer as HttpField Function(
-                HttpField currentField, HttpField newField)?,
+            : transformer as Function?,
         inputSerializer: inputSerializer == dimmutable
             ? _value.inputSerializer
             : inputSerializer as dynamic Function(I)?,
@@ -479,13 +474,13 @@ class __$HttpMetaCopyWithImpl<PP, QP, I, R, E, T, O>
             : pathParamsDeserializer as PP Function(dynamic)?,
         pathParamsSerializer: pathParamsSerializer == dimmutable
             ? _value.pathParamsSerializer
-            : pathParamsSerializer as dynamic Function(PP)?,
+            : pathParamsSerializer as Map<String, dynamic> Function(dynamic)?,
         queryParamsDeserializer: queryParamsDeserializer == dimmutable
             ? _value.queryParamsDeserializer
             : queryParamsDeserializer as QP Function(dynamic)?,
         queryParamsSerializer: queryParamsSerializer == dimmutable
             ? _value.queryParamsSerializer
-            : queryParamsSerializer as dynamic Function(QP)?,
+            : queryParamsSerializer as dynamic Function(dynamic)?,
         persitDataBetweenFetches: persitDataBetweenFetches == dimmutable
             ? _value.persitDataBetweenFetches
             : persitDataBetweenFetches as bool));

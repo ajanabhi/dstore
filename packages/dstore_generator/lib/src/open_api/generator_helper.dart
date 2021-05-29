@@ -169,7 +169,9 @@ String _createTypeFromMap(Map<String, String> meta, String name) {
       fields: fields,
       className: name,
       isJsonSerializable: true,
-      addStaticSerializeDeserialize: true);
+      addStaticSerializeDeserialize: true,
+      staticSerializeInputName: "dynamic",
+      staticSeriaizeResponseName: "Map<String,dynamic>");
   types.add(type);
   return name;
 }
@@ -179,7 +181,7 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
   schema.paths.entries.forEach((e) {
     final path = e.key;
     final pathUrl = "$url$path";
-    final ops = <String>{};
+    final ops = <String>[];
     final methodAndOp = <String, Operation>{};
     if (e.value.get != null) {
       methodAndOp["GET"] = e.value.get!;
@@ -193,12 +195,13 @@ String _convertPaths({required OpenApiSchema schema, required String url}) {
       methodAndOp["PATCH"] = e.value.post!;
     }
     methodAndOp.forEach((method, op) {
-      if (op.operationId == null) {
+      final oid = op.operationId;
+      if (oid == null) {
         throw ArgumentError.value(
             "operationId for path $path and method $method should not be null ");
       }
-
-      final oid = op.operationId!;
+      //TDO ops not adding
+      print("Current op $oid  ops $ops ");
       if (ops.contains(oid)) {
         throw ArgumentError.value(
             "operationId $oid is already used, please use unique values for operation Ids");

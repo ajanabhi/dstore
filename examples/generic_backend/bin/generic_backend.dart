@@ -16,6 +16,17 @@ Handler init() {
     'Content-Type': 'application/json'
   };
 
+  final list = <String>[
+    "one",
+    "two",
+    "three",
+    "four",
+    "five",
+    "six",
+    "seven",
+    "eight"
+  ];
+
   final app = Router().plus;
   // app.use(corsHeaders(headers: overrideHeaders));
   app.get("/", () => "Hello Shelf");
@@ -31,6 +42,15 @@ Handler init() {
   });
   app.get("/optimistic-fail", () {
     throw Exception();
+  });
+  app.get("/pagination/<page>", (Request request) {
+    print("Request Url ${request.url}");
+
+    final page = int.parse(request.routeParameter("page"));
+    if (page == 1) {
+      return {"list": list.getRange(0, 5).toList(), "nextPage": 2};
+    }
+    return {"list": list.getRange(5, list.length).toList(), "nextPage": null};
   });
   app.get("/file", () => File("siva.jpeg"));
   app.get("/siva", () => File("siva.jpeg").readAsBytesSync());

@@ -17,3 +17,27 @@ Map<String, dynamic> _$helloJsonResponseToJson(helloJsonResponse instance) =>
       'name': instance.name,
       'count': instance.count,
     };
+
+PaginationPathParams _$PaginationPathParamsFromJson(
+        Map<String, dynamic> json) =>
+    PaginationPathParams(
+      page: json['page'] as int,
+    );
+
+Map<String, dynamic> _$PaginationPathParamsToJson(
+        PaginationPathParams instance) =>
+    <String, dynamic>{
+      'page': instance.page,
+    };
+
+PaginationResponse _$PaginationResponseFromJson(Map<String, dynamic> json) =>
+    PaginationResponse(
+      list: (json['list'] as List<dynamic>).map((e) => e as String).toList(),
+      nextPage: json['nextPage'] as int?,
+    );
+
+Map<String, dynamic> _$PaginationResponseToJson(PaginationResponse instance) =>
+    <String, dynamic>{
+      'list': instance.list,
+      'nextPage': instance.nextPage,
+    };

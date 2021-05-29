@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dio/dio.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:tuple/tuple.dart';
@@ -12,11 +13,6 @@ abstract class ModelUtils {
       var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
-      // if (f.value != null &&
-      //     f.value != "null" &&
-      //     !canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
-      //   type = "$type?";
-      // }
       return """
      ${addOverrideAnnotation ? "@override" : ""}
      ${f.annotations.join("\n")}
@@ -327,7 +323,7 @@ abstract class ModelUtils {
         final params = "$name,o.$name";
         if (colE == CollectionEquality.equals) {
           if (type.startsWith("List")) {
-            return "ListEquality().equals($params)";
+            return "ListEquality<dynamic>().equals($params)";
           } else if (type.startsWith("Map")) {
             return "MapEquality().equals($params)";
           } else if (type.startsWith("Set")) {
@@ -376,6 +372,8 @@ abstract class ModelUtils {
       String extendClass = "",
       String mixins = "",
       bool toMap = false,
+      String? staticSerializeInputName,
+      String? staticSeriaizeResponseName,
       bool copyWithMap = false,
       CollectionEquality? collectionEquality,
       bool addStatusToStaticSerializer = false}) {
@@ -410,9 +408,9 @@ abstract class ModelUtils {
       
       ${addStaticSerializeDeserialize ? ModelUtils.createFromJsonStatic(className, addStatusToStaticSerializer: addStatusToStaticSerializer) : ""}
 
-      ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className, addStatusToStaticSerializer: addStatusToStaticSerializer) : ""}
+      ${addStaticSerializeDeserialize ? ModelUtils.createToJsonStatic(className, addStatusToStaticSerializer: addStatusToStaticSerializer, respsonseType: staticSeriaizeResponseName, inputType: staticSerializeInputName) : ""}
 
-      ${hasFields ? ModelUtils.createEqualsFromFieldsList(className, fields) : ""}
+      ${hasFields ? ModelUtils.createEqualsFromFieldsList(className, fields, collectionEquality: collectionEquality) : ""}
 
       ${hasFields ? ModelUtils.createHashcodeFromFieldsList(fields) : ""}
 
@@ -438,13 +436,18 @@ abstract class ModelUtils {
   }
 
   static String createToJsonStatic(String name,
-      {bool addStatusToStaticSerializer = false}) {
+      {bool addStatusToStaticSerializer = false,
+      String? respsonseType,
+      String? inputType}) {
     final params = <String>[];
     if (addStatusToStaticSerializer) {
       params.add("int status");
     }
-    params.add("$name input");
-    return "static dynamic toJsonStatic(${params.join(", ")}) => input.toJson();";
+    final r = respsonseType ?? "dynamic";
+    final it = inputType ?? name;
+    final inr = inputType != null ? "(input as $name)" : "input";
+    params.add("$it input");
+    return "static $r toJsonStatic(${params.join(", ")}) => $inr.toJson();";
   }
 
   static String createDefaultDartUpdateModelFromFeilds(

@@ -35,23 +35,20 @@ void $_HttpField<I, R, E>(
     bool completed = false,
     bool offline = false}) {}
 
-// final HttpErrorType type;
-//   final String? message;
-//   final RE? error;
 @DImmutable()
 class $_HttpMeta<PP, QP, I, R, E, T> {
   late R Function(int status, dynamic resp) responseDeserializer;
   dynamic Function(int, R)? responseSerializer;
-  HttpField Function(HttpField currentField, HttpField newField)? transformer;
+  Function? transformer;
   dynamic Function(I)? inputSerializer;
   Future<dynamic> Function(I)? inputStorageSerializer;
   I Function(dynamic)? inputDeserializer;
   E Function(int status, dynamic resp)? errorDeserializer;
   Future<bool> Function(Action)? canProcessOfflineAction;
   PP Function(dynamic)? pathParamsDeserializer;
-  dynamic Function(PP)? pathParamsSerializer;
+  Map<String, dynamic> Function(dynamic)? pathParamsSerializer;
   QP Function(dynamic)? queryParamsDeserializer;
-  dynamic Function(QP)? queryParamsSerializer;
+  dynamic Function(dynamic)? queryParamsSerializer;
   bool persitDataBetweenFetches = false;
 }
 

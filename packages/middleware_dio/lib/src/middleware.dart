@@ -116,15 +116,18 @@ void _handleDioError(
                 completed: true,
                 data: persistDataBetweenFetches ? field.data : null))));
   } else {
-    var ef = field.copyWith(
+    final c = field.copyWith(
         error: error,
         errorType: errorType,
         loading: false,
         offline: false,
         completed: true,
         data: persistDataBetweenFetches ? field.data : null);
+    dynamic ef;
     if (meta?.transformer != null) {
-      ef = meta?.transformer!(field, ef) as dynamic;
+      ef = meta?.transformer!(c, null);
+    } else {
+      ef = c;
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
@@ -225,7 +228,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   try {
     var url = _getUrlFromPayload(action: action, meta: meta);
     var data = payload.data;
-    if (meta?.inputSerializer != null) {
+    if (data != null && meta?.inputSerializer != null) {
       data = meta?.inputSerializer!(data);
     }
     if (payload.data is GraphqlRequestInput) {
@@ -275,6 +278,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         "Response from server ${response.data} status : ${response.statusCode}");
   } on DioError catch (e) {
     _handleDioError(e: e, action: action, store: store);
+    return;
   } catch (e) {
     print("uncaught error in http $e");
     rethrow;
@@ -323,11 +327,14 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     } else {
       var data =
           meta!.responseDeserializer(response.statusCode ?? 200, response.data);
-      var hf = field.copyWith(data: data, completed: true);
-      print("Sending response $hf");
+
+      dynamic hf;
       if (meta.transformer != null) {
-        hf = meta.transformer!(field, hf);
+        hf = meta.transformer!(field.copyWith(completed: true), data);
+      } else {
+        hf = field.copyWith(data: data, completed: true);
       }
+      print("Sending response $hf");
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true, type: ActionInternalType.FIELD, data: hf)));

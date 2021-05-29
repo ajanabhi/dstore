@@ -2,6 +2,7 @@ import 'package:dstore/dstore.dart';
 import 'package:dstore_test_suite/src/store/api/openapi/local.dart';
 import 'package:dstore_test_suite/src/store/app_state.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_ps.dart';
 import 'package:test/test.dart';
 
 /* 
@@ -68,6 +69,27 @@ void main() {
               error: "Internal Server Error")
         ],
       );
+    });
+
+    test("should handle transformer", () async {
+      await storeTester.testHttpAction(SimpleHttpActions.pinInt(), [
+        helloJsonTransform<int>(loading: true),
+        helloJsonTransform<int>(data: 2, completed: true)
+      ]);
+    });
+
+    test("should handle transformer with persit data", () async {
+      await storeTester.testHttpAction(
+          SimpleHttpActions.pagination(
+              pathParams: PaginationPathParams(page: 1)),
+          [
+            Pagination(loading: true),
+            Pagination(
+                completed: true,
+                data: PaginationResponse(
+                    list: ["one", "two", "three", "four", "five"], nextPage: 2))
+          ],
+          mapEquals: false);
     });
   });
 }

@@ -10,9 +10,33 @@ class $_SimpleHttp {
   OptimisticFail optFail = OptimisticFail();
   @HttpRequestExtension(transformer: pingTransform)
   helloJsonTransform<int> pinInt = helloJsonTransform();
+  @HttpRequestExtension(
+      transformer: paginationTransformer, persitDataBetweenFetches: true)
+  Pagination pagination = Pagination();
 }
 
 helloJsonTransform<int> pingTransform(
-    helloJsonTransform<int> input, helloJsonResponse responseFromServer) {
-  return input;
+    helloJsonTransform<int> input, helloJsonResponse? responseFromServer) {
+  if (responseFromServer == null) {
+    return input;
+  }
+  return input.copyWith(data: responseFromServer.count);
+}
+
+Pagination paginationTransformer(Pagination input, PaginationResponse? pr) {
+  print("paginationTransformer called $input $pr");
+  if (pr == null) {
+    return input;
+  }
+  final oldData = input.data?.list;
+  var newList = pr.list;
+  var result = input;
+  if (oldData != null) {
+    result = result.copyWith(
+        data: PaginationResponse(
+            list: [...oldData, ...newList], nextPage: pr.nextPage));
+  } else {
+    result = result.copyWith(data: pr);
+  }
+  return result;
 }

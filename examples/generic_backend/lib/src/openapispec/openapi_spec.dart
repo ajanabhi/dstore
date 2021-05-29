@@ -15,6 +15,8 @@ final defaultResponse = ResponseOrReference(Response(content: {
 }));
 
 final stringSchema = SchemaOrReference(Schema(type: "string"));
+final listString =
+    SchemaOrReference(Schema(type: "array", items: stringSchema));
 final stringBinarySchema =
     SchemaOrReference(Schema(type: "string", format: "binary"));
 final intSchmea = SchemaOrReference(Schema(type: "integer"));
@@ -63,6 +65,23 @@ void generateSpec() {
           "200": ResponseOrReference(Response(
             content: {
               "${ContentTypes.textHtml}": MediaType(schema: stringSchema)
+            },
+          )),
+          "default": defaultResponse
+        })),
+        "/pagination/{page}": PathItem(
+            get: Operation(operationId: "Pagination", parameters: [
+          ParamOrRef(Parameter(name: "page", o_in: "path", schema: intSchmea))
+        ], responses: {
+          "200": ResponseOrReference(Response(
+            content: {
+              "${ContentTypes.appJson}": MediaType(
+                  schema: SchemaOrReference(Schema(type: "object", required: [
+                "list",
+              ], properties: {
+                "list": listString,
+                "nextPage": intSchmea
+              })))
             },
           )),
           "default": defaultResponse

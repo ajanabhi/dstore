@@ -1,12 +1,7 @@
 import 'dart:async';
 
 import 'package:async/async.dart';
-import 'package:dstore/src/action.dart';
-import 'package:dstore/src/http.dart';
-import 'package:dstore/src/pstate.dart';
-import 'package:dstore/src/store.dart';
-import 'package:dstore/src/types.dart';
-import 'package:dstore/src/stream.dart';
+import 'package:dstore/dstore.dart';
 import 'package:test/test.dart';
 
 extension on Map<dynamic, dynamic> {
@@ -122,8 +117,11 @@ class StoreTester<S extends AppStateI<S>> {
     expect(identical(before, after), false);
 
     if (mapEquals) {
-      final resultMap = result.map((e) => (e as ToMap).toMap());
-      final expectedMap = expectedResult.map((e) => (e as ToMap).toMap());
+      final resultMap = result.map((e) => (e as ToMap).toMap()).toList();
+      final expectedMap =
+          expectedResult.map((e) => (e as ToMap).toMap()).toList();
+      final dynamic iData = resultMap.last["data"];
+      final dynamic eData = expectedMap.last["data"];
       expect(resultMap, expectedMap);
     } else {
       expect(result, expectedResult);
@@ -253,5 +251,20 @@ class _StreamWrapper {
     } else {
       _done = true;
     }
+  }
+}
+
+class DeepEqualsMatcher extends Matcher {
+  final dynamic input;
+
+  DeepEqualsMatcher(this.input);
+  @override
+  Description describe(Description description) {
+    return StringDescription();
+  }
+
+  @override
+  bool matches(dynamic item, Map matchState) {
+    return DeepCollectionEquality.unordered().equals(input, item);
   }
 }

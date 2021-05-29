@@ -273,14 +273,15 @@ ActionsInfo _getActionsInfo(
     var qType = "Null";
     if (h.queryParamsType != null) {
       qType = h.queryParamsType!;
-      params.add("queryParamsSerializer : ${h.queryParamsType}.toJson");
-      params.add("queryParamsDeserializer : ${h.queryParamsType}.fromJson");
+      params.add("queryParamsSerializer : ${h.queryParamsType}.toJsonStatic");
+      params
+          .add("queryParamsDeserializer : ${h.queryParamsType}.fromJsonStatic");
     }
     var pType = "Null";
     if (h.pathParamsType != null) {
       pType = h.pathParamsType!;
-      params.add("pathParamsSerializer : ${h.pathParamsType}.toJson");
-      params.add("pathParamsDeserializer : ${h.pathParamsType}.fromJson");
+      params.add("pathParamsSerializer : ${h.pathParamsType}.toJsonStatic");
+      params.add("pathParamsDeserializer : ${h.pathParamsType}.fromJsonStatic");
     }
     if (h.inputDeserializer != null) {
       params.add("inputDeserializer: ${h.inputDeserializer}");

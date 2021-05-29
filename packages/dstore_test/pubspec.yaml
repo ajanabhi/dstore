@@ -10,6 +10,7 @@ dependencies:
   dstore:
     path: ../dstore
   async:
+  test: 
       
 
       
