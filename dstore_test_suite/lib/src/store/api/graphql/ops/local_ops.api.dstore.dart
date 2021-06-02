@@ -1491,6 +1491,219 @@ typedef LocalGraphqlOps_chnageNameWithVariablesT<T> = HttpField<
     List<GraphqlError>>;
 
 @JsonSerializable()
+class LocalGraphqlOps_addMessageData {
+  final LocalGraphqlOps_addMessageData_addMessage addMessage;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_addMessageDataCopyWith<LocalGraphqlOps_addMessageData>
+      get copyWith => __$LocalGraphqlOps_addMessageDataCopyWithImpl<
+          LocalGraphqlOps_addMessageData>(this, IdentityFn);
+
+  const LocalGraphqlOps_addMessageData({required this.addMessage});
+
+  factory LocalGraphqlOps_addMessageData.fromJson(Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_addMessageDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalGraphqlOps_addMessageDataToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_addMessageData && o.addMessage == addMessage;
+  }
+
+  @override
+  int get hashCode => addMessage.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_addMessageData(addMessage: ${this.addMessage})";
+}
+
+abstract class $LocalGraphqlOps_addMessageDataCopyWith<O> {
+  factory $LocalGraphqlOps_addMessageDataCopyWith(
+          LocalGraphqlOps_addMessageData value,
+          O Function(LocalGraphqlOps_addMessageData) then) =
+      _$LocalGraphqlOps_addMessageDataCopyWithImpl<O>;
+  O call({LocalGraphqlOps_addMessageData_addMessage addMessage});
+}
+
+class _$LocalGraphqlOps_addMessageDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_addMessageDataCopyWith<O> {
+  final LocalGraphqlOps_addMessageData _value;
+  final O Function(LocalGraphqlOps_addMessageData) _then;
+  _$LocalGraphqlOps_addMessageDataCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? addMessage = dimmutable}) {
+    return _then(_value.copyWith(
+        addMessage: addMessage == dimmutable
+            ? _value.addMessage
+            : addMessage as LocalGraphqlOps_addMessageData_addMessage));
+  }
+}
+
+abstract class _$LocalGraphqlOps_addMessageDataCopyWith<O>
+    implements $LocalGraphqlOps_addMessageDataCopyWith<O> {
+  factory _$LocalGraphqlOps_addMessageDataCopyWith(
+          LocalGraphqlOps_addMessageData value,
+          O Function(LocalGraphqlOps_addMessageData) then) =
+      __$LocalGraphqlOps_addMessageDataCopyWithImpl<O>;
+  O call({LocalGraphqlOps_addMessageData_addMessage addMessage});
+}
+
+class __$LocalGraphqlOps_addMessageDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_addMessageDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_addMessageDataCopyWith<O> {
+  __$LocalGraphqlOps_addMessageDataCopyWithImpl(
+      LocalGraphqlOps_addMessageData _value,
+      O Function(LocalGraphqlOps_addMessageData) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_addMessageData get _value => super._value;
+
+  @override
+  O call({Object? addMessage = dimmutable}) {
+    return _then(LocalGraphqlOps_addMessageData(
+        addMessage: addMessage == dimmutable
+            ? _value.addMessage
+            : addMessage as LocalGraphqlOps_addMessageData_addMessage));
+  }
+}
+
+@JsonSerializable()
+class LocalGraphqlOps_addMessageData_addMessage {
+  final String text;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_addMessageData_addMessageCopyWith<
+          LocalGraphqlOps_addMessageData_addMessage>
+      get copyWith => __$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<
+          LocalGraphqlOps_addMessageData_addMessage>(this, IdentityFn);
+
+  const LocalGraphqlOps_addMessageData_addMessage({required this.text});
+
+  factory LocalGraphqlOps_addMessageData_addMessage.fromJson(
+          Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_addMessageData_addMessageFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_addMessageData_addMessageToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_addMessageData_addMessage && o.text == text;
+  }
+
+  @override
+  int get hashCode => text.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_addMessageData_addMessage(text: ${this.text})";
+}
+
+abstract class $LocalGraphqlOps_addMessageData_addMessageCopyWith<O> {
+  factory $LocalGraphqlOps_addMessageData_addMessageCopyWith(
+          LocalGraphqlOps_addMessageData_addMessage value,
+          O Function(LocalGraphqlOps_addMessageData_addMessage) then) =
+      _$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<O>;
+  O call({String text});
+}
+
+class _$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<O>
+    implements $LocalGraphqlOps_addMessageData_addMessageCopyWith<O> {
+  final LocalGraphqlOps_addMessageData_addMessage _value;
+  final O Function(LocalGraphqlOps_addMessageData_addMessage) _then;
+  _$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl(
+      this._value, this._then);
+
+  @override
+  O call({Object? text = dimmutable}) {
+    return _then(_value.copyWith(
+        text: text == dimmutable ? _value.text : text as String));
+  }
+}
+
+abstract class _$LocalGraphqlOps_addMessageData_addMessageCopyWith<O>
+    implements $LocalGraphqlOps_addMessageData_addMessageCopyWith<O> {
+  factory _$LocalGraphqlOps_addMessageData_addMessageCopyWith(
+          LocalGraphqlOps_addMessageData_addMessage value,
+          O Function(LocalGraphqlOps_addMessageData_addMessage) then) =
+      __$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<O>;
+  O call({String text});
+}
+
+class __$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<O>
+    extends _$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl<O>
+    implements _$LocalGraphqlOps_addMessageData_addMessageCopyWith<O> {
+  __$LocalGraphqlOps_addMessageData_addMessageCopyWithImpl(
+      LocalGraphqlOps_addMessageData_addMessage _value,
+      O Function(LocalGraphqlOps_addMessageData_addMessage) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_addMessageData_addMessage get _value => super._value;
+
+  @override
+  O call({Object? text = dimmutable}) {
+    return _then(LocalGraphqlOps_addMessageData_addMessage(
+        text: text == dimmutable ? _value.text : text as String));
+  }
+}
+
+GraphqlRequestInput<Null> LocalGraphqlOps_addMessageInputDeserializer(
+    dynamic json) {
+  return GraphqlRequestInput.fromJson(json as Map<String, dynamic>);
+}
+
+Map<String, dynamic> LocalGraphqlOps_addMessageDataSerializer(
+        int status, LocalGraphqlOps_addMessageData resp) =>
+    resp.toJson();
+
+LocalGraphqlOps_addMessageData LocalGraphqlOps_addMessageDataDeserializer(
+        int status, dynamic json) =>
+    LocalGraphqlOps_addMessageData.fromJson(json as Map<String, dynamic>);
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery:
+        GraphqlRequestPart(query: """mutation LocalGraphqlOps_addMessage { 
+ addMessage(message: "m1")  {  
+ text }
+
+ }""", hash: null, useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_addMessageDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_addMessageInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_addMessageDataDeserializer)
+typedef LocalGraphqlOps_addMessage = HttpField<GraphqlRequestInput<Null>,
+    LocalGraphqlOps_addMessageData, List<GraphqlError>>;
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery:
+        GraphqlRequestPart(query: """mutation LocalGraphqlOps_addMessage { 
+ addMessage(message: "m1")  {  
+ text }
+
+ }""", hash: null, useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_addMessageDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_addMessageInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_addMessageDataDeserializer)
+typedef LocalGraphqlOps_addMessageT<T>
+    = HttpField<GraphqlRequestInput<Null>, T, List<GraphqlError>>;
+
+@JsonSerializable()
 class LocalGraphqlOps_errorQData {
   final String? errorQ;
 
@@ -1609,3 +1822,210 @@ typedef LocalGraphqlOps_errorQ = HttpField<GraphqlRequestInput<Null>,
     responseDeserializer: LocalGraphqlOps_errorQDataDeserializer)
 typedef LocalGraphqlOps_errorQT<T>
     = HttpField<GraphqlRequestInput<Null>, T, List<GraphqlError>>;
+
+@JsonSerializable()
+class LocalGraphqlOps_subscriptionMessageData {
+  final LocalGraphqlOps_subscriptionMessageData_messageCreated? messageCreated;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_subscriptionMessageDataCopyWith<
+          LocalGraphqlOps_subscriptionMessageData>
+      get copyWith => __$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<
+          LocalGraphqlOps_subscriptionMessageData>(this, IdentityFn);
+
+  const LocalGraphqlOps_subscriptionMessageData({required this.messageCreated});
+
+  factory LocalGraphqlOps_subscriptionMessageData.fromJson(
+          Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_subscriptionMessageDataFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_subscriptionMessageDataToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_subscriptionMessageData &&
+        o.messageCreated == messageCreated;
+  }
+
+  @override
+  int get hashCode => messageCreated.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_subscriptionMessageData(messageCreated: ${this.messageCreated})";
+}
+
+abstract class $LocalGraphqlOps_subscriptionMessageDataCopyWith<O> {
+  factory $LocalGraphqlOps_subscriptionMessageDataCopyWith(
+          LocalGraphqlOps_subscriptionMessageData value,
+          O Function(LocalGraphqlOps_subscriptionMessageData) then) =
+      _$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<O>;
+  O call(
+      {LocalGraphqlOps_subscriptionMessageData_messageCreated? messageCreated});
+}
+
+class _$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_subscriptionMessageDataCopyWith<O> {
+  final LocalGraphqlOps_subscriptionMessageData _value;
+  final O Function(LocalGraphqlOps_subscriptionMessageData) _then;
+  _$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl(
+      this._value, this._then);
+
+  @override
+  O call({Object? messageCreated = dimmutable}) {
+    return _then(_value.copyWith(
+        messageCreated: messageCreated == dimmutable
+            ? _value.messageCreated
+            : messageCreated
+                as LocalGraphqlOps_subscriptionMessageData_messageCreated?));
+  }
+}
+
+abstract class _$LocalGraphqlOps_subscriptionMessageDataCopyWith<O>
+    implements $LocalGraphqlOps_subscriptionMessageDataCopyWith<O> {
+  factory _$LocalGraphqlOps_subscriptionMessageDataCopyWith(
+          LocalGraphqlOps_subscriptionMessageData value,
+          O Function(LocalGraphqlOps_subscriptionMessageData) then) =
+      __$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<O>;
+  O call(
+      {LocalGraphqlOps_subscriptionMessageData_messageCreated? messageCreated});
+}
+
+class __$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_subscriptionMessageDataCopyWith<O> {
+  __$LocalGraphqlOps_subscriptionMessageDataCopyWithImpl(
+      LocalGraphqlOps_subscriptionMessageData _value,
+      O Function(LocalGraphqlOps_subscriptionMessageData) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_subscriptionMessageData get _value => super._value;
+
+  @override
+  O call({Object? messageCreated = dimmutable}) {
+    return _then(LocalGraphqlOps_subscriptionMessageData(
+        messageCreated: messageCreated == dimmutable
+            ? _value.messageCreated
+            : messageCreated
+                as LocalGraphqlOps_subscriptionMessageData_messageCreated?));
+  }
+}
+
+@JsonSerializable()
+class LocalGraphqlOps_subscriptionMessageData_messageCreated {
+  final String text;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<
+          LocalGraphqlOps_subscriptionMessageData_messageCreated>
+      get copyWith =>
+          __$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<
+                  LocalGraphqlOps_subscriptionMessageData_messageCreated>(
+              this, IdentityFn);
+
+  const LocalGraphqlOps_subscriptionMessageData_messageCreated(
+      {required this.text});
+
+  factory LocalGraphqlOps_subscriptionMessageData_messageCreated.fromJson(
+          Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_subscriptionMessageData_messageCreatedFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_subscriptionMessageData_messageCreatedToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_subscriptionMessageData_messageCreated &&
+        o.text == text;
+  }
+
+  @override
+  int get hashCode => text.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_subscriptionMessageData_messageCreated(text: ${this.text})";
+}
+
+abstract class $LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<
+    O> {
+  factory $LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith(
+          LocalGraphqlOps_subscriptionMessageData_messageCreated value,
+          O Function(LocalGraphqlOps_subscriptionMessageData_messageCreated)
+              then) =
+      _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<O>;
+  O call({String text});
+}
+
+class _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<O>
+    implements
+        $LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<O> {
+  final LocalGraphqlOps_subscriptionMessageData_messageCreated _value;
+  final O Function(LocalGraphqlOps_subscriptionMessageData_messageCreated)
+      _then;
+  _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl(
+      this._value, this._then);
+
+  @override
+  O call({Object? text = dimmutable}) {
+    return _then(_value.copyWith(
+        text: text == dimmutable ? _value.text : text as String));
+  }
+}
+
+abstract class _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<
+        O>
+    implements
+        $LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<O> {
+  factory _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith(
+          LocalGraphqlOps_subscriptionMessageData_messageCreated value,
+          O Function(LocalGraphqlOps_subscriptionMessageData_messageCreated)
+              then) =
+      __$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<O>;
+  O call({String text});
+}
+
+class __$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<O>
+    extends _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl<
+        O>
+    implements
+        _$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWith<O> {
+  __$LocalGraphqlOps_subscriptionMessageData_messageCreatedCopyWithImpl(
+      LocalGraphqlOps_subscriptionMessageData_messageCreated _value,
+      O Function(LocalGraphqlOps_subscriptionMessageData_messageCreated) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_subscriptionMessageData_messageCreated get _value =>
+      super._value;
+
+  @override
+  O call({Object? text = dimmutable}) {
+    return _then(LocalGraphqlOps_subscriptionMessageData_messageCreated(
+        text: text == dimmutable ? _value.text : text as String));
+  }
+}
+
+LocalGraphqlOps_subscriptionMessageData
+    LocalGraphqlOps_subscriptionMessageDataDeserializer(dynamic value) =>
+        LocalGraphqlOps_subscriptionMessageData.fromJson(
+            value as Map<String, dynamic>);
+
+@WebSocketRequest(
+    url: "ws://localhost:4000/graphql",
+    graphqlQuery: GraphqlRequestPart(
+        query: """subscription LocalGraphqlOps_subscriptionMessage { 
+ messageCreated  {  
+ text }
+
+ }""", hash: null, useGetForPersist: false),
+    inputSerializer: GraphqlRequestInput.toJson,
+    responseDeserializer: LocalGraphqlOps_subscriptionMessageDataDeserializer)
+typedef LocalGraphqlOps_subscriptionMessage = WebSocketField<
+    GraphqlRequestInput<Null>,
+    LocalGraphqlOps_subscriptionMessageData,
+    List<GraphqlError>>;

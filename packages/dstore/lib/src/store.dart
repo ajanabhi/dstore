@@ -491,7 +491,7 @@ class Store<S extends AppStateI<S>> {
         deps.forEach((prop) {
           final field = _getFieldFromStateKey(stateKey, prop) as WebSocketField;
           field.internalUnsubscribe?.call();
-          result[prop] = field.copyWith(internalUnsubscribe: Optional(null));
+          result[prop] = field.copyWith(internalUnsubscribe: null);
         });
         return result;
       }

@@ -231,6 +231,11 @@ class Hello2 {
   void d__typename;
 }
 
+class Message {
+  void text({String? alias, String? directive}) {}
+  void d__typename;
+}
+
 class Employee {
   void name({bool? max, String? alias, String? directive}) {}
   void salary({String? alias, String? directive}) {}
@@ -272,12 +277,16 @@ class Mutation {
   void singleUpload(File singleUpload,
       {required dynamic file, String? alias, String? directive}) {}
   void changeName({required String name, String? alias, String? directive}) {}
+  void addMessage(Message addMessage,
+      {required String message, String? alias, String? directive}) {}
   void d__typename;
 }
 
 class Subscription {
   Subscription([String? args]);
   void messageAdded({String? alias, String? directive}) {}
+  void messageCreated(Message messageCreated,
+      {String? alias, String? directive}) {}
   void d__typename;
 }
 

@@ -132,6 +132,34 @@ class StoreTester<S extends AppStateI<S>> {
     expect(beforeMap.identicalMembers(afterMap), true);
   }
 
+  Future<void> testWebSocketAction<M>(Action<M> action, List<M> result,
+      {Duration? timeout, bool mapEquals = false, int interval = 4}) async {
+    assert(action.ws != null);
+    final before = store.getPStateModelFromAction(action);
+    final expectedResult = <M>[];
+    final statesListener = (PStateModel state) {
+      final map = state.toMap();
+      expectedResult.add(map[action.name] as M);
+    };
+    store.dispatch(action.copyWith(afterComplete: statesListener));
+    await waitForAction(action, timeout: timeout, interval: interval);
+    final after = store.getPStateModelFromAction(action);
+    expect(identical(before, after), false);
+
+    if (mapEquals) {
+      final resultMap = result.map((e) => (e as ToMap).toMap()).toList();
+      final expectedMap =
+          expectedResult.map((e) => (e as ToMap).toMap()).toList();
+      expect(resultMap, expectedMap);
+    } else {
+      expect(result, expectedResult);
+    }
+    final afterMap = after.toMap();
+    final beforeMap = before.toMap();
+    beforeMap.remove(action.name);
+    expect(beforeMap.identicalMembers(afterMap), true);
+  }
+
   Future<void> testStreamAction<M extends Iterable<dynamic>>(
       Action<M> action, M result) async {
     assert(action.stream != null);
@@ -173,6 +201,10 @@ class StoreTester<S extends AppStateI<S>> {
         done = field.completed;
       }
       if (field is HttpField) {
+        done = field.completed;
+      }
+
+      if (field is WebSocketField) {
         done = field.completed;
       }
       // print("checking for done : $done");

@@ -11,7 +11,6 @@ import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
 import 'package:gql/schema.dart';
 import 'package:source_gen/source_gen.dart';
-import 'package:crypto/crypto.dart';
 
 class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
   @override
@@ -154,10 +153,8 @@ String generateOpsTypeForQuery({
     $types    
     $responseDeserializerFunction
     $req
-    typedef = WebSocketField<$inputType, $responseType, List<GraphqlError>>;
+    typedef ${name} = WebSocketField<$inputType, $responseType, List<GraphqlError>>;
 
-    $req
-    typedef ${name}T<T> = WebSocketField<$inputType, T, List<GraphqlError>>;
   """;
   }
 

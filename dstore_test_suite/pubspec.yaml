@@ -12,7 +12,9 @@ dependencies:
  dstore_flutter:
    path: ../packages/dstore_flutter/
  dstore_middleware_dio:
-   path: ../packages/middleware_dio/  
+   path: ../packages/middleware_dio/
+ dstore_middleware_websocket:
+   path: ../packages/middleware_websocket/  
  dstore:
    path: ../packages/dstore/ 
  dstore_test:

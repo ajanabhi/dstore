@@ -16,6 +16,7 @@ class AppState implements AppStateI<AppState> {
   late final SimplePersist3 simplePersist3;
   late final SimplePersitanceMigrator simplePersitanceMigrator;
   late final SimpleHttp simpleHttp;
+  late final SimpleWebsocket simpleWebsocket;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..simple = map.containsKey('simple') ? map['simple'] as Simple : this.simple
@@ -39,7 +40,10 @@ class AppState implements AppStateI<AppState> {
         : this.simplePersitanceMigrator
     ..simpleHttp = map.containsKey('simpleHttp')
         ? map['simpleHttp'] as SimpleHttp
-        : this.simpleHttp;
+        : this.simpleHttp
+    ..simpleWebsocket = map.containsKey('simpleWebsocket')
+        ? map['simpleWebsocket'] as SimpleWebsocket
+        : this.simpleWebsocket;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
         "simple": this.simple,
@@ -49,7 +53,8 @@ class AppState implements AppStateI<AppState> {
         "simplePersist2": this.simplePersist2,
         "simplePersist3": this.simplePersist3,
         "simplePersitanceMigrator": this.simplePersitanceMigrator,
-        "simpleHttp": this.simpleHttp
+        "simpleHttp": this.simpleHttp,
+        "simpleWebsocket": this.simpleWebsocket
       };
 }
 
@@ -68,7 +73,8 @@ Store<AppState> createStore(
         "simplePersist2": SimplePersist2Meta,
         "simplePersist3": SimplePersist3Meta,
         "simplePersitanceMigrator": SimplePersitanceMigratorMeta,
-        "simpleHttp": SimpleHttpMeta
+        "simpleHttp": SimpleHttpMeta,
+        "simpleWebsocket": SimpleWebsocketMeta
       },
       stateCreator: () => AppState(),
       appVersion: '1.0.0',

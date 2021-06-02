@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:dstore/dstore.dart';
 import 'package:web_socket_channel_fork/web_socket_channel.dart';
@@ -16,6 +15,16 @@ enum GraphqlMessages {
   data,
   error,
   complete
+}
+
+abstract class WebSocketReadyState {
+  static const int CLOSED = 3;
+
+  static const int CLOSING = 2;
+
+  static const int CONNECTING = 0;
+
+  static const int OPEN = 1;
 }
 
 const _WebSocket_Global_Group = "_DSTORE_WEBSCOKET_GLOBAL_GROUP";
@@ -108,7 +117,7 @@ class DWebSocket {
       isReady = false;
       ws = WebSocketChannel.connect(Uri.parse(url), protocols: protocols);
       ws.stream.listen(onMessage, onDone: onDone, onError: onError);
-      if (ws.readyState == WebSocket.OPEN) {
+      if (ws.readyState == WebSocketReadyState.OPEN) {
         onOpen();
       } else {
         _monitorOnStart();
@@ -159,10 +168,8 @@ class DWebSocket {
 
   void cleanup(dynamic error) {
     [...subscriptions, ...queue].forEach((a) {
-      _dispatchActionToStore(
-          a,
-          WebSocketField<dynamic, dynamic, dynamic>(
-              error: error, completed: true));
+      final field = store.getFieldFromAction(a) as WebSocketField;
+      _dispatchActionToStore(a, field.copyWith(error: error, completed: true));
     });
     subscriptions.clear();
     queue.clear();
@@ -191,7 +198,8 @@ class DWebSocket {
 
   void _handleGraphqlMessage(dynamic message) {
     print("Message runtime type ${message.runtimeType}");
-    final data = jsonDecode(message["data"] as String) as Map<String, dynamic>;
+    final data = jsonDecode(message as String) as Map<String, dynamic>;
+    print("data $data");
     final type = data["type"] as String;
     final gmType = _convertStringToGraphlMessage(type);
     switch (gmType) {
@@ -233,12 +241,11 @@ class DWebSocket {
           }
           dynamic rData;
           if (pData != null) {
+            print("wspayalod ${a.ws}");
             rData = a.ws!.responseDeserializer(pData);
           }
-          _dispatchActionToStore(
-              a,
-              WebSocketField<dynamic, dynamic, dynamic>(
-                  error: error, data: rData));
+          final field = store.getFieldFromAction(a) as WebSocketField;
+          _dispatchActionToStore(a, field.copyWith(error: error, data: rData));
         }
         break;
       case GraphqlMessages.error:
@@ -247,10 +254,8 @@ class DWebSocket {
         final id = data["id"] as String;
         final a = _getActionFromId(id);
         if (a != null) {
-          _dispatchActionToStore(
-              a,
-              WebSocketField<dynamic, dynamic, dynamic>(
-                  error: data["payload"]));
+          final field = store.getFieldFromAction(a) as WebSocketField;
+          _dispatchActionToStore(a, field.copyWith(error: data["payload"]));
           //TODO do we need remove subscription from here ...
         }
         break;
@@ -258,8 +263,8 @@ class DWebSocket {
         // This is sent when the operation is done and no more dta will be sent.
         final ac = _getActionFromId(data["id"] as String);
         if (ac != null) {
-          _dispatchActionToStore(
-              ac, WebSocketField<dynamic, dynamic, dynamic>(completed: true));
+          final field = store.getFieldFromAction(ac) as WebSocketField;
+          _dispatchActionToStore(ac, field.copyWith(completed: true));
           removeFromSubscriptions(ac);
         }
         break;
@@ -292,12 +297,12 @@ class DWebSocket {
     }
     const timeout = Duration(milliseconds: 500);
     _onOpenMinitorTimer = Timer.periodic(timeout, (timer) {
-      if (ws.readyState == WebSocket.OPEN) {
+      if (ws.readyState == WebSocketReadyState.OPEN) {
         timer.cancel();
         _onOpenMinitorTimer = null;
         onOpen();
-      } else if (ws.readyState == WebSocket.CLOSING ||
-          ws.readyState == WebSocket.CLOSED) {
+      } else if (ws.readyState == WebSocketReadyState.CLOSING ||
+          ws.readyState == WebSocketReadyState.CLOSED) {
         timer.cancel();
         _onOpenMinitorTimer = null;
       }
@@ -308,7 +313,7 @@ class DWebSocket {
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             data: data.copyWith(
-                internalUnsubscribe: Optional(_getUnSunscribeFuntion(action))),
+                internalUnsubscribe: _getUnSunscribeFuntion(action)),
             processed: true,
             type: ActionInternalType.FIELD)));
   }
@@ -376,8 +381,8 @@ class DWebSocket {
         handleUnsubscribe(action);
         return;
       }
-      _dispatchActionToStore(
-          action, WebSocketField<dynamic, dynamic, dynamic>(loading: true));
+      final field = store.getFieldFromAction(action) as WebSocketField;
+      _dispatchActionToStore(action, field.copyWith(loading: true));
       if (!isReady) {
         queue.add(action);
         return;
@@ -405,8 +410,7 @@ class DWebSocket {
       }
       if (sa == null) {
         // if already there is a subscription for that id dont add it again
-        subscriptions
-            .add(Action<dynamic>(name: action.name, type: action.type));
+        subscriptions.add(action);
       }
     }
   }

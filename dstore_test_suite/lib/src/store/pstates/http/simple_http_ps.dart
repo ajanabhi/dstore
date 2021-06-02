@@ -33,6 +33,8 @@ class $_SimpleHttp {
       LocalGraphqlOps_chnageNameWithVariables();
 
   LocalGraphqlOps_errorQ graphqlError = LocalGraphqlOps_errorQ();
+
+  LocalGraphqlOps_addMessage graphqlAddMessage = LocalGraphqlOps_addMessage();
 }
 
 helloJsonTransform<int> pingTransform(

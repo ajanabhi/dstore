@@ -71,6 +71,8 @@ class WebSocketFieldInfo {
   final GraphqlRequestPart? graphqlQuery;
   final String? inputSerializer;
   final String? responseDeserializer;
+  final String? responseType;
+  final String? errorType;
   final String? transformer;
   final String inputType;
 
@@ -79,6 +81,8 @@ class WebSocketFieldInfo {
       required this.name,
       this.graphqlQuery,
       this.transformer,
+      this.errorType,
+      this.responseType,
       required this.inputType,
       this.inputSerializer,
       this.responseDeserializer});

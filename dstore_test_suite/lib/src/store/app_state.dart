@@ -1,5 +1,6 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_middleware_dio/middleware_dio.dart';
+import 'package:dstore_middleware_websocket/middleware_websocket.dart';
 import 'package:dstore_test/dstore_test.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_async_ps.dart';
@@ -9,6 +10,7 @@ import 'package:dstore_test_suite/src/store/pstates/simple_persist3_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persist_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persitance_migratorps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/websocket/websocket_ps.dart';
 
 part "app_state.dstore.dart";
 
@@ -21,7 +23,8 @@ void $_AppState(
     SimplePersist2 simplePersist2,
     SimplePersist3 simplePersist3,
     SimplePersitanceMigrator simplePersitanceMigrator,
-    SimpleHttp simpleHttp) {}
+    SimpleHttp simpleHttp,
+    SimpleWebsocket simpleWebsocket) {}
 
 final networkListener = TempNetworkStatusListener();
 
@@ -29,7 +32,11 @@ final store = createStore(
     handleError: (error) {
       print("Uncaught error in store  $error");
     },
-    middlewares: [tempOfflineMiddleware, createDioMiddleware<AppState>()],
+    middlewares: [
+      tempOfflineMiddleware,
+      createDioMiddleware<AppState>(),
+      createWebsocketMiddleware()
+    ],
     networkOptions: NetworkOptions(statusListener: networkListener),
     storageOptions: StorageOptions(
       storage: InMemoryStorage(initialValues: <String, dynamic>{

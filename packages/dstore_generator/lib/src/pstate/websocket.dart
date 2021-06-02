@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/type.dart';
 import 'package:dstore_generator/src/pstate/http.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
@@ -18,10 +19,11 @@ List<WebSocketFieldInfo> getWebSocketFields(List<FieldElement> fields) {
 
 WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
   final type = element.type;
-  final wf = AstUtils.isSubTypeof(type, "WebSocketField");
-  if (wf == null) {
+
+  if (!element.type.toString().startsWith("WebSocketField<")) {
     return null;
   }
+  final wf = element.type as InterfaceType;
   final typeParams = wf.typeArguments;
   if (typeParams.length != 3) {
     throw ArgumentError.value(
@@ -29,8 +31,9 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
   }
   final inputType = typeParams[0].getDisplayString(withNullability: true);
   final responseType = typeParams[1].getDisplayString(withNullability: true);
-  final errorType = typeParams[1].getDisplayString(withNullability: true);
-  final wsrAnot = type.element?.annotationFromType(WebSocketRequest);
+  final errorType = typeParams[2].getDisplayString(withNullability: true);
+  final wsrAnot =
+      element.type.aliasElement?.annotationFromType(WebSocketRequest);
   if (wsrAnot == null) {
     throw ArgumentError.value(
         "you should annotate $type with WebSocketRequest");
@@ -38,11 +41,8 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
 
   final reader = ConstantReader(wsrAnot.computeConstantValue());
   final url = reader.read("url").stringValue;
-  final inputSerializerField = reader.peek("inputSerializer");
-  String? inputSerializer;
-  if (inputSerializerField != null) {
-    inputSerializer = inputSerializerField.objectValue.toFunctionValue()!.name;
-  }
+  final inputSerializer = reader.functionNameForField("inputSerializer");
+
   final responseDeserizerField = reader.peek("responseDeserializer");
   String? responseDeserializer;
   if (responseDeserizerField != null) {
@@ -66,6 +66,8 @@ WebSocketFieldInfo? _getWebSocketFieldInfoForElement(FieldElement element) {
       inputSerializer: inputSerializer,
       responseDeserializer: responseDeserializer,
       inputType: inputType,
+      responseType: responseType,
+      errorType: errorType,
       transformer: transofrmer,
       graphqlQuery: graphqlQuery);
 }
@@ -82,7 +84,9 @@ String convertWebSocketFieldInfoToAction(
   if (wsi.inputType.startsWith("GraphqlRequestInput")) {
     final it = wsi.inputType;
     final graphqlQueryPart = wsi.graphqlQuery!;
-    final gparams = <String>["query: ${graphqlQueryPart.query}"];
+    final gparams = <String>[
+      "query: ${graphqlQueryPart.query.addTripleQuotes}"
+    ];
     if (graphqlQueryPart.hash != null) {
       final extensions = {
         "persistedQuery": {"sha256Hash": graphqlQueryPart.hash}
@@ -123,8 +127,8 @@ String convertWebSocketFieldInfoToAction(
   }
 
   return """
-    static Action ${name}({${params.join(", ")}}) {
-      return Action(name: "$name", type: $type, ws: WebSocketPayload(${payloadParams.join(",")})$psHistoryPayload);
+    static Action<dynamic> ${name}({${params.join(", ")}}) {
+      return Action<dynamic>(name: "$name", type: $type, ws: WebSocketPayload<${wsi.inputType},${wsi.responseType},${wsi.errorType}>(${payloadParams.join(",")})$psHistoryPayload);
     }
    """;
 }

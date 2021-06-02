@@ -188,6 +188,32 @@ Map<String, dynamic> _$LocalGraphqlOps_chnageNameWithVariablesVariablesToJson(
       'name': instance.name,
     };
 
+LocalGraphqlOps_addMessageData _$LocalGraphqlOps_addMessageDataFromJson(
+        Map<String, dynamic> json) =>
+    LocalGraphqlOps_addMessageData(
+      addMessage: LocalGraphqlOps_addMessageData_addMessage.fromJson(
+          json['addMessage'] as Map<String, dynamic>),
+    );
+
+Map<String, dynamic> _$LocalGraphqlOps_addMessageDataToJson(
+        LocalGraphqlOps_addMessageData instance) =>
+    <String, dynamic>{
+      'addMessage': instance.addMessage.toJson(),
+    };
+
+LocalGraphqlOps_addMessageData_addMessage
+    _$LocalGraphqlOps_addMessageData_addMessageFromJson(
+            Map<String, dynamic> json) =>
+        LocalGraphqlOps_addMessageData_addMessage(
+          text: json['text'] as String,
+        );
+
+Map<String, dynamic> _$LocalGraphqlOps_addMessageData_addMessageToJson(
+        LocalGraphqlOps_addMessageData_addMessage instance) =>
+    <String, dynamic>{
+      'text': instance.text,
+    };
+
 LocalGraphqlOps_errorQData _$LocalGraphqlOps_errorQDataFromJson(
         Map<String, dynamic> json) =>
     LocalGraphqlOps_errorQData(
@@ -199,3 +225,33 @@ Map<String, dynamic> _$LocalGraphqlOps_errorQDataToJson(
     <String, dynamic>{
       'errorQ': instance.errorQ,
     };
+
+LocalGraphqlOps_subscriptionMessageData
+    _$LocalGraphqlOps_subscriptionMessageDataFromJson(
+            Map<String, dynamic> json) =>
+        LocalGraphqlOps_subscriptionMessageData(
+          messageCreated: json['messageCreated'] == null
+              ? null
+              : LocalGraphqlOps_subscriptionMessageData_messageCreated.fromJson(
+                  json['messageCreated'] as Map<String, dynamic>),
+        );
+
+Map<String, dynamic> _$LocalGraphqlOps_subscriptionMessageDataToJson(
+        LocalGraphqlOps_subscriptionMessageData instance) =>
+    <String, dynamic>{
+      'messageCreated': instance.messageCreated?.toJson(),
+    };
+
+LocalGraphqlOps_subscriptionMessageData_messageCreated
+    _$LocalGraphqlOps_subscriptionMessageData_messageCreatedFromJson(
+            Map<String, dynamic> json) =>
+        LocalGraphqlOps_subscriptionMessageData_messageCreated(
+          text: json['text'] as String,
+        );
+
+Map<String, dynamic>
+    _$LocalGraphqlOps_subscriptionMessageData_messageCreatedToJson(
+            LocalGraphqlOps_subscriptionMessageData_messageCreated instance) =>
+        <String, dynamic>{
+          'text': instance.text,
+        };
