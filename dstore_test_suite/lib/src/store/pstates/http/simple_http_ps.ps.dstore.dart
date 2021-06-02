@@ -33,6 +33,14 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
 
   final OfflineOp offlineOp;
 
+  final LocalGraphqlOps_ping pingGraphql;
+
+  final LocalGraphqlOps_users grpahqlUsers;
+
+  final LocalGraphqlOps_chnageNameWithVariables graphqlChangeVariable;
+
+  final LocalGraphqlOps_errorQ graphqlError;
+
   _$SimpleHttpCopyWith<SimpleHttp> get copyWith =>
       __$SimpleHttpCopyWithImpl<SimpleHttp>(this, IdentityFn);
 
@@ -47,7 +55,12 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
       this.fromUpload = const FormUpload(),
       this.uploadProgress = const UploadProgress(),
       this.downloadProgress = const DownloadProgress(),
-      this.offlineOp = const OfflineOp()});
+      this.offlineOp = const OfflineOp(),
+      this.pingGraphql = const LocalGraphqlOps_ping(),
+      this.grpahqlUsers = const LocalGraphqlOps_users(),
+      this.graphqlChangeVariable =
+          const LocalGraphqlOps_chnageNameWithVariables(),
+      this.graphqlError = const LocalGraphqlOps_errorQ()});
 
   @override
   SimpleHttp copyWithMap(Map<String, dynamic> map) => SimpleHttp(
@@ -76,7 +89,20 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
           : this.downloadProgress,
       offlineOp: map.containsKey("offlineOp")
           ? map["offlineOp"] as OfflineOp
-          : this.offlineOp);
+          : this.offlineOp,
+      pingGraphql: map.containsKey("pingGraphql")
+          ? map["pingGraphql"] as LocalGraphqlOps_ping
+          : this.pingGraphql,
+      grpahqlUsers: map.containsKey("grpahqlUsers")
+          ? map["grpahqlUsers"] as LocalGraphqlOps_users
+          : this.grpahqlUsers,
+      graphqlChangeVariable: map.containsKey("graphqlChangeVariable")
+          ? map["graphqlChangeVariable"]
+              as LocalGraphqlOps_chnageNameWithVariables
+          : this.graphqlChangeVariable,
+      graphqlError: map.containsKey("graphqlError")
+          ? map["graphqlError"] as LocalGraphqlOps_errorQ
+          : this.graphqlError);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         "ping": this.ping,
@@ -89,7 +115,11 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
         "fromUpload": this.fromUpload,
         "uploadProgress": this.uploadProgress,
         "downloadProgress": this.downloadProgress,
-        "offlineOp": this.offlineOp
+        "offlineOp": this.offlineOp,
+        "pingGraphql": this.pingGraphql,
+        "grpahqlUsers": this.grpahqlUsers,
+        "graphqlChangeVariable": this.graphqlChangeVariable,
+        "graphqlError": this.graphqlError
       };
 
   @override
@@ -106,7 +136,11 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
         o.fromUpload == fromUpload &&
         o.uploadProgress == uploadProgress &&
         o.downloadProgress == downloadProgress &&
-        o.offlineOp == offlineOp;
+        o.offlineOp == offlineOp &&
+        o.pingGraphql == pingGraphql &&
+        o.grpahqlUsers == grpahqlUsers &&
+        o.graphqlChangeVariable == graphqlChangeVariable &&
+        o.graphqlError == graphqlError;
   }
 
   @override
@@ -121,11 +155,15 @@ class SimpleHttp extends PStateModel<SimpleHttp> {
       fromUpload.hashCode ^
       uploadProgress.hashCode ^
       downloadProgress.hashCode ^
-      offlineOp.hashCode;
+      offlineOp.hashCode ^
+      pingGraphql.hashCode ^
+      grpahqlUsers.hashCode ^
+      graphqlChangeVariable.hashCode ^
+      graphqlError.hashCode;
 
   @override
   String toString() =>
-      "SimpleHttp(ping: ${this.ping}, json: ${this.json}, octet: ${this.octet}, optFail: ${this.optFail}, pinInt: ${this.pinInt}, pagination: ${this.pagination}, jsPost: ${this.jsPost}, fromUpload: ${this.fromUpload}, uploadProgress: ${this.uploadProgress}, downloadProgress: ${this.downloadProgress}, offlineOp: ${this.offlineOp})";
+      "SimpleHttp(ping: ${this.ping}, json: ${this.json}, octet: ${this.octet}, optFail: ${this.optFail}, pinInt: ${this.pinInt}, pagination: ${this.pagination}, jsPost: ${this.jsPost}, fromUpload: ${this.fromUpload}, uploadProgress: ${this.uploadProgress}, downloadProgress: ${this.downloadProgress}, offlineOp: ${this.offlineOp}, pingGraphql: ${this.pingGraphql}, grpahqlUsers: ${this.grpahqlUsers}, graphqlChangeVariable: ${this.graphqlChangeVariable}, graphqlError: ${this.graphqlError})";
 }
 
 abstract class $SimpleHttpCopyWith<O> {
@@ -142,7 +180,11 @@ abstract class $SimpleHttpCopyWith<O> {
       FormUpload fromUpload,
       UploadProgress uploadProgress,
       DownloadProgress downloadProgress,
-      OfflineOp offlineOp});
+      OfflineOp offlineOp,
+      LocalGraphqlOps_ping pingGraphql,
+      LocalGraphqlOps_users grpahqlUsers,
+      LocalGraphqlOps_chnageNameWithVariables graphqlChangeVariable,
+      LocalGraphqlOps_errorQ graphqlError});
 }
 
 class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
@@ -162,7 +204,11 @@ class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
       Object? fromUpload = dimmutable,
       Object? uploadProgress = dimmutable,
       Object? downloadProgress = dimmutable,
-      Object? offlineOp = dimmutable}) {
+      Object? offlineOp = dimmutable,
+      Object? pingGraphql = dimmutable,
+      Object? grpahqlUsers = dimmutable,
+      Object? graphqlChangeVariable = dimmutable,
+      Object? graphqlError = dimmutable}) {
     return _then(_value.copyWith(
         ping: ping == dimmutable ? _value.ping : ping as helloPing,
         json: json == dimmutable ? _value.json : json as helloJson,
@@ -185,9 +231,20 @@ class _$SimpleHttpCopyWithImpl<O> implements $SimpleHttpCopyWith<O> {
         downloadProgress: downloadProgress == dimmutable
             ? _value.downloadProgress
             : downloadProgress as DownloadProgress,
-        offlineOp: offlineOp == dimmutable
-            ? _value.offlineOp
-            : offlineOp as OfflineOp));
+        offlineOp:
+            offlineOp == dimmutable ? _value.offlineOp : offlineOp as OfflineOp,
+        pingGraphql: pingGraphql == dimmutable
+            ? _value.pingGraphql
+            : pingGraphql as LocalGraphqlOps_ping,
+        grpahqlUsers: grpahqlUsers == dimmutable
+            ? _value.grpahqlUsers
+            : grpahqlUsers as LocalGraphqlOps_users,
+        graphqlChangeVariable: graphqlChangeVariable == dimmutable
+            ? _value.graphqlChangeVariable
+            : graphqlChangeVariable as LocalGraphqlOps_chnageNameWithVariables,
+        graphqlError: graphqlError == dimmutable
+            ? _value.graphqlError
+            : graphqlError as LocalGraphqlOps_errorQ));
   }
 }
 
@@ -205,7 +262,11 @@ abstract class _$SimpleHttpCopyWith<O> implements $SimpleHttpCopyWith<O> {
       FormUpload fromUpload,
       UploadProgress uploadProgress,
       DownloadProgress downloadProgress,
-      OfflineOp offlineOp});
+      OfflineOp offlineOp,
+      LocalGraphqlOps_ping pingGraphql,
+      LocalGraphqlOps_users grpahqlUsers,
+      LocalGraphqlOps_chnageNameWithVariables graphqlChangeVariable,
+      LocalGraphqlOps_errorQ graphqlError});
 }
 
 class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
@@ -228,7 +289,11 @@ class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
       Object? fromUpload = dimmutable,
       Object? uploadProgress = dimmutable,
       Object? downloadProgress = dimmutable,
-      Object? offlineOp = dimmutable}) {
+      Object? offlineOp = dimmutable,
+      Object? pingGraphql = dimmutable,
+      Object? grpahqlUsers = dimmutable,
+      Object? graphqlChangeVariable = dimmutable,
+      Object? graphqlError = dimmutable}) {
     return _then(SimpleHttp(
         ping: ping == dimmutable ? _value.ping : ping as helloPing,
         json: json == dimmutable ? _value.json : json as helloJson,
@@ -251,9 +316,20 @@ class __$SimpleHttpCopyWithImpl<O> extends _$SimpleHttpCopyWithImpl<O>
         downloadProgress: downloadProgress == dimmutable
             ? _value.downloadProgress
             : downloadProgress as DownloadProgress,
-        offlineOp: offlineOp == dimmutable
-            ? _value.offlineOp
-            : offlineOp as OfflineOp));
+        offlineOp:
+            offlineOp == dimmutable ? _value.offlineOp : offlineOp as OfflineOp,
+        pingGraphql: pingGraphql == dimmutable
+            ? _value.pingGraphql
+            : pingGraphql as LocalGraphqlOps_ping,
+        grpahqlUsers: grpahqlUsers == dimmutable
+            ? _value.grpahqlUsers
+            : grpahqlUsers as LocalGraphqlOps_users,
+        graphqlChangeVariable: graphqlChangeVariable == dimmutable
+            ? _value.graphqlChangeVariable
+            : graphqlChangeVariable as LocalGraphqlOps_chnageNameWithVariables,
+        graphqlError: graphqlError == dimmutable
+            ? _value.graphqlError
+            : graphqlError as LocalGraphqlOps_errorQ));
   }
 }
 
@@ -642,6 +718,299 @@ abstract class SimpleHttpActions {
     return Action<HttpField<Null, String, String>>(
         name: "offlineOp", type: _SimpleHttp_FullPath, mock: mock);
   }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+          List<GraphqlError>>> pingGraphql(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      LocalGraphqlOps_pingData? optimisticResponse,
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+              List<GraphqlError>>?
+          mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    headers = <String, dynamic>{
+      ...<String, String>{"Content_Type": "applications/josn"},
+      ...headers ?? <String, String>{}
+    };
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+                List<GraphqlError>>>(
+        name: "pingGraphql",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, GraphqlRequestInput<Null>,
+                LocalGraphqlOps_pingData, List<GraphqlError>, dynamic>(
+            data: GraphqlRequestInput(query: """query LocalGraphqlOps_ping { 
+ ping   
+ 
+ }""", extensions: <String, dynamic>{
+              "persistedQuery": {"version": 1, "sha256Hash": "null"}
+            }),
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:4000/graphql",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+          List<GraphqlError>>> pingGraphqlMock(
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+              List<GraphqlError>>
+          mock) {
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
+                List<GraphqlError>>>(
+        name: "pingGraphql", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+          List<GraphqlError>>> grpahqlUsers(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      LocalGraphqlOps_usersData? optimisticResponse,
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+              List<GraphqlError>>?
+          mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    headers = <String, dynamic>{
+      ...<String, String>{"Content_Type": "applications/josn"},
+      ...headers ?? <String, String>{}
+    };
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+                List<GraphqlError>>>(
+        name: "grpahqlUsers",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, GraphqlRequestInput<Null>,
+                LocalGraphqlOps_usersData, List<GraphqlError>, dynamic>(
+            data: GraphqlRequestInput(query: """query LocalGraphqlOps_users { 
+ users  {  
+ name
+
+tags
+
+          hello {
+                   __typename
+              ... on Hello1 {
+         name
+one
+       }
+      
+       ... on Hello2 {
+         name
+two
+       }
+      
+     
+          }
+        
+          helloa {
+                   __typename
+              ... on Hello1 {
+         name
+one
+       }
+      
+       ... on Hello2 {
+         name
+two
+       }
+      
+     
+          }
+        
+address {
+             street
+zip
+country {
+             code
+name
+          } 
+          }  }
+
+ }""", extensions: <String, dynamic>{
+              "persistedQuery": {"version": 1, "sha256Hash": "null"}
+            }),
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:4000/graphql",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+          List<GraphqlError>>> grpahqlUsersMock(
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+              List<GraphqlError>>
+          mock) {
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
+                List<GraphqlError>>>(
+        name: "grpahqlUsers", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<
+      HttpField<
+          GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>,
+          LocalGraphqlOps_chnageNameWithVariablesData,
+          List<GraphqlError>>> graphqlChangeVariable(
+      {required LocalGraphqlOps_chnageNameWithVariablesVariables variables,
+      bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      LocalGraphqlOps_chnageNameWithVariablesData? optimisticResponse,
+      HttpField<
+              GraphqlRequestInput<
+                  LocalGraphqlOps_chnageNameWithVariablesVariables>,
+              LocalGraphqlOps_chnageNameWithVariablesData,
+              List<GraphqlError>>?
+          mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    headers = <String, dynamic>{
+      ...<String, String>{"Content_Type": "applications/josn"},
+      ...headers ?? <String, String>{}
+    };
+    return Action<
+            HttpField<
+                GraphqlRequestInput<
+                    LocalGraphqlOps_chnageNameWithVariablesVariables>,
+                LocalGraphqlOps_chnageNameWithVariablesData,
+                List<GraphqlError>>>(
+        name: "graphqlChangeVariable",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<
+                Null,
+                Null,
+                GraphqlRequestInput<
+                    LocalGraphqlOps_chnageNameWithVariablesVariables>,
+                LocalGraphqlOps_chnageNameWithVariablesData,
+                List<GraphqlError>,
+                dynamic>(
+            data: GraphqlRequestInput(
+                query:
+                    """mutation LocalGraphqlOps_chnageNameWithVariables(\$name: String!) { 
+ changeName(name: \$name)   
+ 
+ }""",
+                extensions: <String, dynamic>{
+                  "persistedQuery": {"version": 1, "sha256Hash": "null"}
+                },
+                variables: variables),
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:4000/graphql",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<
+      HttpField<
+          GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>,
+          LocalGraphqlOps_chnageNameWithVariablesData,
+          List<GraphqlError>>> graphqlChangeVariableMock(
+      HttpField<
+              GraphqlRequestInput<
+                  LocalGraphqlOps_chnageNameWithVariablesVariables>,
+              LocalGraphqlOps_chnageNameWithVariablesData,
+              List<GraphqlError>>
+          mock) {
+    return Action<
+            HttpField<
+                GraphqlRequestInput<
+                    LocalGraphqlOps_chnageNameWithVariablesVariables>,
+                LocalGraphqlOps_chnageNameWithVariablesData,
+                List<GraphqlError>>>(
+        name: "graphqlChangeVariable", type: _SimpleHttp_FullPath, mock: mock);
+  }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+          List<GraphqlError>>> graphqlError(
+      {bool abortable = false,
+      bool silent = false,
+      bool offline = false,
+      Map<String, dynamic>? headers,
+      LocalGraphqlOps_errorQData? optimisticResponse,
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+              List<GraphqlError>>?
+          mock,
+      Duration? debounce,
+      bool listenSendProgress = false,
+      bool listenReceiveProgress = false}) {
+    headers = <String, dynamic>{
+      ...<String, String>{"Content_Type": "applications/josn"},
+      ...headers ?? <String, String>{}
+    };
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+                List<GraphqlError>>>(
+        name: "graphqlError",
+        type: _SimpleHttp_FullPath,
+        silent: silent,
+        http: HttpPayload<Null, Null, GraphqlRequestInput<Null>,
+                LocalGraphqlOps_errorQData, List<GraphqlError>, dynamic>(
+            data: GraphqlRequestInput(query: """query LocalGraphqlOps_errorQ { 
+ errorQ   
+ 
+ }""", extensions: <String, dynamic>{
+              "persistedQuery": {"version": 1, "sha256Hash": "null"}
+            }),
+            abortable: abortable,
+            offline: offline,
+            headers: headers,
+            optimisticResponse: optimisticResponse,
+            url: "http://localhost:4000/graphql",
+            method: "POST",
+            responseType: HttpResponseType.JSON,
+            listenSendProgress: listenSendProgress,
+            listenReceiveProgress: listenReceiveProgress),
+        debounce: debounce);
+  }
+
+  static Action<
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+          List<GraphqlError>>> graphqlErrorMock(
+      HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+              List<GraphqlError>>
+          mock) {
+    return Action<
+            HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
+                List<GraphqlError>>>(
+        name: "graphqlError", type: _SimpleHttp_FullPath, mock: mock);
+  }
 }
 
 SimpleHttp SimpleHttp_DS() => SimpleHttp(
@@ -655,7 +1024,11 @@ SimpleHttp SimpleHttp_DS() => SimpleHttp(
     fromUpload: FormUpload(),
     uploadProgress: UploadProgress(),
     downloadProgress: DownloadProgress(),
-    offlineOp: OfflineOp());
+    offlineOp: OfflineOp(),
+    pingGraphql: LocalGraphqlOps_ping(),
+    grpahqlUsers: LocalGraphqlOps_users(),
+    graphqlChangeVariable: LocalGraphqlOps_chnageNameWithVariables(),
+    graphqlError: LocalGraphqlOps_errorQ());
 
 final SimpleHttpMeta = PStateMeta<
     SimpleHttp>(type: _SimpleHttp_FullPath, ds: SimpleHttp_DS, httpMetaMap: {
@@ -709,5 +1082,51 @@ final SimpleHttpMeta = PStateMeta<
       responseDeserializer: DownloadProgressResponse_SuccessDeserializer),
   "offlineOp": HttpMeta<Null, Null, Null, String, String, String>(
       responseSerializer: OfflineOpResponse_SuccessSerializer,
-      responseDeserializer: OfflineOpResponse_SuccessDeserializer)
+      responseDeserializer: OfflineOpResponse_SuccessDeserializer),
+  "pingGraphql": HttpMeta<
+          Null,
+          Null,
+          GraphqlRequestInput<Null>,
+          LocalGraphqlOps_pingData,
+          List<GraphqlError>,
+          LocalGraphqlOps_pingData>(
+      inputSerializer: GraphqlRequestInput.toJson,
+      inputDeserializer: LocalGraphqlOps_pingInputDeserializer,
+      responseSerializer: LocalGraphqlOps_pingDataSerializer,
+      responseDeserializer: LocalGraphqlOps_pingDataDeserializer),
+  "grpahqlUsers": HttpMeta<
+          Null,
+          Null,
+          GraphqlRequestInput<Null>,
+          LocalGraphqlOps_usersData,
+          List<GraphqlError>,
+          LocalGraphqlOps_usersData>(
+      inputSerializer: GraphqlRequestInput.toJson,
+      inputDeserializer: LocalGraphqlOps_usersInputDeserializer,
+      responseSerializer: LocalGraphqlOps_usersDataSerializer,
+      responseDeserializer: LocalGraphqlOps_usersDataDeserializer),
+  "graphqlChangeVariable": HttpMeta<
+          Null,
+          Null,
+          GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>,
+          LocalGraphqlOps_chnageNameWithVariablesData,
+          List<GraphqlError>,
+          LocalGraphqlOps_chnageNameWithVariablesData>(
+      inputSerializer: GraphqlRequestInput.toJson,
+      inputDeserializer:
+          LocalGraphqlOps_chnageNameWithVariablesInputDeserializer,
+      responseSerializer: LocalGraphqlOps_chnageNameWithVariablesDataSerializer,
+      responseDeserializer:
+          LocalGraphqlOps_chnageNameWithVariablesDataDeserializer),
+  "graphqlError": HttpMeta<
+          Null,
+          Null,
+          GraphqlRequestInput<Null>,
+          LocalGraphqlOps_errorQData,
+          List<GraphqlError>,
+          LocalGraphqlOps_errorQData>(
+      inputSerializer: GraphqlRequestInput.toJson,
+      inputDeserializer: LocalGraphqlOps_errorQInputDeserializer,
+      responseSerializer: LocalGraphqlOps_errorQDataSerializer,
+      responseDeserializer: LocalGraphqlOps_errorQDataDeserializer)
 });

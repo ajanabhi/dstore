@@ -9,14 +9,6 @@ enum HttpErrorType {
   ReceiveTimeout
 }
 
-class HttpError<RE> {
-  final HttpErrorType type;
-  final String? message;
-  final RE? error;
-
-  HttpError({required this.type, this.message, this.error});
-}
-
 enum HttpResponseType { JSON, STRING, BYTES, STREAM }
 
 extension HttpResponseTypeExt on HttpResponseType {

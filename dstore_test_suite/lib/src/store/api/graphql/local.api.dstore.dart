@@ -263,6 +263,7 @@ class Query {
       List<List<String?>>? aa,
       String? alias,
       String? directive}) {}
+  void errorQ({String? alias, String? directive}) {}
   void d__typename;
 }
 

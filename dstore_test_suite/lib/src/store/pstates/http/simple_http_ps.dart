@@ -1,4 +1,5 @@
 import 'package:dstore/dstore.dart';
+import 'package:dstore_test_suite/src/store/api/graphql/ops/local_ops.dart';
 import 'package:dstore_test_suite/src/store/api/openapi/local.dart';
 part 'simple_http_ps.ps.dstore.dart';
 
@@ -23,6 +24,15 @@ class $_SimpleHttp {
   DownloadProgress downloadProgress = DownloadProgress();
 
   OfflineOp offlineOp = OfflineOp();
+
+  LocalGraphqlOps_ping pingGraphql = LocalGraphqlOps_ping();
+
+  LocalGraphqlOps_users grpahqlUsers = LocalGraphqlOps_users();
+
+  LocalGraphqlOps_chnageNameWithVariables graphqlChangeVariable =
+      LocalGraphqlOps_chnageNameWithVariables();
+
+  LocalGraphqlOps_errorQ graphqlError = LocalGraphqlOps_errorQ();
 }
 
 helloJsonTransform<int> pingTransform(

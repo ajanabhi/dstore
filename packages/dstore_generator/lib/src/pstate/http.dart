@@ -184,13 +184,16 @@ String convertHttpFieldInfoToAction(
 
       final graphqlQueryPart = hf.graphqlQuery!;
       final gparams = <String>[
-        "query: ${graphqlQueryPart.query.addTripleQuotes}"
+        "query: ${graphqlQueryPart.query.replaceAll("\$", "\\\$").addTripleQuotes}"
       ];
       if (graphqlQueryPart.hash != null) {
-        final extensions = {
-          "persistedQuery": {"version": 1, "sha256Hash": graphqlQueryPart.hash}
-        };
-        gparams.add("extensions: ${extensions}");
+        final extensions = jsonEncode(<String, dynamic>{
+          "persistedQuery": <String, dynamic>{
+            "version": 1,
+            "sha256Hash": graphqlQueryPart.hash
+          }
+        });
+        gparams.add("extensions: <String,dynamic>${extensions}");
       }
       if (graphqlQueryPart.useGetForPersist) {
         gparams.add("useGetForPersitent: true");

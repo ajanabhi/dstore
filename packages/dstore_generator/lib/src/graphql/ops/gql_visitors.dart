@@ -95,7 +95,7 @@ class OperationVisitor extends RecursiveVisitor {
     super.visitVariableDefinitionNode(node);
     print(
         "variable definition leave ${node.variable.name.value} ${node.defaultValue?.value} ${node.type}");
-    final variableName = node.variable.name.value.substring(1);
+    final variableName = node.variable.name.value;
     final defaultValue = node.defaultValue?.value
         ?.toString(); //TODO handle array object default variables
     final tm = _getTypeNodeMeta(node.type);

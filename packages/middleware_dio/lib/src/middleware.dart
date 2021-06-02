@@ -268,6 +268,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       };
     }
     print("Sending request to server $url ");
+    print("data $data");
     response = await dio.request(url,
         data: data,
         cancelToken: cancelToken,
@@ -285,27 +286,27 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   }
   void handleGraphqlResponse(Response response) {
     // late HttpField hf;
-    HttpError? ge;
+    dynamic error;
+    HttpErrorType? errorType;
     if (response.data["errors"] != null) {
       // in graphql response we will get errors from successfull response also
-      final ea = (response.data["errors"] as List<dynamic>)
+      errorType = HttpErrorType.Response;
+      error = (response.data["errors"] as List<dynamic>)
           .map((e) => GraphqlError.fromJson(e))
           .toList();
-      ge = HttpError(type: HttpErrorType.Response, error: ea);
     }
     dynamic rdata;
     if (response.data["data"] != null) {
       rdata = meta!.responseDeserializer(200, response.data["data"]);
     }
-    var hf = field.copyWith(error: ge, data: rdata, completed: true);
+    var hf = field.copyWith(
+        error: error, errorType: errorType, data: rdata, completed: true);
     if (meta?.transformer != null) {
-      hf = meta!.transformer!(field, hf);
+      hf = meta!.transformer!(field.copyWith(completed: true), hf);
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
-            processed: true,
-            type: ActionInternalType.FIELD,
-            data: field.copyWith(data: hf.data, error: hf.error))));
+            processed: true, type: ActionInternalType.FIELD, data: hf)));
   }
 
   if (response != null) {
@@ -349,7 +350,7 @@ Future<Response> createPersistedGraphqlQuery(
   final req = payload.data as GraphqlRequestInput;
   var url = payload.url;
   var data;
-  if (req.variables == null) {
+  if (req.useGetForPersitent && req.variables == null) {
     url =
         '${payload.url}?query=${req.query}&extensions=${jsonEncode(req.extensions)}';
   } else {
@@ -357,6 +358,9 @@ Future<Response> createPersistedGraphqlQuery(
   }
 
   final dio = Dio();
+  print("sending persit query $url");
+  print("data $data");
+  print("optioans $options");
   final resp = await dio.request(url, options: options, data: data);
   return resp;
 }
@@ -365,7 +369,10 @@ bool isPersistQueryNotFoundError(Response response) {
   var result = false;
   final data = response.data as Map<String, dynamic>?;
   if (data != null && data["errors"] != null) {
-    final errors = data["errors"] as List<dynamic>;
+    var errors = data["errors"];
+    print("Errors $errors ${errors.runtimeType} ");
+    errors = errors as List<dynamic>;
+
     result = errors
         .map((e) => GraphqlError.fromJson(e))
         .where((e) => e.message == "PersistedQueryNotFound")

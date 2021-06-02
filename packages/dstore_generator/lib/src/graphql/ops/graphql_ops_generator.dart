@@ -62,7 +62,7 @@ String generateOpsTypeForQuery({
   final types = getTypes(visitor, name);
   query = query.trim();
   var result = "";
-  final gq = "\"\"\"$query\"\"\"";
+  final gq = "\"\"\"${query.replaceAll("\$", "\\\$")}\"\"\"";
   String? hash;
   var useGetPersitant = false;
   if (api.enablePersitantQueries != null) {
@@ -70,7 +70,7 @@ String generateOpsTypeForQuery({
     useGetPersitant = api.enablePersitantQueries == PersitantQueryMode.GET;
   }
   final graphqlQuery = GraphqlRequestPart(
-      query: gq, hash: hash, useGetForPersist: useGetPersitant);
+      query: gq, hash: '"$hash"', useGetForPersist: useGetPersitant);
   final responseType = "${name}Data";
   final responseSerializer = "${responseType}Serializer";
   final responserDeserializer = "${responseType}Deserializer";
@@ -94,7 +94,7 @@ String generateOpsTypeForQuery({
     inputDeserializerFn = """        
         $inputType $inputDeserializer(dynamic json) {
              json = json as Map<String,dynamic>;
-             final variables = $variablesName.fromJon(json["variables"] as Map<String,dynamic>);
+             final variables = $variablesName.fromJson(json["variables"] as Map<String,dynamic>);
              return GraphqlRequestInput.fromJson(json,variables:variables);
         }
       """;
@@ -126,10 +126,10 @@ String generateOpsTypeForQuery({
     $responseSerializerFn
     $responseDeserializerFunction
     $req
-    typedef $name = HttpField<$inputType, $responseType, String>;
+    typedef $name = HttpField<$inputType, $responseType, List<GraphqlError>>;
 
     $req
-    typedef ${name}T<T> = HttpField<$inputType, T, String>;
+    typedef ${name}T<T> = HttpField<$inputType, T, List<GraphqlError>>;
   """;
   } else {
     // subscription
@@ -151,10 +151,10 @@ String generateOpsTypeForQuery({
     $types    
     $responseDeserializerFunction
     $req
-    typedef = WebSocketField<$inputType, $responseType, String>;
+    typedef = WebSocketField<$inputType, $responseType, List<GraphqlError>>;
 
     $req
-    typedef ${name}T<T> = WebSocketField<$inputType, T, dynamic>;
+    typedef ${name}T<T> = WebSocketField<$inputType, T, List<GraphqlError>>;
   """;
   }
 

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:dstore/dstore.dart';
+import 'package:dstore_test_suite/src/store/api/graphql/ops/local_ops.dart';
 import 'package:dstore_test_suite/src/store/api/openapi/local.dart';
 import 'package:dstore_test_suite/src/store/app_state.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
@@ -25,6 +26,7 @@ offline can process /not process
 Graphql 
 queries
 mutations
+queries with errors
 hashed queries
 
 
@@ -155,5 +157,69 @@ void main() {
       final offA = await store.storage!.getOfflineActions();
       expect(offA, <dynamic>[]);
     });
+
+    test("graphql query call", () async {
+      await storeTester.testHttpAction(SimpleHttpActions.pingGraphql(), [
+        LocalGraphqlOps_ping(loading: true),
+        LocalGraphqlOps_ping(
+          data: LocalGraphqlOps_pingData(ping: "pong"),
+          completed: true,
+        ),
+      ]);
+    });
+    //TODO add collectionEqualityOperator for graphql ops annotation
+    // test("graphql query with unions", () async {
+    //   await storeTester.testHttpAction(
+    //       SimpleHttpActions.grpahqlUsers(),
+    //       [
+    //         LocalGraphqlOps_users(loading: true),
+    //         LocalGraphqlOps_users(
+    //           data: LocalGraphqlOps_usersData(users: [
+    //             LocalGraphqlOps_usersData_users(
+    //                 name: "Name1",
+    //                 tags: null,
+    //                 hello: LocalGraphqlOps_usersData_users_hello(
+    //                     LocalGraphqlOps_usersData_users_hello_Hello1(
+    //                         name: null, one: "one2", d$___typeName: "Hello1")),
+    //                 helloa: [
+    //                   LocalGraphqlOps_usersData_users_helloa(
+    //                       LocalGraphqlOps_usersData_users_helloa_Hello1(
+    //                           name: null,
+    //                           one: "onea",
+    //                           d$___typeName: "Hello1")),
+    //                   LocalGraphqlOps_usersData_users_helloa(
+    //                       LocalGraphqlOps_usersData_users_helloa_Hello2(
+    //                           name: null, two: "twoa", d$___typeName: "Hello2"))
+    //                 ],
+    //                 address: null)
+    //           ]),
+    //           completed: true,
+    //         ),
+    //       ],
+    //       mapEquals: true);
+    // });
+    test("graphql mutation with variables", () async {
+      await storeTester.testHttpAction(
+        SimpleHttpActions.graphqlChangeVariable(
+            variables:
+                LocalGraphqlOps_chnageNameWithVariablesVariables(name: "one")),
+        [
+          LocalGraphqlOps_chnageNameWithVariables(loading: true),
+          LocalGraphqlOps_chnageNameWithVariables(
+            data: LocalGraphqlOps_chnageNameWithVariablesData(
+                changeName: "NewName"),
+            completed: true,
+          ),
+        ],
+      );
+    });
+    //TODO make sure you got GraphqlErro equals right
+
+    // test("should handle graphql errors", () async {
+    //   await storeTester.testHttpAction(SimpleHttpActions.graphqlError(), [
+    //     LocalGraphqlOps_errorQ(loading: true),
+    //     LocalGraphqlOps_errorQ(completed: true),
+    //   ]);
+    // });
   });
 }

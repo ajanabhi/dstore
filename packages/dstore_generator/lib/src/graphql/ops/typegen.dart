@@ -379,6 +379,7 @@ String getDType(GField gf, String type) {
 final unionsListSerializers = <String>[];
 
 String getTypes(OperationVisitor visitor, String name) {
+  print("getTypes called");
   final list = <GType>[];
   final fragmentMap = visitor.fragmentFieldsMap;
 
@@ -392,9 +393,11 @@ String getTypes(OperationVisitor visitor, String name) {
   final variables = visitor.variables.isEmpty
       ? ""
       : createVariableType(visitor.variables, "${name}Variables");
+  final unions = [...unionsListSerializers];
+  unionsListSerializers.clear();
   return """
     $response
-     ${unionsListSerializers.join("\n")}
+     ${unions.join("\n")}
     $variables
   """;
 }
@@ -432,6 +435,9 @@ String convertGTypeToDartType(GType gtype) {
   if (gtype.unions.isNotEmpty || gtype.supertypes.isNotEmpty) {
     return _covertUnionOrInterfaceToDartModel(gtype);
   }
+  if (gtype.fields.where((f) => f.name == "helloa").isNotEmpty) {
+    print("gfields ${gtype.fields}");
+  }
   final fields = gtype.fields.map((f) {
     final annotations = <String>[];
     final jkFields = <String>[];
@@ -444,26 +450,37 @@ String convertGTypeToDartType(GType gtype) {
       final tn = f.gType!.name;
       var fj = "$tn.fromJson";
       var tj = "$tn.toJson";
+
       if (f.type.startsWith("List")) {
-        print("Got union list field ${f.type} ");
-        final toJsonName = "${tn}ListSerializer";
+        final toJsonName = "${tn}_${f.name}ListSerializer";
+        final isAlreadyGenerated = unionsListSerializers
+            .where((element) => element.contains(toJsonName))
+            .isNotEmpty;
+        print(
+            "Got union list field ${f.type} isAlreadyGenerated $isAlreadyGenerated ");
+
         tj = toJsonName;
         final isOp = f.type.endsWith("?");
         final isUnionOp = f.gType!.isOptional;
-        final toJson = getListUnionToJson(
-            name: tn,
-            isUnionOp: isUnionOp,
-            isOp: isOp,
-            serializerName: toJsonName);
-        unionsListSerializers.add(toJson);
-        final fromJsonName = "${tn}ListDeserializer";
+        if (!isAlreadyGenerated) {
+          final toJson = getListUnionToJson(
+              name: tn,
+              isUnionOp: isUnionOp,
+              isOp: isOp,
+              serializerName: toJsonName);
+          unionsListSerializers.add(toJson);
+        }
+
+        final fromJsonName = "${tn}${f.name}ListDeserializer";
         fj = fromJsonName;
-        final fromJson = getListFromJson(
-            name: tn,
-            isUnionOp: isUnionOp,
-            isOp: isOp,
-            serializerName: fromJsonName);
-        unionsListSerializers.add(fromJson);
+        if (!isAlreadyGenerated) {
+          final fromJson = getListFromJson(
+              name: tn,
+              isUnionOp: isUnionOp,
+              isOp: isOp,
+              serializerName: fromJsonName);
+          unionsListSerializers.add(fromJson);
+        }
       }
       jkFields.add("fromJson: $fj");
       jkFields.add("toJson: $tj");
@@ -551,6 +568,8 @@ String _covertUnionOrInterfaceToDartModel(GType gtype) {
         }""");
   });
 
+  ctors.add("$name(this._value);");
+
   final oq = gtype.isOptional ? "?" : "";
   var nullCheckFrom = "";
   var nullCheckTo = "";
@@ -567,6 +586,7 @@ String _covertUnionOrInterfaceToDartModel(GType gtype) {
         }
       """;
   }
+  final fields = [Field(name: "_value", type: "dynamic")];
   return """
       class $name {
         final dynamic _value;
@@ -587,7 +607,11 @@ String _covertUnionOrInterfaceToDartModel(GType gtype) {
             $nullCheckTo
            return  value._value.toJson() as Map<String,dynamic>;
            }
-        
+      
+        ${ModelUtils.createToStringFromFieldsList(name, fields)}
+        ${ModelUtils.createEqualsFromFieldsList(name, fields)}
+        ${ModelUtils.createHashcodeFromFieldsList(fields)}
+
       }
     """;
 }

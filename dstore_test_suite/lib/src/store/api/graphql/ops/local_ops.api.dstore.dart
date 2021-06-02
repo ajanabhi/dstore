@@ -7,45 +7,46 @@ part of 'local_ops.dart';
 // **************************************************************************
 
 @JsonSerializable()
-class LocalOps_pingData {
+class LocalGraphqlOps_pingData {
   final String? ping;
 
   @JsonKey(ignore: true)
-  _$LocalOps_pingDataCopyWith<LocalOps_pingData> get copyWith =>
-      __$LocalOps_pingDataCopyWithImpl<LocalOps_pingData>(this, IdentityFn);
+  _$LocalGraphqlOps_pingDataCopyWith<LocalGraphqlOps_pingData> get copyWith =>
+      __$LocalGraphqlOps_pingDataCopyWithImpl<LocalGraphqlOps_pingData>(
+          this, IdentityFn);
 
-  const LocalOps_pingData({required this.ping});
+  const LocalGraphqlOps_pingData({required this.ping});
 
-  factory LocalOps_pingData.fromJson(Map<String, dynamic> json) =>
-      _$LocalOps_pingDataFromJson(json);
+  factory LocalGraphqlOps_pingData.fromJson(Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_pingDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$LocalOps_pingDataToJson(this);
+  Map<String, dynamic> toJson() => _$LocalGraphqlOps_pingDataToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_pingData && o.ping == ping;
+    return o is LocalGraphqlOps_pingData && o.ping == ping;
   }
 
   @override
   int get hashCode => ping.hashCode;
 
   @override
-  String toString() => "LocalOps_pingData(ping: ${this.ping})";
+  String toString() => "LocalGraphqlOps_pingData(ping: ${this.ping})";
 }
 
-abstract class $LocalOps_pingDataCopyWith<O> {
-  factory $LocalOps_pingDataCopyWith(
-          LocalOps_pingData value, O Function(LocalOps_pingData) then) =
-      _$LocalOps_pingDataCopyWithImpl<O>;
+abstract class $LocalGraphqlOps_pingDataCopyWith<O> {
+  factory $LocalGraphqlOps_pingDataCopyWith(LocalGraphqlOps_pingData value,
+          O Function(LocalGraphqlOps_pingData) then) =
+      _$LocalGraphqlOps_pingDataCopyWithImpl<O>;
   O call({String? ping});
 }
 
-class _$LocalOps_pingDataCopyWithImpl<O>
-    implements $LocalOps_pingDataCopyWith<O> {
-  final LocalOps_pingData _value;
-  final O Function(LocalOps_pingData) _then;
-  _$LocalOps_pingDataCopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_pingDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_pingDataCopyWith<O> {
+  final LocalGraphqlOps_pingData _value;
+  final O Function(LocalGraphqlOps_pingData) _then;
+  _$LocalGraphqlOps_pingDataCopyWithImpl(this._value, this._then);
 
   @override
   O call({Object? ping = dimmutable}) {
@@ -54,189 +55,193 @@ class _$LocalOps_pingDataCopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_pingDataCopyWith<O>
-    implements $LocalOps_pingDataCopyWith<O> {
-  factory _$LocalOps_pingDataCopyWith(
-          LocalOps_pingData value, O Function(LocalOps_pingData) then) =
-      __$LocalOps_pingDataCopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_pingDataCopyWith<O>
+    implements $LocalGraphqlOps_pingDataCopyWith<O> {
+  factory _$LocalGraphqlOps_pingDataCopyWith(LocalGraphqlOps_pingData value,
+          O Function(LocalGraphqlOps_pingData) then) =
+      __$LocalGraphqlOps_pingDataCopyWithImpl<O>;
   O call({String? ping});
 }
 
-class __$LocalOps_pingDataCopyWithImpl<O>
-    extends _$LocalOps_pingDataCopyWithImpl<O>
-    implements _$LocalOps_pingDataCopyWith<O> {
-  __$LocalOps_pingDataCopyWithImpl(
-      LocalOps_pingData _value, O Function(LocalOps_pingData) _then)
+class __$LocalGraphqlOps_pingDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_pingDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_pingDataCopyWith<O> {
+  __$LocalGraphqlOps_pingDataCopyWithImpl(LocalGraphqlOps_pingData _value,
+      O Function(LocalGraphqlOps_pingData) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_pingData get _value => super._value;
+  LocalGraphqlOps_pingData get _value => super._value;
 
   @override
   O call({Object? ping = dimmutable}) {
-    return _then(LocalOps_pingData(
+    return _then(LocalGraphqlOps_pingData(
         ping: ping == dimmutable ? _value.ping : ping as String?));
   }
 }
 
-GraphqlRequestInput<Null> LocalOps_pingInputDeserializer(dynamic json) {
+GraphqlRequestInput<Null> LocalGraphqlOps_pingInputDeserializer(dynamic json) {
   return GraphqlRequestInput.fromJson(json as Map<String, dynamic>);
 }
 
-Map<String, dynamic> LocalOps_pingDataSerializer(
-        int status, LocalOps_pingData resp) =>
+Map<String, dynamic> LocalGraphqlOps_pingDataSerializer(
+        int status, LocalGraphqlOps_pingData resp) =>
     resp.toJson();
 
-LocalOps_pingData LocalOps_pingDataDeserializer(int status, dynamic json) =>
-    LocalOps_pingData.fromJson(json as Map<String, dynamic>);
+LocalGraphqlOps_pingData LocalGraphqlOps_pingDataDeserializer(
+        int status, dynamic json) =>
+    LocalGraphqlOps_pingData.fromJson(json as Map<String, dynamic>);
 
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/graphql",
-    graphqlQuery: GraphqlRequestPart(query: """query LocalOps_ping { 
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_ping { 
  ping   
  
- }""", hash: null, useGetForPersist: false),
+ }""", hash: "null", useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
-    responseSerializer: LocalOps_pingDataSerializer,
+    responseSerializer: LocalGraphqlOps_pingDataSerializer,
     inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: LocalOps_pingInputDeserializer,
-    responseDeserializer: LocalOps_pingDataDeserializer)
-typedef LocalOps_ping
-    = HttpField<GraphqlRequestInput<Null>, LocalOps_pingData, String>;
+    inputDeserializer: LocalGraphqlOps_pingInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_pingDataDeserializer)
+typedef LocalGraphqlOps_ping = HttpField<GraphqlRequestInput<Null>,
+    LocalGraphqlOps_pingData, List<GraphqlError>>;
 
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/graphql",
-    graphqlQuery: GraphqlRequestPart(query: """query LocalOps_ping { 
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_ping { 
  ping   
  
- }""", hash: null, useGetForPersist: false),
+ }""", hash: "null", useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
-    responseSerializer: LocalOps_pingDataSerializer,
+    responseSerializer: LocalGraphqlOps_pingDataSerializer,
     inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: LocalOps_pingInputDeserializer,
-    responseDeserializer: LocalOps_pingDataDeserializer)
-typedef LocalOps_pingT<T> = HttpField<GraphqlRequestInput<Null>, T, String>;
+    inputDeserializer: LocalGraphqlOps_pingInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_pingDataDeserializer)
+typedef LocalGraphqlOps_pingT<T>
+    = HttpField<GraphqlRequestInput<Null>, T, List<GraphqlError>>;
 
 @JsonSerializable()
-class LocalOps_usersData {
-  final List<LocalOps_usersData_users?>? users;
+class LocalGraphqlOps_usersData {
+  final List<LocalGraphqlOps_usersData_users?>? users;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersDataCopyWith<LocalOps_usersData> get copyWith =>
-      __$LocalOps_usersDataCopyWithImpl<LocalOps_usersData>(this, IdentityFn);
+  _$LocalGraphqlOps_usersDataCopyWith<LocalGraphqlOps_usersData> get copyWith =>
+      __$LocalGraphqlOps_usersDataCopyWithImpl<LocalGraphqlOps_usersData>(
+          this, IdentityFn);
 
-  const LocalOps_usersData({required this.users});
+  const LocalGraphqlOps_usersData({required this.users});
 
-  factory LocalOps_usersData.fromJson(Map<String, dynamic> json) =>
-      _$LocalOps_usersDataFromJson(json);
+  factory LocalGraphqlOps_usersData.fromJson(Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_usersDataFromJson(json);
 
-  Map<String, dynamic> toJson() => _$LocalOps_usersDataToJson(this);
+  Map<String, dynamic> toJson() => _$LocalGraphqlOps_usersDataToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData && o.users == users;
+    return o is LocalGraphqlOps_usersData && o.users == users;
   }
 
   @override
   int get hashCode => users.hashCode;
 
   @override
-  String toString() => "LocalOps_usersData(users: ${this.users})";
+  String toString() => "LocalGraphqlOps_usersData(users: ${this.users})";
 }
 
-abstract class $LocalOps_usersDataCopyWith<O> {
-  factory $LocalOps_usersDataCopyWith(
-          LocalOps_usersData value, O Function(LocalOps_usersData) then) =
-      _$LocalOps_usersDataCopyWithImpl<O>;
-  O call({List<LocalOps_usersData_users?>? users});
+abstract class $LocalGraphqlOps_usersDataCopyWith<O> {
+  factory $LocalGraphqlOps_usersDataCopyWith(LocalGraphqlOps_usersData value,
+          O Function(LocalGraphqlOps_usersData) then) =
+      _$LocalGraphqlOps_usersDataCopyWithImpl<O>;
+  O call({List<LocalGraphqlOps_usersData_users?>? users});
 }
 
-class _$LocalOps_usersDataCopyWithImpl<O>
-    implements $LocalOps_usersDataCopyWith<O> {
-  final LocalOps_usersData _value;
-  final O Function(LocalOps_usersData) _then;
-  _$LocalOps_usersDataCopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_usersDataCopyWith<O> {
+  final LocalGraphqlOps_usersData _value;
+  final O Function(LocalGraphqlOps_usersData) _then;
+  _$LocalGraphqlOps_usersDataCopyWithImpl(this._value, this._then);
 
   @override
   O call({Object? users = dimmutable}) {
     return _then(_value.copyWith(
         users: users == dimmutable
             ? _value.users
-            : users as List<LocalOps_usersData_users?>?));
+            : users as List<LocalGraphqlOps_usersData_users?>?));
   }
 }
 
-abstract class _$LocalOps_usersDataCopyWith<O>
-    implements $LocalOps_usersDataCopyWith<O> {
-  factory _$LocalOps_usersDataCopyWith(
-          LocalOps_usersData value, O Function(LocalOps_usersData) then) =
-      __$LocalOps_usersDataCopyWithImpl<O>;
-  O call({List<LocalOps_usersData_users?>? users});
+abstract class _$LocalGraphqlOps_usersDataCopyWith<O>
+    implements $LocalGraphqlOps_usersDataCopyWith<O> {
+  factory _$LocalGraphqlOps_usersDataCopyWith(LocalGraphqlOps_usersData value,
+          O Function(LocalGraphqlOps_usersData) then) =
+      __$LocalGraphqlOps_usersDataCopyWithImpl<O>;
+  O call({List<LocalGraphqlOps_usersData_users?>? users});
 }
 
-class __$LocalOps_usersDataCopyWithImpl<O>
-    extends _$LocalOps_usersDataCopyWithImpl<O>
-    implements _$LocalOps_usersDataCopyWith<O> {
-  __$LocalOps_usersDataCopyWithImpl(
-      LocalOps_usersData _value, O Function(LocalOps_usersData) _then)
+class __$LocalGraphqlOps_usersDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersDataCopyWith<O> {
+  __$LocalGraphqlOps_usersDataCopyWithImpl(LocalGraphqlOps_usersData _value,
+      O Function(LocalGraphqlOps_usersData) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData get _value => super._value;
+  LocalGraphqlOps_usersData get _value => super._value;
 
   @override
   O call({Object? users = dimmutable}) {
-    return _then(LocalOps_usersData(
+    return _then(LocalGraphqlOps_usersData(
         users: users == dimmutable
             ? _value.users
-            : users as List<LocalOps_usersData_users?>?));
+            : users as List<LocalGraphqlOps_usersData_users?>?));
   }
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users {
+class LocalGraphqlOps_usersData_users {
   final String name;
 
   final List<String?>? tags;
 
   @JsonKey(
-      fromJson: LocalOps_usersData_users_hello.fromJson,
-      toJson: LocalOps_usersData_users_hello.toJson)
-  final LocalOps_usersData_users_hello? hello;
+      fromJson: LocalGraphqlOps_usersData_users_hello.fromJson,
+      toJson: LocalGraphqlOps_usersData_users_hello.toJson)
+  final LocalGraphqlOps_usersData_users_hello? hello;
 
   @JsonKey(
-      fromJson: LocalOps_usersData_users_helloaListDeserializer,
-      toJson: LocalOps_usersData_users_helloaListSerializer)
-  final List<LocalOps_usersData_users_helloa?>? helloa;
+      fromJson: LocalGraphqlOps_usersData_users_helloahelloaListDeserializer,
+      toJson: LocalGraphqlOps_usersData_users_helloa_helloaListSerializer)
+  final List<LocalGraphqlOps_usersData_users_helloa?>? helloa;
 
-  final LocalOps_usersData_users_address? address;
+  final LocalGraphqlOps_usersData_users_address? address;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_usersCopyWith<LocalOps_usersData_users> get copyWith =>
-      __$LocalOps_usersData_usersCopyWithImpl<LocalOps_usersData_users>(
-          this, IdentityFn);
+  _$LocalGraphqlOps_usersData_usersCopyWith<LocalGraphqlOps_usersData_users>
+      get copyWith => __$LocalGraphqlOps_usersData_usersCopyWithImpl<
+          LocalGraphqlOps_usersData_users>(this, IdentityFn);
 
-  const LocalOps_usersData_users(
+  const LocalGraphqlOps_usersData_users(
       {required this.name,
       required this.tags,
       required this.hello,
       required this.helloa,
       required this.address});
 
-  factory LocalOps_usersData_users.fromJson(Map<String, dynamic> json) =>
-      _$LocalOps_usersData_usersFromJson(json);
+  factory LocalGraphqlOps_usersData_users.fromJson(Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_usersData_usersFromJson(json);
 
-  Map<String, dynamic> toJson() => _$LocalOps_usersData_usersToJson(this);
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_usersData_usersToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users &&
+    return o is LocalGraphqlOps_usersData_users &&
         o.name == name &&
         o.tags == tags &&
         o.hello == hello &&
@@ -254,26 +259,27 @@ class LocalOps_usersData_users {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users(name: ${this.name}, tags: ${this.tags}, hello: ${this.hello}, helloa: ${this.helloa}, address: ${this.address})";
+      "LocalGraphqlOps_usersData_users(name: ${this.name}, tags: ${this.tags}, hello: ${this.hello}, helloa: ${this.helloa}, address: ${this.address})";
 }
 
-abstract class $LocalOps_usersData_usersCopyWith<O> {
-  factory $LocalOps_usersData_usersCopyWith(LocalOps_usersData_users value,
-          O Function(LocalOps_usersData_users) then) =
-      _$LocalOps_usersData_usersCopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_usersCopyWith<O> {
+  factory $LocalGraphqlOps_usersData_usersCopyWith(
+          LocalGraphqlOps_usersData_users value,
+          O Function(LocalGraphqlOps_usersData_users) then) =
+      _$LocalGraphqlOps_usersData_usersCopyWithImpl<O>;
   O call(
       {String name,
       List<String?>? tags,
-      LocalOps_usersData_users_hello? hello,
-      List<LocalOps_usersData_users_helloa?>? helloa,
-      LocalOps_usersData_users_address? address});
+      LocalGraphqlOps_usersData_users_hello? hello,
+      List<LocalGraphqlOps_usersData_users_helloa?>? helloa,
+      LocalGraphqlOps_usersData_users_address? address});
 }
 
-class _$LocalOps_usersData_usersCopyWithImpl<O>
-    implements $LocalOps_usersData_usersCopyWith<O> {
-  final LocalOps_usersData_users _value;
-  final O Function(LocalOps_usersData_users) _then;
-  _$LocalOps_usersData_usersCopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_usersCopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_usersCopyWith<O> {
+  final LocalGraphqlOps_usersData_users _value;
+  final O Function(LocalGraphqlOps_usersData_users) _then;
+  _$LocalGraphqlOps_usersData_usersCopyWithImpl(this._value, this._then);
 
   @override
   O call(
@@ -287,38 +293,40 @@ class _$LocalOps_usersData_usersCopyWithImpl<O>
         tags: tags == dimmutable ? _value.tags : tags as List<String?>?,
         hello: hello == dimmutable
             ? _value.hello
-            : hello as LocalOps_usersData_users_hello?,
+            : hello as LocalGraphqlOps_usersData_users_hello?,
         helloa: helloa == dimmutable
             ? _value.helloa
-            : helloa as List<LocalOps_usersData_users_helloa?>?,
+            : helloa as List<LocalGraphqlOps_usersData_users_helloa?>?,
         address: address == dimmutable
             ? _value.address
-            : address as LocalOps_usersData_users_address?));
+            : address as LocalGraphqlOps_usersData_users_address?));
   }
 }
 
-abstract class _$LocalOps_usersData_usersCopyWith<O>
-    implements $LocalOps_usersData_usersCopyWith<O> {
-  factory _$LocalOps_usersData_usersCopyWith(LocalOps_usersData_users value,
-          O Function(LocalOps_usersData_users) then) =
-      __$LocalOps_usersData_usersCopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_usersCopyWith<O>
+    implements $LocalGraphqlOps_usersData_usersCopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_usersCopyWith(
+          LocalGraphqlOps_usersData_users value,
+          O Function(LocalGraphqlOps_usersData_users) then) =
+      __$LocalGraphqlOps_usersData_usersCopyWithImpl<O>;
   O call(
       {String name,
       List<String?>? tags,
-      LocalOps_usersData_users_hello? hello,
-      List<LocalOps_usersData_users_helloa?>? helloa,
-      LocalOps_usersData_users_address? address});
+      LocalGraphqlOps_usersData_users_hello? hello,
+      List<LocalGraphqlOps_usersData_users_helloa?>? helloa,
+      LocalGraphqlOps_usersData_users_address? address});
 }
 
-class __$LocalOps_usersData_usersCopyWithImpl<O>
-    extends _$LocalOps_usersData_usersCopyWithImpl<O>
-    implements _$LocalOps_usersData_usersCopyWith<O> {
-  __$LocalOps_usersData_usersCopyWithImpl(LocalOps_usersData_users _value,
-      O Function(LocalOps_usersData_users) _then)
+class __$LocalGraphqlOps_usersData_usersCopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_usersCopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_usersCopyWith<O> {
+  __$LocalGraphqlOps_usersData_usersCopyWithImpl(
+      LocalGraphqlOps_usersData_users _value,
+      O Function(LocalGraphqlOps_usersData_users) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users get _value => super._value;
+  LocalGraphqlOps_usersData_users get _value => super._value;
 
   @override
   O call(
@@ -327,50 +335,52 @@ class __$LocalOps_usersData_usersCopyWithImpl<O>
       Object? hello = dimmutable,
       Object? helloa = dimmutable,
       Object? address = dimmutable}) {
-    return _then(LocalOps_usersData_users(
+    return _then(LocalGraphqlOps_usersData_users(
         name: name == dimmutable ? _value.name : name as String,
         tags: tags == dimmutable ? _value.tags : tags as List<String?>?,
         hello: hello == dimmutable
             ? _value.hello
-            : hello as LocalOps_usersData_users_hello?,
+            : hello as LocalGraphqlOps_usersData_users_hello?,
         helloa: helloa == dimmutable
             ? _value.helloa
-            : helloa as List<LocalOps_usersData_users_helloa?>?,
+            : helloa as List<LocalGraphqlOps_usersData_users_helloa?>?,
         address: address == dimmutable
             ? _value.address
-            : address as LocalOps_usersData_users_address?));
+            : address as LocalGraphqlOps_usersData_users_address?));
   }
 }
 
-class LocalOps_usersData_users_hello {
+class LocalGraphqlOps_usersData_users_hello {
   final dynamic _value;
-  LocalOps_usersData_users_hello.Hello1(
-      LocalOps_usersData_users_hello_Hello1 value)
+  LocalGraphqlOps_usersData_users_hello.Hello1(
+      LocalGraphqlOps_usersData_users_hello_Hello1 value)
       : _value = value;
-  LocalOps_usersData_users_hello.Hello2(
-      LocalOps_usersData_users_hello_Hello2 value)
+  LocalGraphqlOps_usersData_users_hello.Hello2(
+      LocalGraphqlOps_usersData_users_hello_Hello2 value)
       : _value = value;
-  LocalOps_usersData_users_hello_Hello1? get Hello1 =>
-      _value is LocalOps_usersData_users_hello_Hello1
-          ? _value as LocalOps_usersData_users_hello_Hello1
+  LocalGraphqlOps_usersData_users_hello(this._value);
+  LocalGraphqlOps_usersData_users_hello_Hello1? get Hello1 =>
+      _value is LocalGraphqlOps_usersData_users_hello_Hello1
+          ? _value as LocalGraphqlOps_usersData_users_hello_Hello1
           : null;
-  LocalOps_usersData_users_hello_Hello2? get Hello2 =>
-      _value is LocalOps_usersData_users_hello_Hello2
-          ? _value as LocalOps_usersData_users_hello_Hello2
+  LocalGraphqlOps_usersData_users_hello_Hello2? get Hello2 =>
+      _value is LocalGraphqlOps_usersData_users_hello_Hello2
+          ? _value as LocalGraphqlOps_usersData_users_hello_Hello2
           : null;
 
-  static LocalOps_usersData_users_hello? fromJson(Map<String, dynamic>? json) {
+  static LocalGraphqlOps_usersData_users_hello? fromJson(
+      Map<String, dynamic>? json) {
     if (json == null) {
       return null;
     }
 
     if (json["__typename"] == "Hello1") {
-      return LocalOps_usersData_users_hello.Hello1(
-          LocalOps_usersData_users_hello_Hello1.fromJson(json));
+      return LocalGraphqlOps_usersData_users_hello.Hello1(
+          LocalGraphqlOps_usersData_users_hello_Hello1.fromJson(json));
     }
     if (json["__typename"] == "Hello2") {
-      return LocalOps_usersData_users_hello.Hello2(
-          LocalOps_usersData_users_hello_Hello2.fromJson(json));
+      return LocalGraphqlOps_usersData_users_hello.Hello2(
+          LocalGraphqlOps_usersData_users_hello_Hello2.fromJson(json));
     }
     throw ArgumentError.value(
       json,
@@ -379,17 +389,31 @@ class LocalOps_usersData_users_hello {
     );
   }
 
-  static Map<String, dynamic>? toJson(LocalOps_usersData_users_hello? value) {
+  static Map<String, dynamic>? toJson(
+      LocalGraphqlOps_usersData_users_hello? value) {
     if (value == null) {
       return null;
     }
 
     return value._value.toJson() as Map<String, dynamic>;
   }
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_usersData_users_hello(_value: ${this._value})";
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_usersData_users_hello && o._value == _value;
+  }
+
+  @override
+  int get hashCode => _value.hashCode;
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_hello_Hello1 {
+class LocalGraphqlOps_usersData_users_hello_Hello1 {
   final String? name;
 
   final String one;
@@ -398,25 +422,26 @@ class LocalOps_usersData_users_hello_Hello1 {
   final String d$___typeName;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_hello_Hello1CopyWith<
-          LocalOps_usersData_users_hello_Hello1>
-      get copyWith => __$LocalOps_usersData_users_hello_Hello1CopyWithImpl<
-          LocalOps_usersData_users_hello_Hello1>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<
+          LocalGraphqlOps_usersData_users_hello_Hello1>
+      get copyWith =>
+          __$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<
+              LocalGraphqlOps_usersData_users_hello_Hello1>(this, IdentityFn);
 
-  const LocalOps_usersData_users_hello_Hello1(
+  const LocalGraphqlOps_usersData_users_hello_Hello1(
       {required this.name, required this.one, required this.d$___typeName});
 
-  factory LocalOps_usersData_users_hello_Hello1.fromJson(
+  factory LocalGraphqlOps_usersData_users_hello_Hello1.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_hello_Hello1FromJson(json);
+      _$LocalGraphqlOps_usersData_users_hello_Hello1FromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_hello_Hello1ToJson(this);
+      _$LocalGraphqlOps_usersData_users_hello_Hello1ToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_hello_Hello1 &&
+    return o is LocalGraphqlOps_usersData_users_hello_Hello1 &&
         o.name == name &&
         o.one == one &&
         o.d$___typeName == d$___typeName;
@@ -427,22 +452,23 @@ class LocalOps_usersData_users_hello_Hello1 {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_hello_Hello1(name: ${this.name}, one: ${this.one}, d\$___typeName: ${this.d$___typeName})";
+      "LocalGraphqlOps_usersData_users_hello_Hello1(name: ${this.name}, one: ${this.one}, d\$___typeName: ${this.d$___typeName})";
 }
 
-abstract class $LocalOps_usersData_users_hello_Hello1CopyWith<O> {
-  factory $LocalOps_usersData_users_hello_Hello1CopyWith(
-          LocalOps_usersData_users_hello_Hello1 value,
-          O Function(LocalOps_usersData_users_hello_Hello1) then) =
-      _$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_hello_Hello1CopyWith(
+          LocalGraphqlOps_usersData_users_hello_Hello1 value,
+          O Function(LocalGraphqlOps_usersData_users_hello_Hello1) then) =
+      _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<O>;
   O call({String? name, String one, String d$___typeName});
 }
 
-class _$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>
-    implements $LocalOps_usersData_users_hello_Hello1CopyWith<O> {
-  final LocalOps_usersData_users_hello_Hello1 _value;
-  final O Function(LocalOps_usersData_users_hello_Hello1) _then;
-  _$LocalOps_usersData_users_hello_Hello1CopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<O> {
+  final LocalGraphqlOps_usersData_users_hello_Hello1 _value;
+  final O Function(LocalGraphqlOps_usersData_users_hello_Hello1) _then;
+  _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl(
+      this._value, this._then);
 
   @override
   O call(
@@ -458,32 +484,32 @@ class _$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_usersData_users_hello_Hello1CopyWith<O>
-    implements $LocalOps_usersData_users_hello_Hello1CopyWith<O> {
-  factory _$LocalOps_usersData_users_hello_Hello1CopyWith(
-          LocalOps_usersData_users_hello_Hello1 value,
-          O Function(LocalOps_usersData_users_hello_Hello1) then) =
-      __$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWith(
+          LocalGraphqlOps_usersData_users_hello_Hello1 value,
+          O Function(LocalGraphqlOps_usersData_users_hello_Hello1) then) =
+      __$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<O>;
   O call({String? name, String one, String d$___typeName});
 }
 
-class __$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>
-    extends _$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>
-    implements _$LocalOps_usersData_users_hello_Hello1CopyWith<O> {
-  __$LocalOps_usersData_users_hello_Hello1CopyWithImpl(
-      LocalOps_usersData_users_hello_Hello1 _value,
-      O Function(LocalOps_usersData_users_hello_Hello1) _then)
+class __$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_hello_Hello1CopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_hello_Hello1CopyWithImpl(
+      LocalGraphqlOps_usersData_users_hello_Hello1 _value,
+      O Function(LocalGraphqlOps_usersData_users_hello_Hello1) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_hello_Hello1 get _value => super._value;
+  LocalGraphqlOps_usersData_users_hello_Hello1 get _value => super._value;
 
   @override
   O call(
       {Object? name = dimmutable,
       Object? one = dimmutable,
       Object? d$___typeName = dimmutable}) {
-    return _then(LocalOps_usersData_users_hello_Hello1(
+    return _then(LocalGraphqlOps_usersData_users_hello_Hello1(
         name: name == dimmutable ? _value.name : name as String?,
         one: one == dimmutable ? _value.one : one as String,
         d$___typeName: d$___typeName == dimmutable
@@ -493,7 +519,7 @@ class __$LocalOps_usersData_users_hello_Hello1CopyWithImpl<O>
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_hello_Hello2 {
+class LocalGraphqlOps_usersData_users_hello_Hello2 {
   final String? name;
 
   final String two;
@@ -502,25 +528,26 @@ class LocalOps_usersData_users_hello_Hello2 {
   final String d$___typeName;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_hello_Hello2CopyWith<
-          LocalOps_usersData_users_hello_Hello2>
-      get copyWith => __$LocalOps_usersData_users_hello_Hello2CopyWithImpl<
-          LocalOps_usersData_users_hello_Hello2>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<
+          LocalGraphqlOps_usersData_users_hello_Hello2>
+      get copyWith =>
+          __$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<
+              LocalGraphqlOps_usersData_users_hello_Hello2>(this, IdentityFn);
 
-  const LocalOps_usersData_users_hello_Hello2(
+  const LocalGraphqlOps_usersData_users_hello_Hello2(
       {required this.name, required this.two, required this.d$___typeName});
 
-  factory LocalOps_usersData_users_hello_Hello2.fromJson(
+  factory LocalGraphqlOps_usersData_users_hello_Hello2.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_hello_Hello2FromJson(json);
+      _$LocalGraphqlOps_usersData_users_hello_Hello2FromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_hello_Hello2ToJson(this);
+      _$LocalGraphqlOps_usersData_users_hello_Hello2ToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_hello_Hello2 &&
+    return o is LocalGraphqlOps_usersData_users_hello_Hello2 &&
         o.name == name &&
         o.two == two &&
         o.d$___typeName == d$___typeName;
@@ -531,22 +558,23 @@ class LocalOps_usersData_users_hello_Hello2 {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_hello_Hello2(name: ${this.name}, two: ${this.two}, d\$___typeName: ${this.d$___typeName})";
+      "LocalGraphqlOps_usersData_users_hello_Hello2(name: ${this.name}, two: ${this.two}, d\$___typeName: ${this.d$___typeName})";
 }
 
-abstract class $LocalOps_usersData_users_hello_Hello2CopyWith<O> {
-  factory $LocalOps_usersData_users_hello_Hello2CopyWith(
-          LocalOps_usersData_users_hello_Hello2 value,
-          O Function(LocalOps_usersData_users_hello_Hello2) then) =
-      _$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_hello_Hello2CopyWith(
+          LocalGraphqlOps_usersData_users_hello_Hello2 value,
+          O Function(LocalGraphqlOps_usersData_users_hello_Hello2) then) =
+      _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<O>;
   O call({String? name, String two, String d$___typeName});
 }
 
-class _$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>
-    implements $LocalOps_usersData_users_hello_Hello2CopyWith<O> {
-  final LocalOps_usersData_users_hello_Hello2 _value;
-  final O Function(LocalOps_usersData_users_hello_Hello2) _then;
-  _$LocalOps_usersData_users_hello_Hello2CopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<O> {
+  final LocalGraphqlOps_usersData_users_hello_Hello2 _value;
+  final O Function(LocalGraphqlOps_usersData_users_hello_Hello2) _then;
+  _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl(
+      this._value, this._then);
 
   @override
   O call(
@@ -562,32 +590,32 @@ class _$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_usersData_users_hello_Hello2CopyWith<O>
-    implements $LocalOps_usersData_users_hello_Hello2CopyWith<O> {
-  factory _$LocalOps_usersData_users_hello_Hello2CopyWith(
-          LocalOps_usersData_users_hello_Hello2 value,
-          O Function(LocalOps_usersData_users_hello_Hello2) then) =
-      __$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWith(
+          LocalGraphqlOps_usersData_users_hello_Hello2 value,
+          O Function(LocalGraphqlOps_usersData_users_hello_Hello2) then) =
+      __$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<O>;
   O call({String? name, String two, String d$___typeName});
 }
 
-class __$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>
-    extends _$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>
-    implements _$LocalOps_usersData_users_hello_Hello2CopyWith<O> {
-  __$LocalOps_usersData_users_hello_Hello2CopyWithImpl(
-      LocalOps_usersData_users_hello_Hello2 _value,
-      O Function(LocalOps_usersData_users_hello_Hello2) _then)
+class __$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_hello_Hello2CopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_hello_Hello2CopyWithImpl(
+      LocalGraphqlOps_usersData_users_hello_Hello2 _value,
+      O Function(LocalGraphqlOps_usersData_users_hello_Hello2) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_hello_Hello2 get _value => super._value;
+  LocalGraphqlOps_usersData_users_hello_Hello2 get _value => super._value;
 
   @override
   O call(
       {Object? name = dimmutable,
       Object? two = dimmutable,
       Object? d$___typeName = dimmutable}) {
-    return _then(LocalOps_usersData_users_hello_Hello2(
+    return _then(LocalGraphqlOps_usersData_users_hello_Hello2(
         name: name == dimmutable ? _value.name : name as String?,
         two: two == dimmutable ? _value.two : two as String,
         d$___typeName: d$___typeName == dimmutable
@@ -596,35 +624,37 @@ class __$LocalOps_usersData_users_hello_Hello2CopyWithImpl<O>
   }
 }
 
-class LocalOps_usersData_users_helloa {
+class LocalGraphqlOps_usersData_users_helloa {
   final dynamic _value;
-  LocalOps_usersData_users_helloa.Hello1(
-      LocalOps_usersData_users_helloa_Hello1 value)
+  LocalGraphqlOps_usersData_users_helloa.Hello1(
+      LocalGraphqlOps_usersData_users_helloa_Hello1 value)
       : _value = value;
-  LocalOps_usersData_users_helloa.Hello2(
-      LocalOps_usersData_users_helloa_Hello2 value)
+  LocalGraphqlOps_usersData_users_helloa.Hello2(
+      LocalGraphqlOps_usersData_users_helloa_Hello2 value)
       : _value = value;
-  LocalOps_usersData_users_helloa_Hello1? get Hello1 =>
-      _value is LocalOps_usersData_users_helloa_Hello1
-          ? _value as LocalOps_usersData_users_helloa_Hello1
+  LocalGraphqlOps_usersData_users_helloa(this._value);
+  LocalGraphqlOps_usersData_users_helloa_Hello1? get Hello1 =>
+      _value is LocalGraphqlOps_usersData_users_helloa_Hello1
+          ? _value as LocalGraphqlOps_usersData_users_helloa_Hello1
           : null;
-  LocalOps_usersData_users_helloa_Hello2? get Hello2 =>
-      _value is LocalOps_usersData_users_helloa_Hello2
-          ? _value as LocalOps_usersData_users_helloa_Hello2
+  LocalGraphqlOps_usersData_users_helloa_Hello2? get Hello2 =>
+      _value is LocalGraphqlOps_usersData_users_helloa_Hello2
+          ? _value as LocalGraphqlOps_usersData_users_helloa_Hello2
           : null;
 
-  static LocalOps_usersData_users_helloa? fromJson(Map<String, dynamic>? json) {
+  static LocalGraphqlOps_usersData_users_helloa? fromJson(
+      Map<String, dynamic>? json) {
     if (json == null) {
       return null;
     }
 
     if (json["__typename"] == "Hello1") {
-      return LocalOps_usersData_users_helloa.Hello1(
-          LocalOps_usersData_users_helloa_Hello1.fromJson(json));
+      return LocalGraphqlOps_usersData_users_helloa.Hello1(
+          LocalGraphqlOps_usersData_users_helloa_Hello1.fromJson(json));
     }
     if (json["__typename"] == "Hello2") {
-      return LocalOps_usersData_users_helloa.Hello2(
-          LocalOps_usersData_users_helloa_Hello2.fromJson(json));
+      return LocalGraphqlOps_usersData_users_helloa.Hello2(
+          LocalGraphqlOps_usersData_users_helloa_Hello2.fromJson(json));
     }
     throw ArgumentError.value(
       json,
@@ -633,17 +663,31 @@ class LocalOps_usersData_users_helloa {
     );
   }
 
-  static Map<String, dynamic>? toJson(LocalOps_usersData_users_helloa? value) {
+  static Map<String, dynamic>? toJson(
+      LocalGraphqlOps_usersData_users_helloa? value) {
     if (value == null) {
       return null;
     }
 
     return value._value.toJson() as Map<String, dynamic>;
   }
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_usersData_users_helloa(_value: ${this._value})";
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_usersData_users_helloa && o._value == _value;
+  }
+
+  @override
+  int get hashCode => _value.hashCode;
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_helloa_Hello1 {
+class LocalGraphqlOps_usersData_users_helloa_Hello1 {
   final String? name;
 
   final String one;
@@ -652,25 +696,26 @@ class LocalOps_usersData_users_helloa_Hello1 {
   final String d$___typeName;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_helloa_Hello1CopyWith<
-          LocalOps_usersData_users_helloa_Hello1>
-      get copyWith => __$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<
-          LocalOps_usersData_users_helloa_Hello1>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<
+          LocalGraphqlOps_usersData_users_helloa_Hello1>
+      get copyWith =>
+          __$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<
+              LocalGraphqlOps_usersData_users_helloa_Hello1>(this, IdentityFn);
 
-  const LocalOps_usersData_users_helloa_Hello1(
+  const LocalGraphqlOps_usersData_users_helloa_Hello1(
       {required this.name, required this.one, required this.d$___typeName});
 
-  factory LocalOps_usersData_users_helloa_Hello1.fromJson(
+  factory LocalGraphqlOps_usersData_users_helloa_Hello1.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_helloa_Hello1FromJson(json);
+      _$LocalGraphqlOps_usersData_users_helloa_Hello1FromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_helloa_Hello1ToJson(this);
+      _$LocalGraphqlOps_usersData_users_helloa_Hello1ToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_helloa_Hello1 &&
+    return o is LocalGraphqlOps_usersData_users_helloa_Hello1 &&
         o.name == name &&
         o.one == one &&
         o.d$___typeName == d$___typeName;
@@ -681,22 +726,23 @@ class LocalOps_usersData_users_helloa_Hello1 {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_helloa_Hello1(name: ${this.name}, one: ${this.one}, d\$___typeName: ${this.d$___typeName})";
+      "LocalGraphqlOps_usersData_users_helloa_Hello1(name: ${this.name}, one: ${this.one}, d\$___typeName: ${this.d$___typeName})";
 }
 
-abstract class $LocalOps_usersData_users_helloa_Hello1CopyWith<O> {
-  factory $LocalOps_usersData_users_helloa_Hello1CopyWith(
-          LocalOps_usersData_users_helloa_Hello1 value,
-          O Function(LocalOps_usersData_users_helloa_Hello1) then) =
-      _$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith(
+          LocalGraphqlOps_usersData_users_helloa_Hello1 value,
+          O Function(LocalGraphqlOps_usersData_users_helloa_Hello1) then) =
+      _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<O>;
   O call({String? name, String one, String d$___typeName});
 }
 
-class _$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>
-    implements $LocalOps_usersData_users_helloa_Hello1CopyWith<O> {
-  final LocalOps_usersData_users_helloa_Hello1 _value;
-  final O Function(LocalOps_usersData_users_helloa_Hello1) _then;
-  _$LocalOps_usersData_users_helloa_Hello1CopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<O> {
+  final LocalGraphqlOps_usersData_users_helloa_Hello1 _value;
+  final O Function(LocalGraphqlOps_usersData_users_helloa_Hello1) _then;
+  _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl(
+      this._value, this._then);
 
   @override
   O call(
@@ -712,32 +758,32 @@ class _$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_usersData_users_helloa_Hello1CopyWith<O>
-    implements $LocalOps_usersData_users_helloa_Hello1CopyWith<O> {
-  factory _$LocalOps_usersData_users_helloa_Hello1CopyWith(
-          LocalOps_usersData_users_helloa_Hello1 value,
-          O Function(LocalOps_usersData_users_helloa_Hello1) then) =
-      __$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith(
+          LocalGraphqlOps_usersData_users_helloa_Hello1 value,
+          O Function(LocalGraphqlOps_usersData_users_helloa_Hello1) then) =
+      __$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<O>;
   O call({String? name, String one, String d$___typeName});
 }
 
-class __$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>
-    extends _$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>
-    implements _$LocalOps_usersData_users_helloa_Hello1CopyWith<O> {
-  __$LocalOps_usersData_users_helloa_Hello1CopyWithImpl(
-      LocalOps_usersData_users_helloa_Hello1 _value,
-      O Function(LocalOps_usersData_users_helloa_Hello1) _then)
+class __$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_helloa_Hello1CopyWithImpl(
+      LocalGraphqlOps_usersData_users_helloa_Hello1 _value,
+      O Function(LocalGraphqlOps_usersData_users_helloa_Hello1) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_helloa_Hello1 get _value => super._value;
+  LocalGraphqlOps_usersData_users_helloa_Hello1 get _value => super._value;
 
   @override
   O call(
       {Object? name = dimmutable,
       Object? one = dimmutable,
       Object? d$___typeName = dimmutable}) {
-    return _then(LocalOps_usersData_users_helloa_Hello1(
+    return _then(LocalGraphqlOps_usersData_users_helloa_Hello1(
         name: name == dimmutable ? _value.name : name as String?,
         one: one == dimmutable ? _value.one : one as String,
         d$___typeName: d$___typeName == dimmutable
@@ -747,7 +793,7 @@ class __$LocalOps_usersData_users_helloa_Hello1CopyWithImpl<O>
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_helloa_Hello2 {
+class LocalGraphqlOps_usersData_users_helloa_Hello2 {
   final String? name;
 
   final String two;
@@ -756,25 +802,26 @@ class LocalOps_usersData_users_helloa_Hello2 {
   final String d$___typeName;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_helloa_Hello2CopyWith<
-          LocalOps_usersData_users_helloa_Hello2>
-      get copyWith => __$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<
-          LocalOps_usersData_users_helloa_Hello2>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<
+          LocalGraphqlOps_usersData_users_helloa_Hello2>
+      get copyWith =>
+          __$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<
+              LocalGraphqlOps_usersData_users_helloa_Hello2>(this, IdentityFn);
 
-  const LocalOps_usersData_users_helloa_Hello2(
+  const LocalGraphqlOps_usersData_users_helloa_Hello2(
       {required this.name, required this.two, required this.d$___typeName});
 
-  factory LocalOps_usersData_users_helloa_Hello2.fromJson(
+  factory LocalGraphqlOps_usersData_users_helloa_Hello2.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_helloa_Hello2FromJson(json);
+      _$LocalGraphqlOps_usersData_users_helloa_Hello2FromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_helloa_Hello2ToJson(this);
+      _$LocalGraphqlOps_usersData_users_helloa_Hello2ToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_helloa_Hello2 &&
+    return o is LocalGraphqlOps_usersData_users_helloa_Hello2 &&
         o.name == name &&
         o.two == two &&
         o.d$___typeName == d$___typeName;
@@ -785,22 +832,23 @@ class LocalOps_usersData_users_helloa_Hello2 {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_helloa_Hello2(name: ${this.name}, two: ${this.two}, d\$___typeName: ${this.d$___typeName})";
+      "LocalGraphqlOps_usersData_users_helloa_Hello2(name: ${this.name}, two: ${this.two}, d\$___typeName: ${this.d$___typeName})";
 }
 
-abstract class $LocalOps_usersData_users_helloa_Hello2CopyWith<O> {
-  factory $LocalOps_usersData_users_helloa_Hello2CopyWith(
-          LocalOps_usersData_users_helloa_Hello2 value,
-          O Function(LocalOps_usersData_users_helloa_Hello2) then) =
-      _$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith(
+          LocalGraphqlOps_usersData_users_helloa_Hello2 value,
+          O Function(LocalGraphqlOps_usersData_users_helloa_Hello2) then) =
+      _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<O>;
   O call({String? name, String two, String d$___typeName});
 }
 
-class _$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>
-    implements $LocalOps_usersData_users_helloa_Hello2CopyWith<O> {
-  final LocalOps_usersData_users_helloa_Hello2 _value;
-  final O Function(LocalOps_usersData_users_helloa_Hello2) _then;
-  _$LocalOps_usersData_users_helloa_Hello2CopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<O> {
+  final LocalGraphqlOps_usersData_users_helloa_Hello2 _value;
+  final O Function(LocalGraphqlOps_usersData_users_helloa_Hello2) _then;
+  _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl(
+      this._value, this._then);
 
   @override
   O call(
@@ -816,32 +864,32 @@ class _$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_usersData_users_helloa_Hello2CopyWith<O>
-    implements $LocalOps_usersData_users_helloa_Hello2CopyWith<O> {
-  factory _$LocalOps_usersData_users_helloa_Hello2CopyWith(
-          LocalOps_usersData_users_helloa_Hello2 value,
-          O Function(LocalOps_usersData_users_helloa_Hello2) then) =
-      __$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith(
+          LocalGraphqlOps_usersData_users_helloa_Hello2 value,
+          O Function(LocalGraphqlOps_usersData_users_helloa_Hello2) then) =
+      __$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<O>;
   O call({String? name, String two, String d$___typeName});
 }
 
-class __$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>
-    extends _$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>
-    implements _$LocalOps_usersData_users_helloa_Hello2CopyWith<O> {
-  __$LocalOps_usersData_users_helloa_Hello2CopyWithImpl(
-      LocalOps_usersData_users_helloa_Hello2 _value,
-      O Function(LocalOps_usersData_users_helloa_Hello2) _then)
+class __$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_helloa_Hello2CopyWithImpl(
+      LocalGraphqlOps_usersData_users_helloa_Hello2 _value,
+      O Function(LocalGraphqlOps_usersData_users_helloa_Hello2) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_helloa_Hello2 get _value => super._value;
+  LocalGraphqlOps_usersData_users_helloa_Hello2 get _value => super._value;
 
   @override
   O call(
       {Object? name = dimmutable,
       Object? two = dimmutable,
       Object? d$___typeName = dimmutable}) {
-    return _then(LocalOps_usersData_users_helloa_Hello2(
+    return _then(LocalGraphqlOps_usersData_users_helloa_Hello2(
         name: name == dimmutable ? _value.name : name as String?,
         two: two == dimmutable ? _value.two : two as String,
         d$___typeName: d$___typeName == dimmutable
@@ -851,32 +899,33 @@ class __$LocalOps_usersData_users_helloa_Hello2CopyWithImpl<O>
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_address {
+class LocalGraphqlOps_usersData_users_address {
   final String street;
 
   final String zip;
 
-  final LocalOps_usersData_users_address_country country;
+  final LocalGraphqlOps_usersData_users_address_country country;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_addressCopyWith<LocalOps_usersData_users_address>
-      get copyWith => __$LocalOps_usersData_users_addressCopyWithImpl<
-          LocalOps_usersData_users_address>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_addressCopyWith<
+          LocalGraphqlOps_usersData_users_address>
+      get copyWith => __$LocalGraphqlOps_usersData_users_addressCopyWithImpl<
+          LocalGraphqlOps_usersData_users_address>(this, IdentityFn);
 
-  const LocalOps_usersData_users_address(
+  const LocalGraphqlOps_usersData_users_address(
       {required this.street, required this.zip, required this.country});
 
-  factory LocalOps_usersData_users_address.fromJson(
+  factory LocalGraphqlOps_usersData_users_address.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_addressFromJson(json);
+      _$LocalGraphqlOps_usersData_users_addressFromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_addressToJson(this);
+      _$LocalGraphqlOps_usersData_users_addressToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_address &&
+    return o is LocalGraphqlOps_usersData_users_address &&
         o.street == street &&
         o.zip == zip &&
         o.country == country;
@@ -887,25 +936,26 @@ class LocalOps_usersData_users_address {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_address(street: ${this.street}, zip: ${this.zip}, country: ${this.country})";
+      "LocalGraphqlOps_usersData_users_address(street: ${this.street}, zip: ${this.zip}, country: ${this.country})";
 }
 
-abstract class $LocalOps_usersData_users_addressCopyWith<O> {
-  factory $LocalOps_usersData_users_addressCopyWith(
-          LocalOps_usersData_users_address value,
-          O Function(LocalOps_usersData_users_address) then) =
-      _$LocalOps_usersData_users_addressCopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_addressCopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_addressCopyWith(
+          LocalGraphqlOps_usersData_users_address value,
+          O Function(LocalGraphqlOps_usersData_users_address) then) =
+      _$LocalGraphqlOps_usersData_users_addressCopyWithImpl<O>;
   O call(
       {String street,
       String zip,
-      LocalOps_usersData_users_address_country country});
+      LocalGraphqlOps_usersData_users_address_country country});
 }
 
-class _$LocalOps_usersData_users_addressCopyWithImpl<O>
-    implements $LocalOps_usersData_users_addressCopyWith<O> {
-  final LocalOps_usersData_users_address _value;
-  final O Function(LocalOps_usersData_users_address) _then;
-  _$LocalOps_usersData_users_addressCopyWithImpl(this._value, this._then);
+class _$LocalGraphqlOps_usersData_users_addressCopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_addressCopyWith<O> {
+  final LocalGraphqlOps_usersData_users_address _value;
+  final O Function(LocalGraphqlOps_usersData_users_address) _then;
+  _$LocalGraphqlOps_usersData_users_addressCopyWithImpl(
+      this._value, this._then);
 
   @override
   O call(
@@ -917,73 +967,75 @@ class _$LocalOps_usersData_users_addressCopyWithImpl<O>
         zip: zip == dimmutable ? _value.zip : zip as String,
         country: country == dimmutable
             ? _value.country
-            : country as LocalOps_usersData_users_address_country));
+            : country as LocalGraphqlOps_usersData_users_address_country));
   }
 }
 
-abstract class _$LocalOps_usersData_users_addressCopyWith<O>
-    implements $LocalOps_usersData_users_addressCopyWith<O> {
-  factory _$LocalOps_usersData_users_addressCopyWith(
-          LocalOps_usersData_users_address value,
-          O Function(LocalOps_usersData_users_address) then) =
-      __$LocalOps_usersData_users_addressCopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_addressCopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_addressCopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_addressCopyWith(
+          LocalGraphqlOps_usersData_users_address value,
+          O Function(LocalGraphqlOps_usersData_users_address) then) =
+      __$LocalGraphqlOps_usersData_users_addressCopyWithImpl<O>;
   O call(
       {String street,
       String zip,
-      LocalOps_usersData_users_address_country country});
+      LocalGraphqlOps_usersData_users_address_country country});
 }
 
-class __$LocalOps_usersData_users_addressCopyWithImpl<O>
-    extends _$LocalOps_usersData_users_addressCopyWithImpl<O>
-    implements _$LocalOps_usersData_users_addressCopyWith<O> {
-  __$LocalOps_usersData_users_addressCopyWithImpl(
-      LocalOps_usersData_users_address _value,
-      O Function(LocalOps_usersData_users_address) _then)
+class __$LocalGraphqlOps_usersData_users_addressCopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_addressCopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_addressCopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_addressCopyWithImpl(
+      LocalGraphqlOps_usersData_users_address _value,
+      O Function(LocalGraphqlOps_usersData_users_address) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_address get _value => super._value;
+  LocalGraphqlOps_usersData_users_address get _value => super._value;
 
   @override
   O call(
       {Object? street = dimmutable,
       Object? zip = dimmutable,
       Object? country = dimmutable}) {
-    return _then(LocalOps_usersData_users_address(
+    return _then(LocalGraphqlOps_usersData_users_address(
         street: street == dimmutable ? _value.street : street as String,
         zip: zip == dimmutable ? _value.zip : zip as String,
         country: country == dimmutable
             ? _value.country
-            : country as LocalOps_usersData_users_address_country));
+            : country as LocalGraphqlOps_usersData_users_address_country));
   }
 }
 
 @JsonSerializable()
-class LocalOps_usersData_users_address_country {
+class LocalGraphqlOps_usersData_users_address_country {
   final String code;
 
   final String name;
 
   @JsonKey(ignore: true)
-  _$LocalOps_usersData_users_address_countryCopyWith<
-          LocalOps_usersData_users_address_country>
-      get copyWith => __$LocalOps_usersData_users_address_countryCopyWithImpl<
-          LocalOps_usersData_users_address_country>(this, IdentityFn);
+  _$LocalGraphqlOps_usersData_users_address_countryCopyWith<
+          LocalGraphqlOps_usersData_users_address_country>
+      get copyWith =>
+          __$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<
+                  LocalGraphqlOps_usersData_users_address_country>(
+              this, IdentityFn);
 
-  const LocalOps_usersData_users_address_country(
+  const LocalGraphqlOps_usersData_users_address_country(
       {required this.code, required this.name});
 
-  factory LocalOps_usersData_users_address_country.fromJson(
+  factory LocalGraphqlOps_usersData_users_address_country.fromJson(
           Map<String, dynamic> json) =>
-      _$LocalOps_usersData_users_address_countryFromJson(json);
+      _$LocalGraphqlOps_usersData_users_address_countryFromJson(json);
 
   Map<String, dynamic> toJson() =>
-      _$LocalOps_usersData_users_address_countryToJson(this);
+      _$LocalGraphqlOps_usersData_users_address_countryToJson(this);
 
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalOps_usersData_users_address_country &&
+    return o is LocalGraphqlOps_usersData_users_address_country &&
         o.code == code &&
         o.name == name;
   }
@@ -993,22 +1045,22 @@ class LocalOps_usersData_users_address_country {
 
   @override
   String toString() =>
-      "LocalOps_usersData_users_address_country(code: ${this.code}, name: ${this.name})";
+      "LocalGraphqlOps_usersData_users_address_country(code: ${this.code}, name: ${this.name})";
 }
 
-abstract class $LocalOps_usersData_users_address_countryCopyWith<O> {
-  factory $LocalOps_usersData_users_address_countryCopyWith(
-          LocalOps_usersData_users_address_country value,
-          O Function(LocalOps_usersData_users_address_country) then) =
-      _$LocalOps_usersData_users_address_countryCopyWithImpl<O>;
+abstract class $LocalGraphqlOps_usersData_users_address_countryCopyWith<O> {
+  factory $LocalGraphqlOps_usersData_users_address_countryCopyWith(
+          LocalGraphqlOps_usersData_users_address_country value,
+          O Function(LocalGraphqlOps_usersData_users_address_country) then) =
+      _$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<O>;
   O call({String code, String name});
 }
 
-class _$LocalOps_usersData_users_address_countryCopyWithImpl<O>
-    implements $LocalOps_usersData_users_address_countryCopyWith<O> {
-  final LocalOps_usersData_users_address_country _value;
-  final O Function(LocalOps_usersData_users_address_country) _then;
-  _$LocalOps_usersData_users_address_countryCopyWithImpl(
+class _$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<O>
+    implements $LocalGraphqlOps_usersData_users_address_countryCopyWith<O> {
+  final LocalGraphqlOps_usersData_users_address_country _value;
+  final O Function(LocalGraphqlOps_usersData_users_address_country) _then;
+  _$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl(
       this._value, this._then);
 
   @override
@@ -1019,70 +1071,75 @@ class _$LocalOps_usersData_users_address_countryCopyWithImpl<O>
   }
 }
 
-abstract class _$LocalOps_usersData_users_address_countryCopyWith<O>
-    implements $LocalOps_usersData_users_address_countryCopyWith<O> {
-  factory _$LocalOps_usersData_users_address_countryCopyWith(
-          LocalOps_usersData_users_address_country value,
-          O Function(LocalOps_usersData_users_address_country) then) =
-      __$LocalOps_usersData_users_address_countryCopyWithImpl<O>;
+abstract class _$LocalGraphqlOps_usersData_users_address_countryCopyWith<O>
+    implements $LocalGraphqlOps_usersData_users_address_countryCopyWith<O> {
+  factory _$LocalGraphqlOps_usersData_users_address_countryCopyWith(
+          LocalGraphqlOps_usersData_users_address_country value,
+          O Function(LocalGraphqlOps_usersData_users_address_country) then) =
+      __$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<O>;
   O call({String code, String name});
 }
 
-class __$LocalOps_usersData_users_address_countryCopyWithImpl<O>
-    extends _$LocalOps_usersData_users_address_countryCopyWithImpl<O>
-    implements _$LocalOps_usersData_users_address_countryCopyWith<O> {
-  __$LocalOps_usersData_users_address_countryCopyWithImpl(
-      LocalOps_usersData_users_address_country _value,
-      O Function(LocalOps_usersData_users_address_country) _then)
+class __$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<O>
+    extends _$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl<O>
+    implements _$LocalGraphqlOps_usersData_users_address_countryCopyWith<O> {
+  __$LocalGraphqlOps_usersData_users_address_countryCopyWithImpl(
+      LocalGraphqlOps_usersData_users_address_country _value,
+      O Function(LocalGraphqlOps_usersData_users_address_country) _then)
       : super(_value, (v) => _then(v));
 
   @override
-  LocalOps_usersData_users_address_country get _value => super._value;
+  LocalGraphqlOps_usersData_users_address_country get _value => super._value;
 
   @override
   O call({Object? code = dimmutable, Object? name = dimmutable}) {
-    return _then(LocalOps_usersData_users_address_country(
+    return _then(LocalGraphqlOps_usersData_users_address_country(
         code: code == dimmutable ? _value.code : code as String,
         name: name == dimmutable ? _value.name : name as String));
   }
 }
 
-List<Map<String, dynamic>?>? LocalOps_usersData_users_helloaListSerializer(
-    List<LocalOps_usersData_users_helloa?>? input) {
+List<Map<String, dynamic>?>?
+    LocalGraphqlOps_usersData_users_helloa_helloaListSerializer(
+        List<LocalGraphqlOps_usersData_users_helloa?>? input) {
   if (input == null) {
     return null;
   }
 
-  return input.map((m) => LocalOps_usersData_users_helloa.toJson(m)).toList();
+  return input
+      .map((m) => LocalGraphqlOps_usersData_users_helloa.toJson(m))
+      .toList();
 }
 
-List<LocalOps_usersData_users_helloa?>?
-    LocalOps_usersData_users_helloaListDeserializer(Object? input) {
+List<LocalGraphqlOps_usersData_users_helloa?>?
+    LocalGraphqlOps_usersData_users_helloahelloaListDeserializer(
+        Object? input) {
   if (input == null) {
     return null;
   }
 
   return (input as List<dynamic>)
-      .map((dynamic e) =>
-          LocalOps_usersData_users_helloa.fromJson(e as Map<String, dynamic>?))
+      .map((dynamic e) => LocalGraphqlOps_usersData_users_helloa.fromJson(
+          e as Map<String, dynamic>?))
       .toList();
 }
 
-GraphqlRequestInput<Null> LocalOps_usersInputDeserializer(dynamic json) {
+GraphqlRequestInput<Null> LocalGraphqlOps_usersInputDeserializer(dynamic json) {
   return GraphqlRequestInput.fromJson(json as Map<String, dynamic>);
 }
 
-Map<String, dynamic> LocalOps_usersDataSerializer(
-        int status, LocalOps_usersData resp) =>
+Map<String, dynamic> LocalGraphqlOps_usersDataSerializer(
+        int status, LocalGraphqlOps_usersData resp) =>
     resp.toJson();
 
-LocalOps_usersData LocalOps_usersDataDeserializer(int status, dynamic json) =>
-    LocalOps_usersData.fromJson(json as Map<String, dynamic>);
+LocalGraphqlOps_usersData LocalGraphqlOps_usersDataDeserializer(
+        int status, dynamic json) =>
+    LocalGraphqlOps_usersData.fromJson(json as Map<String, dynamic>);
 
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/graphql",
-    graphqlQuery: GraphqlRequestPart(query: """query LocalOps_users { 
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_users { 
  users  {  
  name
 
@@ -1127,20 +1184,20 @@ name
           } 
           }  }
 
- }""", hash: null, useGetForPersist: false),
+ }""", hash: "null", useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
-    responseSerializer: LocalOps_usersDataSerializer,
+    responseSerializer: LocalGraphqlOps_usersDataSerializer,
     inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: LocalOps_usersInputDeserializer,
-    responseDeserializer: LocalOps_usersDataDeserializer)
-typedef LocalOps_users
-    = HttpField<GraphqlRequestInput<Null>, LocalOps_usersData, String>;
+    inputDeserializer: LocalGraphqlOps_usersInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_usersDataDeserializer)
+typedef LocalGraphqlOps_users = HttpField<GraphqlRequestInput<Null>,
+    LocalGraphqlOps_usersData, List<GraphqlError>>;
 
 @HttpRequest(
     method: "POST",
     url: "http://localhost:4000/graphql",
-    graphqlQuery: GraphqlRequestPart(query: """query LocalOps_users { 
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_users { 
  users  {  
  name
 
@@ -1185,11 +1242,369 @@ name
           } 
           }  }
 
- }""", hash: null, useGetForPersist: false),
+ }""", hash: "null", useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
-    responseSerializer: LocalOps_usersDataSerializer,
+    responseSerializer: LocalGraphqlOps_usersDataSerializer,
     inputSerializer: GraphqlRequestInput.toJson,
-    inputDeserializer: LocalOps_usersInputDeserializer,
-    responseDeserializer: LocalOps_usersDataDeserializer)
-typedef LocalOps_usersT<T> = HttpField<GraphqlRequestInput<Null>, T, String>;
+    inputDeserializer: LocalGraphqlOps_usersInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_usersDataDeserializer)
+typedef LocalGraphqlOps_usersT<T>
+    = HttpField<GraphqlRequestInput<Null>, T, List<GraphqlError>>;
+
+@JsonSerializable()
+class LocalGraphqlOps_chnageNameWithVariablesData {
+  final String changeName;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<
+          LocalGraphqlOps_chnageNameWithVariablesData>
+      get copyWith =>
+          __$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<
+              LocalGraphqlOps_chnageNameWithVariablesData>(this, IdentityFn);
+
+  const LocalGraphqlOps_chnageNameWithVariablesData({required this.changeName});
+
+  factory LocalGraphqlOps_chnageNameWithVariablesData.fromJson(
+          Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_chnageNameWithVariablesDataFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_chnageNameWithVariablesDataToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_chnageNameWithVariablesData &&
+        o.changeName == changeName;
+  }
+
+  @override
+  int get hashCode => changeName.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_chnageNameWithVariablesData(changeName: ${this.changeName})";
+}
+
+abstract class $LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<O> {
+  factory $LocalGraphqlOps_chnageNameWithVariablesDataCopyWith(
+          LocalGraphqlOps_chnageNameWithVariablesData value,
+          O Function(LocalGraphqlOps_chnageNameWithVariablesData) then) =
+      _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<O>;
+  O call({String changeName});
+}
+
+class _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<O> {
+  final LocalGraphqlOps_chnageNameWithVariablesData _value;
+  final O Function(LocalGraphqlOps_chnageNameWithVariablesData) _then;
+  _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl(
+      this._value, this._then);
+
+  @override
+  O call({Object? changeName = dimmutable}) {
+    return _then(_value.copyWith(
+        changeName: changeName == dimmutable
+            ? _value.changeName
+            : changeName as String));
+  }
+}
+
+abstract class _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<O>
+    implements $LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<O> {
+  factory _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWith(
+          LocalGraphqlOps_chnageNameWithVariablesData value,
+          O Function(LocalGraphqlOps_chnageNameWithVariablesData) then) =
+      __$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<O>;
+  O call({String changeName});
+}
+
+class __$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_chnageNameWithVariablesDataCopyWith<O> {
+  __$LocalGraphqlOps_chnageNameWithVariablesDataCopyWithImpl(
+      LocalGraphqlOps_chnageNameWithVariablesData _value,
+      O Function(LocalGraphqlOps_chnageNameWithVariablesData) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_chnageNameWithVariablesData get _value => super._value;
+
+  @override
+  O call({Object? changeName = dimmutable}) {
+    return _then(LocalGraphqlOps_chnageNameWithVariablesData(
+        changeName: changeName == dimmutable
+            ? _value.changeName
+            : changeName as String));
+  }
+}
+
+@JsonSerializable()
+class LocalGraphqlOps_chnageNameWithVariablesVariables {
+  final String name;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<
+          LocalGraphqlOps_chnageNameWithVariablesVariables>
+      get copyWith =>
+          __$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<
+                  LocalGraphqlOps_chnageNameWithVariablesVariables>(
+              this, IdentityFn);
+
+  const LocalGraphqlOps_chnageNameWithVariablesVariables({required this.name});
+
+  factory LocalGraphqlOps_chnageNameWithVariablesVariables.fromJson(
+          Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_chnageNameWithVariablesVariablesFromJson(json);
+
+  Map<String, dynamic> toJson() =>
+      _$LocalGraphqlOps_chnageNameWithVariablesVariablesToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_chnageNameWithVariablesVariables &&
+        o.name == name;
+  }
+
+  @override
+  int get hashCode => name.hashCode;
+
+  @override
+  String toString() =>
+      "LocalGraphqlOps_chnageNameWithVariablesVariables(name: ${this.name})";
+}
+
+abstract class $LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<O> {
+  factory $LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith(
+          LocalGraphqlOps_chnageNameWithVariablesVariables value,
+          O Function(LocalGraphqlOps_chnageNameWithVariablesVariables) then) =
+      _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<O>;
+  O call({String name});
+}
+
+class _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<O>
+    implements $LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<O> {
+  final LocalGraphqlOps_chnageNameWithVariablesVariables _value;
+  final O Function(LocalGraphqlOps_chnageNameWithVariablesVariables) _then;
+  _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl(
+      this._value, this._then);
+
+  @override
+  O call({Object? name = dimmutable}) {
+    return _then(_value.copyWith(
+        name: name == dimmutable ? _value.name : name as String));
+  }
+}
+
+abstract class _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<O>
+    implements $LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<O> {
+  factory _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith(
+          LocalGraphqlOps_chnageNameWithVariablesVariables value,
+          O Function(LocalGraphqlOps_chnageNameWithVariablesVariables) then) =
+      __$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<O>;
+  O call({String name});
+}
+
+class __$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<O>
+    extends _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl<O>
+    implements _$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWith<O> {
+  __$LocalGraphqlOps_chnageNameWithVariablesVariablesCopyWithImpl(
+      LocalGraphqlOps_chnageNameWithVariablesVariables _value,
+      O Function(LocalGraphqlOps_chnageNameWithVariablesVariables) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_chnageNameWithVariablesVariables get _value => super._value;
+
+  @override
+  O call({Object? name = dimmutable}) {
+    return _then(LocalGraphqlOps_chnageNameWithVariablesVariables(
+        name: name == dimmutable ? _value.name : name as String));
+  }
+}
+
+GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>
+    LocalGraphqlOps_chnageNameWithVariablesInputDeserializer(dynamic json) {
+  json = json as Map<String, dynamic>;
+  final variables = LocalGraphqlOps_chnageNameWithVariablesVariables.fromJson(
+      json["variables"] as Map<String, dynamic>);
+  return GraphqlRequestInput.fromJson(json, variables: variables);
+}
+
+Map<String, dynamic> LocalGraphqlOps_chnageNameWithVariablesDataSerializer(
+        int status, LocalGraphqlOps_chnageNameWithVariablesData resp) =>
+    resp.toJson();
+
+LocalGraphqlOps_chnageNameWithVariablesData
+    LocalGraphqlOps_chnageNameWithVariablesDataDeserializer(
+            int status, dynamic json) =>
+        LocalGraphqlOps_chnageNameWithVariablesData.fromJson(
+            json as Map<String, dynamic>);
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery: GraphqlRequestPart(
+        query:
+            """mutation LocalGraphqlOps_chnageNameWithVariables(\$name: String!) { 
+ changeName(name: \$name)   
+ 
+ }""",
+        hash: "null",
+        useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_chnageNameWithVariablesDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_chnageNameWithVariablesInputDeserializer,
+    responseDeserializer:
+        LocalGraphqlOps_chnageNameWithVariablesDataDeserializer)
+typedef LocalGraphqlOps_chnageNameWithVariables = HttpField<
+    GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>,
+    LocalGraphqlOps_chnageNameWithVariablesData,
+    List<GraphqlError>>;
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery: GraphqlRequestPart(
+        query:
+            """mutation LocalGraphqlOps_chnageNameWithVariables(\$name: String!) { 
+ changeName(name: \$name)   
+ 
+ }""",
+        hash: "null",
+        useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_chnageNameWithVariablesDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_chnageNameWithVariablesInputDeserializer,
+    responseDeserializer:
+        LocalGraphqlOps_chnageNameWithVariablesDataDeserializer)
+typedef LocalGraphqlOps_chnageNameWithVariablesT<T> = HttpField<
+    GraphqlRequestInput<LocalGraphqlOps_chnageNameWithVariablesVariables>,
+    T,
+    List<GraphqlError>>;
+
+@JsonSerializable()
+class LocalGraphqlOps_errorQData {
+  final String? errorQ;
+
+  @JsonKey(ignore: true)
+  _$LocalGraphqlOps_errorQDataCopyWith<LocalGraphqlOps_errorQData>
+      get copyWith =>
+          __$LocalGraphqlOps_errorQDataCopyWithImpl<LocalGraphqlOps_errorQData>(
+              this, IdentityFn);
+
+  const LocalGraphqlOps_errorQData({required this.errorQ});
+
+  factory LocalGraphqlOps_errorQData.fromJson(Map<String, dynamic> json) =>
+      _$LocalGraphqlOps_errorQDataFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocalGraphqlOps_errorQDataToJson(this);
+
+  @override
+  bool operator ==(Object o) {
+    if (identical(this, o)) return true;
+    return o is LocalGraphqlOps_errorQData && o.errorQ == errorQ;
+  }
+
+  @override
+  int get hashCode => errorQ.hashCode;
+
+  @override
+  String toString() => "LocalGraphqlOps_errorQData(errorQ: ${this.errorQ})";
+}
+
+abstract class $LocalGraphqlOps_errorQDataCopyWith<O> {
+  factory $LocalGraphqlOps_errorQDataCopyWith(LocalGraphqlOps_errorQData value,
+          O Function(LocalGraphqlOps_errorQData) then) =
+      _$LocalGraphqlOps_errorQDataCopyWithImpl<O>;
+  O call({String? errorQ});
+}
+
+class _$LocalGraphqlOps_errorQDataCopyWithImpl<O>
+    implements $LocalGraphqlOps_errorQDataCopyWith<O> {
+  final LocalGraphqlOps_errorQData _value;
+  final O Function(LocalGraphqlOps_errorQData) _then;
+  _$LocalGraphqlOps_errorQDataCopyWithImpl(this._value, this._then);
+
+  @override
+  O call({Object? errorQ = dimmutable}) {
+    return _then(_value.copyWith(
+        errorQ: errorQ == dimmutable ? _value.errorQ : errorQ as String?));
+  }
+}
+
+abstract class _$LocalGraphqlOps_errorQDataCopyWith<O>
+    implements $LocalGraphqlOps_errorQDataCopyWith<O> {
+  factory _$LocalGraphqlOps_errorQDataCopyWith(LocalGraphqlOps_errorQData value,
+          O Function(LocalGraphqlOps_errorQData) then) =
+      __$LocalGraphqlOps_errorQDataCopyWithImpl<O>;
+  O call({String? errorQ});
+}
+
+class __$LocalGraphqlOps_errorQDataCopyWithImpl<O>
+    extends _$LocalGraphqlOps_errorQDataCopyWithImpl<O>
+    implements _$LocalGraphqlOps_errorQDataCopyWith<O> {
+  __$LocalGraphqlOps_errorQDataCopyWithImpl(LocalGraphqlOps_errorQData _value,
+      O Function(LocalGraphqlOps_errorQData) _then)
+      : super(_value, (v) => _then(v));
+
+  @override
+  LocalGraphqlOps_errorQData get _value => super._value;
+
+  @override
+  O call({Object? errorQ = dimmutable}) {
+    return _then(LocalGraphqlOps_errorQData(
+        errorQ: errorQ == dimmutable ? _value.errorQ : errorQ as String?));
+  }
+}
+
+GraphqlRequestInput<Null> LocalGraphqlOps_errorQInputDeserializer(
+    dynamic json) {
+  return GraphqlRequestInput.fromJson(json as Map<String, dynamic>);
+}
+
+Map<String, dynamic> LocalGraphqlOps_errorQDataSerializer(
+        int status, LocalGraphqlOps_errorQData resp) =>
+    resp.toJson();
+
+LocalGraphqlOps_errorQData LocalGraphqlOps_errorQDataDeserializer(
+        int status, dynamic json) =>
+    LocalGraphqlOps_errorQData.fromJson(json as Map<String, dynamic>);
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_errorQ { 
+ errorQ   
+ 
+ }""", hash: "null", useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_errorQDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_errorQInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_errorQDataDeserializer)
+typedef LocalGraphqlOps_errorQ = HttpField<GraphqlRequestInput<Null>,
+    LocalGraphqlOps_errorQData, List<GraphqlError>>;
+
+@HttpRequest(
+    method: "POST",
+    url: "http://localhost:4000/graphql",
+    graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_errorQ { 
+ errorQ   
+ 
+ }""", hash: "null", useGetForPersist: false),
+    responseType: HttpResponseType.JSON,
+    headers: {"Content_Type": "applications/josn"},
+    responseSerializer: LocalGraphqlOps_errorQDataSerializer,
+    inputSerializer: GraphqlRequestInput.toJson,
+    inputDeserializer: LocalGraphqlOps_errorQInputDeserializer,
+    responseDeserializer: LocalGraphqlOps_errorQDataDeserializer)
+typedef LocalGraphqlOps_errorQT<T>
+    = HttpField<GraphqlRequestInput<Null>, T, List<GraphqlError>>;

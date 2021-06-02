@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+
 class GraphqlRequestInput<V> {
   final String query;
   final V? variables;
@@ -64,14 +66,50 @@ class GraphqlError {
   factory GraphqlError.fromJson(Map<String, dynamic> json) {
     return GraphqlError(
       message: json['message'] as String,
-      locations: (json["locations"] as List<Map<String, dynamic>>?)
-          ?.map((e) => SourceLocation.fromJson(e))
+      locations: (json["locations"] as List<dynamic>?)
+          ?.map(
+              (dynamic e) => SourceLocation.fromJson(e as Map<String, dynamic>))
           .toList(),
       originalError: json["originalError"],
       extensions: json["extensions"] as Map<String, dynamic>?,
       source: json["source"],
-      positions: (json["positions"] as List<int>?)?.map((e) => e).toList(),
-      path: (json["path"] as List<String>?)?.map((e) => e).toList(),
+      positions: (json["positions"] as List<dynamic>?)
+          ?.map((dynamic e) => e as int)
+          .toList(),
+      path: (json["path"] as List<dynamic>?)
+          ?.map((dynamic e) => e as String)
+          .toList(),
     );
+  }
+
+  @override
+  String toString() {
+    return 'GraphqlError(message: $message, locations: $locations, originalError: $originalError, extensions: $extensions, positions: $positions, source: $source, path: $path)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    final collectionEquals = const DeepCollectionEquality().equals;
+
+    return other is GraphqlError &&
+        other.message == message &&
+        collectionEquals(other.locations, locations) &&
+        other.originalError == originalError &&
+        collectionEquals(other.extensions, extensions) &&
+        collectionEquals(other.positions, positions) &&
+        other.source == source &&
+        collectionEquals(other.path, path);
+  }
+
+  @override
+  int get hashCode {
+    return message.hashCode ^
+        locations.hashCode ^
+        originalError.hashCode ^
+        extensions.hashCode ^
+        positions.hashCode ^
+        source.hashCode ^
+        path.hashCode;
   }
 }

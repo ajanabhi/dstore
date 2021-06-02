@@ -104,7 +104,12 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
         methodName == "Mutation" ||
         methodName == "Subscription") {
       var argsList = node.argumentList.arguments;
-      final args = argsList.isNotEmpty ? "(${argsList.first})" : "";
+      var args = "";
+      if (argsList.isNotEmpty) {
+        final arg = argsList.first.toSource();
+        args = "(${arg.substring(1, arg.length - 1).replaceAll('\\\$', "\$")})";
+      }
+      print("Muation Args $args");
       query += "${methodName.toLowerCase()} $opName$args { \n";
     } else if (nodeString.startsWith("..")) {
       var bracket = "";
@@ -202,7 +207,7 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
     final valueE = e.expression;
     var value = "";
     final valueStr = e.expression.toString();
-    if (valueStr.startsWith("\"\\\$")) {
+    if (valueStr.startsWith("\"\\\$") || valueStr.startsWith("\'\\\$")) {
       // query variable
       value = valueStr.substring(2, valueStr.substring(1).indexOf("\"") + 1);
     } else if (valueE is PrefixedIdentifier) {
@@ -291,7 +296,7 @@ class ObjectArgVisitor extends RecursiveAstVisitor<Object> {
     final valueE = node.expression;
     var value = "";
     final valueStr = node.expression.toString();
-    if (valueStr.startsWith("\"\\\$")) {
+    if (valueStr.startsWith("\"\\\$") || valueStr.startsWith("\'\\\$")) {
       // query variable
       value = valueStr.substring(2, valueStr.substring(1).indexOf("\"") + 1);
     } else if (valueE is PrefixedIdentifier) {
