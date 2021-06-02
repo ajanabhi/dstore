@@ -25,7 +25,8 @@ class GraphqlSchemaGenerator extends GeneratorForAnnotation<GraphqlApi> {
             "Graphql Api annotation should only be applied on classes");
       }
 
-      final gApi = getGraphqlApi(element.metadata.first.computeConstantValue());
+      final gApi = getGraphqlApi(
+          element.annotationFromType(GraphqlApi)!.computeConstantValue());
       print("generating for API $gApi");
       final schema = await getGraphqlSchemaFromApiUrl(gApi);
       final enums = schema.enums.map((e) => _convertGEnumToDEnum(e)).join("\n");
@@ -177,6 +178,8 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
   final cacheOnlineApiSchema =
       gApi.getField("cacheOnlineApiSchema")?.toStringValue();
   final wsUrl = gApi.getField("wsUrl")?.toStringValue();
+  final collectionEquality =
+      gApi.getEnumField("collectionEquality", CollectionEquality.values);
   final scalarMap = gApi.getField("scalarMap")?.toMapValue()?.map(
       (key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
   logger.shout("Scalar Map $scalarMap");
@@ -186,6 +189,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
       schemaPath: schemaPath,
       cacheOnlineApiSchema: cacheOnlineApiSchema,
       enablePersitantQueries: enablePersitantQueries,
+      collectionEquality: collectionEquality,
       wsUrl: wsUrl);
 }
 

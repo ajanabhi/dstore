@@ -167,37 +167,37 @@ void main() {
         ),
       ]);
     });
-    //TODO add collectionEqualityOperator for graphql ops annotation
-    // test("graphql query with unions", () async {
-    //   await storeTester.testHttpAction(
-    //       SimpleHttpActions.grpahqlUsers(),
-    //       [
-    //         LocalGraphqlOps_users(loading: true),
-    //         LocalGraphqlOps_users(
-    //           data: LocalGraphqlOps_usersData(users: [
-    //             LocalGraphqlOps_usersData_users(
-    //                 name: "Name1",
-    //                 tags: null,
-    //                 hello: LocalGraphqlOps_usersData_users_hello(
-    //                     LocalGraphqlOps_usersData_users_hello_Hello1(
-    //                         name: null, one: "one2", d$___typeName: "Hello1")),
-    //                 helloa: [
-    //                   LocalGraphqlOps_usersData_users_helloa(
-    //                       LocalGraphqlOps_usersData_users_helloa_Hello1(
-    //                           name: null,
-    //                           one: "onea",
-    //                           d$___typeName: "Hello1")),
-    //                   LocalGraphqlOps_usersData_users_helloa(
-    //                       LocalGraphqlOps_usersData_users_helloa_Hello2(
-    //                           name: null, two: "twoa", d$___typeName: "Hello2"))
-    //                 ],
-    //                 address: null)
-    //           ]),
-    //           completed: true,
-    //         ),
-    //       ],
-    //       mapEquals: true);
-    // });
+
+    test("graphql query with unions", () async {
+      await storeTester.testHttpAction(
+          SimpleHttpActions.grpahqlUsers(),
+          [
+            LocalGraphqlOps_users(loading: true),
+            LocalGraphqlOps_users(
+              data: LocalGraphqlOps_usersData(users: [
+                LocalGraphqlOps_usersData_users(
+                    name: "Name1",
+                    tags: null,
+                    hello: LocalGraphqlOps_usersData_users_hello(
+                        LocalGraphqlOps_usersData_users_hello_Hello1(
+                            name: null, one: "one2", d$___typeName: "Hello1")),
+                    helloa: [
+                      LocalGraphqlOps_usersData_users_helloa(
+                          LocalGraphqlOps_usersData_users_helloa_Hello1(
+                              name: null,
+                              one: "onea",
+                              d$___typeName: "Hello1")),
+                      LocalGraphqlOps_usersData_users_helloa(
+                          LocalGraphqlOps_usersData_users_helloa_Hello2(
+                              name: null, two: "twoa", d$___typeName: "Hello2"))
+                    ],
+                    address: null)
+              ]),
+              completed: true,
+            ),
+          ],
+          mapEquals: false);
+    });
     test("graphql mutation with variables", () async {
       await storeTester.testHttpAction(
         SimpleHttpActions.graphqlChangeVariable(

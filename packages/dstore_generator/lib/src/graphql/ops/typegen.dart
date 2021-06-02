@@ -1,3 +1,4 @@
+import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/graphql/ops/gql_visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:gql/ast.dart';
@@ -378,7 +379,8 @@ String getDType(GField gf, String type) {
 
 final unionsListSerializers = <String>[];
 
-String getTypes(OperationVisitor visitor, String name) {
+String getTypes(OperationVisitor visitor, String name,
+    CollectionEquality? collectionEquality) {
   print("getTypes called");
   final list = <GType>[];
   final fragmentMap = visitor.fragmentFieldsMap;
@@ -389,7 +391,8 @@ String getTypes(OperationVisitor visitor, String name) {
   list.addAll(getAllGTypes(gt.fields));
   print(gt);
 
-  final response = list.map((e) => convertGTypeToDartType(e)).join("\n");
+  final response =
+      list.map((e) => convertGTypeToDartType(e, collectionEquality)).join("\n");
   final variables = visitor.variables.isEmpty
       ? ""
       : createVariableType(visitor.variables, "${name}Variables");
@@ -430,7 +433,8 @@ List<GType> getAllGTypes(Set<FieldG> fields) {
   return result;
 }
 
-String convertGTypeToDartType(GType gtype) {
+String convertGTypeToDartType(
+    GType gtype, CollectionEquality? collectionEquality) {
   final name = gtype.name;
   if (gtype.unions.isNotEmpty || gtype.supertypes.isNotEmpty) {
     return _covertUnionOrInterfaceToDartModel(gtype);
@@ -493,7 +497,10 @@ String convertGTypeToDartType(GType gtype) {
     return Field(name: f.name, type: f.type, annotations: annotations);
   }).toList();
   return ModelUtils.createDefaultDartModelFromFeilds(
-      fields: fields, className: name, isJsonSerializable: true);
+      fields: fields,
+      className: name,
+      isJsonSerializable: true,
+      collectionEquality: collectionEquality);
 }
 
 String getListFromJson(

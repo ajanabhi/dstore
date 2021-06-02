@@ -748,9 +748,7 @@ abstract class SimpleHttpActions {
             data: GraphqlRequestInput(query: """query LocalGraphqlOps_ping { 
  ping   
  
- }""", extensions: <String, dynamic>{
-              "persistedQuery": {"version": 1, "sha256Hash": "null"}
-            }),
+ }"""),
             abortable: abortable,
             offline: offline,
             headers: headers,
@@ -846,9 +844,7 @@ name
           } 
           }  }
 
- }""", extensions: <String, dynamic>{
-              "persistedQuery": {"version": 1, "sha256Hash": "null"}
-            }),
+ }"""),
             abortable: abortable,
             offline: offline,
             headers: headers,
@@ -920,9 +916,6 @@ name
  changeName(name: \$name)   
  
  }""",
-                extensions: <String, dynamic>{
-                  "persistedQuery": {"version": 1, "sha256Hash": "null"}
-                },
                 variables: variables),
             abortable: abortable,
             offline: offline,
@@ -985,9 +978,7 @@ name
             data: GraphqlRequestInput(query: """query LocalGraphqlOps_errorQ { 
  errorQ   
  
- }""", extensions: <String, dynamic>{
-              "persistedQuery": {"version": 1, "sha256Hash": "null"}
-            }),
+ }"""),
             abortable: abortable,
             offline: offline,
             headers: headers,

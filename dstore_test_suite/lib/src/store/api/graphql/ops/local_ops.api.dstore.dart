@@ -98,7 +98,7 @@ LocalGraphqlOps_pingData LocalGraphqlOps_pingDataDeserializer(
     graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_ping { 
  ping   
  
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_pingDataSerializer,
@@ -114,7 +114,7 @@ typedef LocalGraphqlOps_ping = HttpField<GraphqlRequestInput<Null>,
     graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_ping { 
  ping   
  
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_pingDataSerializer,
@@ -143,7 +143,8 @@ class LocalGraphqlOps_usersData {
   @override
   bool operator ==(Object o) {
     if (identical(this, o)) return true;
-    return o is LocalGraphqlOps_usersData && o.users == users;
+    return o is LocalGraphqlOps_usersData &&
+        ListEquality<dynamic>().equals(users, o.users);
   }
 
   @override
@@ -243,9 +244,9 @@ class LocalGraphqlOps_usersData_users {
     if (identical(this, o)) return true;
     return o is LocalGraphqlOps_usersData_users &&
         o.name == name &&
-        o.tags == tags &&
+        ListEquality<dynamic>().equals(tags, o.tags) &&
         o.hello == hello &&
-        o.helloa == helloa &&
+        ListEquality<dynamic>().equals(helloa, o.helloa) &&
         o.address == address;
   }
 
@@ -1184,7 +1185,7 @@ name
           } 
           }  }
 
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_usersDataSerializer,
@@ -1242,7 +1243,7 @@ name
           } 
           }  }
 
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_usersDataSerializer,
@@ -1452,7 +1453,7 @@ LocalGraphqlOps_chnageNameWithVariablesData
  changeName(name: \$name)   
  
  }""",
-        hash: "null",
+        hash: null,
         useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
@@ -1475,7 +1476,7 @@ typedef LocalGraphqlOps_chnageNameWithVariables = HttpField<
  changeName(name: \$name)   
  
  }""",
-        hash: "null",
+        hash: null,
         useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
@@ -1583,7 +1584,7 @@ LocalGraphqlOps_errorQData LocalGraphqlOps_errorQDataDeserializer(
     graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_errorQ { 
  errorQ   
  
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_errorQDataSerializer,
@@ -1599,7 +1600,7 @@ typedef LocalGraphqlOps_errorQ = HttpField<GraphqlRequestInput<Null>,
     graphqlQuery: GraphqlRequestPart(query: """query LocalGraphqlOps_errorQ { 
  errorQ   
  
- }""", hash: "null", useGetForPersist: false),
+ }""", hash: null, useGetForPersist: false),
     responseType: HttpResponseType.JSON,
     headers: {"Content_Type": "applications/josn"},
     responseSerializer: LocalGraphqlOps_errorQDataSerializer,

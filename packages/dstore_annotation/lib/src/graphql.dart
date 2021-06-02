@@ -1,3 +1,5 @@
+import 'package:dstore_annotation/dstore_annotation.dart';
+
 class GraphqlApi {
   final String apiUrl;
   final String? schemaPath;
@@ -5,6 +7,7 @@ class GraphqlApi {
   final String? wsUrl;
   final Map<String, String>? scalarMap;
   final PersitantQueryMode? enablePersitantQueries;
+  final CollectionEquality? collectionEquality;
   final String? revison; // temp variable to trigger schema gen
   const GraphqlApi(
       {required this.apiUrl,
@@ -12,6 +15,7 @@ class GraphqlApi {
       this.schemaPath,
       this.wsUrl,
       this.revison,
+      this.collectionEquality,
       this.enablePersitantQueries,
       this.scalarMap});
 
@@ -31,7 +35,9 @@ enum PersitantQueryMode { GET, POST }
 
 class GraphqlOps {
   final GraphqlApi api;
-  const GraphqlOps(this.api);
+  
+  final String? revision;
+  const GraphqlOps(this.api, { this.revision});
 }
 
 class GraphqlOpsJS {

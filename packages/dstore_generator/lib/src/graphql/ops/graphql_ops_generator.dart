@@ -30,6 +30,7 @@ class GraphqlOpsGenerator extends GeneratorForAnnotation<GraphqlOps> {
       final opsAnnotations = element.metadata.first.computeConstantValue();
       final apiA = opsAnnotations?.getField("api")!;
       final gAPi = getGraphqlApi(apiA);
+
       final apiUrl = gAPi.apiUrl;
       if (graphqlSchemaMap[apiUrl] == null) {
         await getGraphqlSchemaFromApiUrl(gAPi);
@@ -59,7 +60,7 @@ String generateOpsTypeForQuery({
 }) {
   final visitor = OperationVisitor(documentNode: doc, schema: schema, api: api);
   doc.accept(visitor);
-  final types = getTypes(visitor, name);
+  final types = getTypes(visitor, name, api.collectionEquality);
   query = query.trim();
   var result = "";
   final gq = "\"\"\"${query.replaceAll("\$", "\\\$")}\"\"\"";
@@ -70,7 +71,9 @@ String generateOpsTypeForQuery({
     useGetPersitant = api.enablePersitantQueries == PersitantQueryMode.GET;
   }
   final graphqlQuery = GraphqlRequestPart(
-      query: gq, hash: '"$hash"', useGetForPersist: useGetPersitant);
+      query: gq,
+      hash: hash != null ? '"$hash"' : null,
+      useGetForPersist: useGetPersitant);
   final responseType = "${name}Data";
   final responseSerializer = "${responseType}Serializer";
   final responserDeserializer = "${responseType}Deserializer";
