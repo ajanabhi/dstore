@@ -64,18 +64,20 @@ class NavStateDontTouchMe {
   }
 }
 
-abstract class NavStateI<M> extends PStateModel<M> {
+abstract class NavCommonI {
   Page? page;
   List<Page> buildPages() => [];
   Action notFoundAction(Uri uri);
-  Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+  Action fallBackNestedStackNonInitializationAction(NavCommonI navState) {
     throw UnimplementedError();
   }
 
   NavConfigMeta meta = NavConfigMeta();
   NavStateDontTouchMe dontTouchMe = NavStateDontTouchMe();
   List<NestedNavStateMeta> getNestedNavs() => [];
+}
 
+abstract class NavStateI<M> extends PStateModel<M> with NavCommonI {
   @override
   Map<String, dynamic> toMap() => throw UnimplementedError();
   @override
@@ -98,14 +100,14 @@ class RouteInput {
 
 typedef UrlToAction = dynamic Function(Uri, Dispatch);
 
-abstract class NestedNavStateI<M> extends NavStateI<M> {
+abstract class NestedNavStateI<M> extends PStateModel<M> with NavCommonI {
   @override
   Action notFoundAction(Uri uri) {
     throw UnimplementedError();
   }
 
   @override
-  Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+  Action fallBackNestedStackNonInitializationAction(NavCommonI navState) {
     throw UnimplementedError();
   }
 

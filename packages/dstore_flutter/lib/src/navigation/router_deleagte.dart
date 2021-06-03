@@ -341,7 +341,7 @@ void handleDialog(
   }
 }
 
-void setBeforeLeave(History history, NavStateI state) {
+void setBeforeLeave(History history, NavCommonI state) {
   history.beforeLeave = state.meta.beforeLeave;
   // if (state.meta.beforeLeave != null) {
   //   history.beforeLeave = state.meta.beforeLeave;

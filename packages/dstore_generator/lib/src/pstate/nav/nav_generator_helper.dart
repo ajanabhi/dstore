@@ -54,7 +54,7 @@ Future<String> generatePStateNavForClassElement(
     methods.add(PStateMethod(
         isAsync: false,
         name: "fallBackNestedStackNonInitializationAction2",
-        params: [Field(name: "navState", type: "NavStateI")],
+        params: [Field(name: "navState", type: "NavCommonI")],
         keysModified: [Field(name: "meta", type: "dynamic")],
         body: """
           final _DstoreActionPayload = _DstoreAction.payload!;
@@ -244,7 +244,7 @@ String _createPStateNavModel(
   if (!exinf.startsWith("Nested")) {
     fb = """
     @override
-    Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+    Action fallBackNestedStackNonInitializationAction(NavCommonI navState) {
       return ${name}Actions.fallBackNestedStackNonInitializationAction2(navState:navState);
     }
     """;
@@ -253,7 +253,7 @@ String _createPStateNavModel(
       .map((e) =>
           " ${e.type} get ${e.name} => dontTouchMeStore.state.${e.name} as ${e.type};")
       .join("\n");
-  final mixins = <String>["PStateStoreDepsMixin"];
+  final mixins = <String>["PStateStoreDepsMixin", "NavCommonI"];
   var nestedNavsMethod = "";
   if (nestedNavs != null && nestedNavs.isNotEmpty) {
     final list = nestedNavs.map((e) {

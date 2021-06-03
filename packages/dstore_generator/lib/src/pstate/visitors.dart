@@ -673,10 +673,12 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
       allowedClassMembers.addAll(navStateFeilds);
     }
     allowedClassMembers.addAll(element.fields.map((e) => e.name));
-
-    allowedMethods.addAll(element.methods
+    allowedClassMembers.addAll(element.methods
         .where((m) => m.annotationFromType(RegularMethod) != null)
         .map((e) => e.name));
+    // allowedMethods.addAll(element.methods
+    //     .where((m) => m.annotationFromType(RegularMethod) != null)
+    //     .map((e) => e.name));
     print("allowedClassMembers $allowedClassMembers");
     notAllowedClassMembers.addAll(element.methods
         .where((m) => m.annotationFromType(RegularMethod) == null)
@@ -688,13 +690,24 @@ class MethodAstVisitor extends RecursiveAstVisitor<dynamic> {
   dynamic visitSimpleIdentifier(SimpleIdentifier node) {
     final name = node.name;
     print(
-        "visitSimpleIdentifier $name , Parent ${node.parent}, ${node.parent.runtimeType} pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ");
+        "visitSimpleIdentifier $name , Parent ${node.parent}  runtime type ${node.parent.runtimeType} ${node.parent?.toString().startsWith("this.")} , ${node.parent.runtimeType} pe ${node.staticParameterElement} se ${node.staticElement} st ${node.staticType} , ");
+    // node.parent?.childEntities.forEach((element) {
+    //   print("parent : ce ${element} ${element.runtimeType}");
+    // });
+
+    if (allowedClassMembers.contains(name)) {
+      print("its allowed class memeber");
+      final error =
+          "You should access class memeber ${name} with this. prefix , example : this.${name} , if $name is not a class memeber probably you're shadowing variable if thats the case please use different name for your local variable";
+      if (node.parent == null ||
+          node.parent!.childEntities.firstOrNull.toString() == name) {
+        throw NotAllowedError(error);
+      }
+    }
     if ((allowedClassMembers.contains(name) && node.parent == null) ||
-        (allowedMethods.contains(name) &&
+        (allowedClassMembers.contains(name) &&
             node.parent?.toString().startsWith("this.") != true)) {
       print(element.fields.map((e) => e.name));
-      throw NotAllowedError(
-          "You should access class memeber ${name} with this. prefix , example : this.${name} , if $name is not a class memeber probably you're shadowing variable if thats the case please use different name for your local variable");
     }
 
     if (notAllowedClassMembers.contains(name) &&
