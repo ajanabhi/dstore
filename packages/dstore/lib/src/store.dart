@@ -113,6 +113,7 @@ class Store<S extends AppStateI<S>> {
       print("after init");
       final sState =
           await storage.getKeys(internalMeta.values.map((e) => e.type));
+      print("state from storage $sState");
       if (sState == null) {
         // meaning running app first time or user deleted app data
         await storage.setversion(appVersion);
@@ -190,10 +191,11 @@ class Store<S extends AppStateI<S>> {
   }
 
   void _setStoreDepsForPState(PStateModel m, Store? store) {
+    print("_setStoreDepsForPState ${m.runtimeType} store $store");
     if (m is PStateStoreDepsMixin) {
       final m1 = m as PStateStoreDepsMixin;
       print("Setting store value for model $m store : $store");
-      m1.dontTouchMeStore = store;
+      (m as PStateStoreDepsMixin).dontTouchMeStore2(store);
     }
   }
 
@@ -348,6 +350,13 @@ class Store<S extends AppStateI<S>> {
       _setStoreDepsForPState(previousState, null);
       _setStoreDepsForPState(newState, this);
       _state = _state.copyWithMap(newGlobalStateMap);
+      if (newGlobalStateMap.containsKey("redditPS")) {
+        final v = newGlobalStateMap["redditPS"];
+        print("redditPs2 $v ${v.runtimeType}");
+        if (v is PStateStoreDepsMixin) {
+          print("store : ${v.dontTouchMeStore}");
+        }
+      }
       if (action.name == "ping") {
         print("Ping state changed ${action.name} ${action.afterComplete}");
       }

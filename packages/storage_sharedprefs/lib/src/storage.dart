@@ -44,7 +44,7 @@ class StorageSharedPrefs implements PersitantStorage {
     }
     final result = <String, dynamic>{};
     for (final k in keysToget) {
-      result[k] = get(k);
+      result[k] = await get(k);
     }
     return result;
   }

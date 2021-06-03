@@ -3,6 +3,7 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/errors.dart';
+import 'package:dstore_generator/src/pstate/constants.dart';
 import 'package:dstore_generator/src/pstate/generator_helper.dart';
 import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/pstate/visitors.dart';
@@ -45,6 +46,26 @@ Future<String> generatePStateNavForClassElement(
   final astNode = await AstUtils.getAstNodeFromElement(element, buildStep);
   astNode.visitChildren(visitor);
   final methods = visitor.methods.where((m) => !m.isRegular).toList();
+  final regularMethods =
+      visitor.methods.where((m) => m.isRegular).map((m) => m.body).join("\n");
+
+  if (!isNestedNav) {
+    final keys = ["meta"];
+    methods.add(PStateMethod(
+        isAsync: false,
+        name: "fallBackNestedStackNonInitializationAction2",
+        params: [Field(name: "navState", type: "NavStateI")],
+        keysModified: [Field(name: "meta", type: "dynamic")],
+        body: """
+          final _DstoreActionPayload = _DstoreAction.payload!;
+          final navState = _DstoreActionPayload["navState"] as NavStateI;
+          ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
+          ${DSTORE_PREFIX}meta = navState.meta;
+          final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")});
+          newState.dontTouchMe = ${STATE_VARIABLE}.dontTouchMe;
+          return newState;
+        """));
+  }
   logger.shout("nav visitor methods $methods");
   var fields = visitor.fields;
   fields.addAll(methods.where((m) => m.isAsync).map((m) => Field(
@@ -55,8 +76,6 @@ Future<String> generatePStateNavForClassElement(
 
   fields = ModelUtils.processFields(fields);
   final psDeps = visitor.psDeps;
-  final regularMethods =
-      visitor.methods.where((m) => m.isRegular).map((m) => m.body).join("\n");
 
   print("methods : ${methods.map((e) => e.keysModified)}");
   final isPageUsed = visitor.methods
@@ -97,12 +116,13 @@ Future<String> generatePStateNavForClassElement(
           historyMode: historyMode),
       httpMeta: "",
       methods: methods);
+
   return """
     
     ${_createPStateNavModel(fields: fields, typeName: typeVariable, regularMethods: regularMethods, exinf: inf, psDeps: psDeps, nestedNavs: nestedNavs, name: name, annotations: [], typeParams: typeParams, enableHistory: false, typaParamsWithBounds: typeParamsWithBounds)}
     const $typeVariable = "$typePath";
     $pStateMeta
-    ${_createActions(modelName: name, type: typeVariable, methods: methods)}
+    ${_createActions(modelName: name, isMainNav: !isNestedNav, type: typeVariable, methods: methods)}
   """;
 }
 
@@ -220,6 +240,15 @@ String _createPStateNavModel(
     required String typaParamsWithBounds}) {
   //     final String url;
   // final String defaultAction;
+  var fb = "";
+  if (!exinf.startsWith("Nested")) {
+    fb = """
+    @override
+    Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+      return ${name}Actions.fallBackNestedStackNonInitializationAction2(navState:navState);
+    }
+    """;
+  }
   final psFeilds = psDeps
       .map((e) =>
           " ${e.type} get ${e.name} => dontTouchMeStore.state.${e.name} as ${e.type};")
@@ -261,6 +290,7 @@ String _createPStateNavModel(
         $psFeilds
         $initialSetupMethod
         $regularMethods
+        $fb
         $nestedNavsMethod
         
         
@@ -287,6 +317,7 @@ String _createPStateNavModel(
 String _createActions(
     {required String modelName,
     required String type,
+    required bool isMainNav,
     required List<PStateMethod> methods}) {
   final methodActions = methods.map((m) {
     final paramsList = m.params.map((p) {
@@ -326,6 +357,7 @@ String _createActions(
       }
     """;
   }).join("\n");
+
   return """
     
     abstract class ${modelName}Actions {

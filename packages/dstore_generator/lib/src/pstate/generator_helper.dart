@@ -531,6 +531,7 @@ String _createPStateModel(
   //    """
   //     : "";
   final mixins = <String>[];
+
   if (enableHistory) {
     mixins.add("PStateHistoryMixin<$name>");
   }

@@ -8,22 +8,23 @@ void _handleAsyncAction<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) async {
   final sk = store.getStateKeyForPstateType(action.type);
   final psm = store.internalMeta[sk]!;
-  final gsMap = store.state.toMap();
-  final currentS = gsMap[sk]!;
   store.dispatch(action.copyWith(
       internal: ActionInternal(
           processed: true,
           type: ActionInternalType.FIELD,
           data: AsyncActionField(loading: true))));
   try {
-    final s = await psm.aReducer!(currentS, action) as PStateModel;
+    final cs = store.getPStateModelFromAction(action);
+    final s = await psm.aReducer!(cs, action) as PStateModel;
     final asm = s.toMap();
     asm[action.name] = AsyncActionField(completed: true);
     final newS = s.copyWithMap(asm) as PStateModel;
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true, data: newS, type: ActionInternalType.PSTATE)));
-  } catch (e) {
+  } catch (e, st) {
+    print("Exception in async $e");
+    print(st);
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,

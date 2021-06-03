@@ -68,7 +68,9 @@ abstract class NavStateI<M> extends PStateModel<M> {
   Page? page;
   List<Page> buildPages() => [];
   Action notFoundAction(Uri uri);
-  Action fallBackNestedStackNonInitializationAction(NavStateI navState);
+  Action fallBackNestedStackNonInitializationAction(NavStateI navState) {
+    throw UnimplementedError();
+  }
 
   NavConfigMeta meta = NavConfigMeta();
   NavStateDontTouchMe dontTouchMe = NavStateDontTouchMe();

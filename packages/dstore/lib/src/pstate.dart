@@ -26,7 +26,7 @@ abstract class PStateModel<M> {
 mixin PStateStoreDepsMixin {
   Store<dynamic>? _dont_touch_me_store;
   Store<dynamic> get dontTouchMeStore => _dont_touch_me_store!;
-  set dontTouchMeStore(Store<dynamic>? s) {
+  void dontTouchMeStore2(Store<dynamic>? s) {
     _dont_touch_me_store = s;
   }
 }

@@ -4,12 +4,14 @@ import 'package:flutter/material.dart' hide Action;
 class StoreProvider extends StatefulWidget {
   final Store<AppStateI<dynamic>> store;
   final Widget? loadingPlaceHolder;
+  final Widget? storageReadErrorPloaceHolder;
   final Widget child;
 
   const StoreProvider(
       {Key? key,
       required this.store,
       this.loadingPlaceHolder,
+      this.storageReadErrorPloaceHolder,
       required this.child})
       : super(key: key);
   @override
@@ -17,12 +19,17 @@ class StoreProvider extends StatefulWidget {
 }
 
 class _StoreProviderState extends State<StoreProvider> {
+  dynamic error;
   @override
   void initState() {
     super.initState();
     if (!widget.store.isReady) {
-      widget.store.listenForReadyState((error, st) {
-        setState(() {});
+      widget.store.listenForReadyState((e, st) {
+        print("store preapred from storage $e ");
+        print(st);
+        setState(() {
+          error = e;
+        });
       });
     }
   }
@@ -34,10 +41,13 @@ class _StoreProviderState extends State<StoreProvider> {
             store: widget.store,
             child: widget.child,
           )
-        : widget.loadingPlaceHolder ??
-            Center(
-              child: Text("Preparing App Please wait"),
-            );
+        : error != null
+            ? widget.storageReadErrorPloaceHolder ??
+                StoreTempShell(message: "Failing while creting store $error")
+            : widget.loadingPlaceHolder ??
+                Center(
+                  child: Text("Preparing App Please wait"),
+                );
   }
 
   @override
@@ -77,4 +87,23 @@ extension DStoreContextExtensionMethods on BuildContext {
   Store<AppStateI<dynamic>> get store => _StoreProviderInherited.of(this);
   dynamic dispatch(Action<dynamic> action) => store.dispatch(action);
   Store<S> storeTyped<S extends AppStateI<S>>() => store as Store<S>;
+}
+
+class StoreTempShell extends StatelessWidget {
+  final String message;
+  const StoreTempShell({
+    Key? key,
+    required this.message,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text(message),
+        ),
+      ),
+    );
+  }
 }
