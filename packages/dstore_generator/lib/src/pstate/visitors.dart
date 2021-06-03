@@ -38,6 +38,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           isOptional: false,
           value: "NavConfigMeta()"));
       fields.add(Field(
+        name: "navOptions",
+        type: "NavOptions?",
+        isOptional: false,
+      ));
+      fields.add(Field(
           name: "blockSameUrl",
           type: "bool",
           isOptional: false,
@@ -94,9 +99,9 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     if (isNav) {
       final urlTuple =
           getUrlFromMethod(md: node, mparams: params, element: element);
-      rawUrl = urlTuple?.item1;
-      finalUrl = urlTuple?.item2;
-      final nestedNavElement = urlTuple?.item3;
+      rawUrl = urlTuple?.rawUrl;
+      finalUrl = urlTuple?.finalUrl;
+      final nestedNavElement = urlTuple?.nestedEleemnt;
       if (nestedNavElement != null &&
           nestedNavElement is ClassElement &&
           nestedNavs != null) {

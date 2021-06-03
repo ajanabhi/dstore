@@ -82,7 +82,6 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
             prepareStateFromNestedStacks(
                 history: history, state: state, nestedNavsMeta: nestedNavs);
             _navState = state;
-            history.blockSameUrl = state.meta.blockSameUrl;
             history.fallBackNestedStackNonInitializationAction =
                 state.fallBackNestedStackNonInitializationAction;
             history.historyMode = state.dontTouchMe.historyMode;
@@ -185,12 +184,12 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     final url = navState.dontTouchMe.url;
     if (url != null) {
       print("pushing url ${url}");
-      if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
+      if (history.urlUpdateMode == HistoryUpdate.replace) {
         history.replace(url);
       } else {
         history.push(url);
       }
-      navState.meta.navOptions = null;
+      history.urlUpdateMode = null;
     }
   }
 

@@ -7,8 +7,8 @@ import 'package:flutter/material.dart' hide Action;
 typedef UriListener = void Function(Uri uri);
 
 abstract class History {
-  abstract bool blockSameUrl;
   VoidCallback listen(UriListener listener);
+  HistoryUpdate? urlUpdateMode;
   bool urlChangedInSystem = false;
   void push(String url, {bool nested = false});
   void replace(String url, {bool nested = false});

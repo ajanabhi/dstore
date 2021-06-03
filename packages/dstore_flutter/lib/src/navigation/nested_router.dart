@@ -206,12 +206,12 @@ class _NestedRouterState<AS extends AppStateI<AS>,
       if (navState.dontTouchMe.url != null) {
         final url = navState.dontTouchMe.url!;
         print("pushing url ${navState.dontTouchMe.url}");
-        if (navState.meta.navOptions?.historyUpdate == HistoryUpdate.replace) {
+        if (history.urlUpdateMode == HistoryUpdate.replace) {
           nestedHistory.replace(url);
         } else {
           nestedHistory.push(url);
         }
-        navState.meta.navOptions = null;
+        history.urlUpdateMode = null;
       }
     }
   }

@@ -9,7 +9,6 @@ import 'package:dstore_generator/src/pstate/types.dart';
 import 'package:dstore_generator/src/pstate/visitors.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
-import 'package:tuple/tuple.dart';
 
 const navStateFeilds = [
   "meta",
@@ -332,6 +331,9 @@ String _createActions(
     if (m.isAsync) {
       paramsList.add("Duration? debounce");
     }
+    final navPayloadParams = <String>[];
+    paramsList.add("NavOptions? navOptions");
+    navPayloadParams.add("navOptions: navOptions");
 
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     final params = paramsList.join(", ");
@@ -344,7 +346,7 @@ String _createActions(
     if (payload.isNotEmpty) {
       payload = ", payload: ${payload}";
     }
-    final navPayloadParams = <String>[];
+
     if (m.url != null) {
       navPayloadParams.add("rawUrl : '${m.url}'");
     }
@@ -367,7 +369,7 @@ String _createActions(
   """;
 }
 
-Tuple3<String, String, Element?>? getUrlFromMethod(
+UrlInfo? getUrlFromMethod(
     {required MethodDeclaration md,
     required List<Field> mparams,
     required ClassElement element}) {
@@ -375,7 +377,8 @@ Tuple3<String, String, Element?>? getUrlFromMethod(
       .singleWhere((me) => me.name == md.name.name)
       .getUrlFromAnnotation();
 
-  final urlInput = urlAnnot?.item1;
+  final urlInput = urlAnnot?.item1.path;
+
   logger.shout("Url Input $urlInput");
   var errorMessage = "";
   if (urlInput != null) {
@@ -406,7 +409,29 @@ Tuple3<String, String, Element?>? getUrlFromMethod(
       finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
           params: mparams, message: errorMessage, url: urlInput);
     }
-    return Tuple3(urlInput, finalUrl, urlAnnot?.item2);
+    return UrlInfo(
+      rawUrl: urlInput,
+      finalUrl: finalUrl,
+      nestedEleemnt: urlAnnot?.item2,
+    );
+  }
+}
+
+class UrlInfo {
+  final String rawUrl;
+  final String finalUrl;
+  final Element? nestedEleemnt;
+  final bool blockSameUrl;
+
+  UrlInfo(
+      {required this.rawUrl,
+      required this.finalUrl,
+      this.nestedEleemnt,
+      this.blockSameUrl = false});
+
+  @override
+  String toString() {
+    return 'UrlInfo(rawUrl: $rawUrl, finalUrl: $finalUrl, nestedEleemnt: $nestedEleemnt, blockSameUrl: $blockSameUrl)';
   }
 }
 

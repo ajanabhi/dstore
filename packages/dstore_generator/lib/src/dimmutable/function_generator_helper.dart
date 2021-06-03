@@ -13,7 +13,7 @@ Future<String> generateDImmutableFromFunction(
   }
   final dim = element.getDImmutableAnnotation();
   final className = element.name.substring(2);
-  final isJsonSerializable = false;
+  final isJsonSerializable = dim.isJsonSerializable;
   final tuple = AstUtils.getTypeParamsAndBounds(element.typeParameters);
   final typeParamsWithBounds = tuple.item2;
   final typeParams = tuple.item1;

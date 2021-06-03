@@ -28,20 +28,16 @@ class NavConfigMeta {
   Action? redirectToAction;
   Action?
       originAction; // let say user entered protected route ,then he will be redirected to login page ,after that instead of going to home page lets redirect to origin url
-  NavOptions? navOptions;
   // Action? initialStateAction; // only for nested navs
-  bool blockSameUrl;
   NavConfigMeta({
     this.beforeLeave,
     this.redirectToAction,
     this.originAction,
-    this.navOptions,
-    this.blockSameUrl = false,
   });
 
   @override
   String toString() {
-    return 'NavConfigMeta(beforeLeave: $beforeLeave, redirectToAction: $redirectToAction, originAction: $originAction, navOptions: $navOptions, )';
+    return 'NavConfigMeta(beforeLeave: $beforeLeave, redirectToAction: $redirectToAction, originAction: $originAction,, )';
   }
 }
 
@@ -65,7 +61,7 @@ class NavStateDontTouchMe {
 }
 
 abstract class NavCommonI {
-  Page? page;
+  late final Page? page;
   List<Page> buildPages() => [];
   Action notFoundAction(Uri uri);
   Action fallBackNestedStackNonInitializationAction(NavCommonI navState) {
@@ -122,9 +118,10 @@ void configureNav() {
 
 class NavOptions<E> {
   final HistoryUpdate? historyUpdate;
-  final bool reload;
+
+  final bool blockSameUrl;
   final E?
       extraOptions; // use this to pass extra options to navigation action , remember you should handle null case , because when user entered via url extraOptions will be null
 
-  NavOptions({this.historyUpdate, this.reload = false, this.extraOptions});
+  NavOptions({this.historyUpdate, this.blockSameUrl = true, this.extraOptions});
 }

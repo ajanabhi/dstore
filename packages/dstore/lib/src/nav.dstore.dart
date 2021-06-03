@@ -12,13 +12,18 @@ class NavPayload {
 
   final String? nestedNavTypeName;
 
+  final dynamic navOptions;
+
   final bool processedNested;
 
   _$NavPayloadCopyWith<NavPayload> get copyWith =>
       __$NavPayloadCopyWithImpl<NavPayload>(this, IdentityFn);
 
   const NavPayload(
-      {this.rawUrl, this.nestedNavTypeName, this.processedNested = false});
+      {this.rawUrl,
+      this.nestedNavTypeName,
+      required this.navOptions,
+      this.processedNested = false});
 
   @override
   bool operator ==(Object o) {
@@ -26,22 +31,30 @@ class NavPayload {
     return o is NavPayload &&
         o.rawUrl == rawUrl &&
         o.nestedNavTypeName == nestedNavTypeName &&
+        o.navOptions == navOptions &&
         o.processedNested == processedNested;
   }
 
   @override
   int get hashCode =>
-      rawUrl.hashCode ^ nestedNavTypeName.hashCode ^ processedNested.hashCode;
+      rawUrl.hashCode ^
+      nestedNavTypeName.hashCode ^
+      navOptions.hashCode ^
+      processedNested.hashCode;
 
   @override
   String toString() =>
-      "NavPayload(rawUrl: ${this.rawUrl}, nestedNavTypeName: ${this.nestedNavTypeName}, processedNested: ${this.processedNested})";
+      "NavPayload(rawUrl: ${this.rawUrl}, nestedNavTypeName: ${this.nestedNavTypeName}, navOptions: ${this.navOptions}, processedNested: ${this.processedNested})";
 }
 
 abstract class $NavPayloadCopyWith<O> {
   factory $NavPayloadCopyWith(NavPayload value, O Function(NavPayload) then) =
       _$NavPayloadCopyWithImpl<O>;
-  O call({String? rawUrl, String? nestedNavTypeName, bool processedNested});
+  O call(
+      {String? rawUrl,
+      String? nestedNavTypeName,
+      dynamic navOptions,
+      bool processedNested});
 }
 
 class _$NavPayloadCopyWithImpl<O> implements $NavPayloadCopyWith<O> {
@@ -53,12 +66,16 @@ class _$NavPayloadCopyWithImpl<O> implements $NavPayloadCopyWith<O> {
   O call(
       {Object? rawUrl = dimmutable,
       Object? nestedNavTypeName = dimmutable,
+      Object? navOptions = dimmutable,
       Object? processedNested = dimmutable}) {
     return _then(_value.copyWith(
         rawUrl: rawUrl == dimmutable ? _value.rawUrl : rawUrl as String?,
         nestedNavTypeName: nestedNavTypeName == dimmutable
             ? _value.nestedNavTypeName
             : nestedNavTypeName as String?,
+        navOptions: navOptions == dimmutable
+            ? _value.navOptions
+            : navOptions as dynamic,
         processedNested: processedNested == dimmutable
             ? _value.processedNested
             : processedNested as bool));
@@ -68,7 +85,11 @@ class _$NavPayloadCopyWithImpl<O> implements $NavPayloadCopyWith<O> {
 abstract class _$NavPayloadCopyWith<O> implements $NavPayloadCopyWith<O> {
   factory _$NavPayloadCopyWith(NavPayload value, O Function(NavPayload) then) =
       __$NavPayloadCopyWithImpl<O>;
-  O call({String? rawUrl, String? nestedNavTypeName, bool processedNested});
+  O call(
+      {String? rawUrl,
+      String? nestedNavTypeName,
+      dynamic navOptions,
+      bool processedNested});
 }
 
 class __$NavPayloadCopyWithImpl<O> extends _$NavPayloadCopyWithImpl<O>
@@ -83,12 +104,16 @@ class __$NavPayloadCopyWithImpl<O> extends _$NavPayloadCopyWithImpl<O>
   O call(
       {Object? rawUrl = dimmutable,
       Object? nestedNavTypeName = dimmutable,
+      Object? navOptions = dimmutable,
       Object? processedNested = dimmutable}) {
     return _then(NavPayload(
         rawUrl: rawUrl == dimmutable ? _value.rawUrl : rawUrl as String?,
         nestedNavTypeName: nestedNavTypeName == dimmutable
             ? _value.nestedNavTypeName
             : nestedNavTypeName as String?,
+        navOptions: navOptions == dimmutable
+            ? _value.navOptions
+            : navOptions as dynamic,
         processedNested: processedNested == dimmutable
             ? _value.processedNested
             : processedNested as bool));

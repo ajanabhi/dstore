@@ -29,7 +29,8 @@ void _handleAsyncAction<S extends AppStateI<S>>(
         internal: ActionInternal(
             processed: true,
             type: ActionInternalType.FIELD,
-            data: AsyncActionField(error: e, completed: true))));
+            data:
+                AsyncActionField(error: e, loading: false, completed: true))));
   }
 }
 

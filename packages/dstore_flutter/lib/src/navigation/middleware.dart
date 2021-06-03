@@ -5,13 +5,16 @@ void _handleNavAction<S extends AppStateI<S>>(
     Action action, Dispatch next, Store<S> store) async {
   print("field ${store.getFieldFromAction(action)}");
   final navPayload = action.nav!;
+  final navOptions = navPayload.navOptions as NavOptions?;
+
   print("navPayload $navPayload");
-  final navState = store.getPStateModelFromAction(action) as NavStateI;
+  final navState = store.getPStateModelFromAction(action) as NavCommonI;
   String? typeName;
   if (navState is NestedNavStateI) {
     typeName = navState.dontTouchMe.typeName;
   }
   final history = navState.dontTouchMe.hisotry;
+  history.urlUpdateMode = navOptions?.historyUpdate;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory} before leave ${history.beforeLeave}");
   final allowToLeave =
@@ -33,14 +36,17 @@ void _handleNavAction<S extends AppStateI<S>>(
     store.dispatch(a);
     return;
   }
-  if (!navState.meta.blockSameUrl || navState.meta.navOptions?.reload == true) {
+  final blockSameUrl = navOptions?.blockSameUrl ?? false;
+  if (!blockSameUrl) {
     //
     next(action);
     return;
   }
   final uri = Uri.parse(history.url);
-  if (uri.path == navState.dontTouchMe.url) {
+  print("path ${uri.path}");
+  if (blockSameUrl && uri.path == navState.dontTouchMe.url) {
     // do nothing
+    print("blocking same url reload for action $action");
   } else {
     next(action);
   }
