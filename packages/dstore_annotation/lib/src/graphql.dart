@@ -5,6 +5,7 @@ class GraphqlApi {
   final String? schemaPath;
   final String? cacheOnlineApiSchema;
   final String? wsUrl;
+  final Map<String, String>? headers;
   final Map<String, String>? scalarMap;
   final PersitantQueryMode? enablePersitantQueries;
   final CollectionEquality? collectionEquality;
@@ -14,6 +15,7 @@ class GraphqlApi {
       this.cacheOnlineApiSchema,
       this.schemaPath,
       this.wsUrl,
+      this.headers,
       this.revison,
       this.collectionEquality,
       this.enablePersitantQueries,
@@ -35,9 +37,9 @@ enum PersitantQueryMode { GET, POST }
 
 class GraphqlOps {
   final GraphqlApi api;
-  
+
   final String? revision;
-  const GraphqlOps(this.api, { this.revision});
+  const GraphqlOps(this.api, {this.revision});
 }
 
 class GraphqlOpsJS {

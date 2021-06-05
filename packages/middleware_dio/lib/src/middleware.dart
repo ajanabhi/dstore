@@ -84,13 +84,19 @@ void _handleDioError(
       errorType = HttpErrorType.ReceiveTimeout;
       break;
     case DioErrorType.response:
-      var re = e.response!.data;
-      print("Response Error $re");
-      if (meta?.errorDeserializer != null) {
-        re = meta?.errorDeserializer!(re.statusCode ?? 500, re);
+      if (e.response != null) {
+        var re = e.response!.data;
+        print("Response Error $re");
+        if (meta?.errorDeserializer != null) {
+          re = meta?.errorDeserializer!(re.statusCode ?? 500, re);
+        }
+        error = re;
+      } else {
+        error = null;
       }
+
       errorType = HttpErrorType.Response;
-      error = re;
+
       break;
     case DioErrorType.cancel:
       errorType = HttpErrorType.Aborted;

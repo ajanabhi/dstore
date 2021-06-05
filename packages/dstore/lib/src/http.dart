@@ -40,7 +40,7 @@ class HttpProgress {
 @DImmutable(toMap: true)
 void $_HttpField<I, R, E>(
     R? data,
-    E? error,
+    E? error, // always check for error type is null or not to find error is there or not ,in case of cors errors error will be null but errorType will not be null
     Map<String, String>? responseHeaders,
     int? status,
     HttpProgress? progress,

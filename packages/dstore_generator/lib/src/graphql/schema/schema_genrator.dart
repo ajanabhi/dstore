@@ -82,7 +82,10 @@ String _convertFieldDefinitionToDSL(
   final type = fType.baseTypeName;
   final isScalar = ft.fieldType is gschema.ScalarTypeDefinition;
   final args = f.args?.map((a) {
-        final an = a.name;
+        var an = a.name;
+        if (an == fn) {
+          an = "${an}_rename"; //TODO make yousure you removed suffix in vistors
+        }
         final type = _getInputTypeFromGraphqlType(a.type!, scalaraMap);
         final req = type.endsWith("?") ? "" : "required ";
         return "$req $type $an";
@@ -183,6 +186,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
   final scalarMap = gApi.getField("scalarMap")?.toMapValue()?.map(
       (key, value) => MapEntry(key!.toStringValue()!, value!.toStringValue()!));
   logger.shout("Scalar Map $scalarMap");
+  final headers = gApi.getStringMapForField("headers");
   return GraphqlApi(
       apiUrl: apiUrl,
       scalarMap: scalarMap,
@@ -190,6 +194,7 @@ GraphqlApi getGraphqlApi(DartObject? obj) {
       cacheOnlineApiSchema: cacheOnlineApiSchema,
       enablePersitantQueries: enablePersitantQueries,
       collectionEquality: collectionEquality,
+      headers: headers,
       wsUrl: wsUrl);
 }
 
@@ -255,8 +260,9 @@ Future<gschema.GraphQLSchema> getGraphqlSchemaFromApiUrl(
   print("Trying to get schema from url $url");
   try {
     final dio = Dio();
-    final resp =
-        await dio.post<dynamic>(url, data: {"query": getIntrospectionQuery()});
+    final resp = await dio.post<dynamic>(url,
+        options: Options(headers: graphqlApi.headers),
+        data: {"query": getIntrospectionQuery()});
     final respStr = jsonEncode(resp.data);
     if (cacheOnlineApi != null) {
       // cache api schema in local disk for offline usage

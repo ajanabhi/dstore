@@ -245,7 +245,7 @@ String convertHttpFieldInfoToAction(
   params.add("bool listenReceiveProgress = false");
   payloadFields.add("listenReceiveProgress:listenReceiveProgress");
   final mergeHeaders = hf.headers != null
-      ? "headers = <String,dynamic>{...<String,String>${hf.headers},...headers ?? <String,String>{}};"
+      ? "headers = <String,dynamic>{...headers ?? <String,String>{}};"
       : "";
 
   var psHistoryPayload = "";
