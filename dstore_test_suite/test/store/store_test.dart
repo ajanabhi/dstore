@@ -10,6 +10,8 @@ import "./pstates/http_pstate.dart" as httppstate;
 import "./pstates/websocket_pstate.dart" as websocketpstate;
 import "./pstates/stream_pstate.dart" as streampstate;
 import "./selectors/app_selectors.dart" as simpleselctor;
+import "./api/graphql/schema.dart" as graphqlschema;
+import "./database/firebase.dart" as firebaseschema;
 
 void main() {
   setUpAll(() async {
@@ -39,6 +41,8 @@ void main() {
   // simpleselctor.main();
   // websocketpstate.main();
   // streampstate.main();
+  graphqlschema.main();
+  firebaseschema.main();
   group('Store tests', () {
     test("should get appVersion from pubspec", () {
       expect(store.appVersion, "1.0.0");

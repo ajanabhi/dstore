@@ -4,7 +4,7 @@ enum HttpErrorType {
   Default,
   Response,
   Aborted,
-  ConnectTimeout,
+  ConnectTimeout, // offline
   SendTimeout,
   ReceiveTimeout
 }

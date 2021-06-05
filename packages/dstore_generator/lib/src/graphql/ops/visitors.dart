@@ -31,11 +31,16 @@ class DSLFieldsVisitor extends SimpleAstVisitor<Object> {
       throw ArgumentError.value(
           "You should provide inititalizer for  field $name");
     }
-    final op = field.initializer!.toSource();
-    if (op.startsWith("Query(") ||
-        op.startsWith("Mutation(") ||
-        op.startsWith("Subscription(")) {
+    final opSource = field.initializer!.toSource();
+    if (opSource.startsWith("Query(") ||
+        opSource.startsWith("Mutation(") ||
+        opSource.startsWith("Subscription(")) {
+      if (!opSource.substring(opSource.indexOf(")") + 1).startsWith("..")) {
+        throw ArgumentError.value(
+            "All graphql ops should use method method cascade to access properties , exmaple : Query()..field, Mutation()..field");
+      }
       final tn = "${className}_${name}";
+
       final visitor = DSLVisitor(opName: tn, apiUrl: api.apiUrl);
       field.initializer!.visitChildren(visitor);
       final query = "${visitor.query}\n }";

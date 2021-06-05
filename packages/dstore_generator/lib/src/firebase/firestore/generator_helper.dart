@@ -6,6 +6,7 @@ import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
 import 'package:dstore_generator/src/constants.dart';
 import 'package:dstore_generator/src/firebase/firestore/ops/visitors.dart';
+import 'package:dstore_generator/src/graphql/schema_source/generator_helper.dart';
 import 'package:dstore_generator/src/utils/utils.dart';
 import 'package:source_gen/source_gen.dart';
 import 'package:tuple/tuple.dart';
@@ -18,16 +19,17 @@ Future<String> generateFireStoreSchema(
   var nestedObjects = "";
   final schemaMeta = getFireStoreSchemaFromAnnotation(element);
   final collectionSecurityRules = <String>[];
+  print("firestore fields ${element.fields}");
   element.fields.forEach((f) {
     final name = f.name.toLowerCase();
-    if (name == "collections") {
+    if (name.toLowerCase() == "collections") {
       final ce = f.type.element as ClassElement;
       collectionModels = getModelsFromCollections(element: ce);
       collectionDsl = getDslFromCollections(
           element: ce, securityRules: collectionSecurityRules);
       collectionsRefs = getDefaultCollectionRefs(element: ce);
     }
-    if (name == "nestedObjects") {
+    if (name.toLowerCase() == "nestedobjects") {
       final ce = f.type.element as ClassElement;
       nestedObjects = getNestedObjects(element: ce);
     }
@@ -71,7 +73,7 @@ String convertSecurityRuleToString(
   final match = rule?.match != null
       ? rule!.match
       : collectionName != null
-          ? "match /${collectionName}/{document}"
+          ? "/${collectionName}/{document}"
           : ""; // probbaly throw error
   final read = rule?.read != null ? "allow read: ${rule!.read};" : "";
   final write = rule?.write != null ? "allow write: ${rule!.write};" : "";
@@ -146,8 +148,10 @@ Tuple2<String, List<FieldElement>> getDefaultSecurityFunctions({
 }
 
 String getNestedObjects({required ClassElement element}) {
-  return element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+  assetItHasInterfacess(element);
+  return element.interfaces.where((e) => !e.isDartCoreObject).map((e) {
     final element = e.element;
+    print("generating for nested object ${element.name}");
     final className = element.name;
     final fields = ModelUtils.convertFieldElementsToFields(element.fields);
     var updateClass = "";
@@ -156,7 +160,9 @@ String getNestedObjects({required ClassElement element}) {
           .map((f) => f.copyWith(type: f.type.addQuestionMarkAtEnd))
           .toList();
       updateClass = ModelUtils.createDefaultDartUpdateModelFromFeilds(
-          fields: updateFields, className: className, isJsonSerializable: true);
+          fields: updateFields,
+          className: className + "Update",
+          isJsonSerializable: true);
     }
 
     return """
@@ -186,7 +192,8 @@ String getDefaultCollectionRefs({required ClassElement element}) {
 }
 
 String getModelsFromCollections({required ClassElement element}) {
-  return element.allSupertypes
+  assetItHasInterfacess(element);
+  return element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) => convertCollectionModelToDartModel(element: e.element))
       .join("\n");
@@ -347,6 +354,7 @@ SecurityRule convertDartObjectToSecurity(DartObject obj) {
   final read = reader.peek("read")?.stringValue;
   final match = reader.peek("match")?.stringValue;
   final update = reader.peek("update")?.stringValue;
+  final write = reader.peek("write")?.stringValue;
   final create = reader.peek("create")?.stringValue;
   final get = reader.peek("get")?.stringValue;
   final list = reader.peek("list")?.stringValue;
@@ -365,6 +373,7 @@ SecurityRule convertDartObjectToSecurity(DartObject obj) {
       match: match,
       update: update,
       create: create,
+      write: write,
       get: get,
       list: list,
       functions: functions,
@@ -420,7 +429,7 @@ String convertCollectionModelToDartDSLQuery(
     final type = f.type;
     final typeStr = type.toString();
     final sca = f.type.element?.annotationFromType(collection);
-
+    final t = type.toString().addQuestionMarkAtEnd;
     if (sca != null) {
       // sub collection field
       subCollectionFields.add(f);
@@ -435,10 +444,10 @@ String convertCollectionModelToDartDSLQuery(
     } else if (type.isDartCoreBool) {
       return """
        $queryClassName where_$name(
-          $type? isEqualTo,
-    $type? isNotEqualTo,
-    $type? whereIn,
-    $type? whereNotIn,
+          $t isEqualTo,
+    $t isNotEqualTo,
+    $t whereIn,
+    $t whereNotIn,
        ) {
 $CompileTimeError
        }
@@ -453,14 +462,14 @@ $CompileTimeError
       return """
        
        $queryClassName where_$name(
-          $type? isEqualTo,
-    $type? isNotEqualTo,
-    $type? isLessThan,
-    $type? isLessThanOrEqualTo,
-    $type? isGreaterThan,
-    $type? isGreaterThanOrEqualTo,
-    $type? whereIn,
-    $type? whereNotIn,
+          $t isEqualTo,
+    $t isNotEqualTo,
+    $t isLessThan,
+    $t isLessThanOrEqualTo,
+    $t isGreaterThan,
+    $t isGreaterThanOrEqualTo,
+    $t whereIn,
+    $t whereNotIn,
        ) {
 $CompileTimeError
        }

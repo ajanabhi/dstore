@@ -36,6 +36,7 @@ class Store<S extends AppStateI<S>> {
   late final NetworkOptions? networkOptions;
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
+  bool? networkStatus;
 
   PersitantStorage? get storage => storageOptions?.storage;
   Store(
@@ -76,6 +77,7 @@ class Store<S extends AppStateI<S>> {
 
   void _handleNetworkStatusChange(bool status) {
     print("status changed to $status");
+    this.networkStatus = status;
     if (status) {
       _processOfflineActions();
     }

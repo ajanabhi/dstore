@@ -233,8 +233,8 @@ class StoreTester<S extends AppStateI<S>> {
     final c = Completer<List<dynamic>>();
     final items = <dynamic>[];
     final wrapper = _StreamWrapper(action.stream!.stream);
-    store.dispatch(
-        action.copyWith(stream: StreamPayload(stream: wrapper.stream)));
+    store.dispatch(action.copyWith(
+        stream: StreamPayload<dynamic>(stream: wrapper.stream)));
 
     Timer? timeoutTimer;
     wrapper.sendNext();

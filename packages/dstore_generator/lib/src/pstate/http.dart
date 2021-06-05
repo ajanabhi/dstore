@@ -218,7 +218,7 @@ String convertHttpFieldInfoToAction(
   payloadFields.add("abortable: abortable");
   params.add("bool offline = false");
   payloadFields.add("offline: offline");
-  params.add("Map<String,dynamic>? headers");
+  params.add("Map<String,String>? headers");
   payloadFields.add("headers:headers");
   params.add("${hf.responseType}? optimisticResponse");
   payloadFields.add("optimisticResponse:optimisticResponse");
@@ -245,7 +245,7 @@ String convertHttpFieldInfoToAction(
   params.add("bool listenReceiveProgress = false");
   payloadFields.add("listenReceiveProgress:listenReceiveProgress");
   final mergeHeaders = hf.headers != null
-      ? "headers = <String,dynamic>{...headers ?? <String,String>{}};"
+      ? "headers = <String,String>{...headers ?? <String,String>{}};"
       : "";
 
   var psHistoryPayload = "";

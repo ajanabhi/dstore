@@ -12,7 +12,6 @@ class SimpleFormWidget extends StatelessWidget {
   static final slider1Key = ValueKey("simpleform_slider1");
   static final rangeSlider1Key = ValueKey("simpleform_range_slider");
   static final date1Key = ValueKey("simpleform_date1");
-  static final date1InnerKey = ValueKey("simpleform_date1_inner");
   const SimpleFormWidget({Key? key}) : super(key: key);
 
   @override
@@ -45,7 +44,6 @@ class SimpleFormWidget extends StatelessWidget {
                         key: rangeSlider1Key, name: SimpleFormKey.rangeSlider1),
                     DDatePicker(
                         key: date1Key,
-                        innerTextFieldKey: date1InnerKey,
                         name: SimpleFormKey.date1,
                         firstDate: DateTime(2021),
                         lastDate: DateTime(2021))

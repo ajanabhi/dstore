@@ -359,7 +359,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       String? optimisticResponse,
       HttpField<Null, String, String>? mock,
       Duration? debounce,
@@ -392,7 +392,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       helloJsonResponse? optimisticResponse,
       HttpField<Null, helloJsonResponse, String>? mock,
       Duration? debounce,
@@ -425,7 +425,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       List<int>? optimisticResponse,
       HttpField<Null, List<int>, String>? mock,
       Duration? debounce,
@@ -458,7 +458,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       String? optimisticResponse,
       HttpField<Null, String, String>? mock,
       Duration? debounce,
@@ -491,7 +491,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       helloJsonResponse? optimisticResponse,
       HttpField<Null, int, String>? mock,
       Duration? debounce,
@@ -524,7 +524,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       PaginationResponse? optimisticResponse,
       required PaginationPathParams pathParams,
       required PaginationQueryParams queryParams,
@@ -564,7 +564,7 @@ abstract class SimpleHttpActions {
           bool abortable = false,
           bool silent = false,
           bool offline = false,
-          Map<String, dynamic>? headers,
+          Map<String, String>? headers,
           JsonPostResponse? optimisticResponse,
           HttpField<JsonPostRequestBody, JsonPostResponse, String>? mock,
           Duration? debounce,
@@ -602,7 +602,7 @@ abstract class SimpleHttpActions {
           bool abortable = false,
           bool silent = false,
           bool offline = false,
-          Map<String, dynamic>? headers,
+          Map<String, String>? headers,
           FormUploadResponse? optimisticResponse,
           HttpField<FormUploadRequestBody, FormUploadResponse, String>? mock,
           Duration? debounce,
@@ -640,7 +640,7 @@ abstract class SimpleHttpActions {
           bool abortable = false,
           bool silent = false,
           bool offline = false,
-          Map<String, dynamic>? headers,
+          Map<String, String>? headers,
           UploadProgressResponse? optimisticResponse,
           HttpField<List<int>, UploadProgressResponse, String>? mock,
           Duration? debounce,
@@ -676,7 +676,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       List<int>? optimisticResponse,
       HttpField<Null, List<int>, String>? mock,
       Duration? debounce,
@@ -709,7 +709,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       String? optimisticResponse,
       HttpField<Null, String, String>? mock,
       Duration? debounce,
@@ -744,7 +744,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       LocalGraphqlOps_pingData? optimisticResponse,
       HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
               List<GraphqlError>>?
@@ -752,7 +752,7 @@ abstract class SimpleHttpActions {
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{...headers ?? <String, String>{}};
+    headers = <String, String>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
                 List<GraphqlError>>>(
@@ -795,7 +795,7 @@ abstract class SimpleHttpActions {
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       LocalGraphqlOps_usersData? optimisticResponse,
       HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
               List<GraphqlError>>?
@@ -803,7 +803,7 @@ abstract class SimpleHttpActions {
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{...headers ?? <String, String>{}};
+    headers = <String, String>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
                 List<GraphqlError>>>(
@@ -891,7 +891,7 @@ name
       bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       LocalGraphqlOps_chnageNameWithVariablesData? optimisticResponse,
       HttpField<
               GraphqlRequestInput<
@@ -902,7 +902,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{...headers ?? <String, String>{}};
+    headers = <String, String>{...headers ?? <String, String>{}};
     return Action<
             HttpField<
                 GraphqlRequestInput<
@@ -965,7 +965,7 @@ name
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       LocalGraphqlOps_errorQData? optimisticResponse,
       HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
               List<GraphqlError>>?
@@ -973,7 +973,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{...headers ?? <String, String>{}};
+    headers = <String, String>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
                 List<GraphqlError>>>(
@@ -1016,7 +1016,7 @@ name
       {bool abortable = false,
       bool silent = false,
       bool offline = false,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       LocalGraphqlOps_addMessageData? optimisticResponse,
       HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_addMessageData,
               List<GraphqlError>>?
@@ -1024,7 +1024,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{...headers ?? <String, String>{}};
+    headers = <String, String>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_addMessageData,
                 List<GraphqlError>>>(

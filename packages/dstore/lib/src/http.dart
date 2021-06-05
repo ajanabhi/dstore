@@ -41,6 +41,7 @@ class HttpProgress {
 void $_HttpField<I, R, E>(
     R? data,
     E? error, // always check for error type is null or not to find error is there or not ,in case of cors errors error will be null but errorType will not be null
+    dynamic genericError,
     Map<String, String>? responseHeaders,
     int? status,
     HttpProgress? progress,
@@ -78,7 +79,7 @@ class $_HttpPayload<PP, QP, I, R, E, T> {
   late R? optimisticResponse;
   int? optimisticHttpStatus;
   bool offline = false;
-  Map<String, dynamic>? headers;
+  Map<String, String>? headers;
   QP? queryParams;
   PP? pathParams;
   int? sendTimeout;
@@ -112,7 +113,7 @@ class $_HttpPayload<PP, QP, I, R, E, T> {
     if (inputTypeS != null) {
       inputType = HttpInputTypeExt.fromValue(inputTypeS);
     }
-    final headers = map["headers"] as Map<String, dynamic>?;
+    final headers = map["headers"] as Map<String, String>?;
     var queryParamsObj = map["queryParams"] as Map<String, dynamic>?;
     QP? queryParams;
     if (queryParamsObj != null) {
@@ -204,7 +205,7 @@ class $_HttpPayload<PP, QP, I, R, E, T> {
 }
 
 class GlobalHttpOptions {
-  Map<String, dynamic> headers;
+  Map<String, String> headers;
 
-  GlobalHttpOptions({this.headers = const <String, dynamic>{}});
+  GlobalHttpOptions({this.headers = const <String, String>{}});
 }

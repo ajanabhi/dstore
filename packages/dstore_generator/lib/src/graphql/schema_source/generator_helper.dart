@@ -33,7 +33,7 @@ Future<String> generateSchema(
       .element;
   var enumNames = <String>[];
   if (enumF != null && enumF is ClassElement) {
-    enumNames = enumF.allSupertypes
+    enumNames = enumF.interfaces
         .where((element) => !element.isDartCoreObject)
         .map((e) => e.getDisplayString(withNullability: false))
         .toList();
@@ -170,15 +170,25 @@ Tuple2<String, String> getObjects(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return _getFinalTuple(element.allSupertypes
+  assetItHasInterfacess(element);
+  return _getFinalTuple(element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) => convertDartInterfaceTypeToObject(
           it: e, database: schema.database, enumNames: enumNames)));
 }
 
+void assetItHasInterfacess(ClassElement element) {
+  if (element.interfaces.isEmpty) {
+    throw ArgumentError.value(
+        "${element.name} should have interfaces , not mixins or extends");
+  }
+}
+
 Tuple2<String, String> getUnions(
     {required ClassElement element, required GraphqlSchemaSource schema}) {
-  return _getFinalTuple(element.allSupertypes
+  assetItHasInterfacess(element);
+  print("allSuperTypes of unions ${element.interfaces}");
+  return _getFinalTuple(element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
           convertDartInterfaceTypeToUnions(it: e, database: schema.database)));
@@ -188,7 +198,9 @@ Tuple2<String, String> getEnums(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
-  return _getFinalTuple(element.allSupertypes
+  assetItHasInterfacess(element);
+  assetItHasInterfacess(element);
+  return _getFinalTuple(element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) =>
           convertDartInterfaceTypeToEnum(it: e, database: schema.database)));
@@ -198,8 +210,9 @@ Tuple2<String, String> getInterfaces(
     {required ClassElement element,
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
+  assetItHasInterfacess(element);
   return _getFinalTuple(
-      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+      element.interfaces.where((e) => !e.isDartCoreObject).map((e) {
     return convertDartInterfaceTypeToInterface(
         it: e, database: schema.database, enumNames: enumNames);
   }));
@@ -220,7 +233,7 @@ Tuple2<String, String> getInputs(
     required GraphqlSchemaSource schema,
     required List<String> enumNames}) {
   return _getFinalTuple(
-      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+      element.interfaces.where((e) => !e.isDartCoreObject).map((e) {
     return convertDartInterfaceTypeToInput(
         it: e, database: schema.database, enumNames: enumNames);
   }));
@@ -233,7 +246,7 @@ Tuple2<String, String> convertDartInterfaceTypeToObject(
   final element = it.element;
   final name = element.name;
 
-  final interfaces = element.allSupertypes
+  final interfaces = element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) => e.element.name)
       .join(", ");
@@ -275,12 +288,13 @@ Tuple2<String, String> convertDartInterfaceTypeToUnions(
   final element = it.element;
   final name = element.name;
 
-  final objects = element.allSupertypes
+  final objects = element.interfaces
       .where((e) => !e.isDartCoreObject)
       .map((e) => e.element.name)
       .join(" | ");
+  print("union objects $objects");
   final unionGetters =
-      element.allSupertypes.where((e) => !e.isDartCoreObject).map((e) {
+      element.interfaces.where((e) => !e.isDartCoreObject).map((e) {
     final name = e.getDisplayString(withNullability: false);
     final gname = "${name.substring(0, 1)}${name.substring(1)}";
     return "$name? get $gname => typename == '$name' ? this as $name : null; ";

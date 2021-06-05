@@ -51,6 +51,7 @@ enum GraphqlDatabase { dgraph }
 
 typedef SchemaUploadFn = Future<String> Function(String schema);
 
+// supported fields objects,inputs,interfaces,unions,enums
 class GraphqlSchemaSource {
   final String path;
   final String? lambdaSourceFile;

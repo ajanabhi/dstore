@@ -12,6 +12,8 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
 
   final E? error;
 
+  final dynamic genericError;
+
   final Map<String, String>? responseHeaders;
 
   final int? status;
@@ -36,6 +38,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
   const HttpField(
       {this.data,
       this.error,
+      required this.genericError,
       this.responseHeaders,
       this.status,
       this.progress,
@@ -52,6 +55,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
     return o is HttpField &&
         o.data == data &&
         o.error == error &&
+        o.genericError == genericError &&
         o.responseHeaders == responseHeaders &&
         o.status == status &&
         o.progress == progress &&
@@ -67,6 +71,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
   int get hashCode =>
       data.hashCode ^
       error.hashCode ^
+      genericError.hashCode ^
       responseHeaders.hashCode ^
       status.hashCode ^
       progress.hashCode ^
@@ -80,6 +85,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
   Map<String, dynamic> toMap() => <String, dynamic>{
         "data": this.data,
         "error": this.error,
+        "genericError": this.genericError,
         "responseHeaders": this.responseHeaders,
         "status": this.status,
         "progress": this.progress,
@@ -96,7 +102,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
 
   @override
   String toString() =>
-      "HttpField(data: ${this.data}, error: ${this.error}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, errorType: ${this.errorType}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";
+      "HttpField(data: ${this.data}, error: ${this.error}, genericError: ${this.genericError}, responseHeaders: ${this.responseHeaders}, status: ${this.status}, progress: ${this.progress}, errorType: ${this.errorType}, abortController: ${this.abortController}, optimistic: ${this.optimistic}, loading: ${this.loading}, completed: ${this.completed}, offline: ${this.offline})";
 }
 
 abstract class $HttpFieldCopyWith<I, R, E, O> {
@@ -106,6 +112,7 @@ abstract class $HttpFieldCopyWith<I, R, E, O> {
   O call(
       {R? data,
       E? error,
+      dynamic genericError,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
@@ -127,6 +134,7 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
   O call(
       {Object? data = dimmutable,
       Object? error = dimmutable,
+      Object? genericError = dimmutable,
       Object? responseHeaders = dimmutable,
       Object? status = dimmutable,
       Object? progress = dimmutable,
@@ -139,6 +147,9 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
     return _then(_value.copyWith(
         data: data == dimmutable ? _value.data : data as R?,
         error: error == dimmutable ? _value.error : error as E?,
+        genericError: genericError == dimmutable
+            ? _value.genericError
+            : genericError as dynamic,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,
@@ -169,6 +180,7 @@ abstract class _$HttpFieldCopyWith<I, R, E, O>
   O call(
       {R? data,
       E? error,
+      dynamic genericError,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
@@ -194,6 +206,7 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
   O call(
       {Object? data = dimmutable,
       Object? error = dimmutable,
+      Object? genericError = dimmutable,
       Object? responseHeaders = dimmutable,
       Object? status = dimmutable,
       Object? progress = dimmutable,
@@ -206,6 +219,9 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
     return _then(HttpField(
         data: data == dimmutable ? _value.data : data as R?,
         error: error == dimmutable ? _value.error : error as E?,
+        genericError: genericError == dimmutable
+            ? _value.genericError
+            : genericError as dynamic,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,
@@ -502,7 +518,7 @@ class HttpPayload<PP, QP, I, R, E, T> {
 
   final bool offline;
 
-  final Map<String, dynamic>? headers;
+  final Map<String, String>? headers;
 
   final QP? queryParams;
 
@@ -563,7 +579,7 @@ class HttpPayload<PP, QP, I, R, E, T> {
     if (inputTypeS != null) {
       inputType = HttpInputTypeExt.fromValue(inputTypeS);
     }
-    final headers = map["headers"] as Map<String, dynamic>?;
+    final headers = map["headers"] as Map<String, String>?;
     var queryParamsObj = map["queryParams"] as Map<String, dynamic>?;
     QP? queryParams;
     if (queryParamsObj != null) {
@@ -705,7 +721,7 @@ abstract class $HttpPayloadCopyWith<PP, QP, I, R, E, T, O> {
       R? optimisticResponse,
       int? optimisticHttpStatus,
       bool offline,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       QP? queryParams,
       PP? pathParams,
       int? sendTimeout,
@@ -754,7 +770,7 @@ class _$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
         offline: offline == dimmutable ? _value.offline : offline as bool,
         headers: headers == dimmutable
             ? _value.headers
-            : headers as Map<String, dynamic>?,
+            : headers as Map<String, String>?,
         queryParams:
             queryParams == dimmutable ? _value.queryParams : queryParams as QP?,
         pathParams:
@@ -789,7 +805,7 @@ abstract class _$HttpPayloadCopyWith<PP, QP, I, R, E, T, O>
       R? optimisticResponse,
       int? optimisticHttpStatus,
       bool offline,
-      Map<String, dynamic>? headers,
+      Map<String, String>? headers,
       QP? queryParams,
       PP? pathParams,
       int? sendTimeout,
@@ -842,7 +858,7 @@ class __$HttpPayloadCopyWithImpl<PP, QP, I, R, E, T, O>
         offline: offline == dimmutable ? _value.offline : offline as bool,
         headers: headers == dimmutable
             ? _value.headers
-            : headers as Map<String, dynamic>?,
+            : headers as Map<String, String>?,
         queryParams:
             queryParams == dimmutable ? _value.queryParams : queryParams as QP?,
         pathParams:
