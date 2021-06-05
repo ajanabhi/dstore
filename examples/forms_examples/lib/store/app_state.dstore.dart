@@ -22,7 +22,7 @@ class AppState implements AppStateI<AppState> {
 Store<AppState> createStore(
     {required StoreErrorHandle handleError,
     List<Middleware<AppState>>? middlewares,
-    StorageOptions<dynamic>? storageOptions,
+    StorageOptions? storageOptions,
     NetworkOptions? networkOptions,
     bool useEqualsComparision = false}) {
   return Store<AppState>(

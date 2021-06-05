@@ -87,10 +87,7 @@ const _FormState_FullPath = "/store/pstates/form_state/FormState";
 abstract class FormStateActions {
   static Action<dynamic> simpleForm(FormReq req) {
     return Action<dynamic>(
-        name:
-            "Field(Name : simpleForm Type : FormField<SimpleForm> Value : FormField(value: SimpleForm(), validators: {}) isOptional : false annotations : [] isNamed: false).name}",
-        type: _FormState_FullPath,
-        form: req);
+        name: "simpleForm", type: _FormState_FullPath, form: req);
   }
 }
 

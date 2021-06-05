@@ -37,7 +37,7 @@ class HomePage extends StatelessWidget {
                   height: 50,
                 ),
                 Text("Simple Form"),
-                SimpleDForm(ff: state.simpleForm!)
+                SimpleDForm(ff: state.simpleForm)
               ],
             ),
           ),

@@ -53,8 +53,12 @@ class _DRadioFieldState<FieldKey, RadioEnum>
   void initState() {
     super.initState();
     if (kDebugMode) {
+      final value = DStoreUtils.isEnum(widget.name);
       if (!DStoreUtils.isEnum(widget.name)) {
         throw ArgumentError.value("${widget.name} should be an enum ");
+      }
+      if (!DStoreUtils.isEnum(widget.value)) {
+        throw ArgumentError.value("${widget.value} should be an enum ");
       }
     }
   }

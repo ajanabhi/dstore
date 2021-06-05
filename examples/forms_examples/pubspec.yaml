@@ -32,7 +32,7 @@ dependencies:
     path: ../../packages/dstore/
   dstore_flutter:
     path: ../../packages/dstore_flutter/
-  middleware_dio:
+  dstore_middleware_dio:
     path: ../../packages/middleware_dio/ 
   meta:
       
@@ -86,3 +86,6 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+dependency_overrides:
+  meta: 
