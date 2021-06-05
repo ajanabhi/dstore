@@ -752,10 +752,7 @@ abstract class SimpleHttpActions {
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
+    headers = <String, dynamic>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_pingData,
                 List<GraphqlError>>>(
@@ -806,10 +803,7 @@ abstract class SimpleHttpActions {
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
+    headers = <String, dynamic>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_usersData,
                 List<GraphqlError>>>(
@@ -908,10 +902,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
+    headers = <String, dynamic>{...headers ?? <String, String>{}};
     return Action<
             HttpField<
                 GraphqlRequestInput<
@@ -982,10 +973,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
+    headers = <String, dynamic>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_errorQData,
                 List<GraphqlError>>>(
@@ -1036,10 +1024,7 @@ name
       Duration? debounce,
       bool listenSendProgress = false,
       bool listenReceiveProgress = false}) {
-    headers = <String, dynamic>{
-      ...<String, String>{"Content_Type": "applications/josn"},
-      ...headers ?? <String, String>{}
-    };
+    headers = <String, dynamic>{...headers ?? <String, String>{}};
     return Action<
             HttpField<GraphqlRequestInput<Null>, LocalGraphqlOps_addMessageData,
                 List<GraphqlError>>>(

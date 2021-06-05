@@ -39,12 +39,15 @@ void main() {
       expect(store.state.simpleFormPS.simpleForm.value.rangeSlider1,
           RangeValues(0.2, 0.6329787234042553));
       expect(find.byKey(SimpleFormWidget.date1Key), findsOneWidget);
+      expect(find.byKey(SimpleFormWidget.date1InnerKey), findsOneWidget);
       //TODO test date picker
-      // await tester.tap(find.byKey(SimpleFormWidget.date1Key));
-      // await tester.pumpAndSettle(const Duration(seconds: 3));
-      // await tester.tap(find.text("15"));
-      // await tester.tap(find.text("OK"));
-      // expect(store.state.simpleFormPS.simpleForm.value.date1, DateTime.now());
+
+      await tester.tap(find.byKey(SimpleFormWidget.date1InnerKey));
+      await tester.pumpAndSettle(const Duration(seconds: 3));
+      // debugDumpApp();
+      await tester.tap(find.text("15"));
+      await tester.tap(find.text("OK"));
+      expect(store.state.simpleFormPS.simpleForm.value.date1, DateTime.now());
     });
   });
 }
