@@ -25,6 +25,8 @@ dependencies:
 dev_dependencies:
   test: ^1.14.4
   build_runner: ^2.0.4
+  flutter_test:
+    sdk: flutter
   json_serializable: 
     path: ../../json_serializable.dart/json_serializable  
   dstore_generator:

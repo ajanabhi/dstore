@@ -183,13 +183,12 @@ class SelectorsVisitor extends SimpleAstVisitor<dynamic> {
   bool _isWebSocketFieldType(DartType type) {
     print("_isWebSocketFieldType $type ${type.element.runtimeType}");
     final element = type.element;
+    print("websocket selector eleemnt type ${element.runtimeType}");
     if (!(element is ClassElement)) {
       return false;
     }
     print(element.allSupertypes);
-    return element.allSupertypes.any((st) => st
-        .getDisplayString(withNullability: true)
-        .startsWith("WebSocketField<"));
+    return element.name.startsWith("WebSocketField<");
   }
 
   void mergeDeps(

@@ -3,13 +3,17 @@ import 'package:dstore_middleware_dio/middleware_dio.dart';
 import 'package:dstore_middleware_websocket/middleware_websocket.dart';
 import 'package:dstore_test/dstore_test.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/selectors/simple_flutter_selectors.dart';
+import 'package:dstore_test_suite/src/store/pstates/selectors/simple_selector_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_async_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/simple_form_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_history_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persist2.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persist3_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persist_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_persitance_migratorps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/stream/simple_stream_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/websocket/websocket_ps.dart';
 
 part "app_state.dstore.dart";
@@ -24,7 +28,11 @@ void $_AppState(
     SimplePersist3 simplePersist3,
     SimplePersitanceMigrator simplePersitanceMigrator,
     SimpleHttp simpleHttp,
-    SimpleWebsocket simpleWebsocket) {}
+    SimpleWebsocket simpleWebsocket,
+    SimpleStreamPS streamPS,
+    SimpleFlutterSelectors simpleFlutterSelector,
+    SimpleSelectorPS simpleSelectorPS,
+    SimpleFormPS simpleFormPS) {}
 
 final networkListener = TempNetworkStatusListener();
 
@@ -34,6 +42,7 @@ final store = createStore(
     },
     middlewares: [
       tempOfflineMiddleware,
+      formMiddleware,
       createDioMiddleware<AppState>(),
       createWebsocketMiddleware()
     ],

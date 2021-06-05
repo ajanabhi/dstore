@@ -362,7 +362,7 @@ String _generateActionsCreators({
   final mockModels = <String>[];
   final methodActions = methods.map((m) {
     final paramsList = m.params.map((p) {
-      if (!p.isOptional) {
+      if (!p.type.endsWith("?")) {
         return "required ${p.type} ${p.name}";
       } else {
         final defaultValue = p.value != null ? "= ${p.value}" : "";

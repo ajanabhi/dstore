@@ -84,6 +84,7 @@ class DWebSocket {
   late final Store store;
   bool isReady = false;
   var subscriptions = <Action>[];
+  var unsubscriptions = <Action>[];
   final queue = <Action>[];
   bool isForceClose = false;
   late final WebSocketChannel ws;
@@ -167,12 +168,13 @@ class DWebSocket {
   }
 
   void cleanup(dynamic error) {
-    [...subscriptions, ...queue].forEach((a) {
+    [...subscriptions, ...queue, ...unsubscriptions].forEach((a) {
       final field = store.getFieldFromAction(a) as WebSocketField;
       _dispatchActionToStore(a, field.copyWith(error: error, completed: true));
     });
     subscriptions.clear();
     queue.clear();
+    unsubscriptions.clear();
     isReady = false;
     _error = null;
   }
@@ -189,7 +191,7 @@ class DWebSocket {
       final list = options.parseMessage!(data);
       final rData = list.first as WebSocketField;
       final id = list.last as String;
-      final a = _getActionFromId(id);
+      final a = _getActiveSubscriptionActionFromId(id);
       if (a != null) {
         _dispatchActionToStore(a, rData);
       }
@@ -221,7 +223,8 @@ class DWebSocket {
         // TODO: Handle this case.
         break;
       case GraphqlMessages.stop:
-        // TODO: Handle this case.
+        print("got graphql subscription stop signal");
+        // TODO: Handle this case. see if we're getting stop signal
         break;
       case GraphqlMessages.connection_terminate:
         // TODO: Handle this case.
@@ -229,7 +232,7 @@ class DWebSocket {
       case GraphqlMessages.data:
         // This message is sent after GQL.START to transfer the result of the GraphQL subscription.
         final id = data["id"] as String;
-        final a = _getActionFromId(id);
+        final a = _getActiveSubscriptionActionFromId(id);
 
         if (a != null) {
           final pError =
@@ -252,7 +255,7 @@ class DWebSocket {
         // This method is sent when a subscription fails. This is usually dues to validation errors
         // as resolver errors are returned in GQL.DATA messages.
         final id = data["id"] as String;
-        final a = _getActionFromId(id);
+        final a = _getActiveSubscriptionActionFromId(id);
         if (a != null) {
           final field = store.getFieldFromAction(a) as WebSocketField;
           _dispatchActionToStore(a, field.copyWith(error: data["payload"]));
@@ -261,11 +264,13 @@ class DWebSocket {
         break;
       case GraphqlMessages.complete:
         // This is sent when the operation is done and no more dta will be sent.
-        final ac = _getActionFromId(data["id"] as String);
+        print("graphql subscription completed");
+        final id = data["id"] as String;
+        var ac = _getActiveSubscriptionActionFromId(id, removeFromList: true);
+        ac = ac ?? _getActiveUnsubscriptionFromId(id);
         if (ac != null) {
           final field = store.getFieldFromAction(ac) as WebSocketField;
           _dispatchActionToStore(ac, field.copyWith(completed: true));
-          removeFromSubscriptions(ac);
         }
         break;
       case GraphqlMessages.ka:
@@ -318,12 +323,20 @@ class DWebSocket {
             type: ActionInternalType.FIELD)));
   }
 
-  bool removeFromSubscriptions(Action action) {
-    final prevLength = subscriptions.length;
-    subscriptions = subscriptions
-        .where((sa) => sa.name != action.name && sa.type != action.type)
-        .toList();
-    return prevLength != subscriptions.length;
+  bool removeFromSubscriptions(Action action,
+      {bool addToUnSubscriptions = false}) {
+    var result = false;
+    subscriptions.removeWhere((a) {
+      if (a.id == action.id) {
+        if (addToUnSubscriptions) {
+          unsubscriptions.add(a);
+        }
+        result = true;
+        return true;
+      }
+      return false;
+    });
+    return result;
   }
 
   void handleGlobalAction(Action action) {
@@ -335,30 +348,50 @@ class DWebSocket {
     }
   }
 
-  Action? _getActionFromId(String id) {
-    Action? action;
-    try {
-      action = subscriptions.firstWhere((element) {
-        final aid = getId(element);
-        return aid == id;
+  Action? _getActiveSubscriptionActionFromId(String id,
+      {bool removeFromList = false}) {
+    Action? result;
+    if (removeFromList) {
+      subscriptions.removeWhere((element) {
+        if (element.id == id) {
+          result = element;
+          return true;
+        }
+        return false;
       });
-    } catch (e) {
-      // state Error , meaning no action in subscriptions list
+      return result;
     }
 
-    return action;
+    return subscriptions.firstWhereOrNull((element) => element.id == id);
   }
 
-  String getId(Action a) {
-    return "${a.type.hashCode}.${a.name}";
+  Action? _getActiveUnsubscriptionFromId(String id) {
+    Action? result;
+    unsubscriptions.removeWhere((element) {
+      if (element.id == id) {
+        result = element;
+        return true;
+      }
+      return false;
+    });
+    return result;
   }
+
+  // String getId(Action a) {
+  //   return "${a.type.hashCode}.${a.name}";
+  // }
 
   void handleUnsubscribe(Action action) {
-    final isRemoved = removeFromSubscriptions(action);
+    final isRemoved =
+        removeFromSubscriptions(action, addToUnSubscriptions: true);
+    print("isRemoved $isRemoved");
     if (isRemoved) {
-      final id = getId(action);
+      final id = action.id;
       if (isGraphql) {
-        ws.sink.add(jsonEncode({"type": GraphqlMessages.stop.name, "id": id}));
+        final message =
+            jsonEncode({"type": GraphqlMessages.stop.name, "id": id});
+        print("sending graphqlunsubscribe message $message");
+        ws.sink.add(message);
       }
     }
     //TODO check if this sends a complete event.
@@ -378,6 +411,7 @@ class DWebSocket {
       return handleGlobalAction(action);
     } else {
       if (wsp.unsubscribe) {
+        print("unsubscribing action $action");
         handleUnsubscribe(action);
         return;
       }
@@ -387,8 +421,8 @@ class DWebSocket {
         queue.add(action);
         return;
       }
-      final id = getId(action);
-      final sa = _getActionFromId(id);
+      final id = action.id;
+      final sa = _getActiveSubscriptionActionFromId(id);
       dynamic payload = wsp.data;
       if (wsp.inputSerializer != null) {
         payload = wsp.inputSerializer!(payload);

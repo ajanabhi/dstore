@@ -23,4 +23,6 @@ export "package:collection/collection.dart"
         SetEquality,
         MapEquality,
         IterableEquality,
+        IterableExtension,
+        ListExtensions,
         DeepCollectionEquality;

@@ -34,7 +34,9 @@ abstract class $_Action<M> {
   M? mock;
   FormReq? form;
   DateTime? offlinedAt;
+  bool Function(PStateModel ps)? beforeStateUpdate;
   bool get isProcessed => internal?.processed ?? false;
+
   // currently only http actions support offline functionality
   Map<String, dynamic> toJson({HttpMeta? httpMeta}) {
     final map = <String, dynamic>{};

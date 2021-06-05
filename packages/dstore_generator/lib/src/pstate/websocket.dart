@@ -107,7 +107,8 @@ String convertWebSocketFieldInfoToAction(
     }
     payloadParams.add("data: GraphqlRequestInput(${gparams.join(", ")})");
   } else {
-    params.add("${wsi.inputType} data");
+    final req = wsi.inputType.endsWith("?") ? "" : "required";
+    params.add("$req ${wsi.inputType} data");
     payloadParams.add("data: data");
   }
 

@@ -8,6 +8,8 @@ import "./pstates/history_pstate.dart" as historypstate;
 import "./pstates/perssit_pstate.dart" as persistpstate;
 import "./pstates/http_pstate.dart" as httppstate;
 import "./pstates/websocket_pstate.dart" as websocketpstate;
+import "./pstates/stream_pstate.dart" as streampstate;
+import "./selectors/app_selectors.dart" as simpleselctor;
 
 void main() {
   setUpAll(() async {
@@ -34,7 +36,9 @@ void main() {
   // historypstate.main();
   // persistpstate.main();
   // httppstate.main();
-  websocketpstate.main();
+  // simpleselctor.main();
+  // websocketpstate.main();
+  // streampstate.main();
   group('Store tests', () {
     test("should get appVersion from pubspec", () {
       expect(store.appVersion, "1.0.0");

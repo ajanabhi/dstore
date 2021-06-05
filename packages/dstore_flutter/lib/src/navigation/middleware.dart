@@ -44,11 +44,16 @@ void _handleNavAction<S extends AppStateI<S>>(
   }
   final uri = Uri.parse(history.url);
   print("path ${uri.path}");
-  if (blockSameUrl && uri.path == navState.dontTouchMe.url) {
+  if (blockSameUrl) {
     // do nothing
-    print("blocking same url reload for action $action");
-  } else {
-    next(action);
+    next(action.copyWith(beforeStateUpdate: (cs) {
+      final csNav = cs as NavCommonI;
+      if (uri.path == csNav.dontTouchMe.url) {
+        print("blocking same url");
+        return false;
+      }
+      return true;
+    }));
   }
 }
 

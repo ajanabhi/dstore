@@ -91,8 +91,10 @@ class WebSocketFieldInfo {
 class StreamFieldInfo {
   final String outputType;
   final String name;
+  final String errorType;
 
-  StreamFieldInfo({required this.name, required this.outputType});
+  StreamFieldInfo(
+      {required this.name, required this.outputType, required this.errorType});
 }
 
 class PStateMethod {

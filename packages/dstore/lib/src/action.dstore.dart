@@ -112,6 +112,8 @@ class Action<M> {
 
   final DateTime? offlinedAt;
 
+  final bool Function(PStateModel ps)? beforeStateUpdate;
+
   _$ActionCopyWith<M, Action<M>> get copyWith =>
       __$ActionCopyWithImpl<M, Action<M>>(this, IdentityFn);
 
@@ -132,7 +134,8 @@ class Action<M> {
       this.silent = false,
       this.mock,
       this.form,
-      this.offlinedAt});
+      this.offlinedAt,
+      this.beforeStateUpdate});
 
   bool get isProcessed => internal?.processed ?? false;
   Map<String, dynamic> toJson({HttpMeta? httpMeta}) {
@@ -190,7 +193,8 @@ class Action<M> {
         o.silent == silent &&
         o.mock == mock &&
         o.form == form &&
-        o.offlinedAt == offlinedAt;
+        o.offlinedAt == offlinedAt &&
+        o.beforeStateUpdate == beforeStateUpdate;
   }
 
   @override
@@ -211,11 +215,12 @@ class Action<M> {
       silent.hashCode ^
       mock.hashCode ^
       form.hashCode ^
-      offlinedAt.hashCode;
+      offlinedAt.hashCode ^
+      beforeStateUpdate.hashCode;
 
   @override
   String toString() =>
-      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, nav: ${this.nav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, psHistoryPayload: ${this.psHistoryPayload}, stream: ${this.stream}, debounce: ${this.debounce}, afterComplete: ${this.afterComplete}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form}, offlinedAt: ${this.offlinedAt})";
+      "Action(name: ${this.name}, type: ${this.type}, isAsync: ${this.isAsync}, nav: ${this.nav}, payload: ${this.payload}, http: ${this.http}, ws: ${this.ws}, extra: ${this.extra}, internal: ${this.internal}, psHistoryPayload: ${this.psHistoryPayload}, stream: ${this.stream}, debounce: ${this.debounce}, afterComplete: ${this.afterComplete}, silent: ${this.silent}, mock: ${this.mock}, form: ${this.form}, offlinedAt: ${this.offlinedAt}, beforeStateUpdate: ${this.beforeStateUpdate})";
 }
 
 abstract class $ActionCopyWith<M, O> {
@@ -238,7 +243,8 @@ abstract class $ActionCopyWith<M, O> {
       bool silent,
       M? mock,
       FormReq? form,
-      DateTime? offlinedAt});
+      DateTime? offlinedAt,
+      bool Function(PStateModel ps)? beforeStateUpdate});
 }
 
 class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
@@ -264,7 +270,8 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable,
-      Object? offlinedAt = dimmutable}) {
+      Object? offlinedAt = dimmutable,
+      Object? beforeStateUpdate = dimmutable}) {
     return _then(_value.copyWith(
         name: name == dimmutable ? _value.name : name as String,
         type: type == dimmutable ? _value.type : type as String,
@@ -295,7 +302,10 @@ class _$ActionCopyWithImpl<M, O> implements $ActionCopyWith<M, O> {
         form: form == dimmutable ? _value.form : form as FormReq?,
         offlinedAt: offlinedAt == dimmutable
             ? _value.offlinedAt
-            : offlinedAt as DateTime?));
+            : offlinedAt as DateTime?,
+        beforeStateUpdate: beforeStateUpdate == dimmutable
+            ? _value.beforeStateUpdate
+            : beforeStateUpdate as bool Function(PStateModel ps)?));
   }
 }
 
@@ -319,7 +329,8 @@ abstract class _$ActionCopyWith<M, O> implements $ActionCopyWith<M, O> {
       bool silent,
       M? mock,
       FormReq? form,
-      DateTime? offlinedAt});
+      DateTime? offlinedAt,
+      bool Function(PStateModel ps)? beforeStateUpdate});
 }
 
 class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
@@ -348,7 +359,8 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
       Object? silent = dimmutable,
       Object? mock = dimmutable,
       Object? form = dimmutable,
-      Object? offlinedAt = dimmutable}) {
+      Object? offlinedAt = dimmutable,
+      Object? beforeStateUpdate = dimmutable}) {
     return _then(Action(
         name: name == dimmutable ? _value.name : name as String,
         type: type == dimmutable ? _value.type : type as String,
@@ -379,7 +391,10 @@ class __$ActionCopyWithImpl<M, O> extends _$ActionCopyWithImpl<M, O>
         form: form == dimmutable ? _value.form : form as FormReq?,
         offlinedAt: offlinedAt == dimmutable
             ? _value.offlinedAt
-            : offlinedAt as DateTime?));
+            : offlinedAt as DateTime?,
+        beforeStateUpdate: beforeStateUpdate == dimmutable
+            ? _value.beforeStateUpdate
+            : beforeStateUpdate as bool Function(PStateModel ps)?));
   }
 }
 

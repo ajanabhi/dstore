@@ -17,6 +17,10 @@ class AppState implements AppStateI<AppState> {
   late final SimplePersitanceMigrator simplePersitanceMigrator;
   late final SimpleHttp simpleHttp;
   late final SimpleWebsocket simpleWebsocket;
+  late final SimpleStreamPS streamPS;
+  late final SimpleFlutterSelectors simpleFlutterSelector;
+  late final SimpleSelectorPS simpleSelectorPS;
+  late final SimpleFormPS simpleFormPS;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..simple = map.containsKey('simple') ? map['simple'] as Simple : this.simple
@@ -43,7 +47,19 @@ class AppState implements AppStateI<AppState> {
         : this.simpleHttp
     ..simpleWebsocket = map.containsKey('simpleWebsocket')
         ? map['simpleWebsocket'] as SimpleWebsocket
-        : this.simpleWebsocket;
+        : this.simpleWebsocket
+    ..streamPS = map.containsKey('streamPS')
+        ? map['streamPS'] as SimpleStreamPS
+        : this.streamPS
+    ..simpleFlutterSelector = map.containsKey('simpleFlutterSelector')
+        ? map['simpleFlutterSelector'] as SimpleFlutterSelectors
+        : this.simpleFlutterSelector
+    ..simpleSelectorPS = map.containsKey('simpleSelectorPS')
+        ? map['simpleSelectorPS'] as SimpleSelectorPS
+        : this.simpleSelectorPS
+    ..simpleFormPS = map.containsKey('simpleFormPS')
+        ? map['simpleFormPS'] as SimpleFormPS
+        : this.simpleFormPS;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
         "simple": this.simple,
@@ -54,7 +70,11 @@ class AppState implements AppStateI<AppState> {
         "simplePersist3": this.simplePersist3,
         "simplePersitanceMigrator": this.simplePersitanceMigrator,
         "simpleHttp": this.simpleHttp,
-        "simpleWebsocket": this.simpleWebsocket
+        "simpleWebsocket": this.simpleWebsocket,
+        "streamPS": this.streamPS,
+        "simpleFlutterSelector": this.simpleFlutterSelector,
+        "simpleSelectorPS": this.simpleSelectorPS,
+        "simpleFormPS": this.simpleFormPS
       };
 }
 
@@ -74,7 +94,11 @@ Store<AppState> createStore(
         "simplePersist3": SimplePersist3Meta,
         "simplePersitanceMigrator": SimplePersitanceMigratorMeta,
         "simpleHttp": SimpleHttpMeta,
-        "simpleWebsocket": SimpleWebsocketMeta
+        "simpleWebsocket": SimpleWebsocketMeta,
+        "streamPS": SimpleStreamPSMeta,
+        "simpleFlutterSelector": SimpleFlutterSelectorsMeta,
+        "simpleSelectorPS": SimpleSelectorPSMeta,
+        "simpleFormPS": SimpleFormPSMeta
       },
       stateCreator: () => AppState(),
       appVersion: '1.0.0',

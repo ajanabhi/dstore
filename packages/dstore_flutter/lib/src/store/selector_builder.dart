@@ -65,7 +65,9 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
             widget.shouldRebuild?.call(context, prevState, _state);
         if (shouldRebuild != false) {
           WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-            setState(() {});
+            if (mounted) {
+              setState(() {});
+            }
           });
         }
       };
@@ -96,9 +98,14 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
       _w = widget.builder(context, _state);
       widget.onStateChange?.call(context, prevState, _state);
     } else if (widget.setStateOnUpdate) {
+      print("updating selector on update");
       final store = context.storeTyped<S>();
+      final prev = _state;
       _state = widget.selector.fn(store.state);
-      _w = widget.builder(context, _state);
+      final shouldRebuild = widget.shouldRebuild?.call(context, prev, _state);
+      if (shouldRebuild != false) {
+        _w = widget.builder(context, _state);
+      }
     }
   }
 
@@ -108,6 +115,7 @@ class _SelectorBuilderState<S extends AppStateI<S>, I>
 
   @override
   void dispose() async {
+    print("dispisong selector builder ${widget.selector}");
     widget.onDispose?.call(context, _state);
     _unSubscribe(widget.options);
     super.dispose();

@@ -45,8 +45,8 @@ class _StoreProviderState extends State<StoreProvider> {
             ? widget.storageReadErrorPloaceHolder ??
                 StoreTempShell(message: "Failing while creting store $error")
             : widget.loadingPlaceHolder ??
-                Center(
-                  child: Text("Preparing App Please wait"),
+                StoreTempShell(
+                  message: "Preapring store..",
                 );
   }
 

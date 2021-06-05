@@ -16,14 +16,17 @@ List<StreamFieldInfo> getStreamFields(List<FieldElement> fields) {
 
 StreamFieldInfo? _getStreamFieldInfoForElement(FieldElement element) {
   final type = element.type;
-  logger.shout("StreamField $type");
+  logger.shout("getting StreamField $type");
   if (type.toString().startsWith("StreamField") && type is InterfaceType) {
     if (type.typeArguments.length != 2) {
       throw ArgumentError.value(
           "You should provide Stream response type as StreamField typeArg");
     }
-    final dataTYpe = type.typeArguments.first.toString();
-    return StreamFieldInfo(outputType: dataTYpe, name: element.name);
+    final typeArgs = type.typeArguments;
+    final dataTYpe = typeArgs.first.toString();
+    final errorType = typeArgs.last.toString();
+    return StreamFieldInfo(
+        outputType: dataTYpe, errorType: errorType, name: element.name);
   }
   return null;
 }
@@ -41,7 +44,11 @@ String convertStreamFieldInfoToAction(
   }
   return """
    static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType? mock}) {
-     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload(stream: stream,cancelOnError:cancelOnError)$psHistoryPayload);
+     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload<${sfi.outputType}>(stream: stream,cancelOnError:cancelOnError)$psHistoryPayload);
+   }
+
+   static Action<$mockType> ${name}Result($mockType mock) {
+     return Action<$mockType>(name:"$name",type:$type,mock: mock,$psHistoryPayload);
    }
   """;
 }

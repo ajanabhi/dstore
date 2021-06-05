@@ -47,11 +47,19 @@ class Store<S extends AppStateI<S>> {
       required S Function() stateCreator,
       required this.handleError,
       List<Middleware<S>>? middlewares,
+      List<Middleware<S>>?
+          beforeMiddlewares, // by default dstore appends few middlewares before your list of middlewares ,if you want something to be upfront provide them here
       S? initialState}) {
-    middlewares ??= [];
-    middlewares.add(psHistoryMiddleware);
-    middlewares.add(asyncMiddleware);
-    _dispatchers = _createDispatchers(middlewares);
+    final ms = <Middleware<S>>[];
+    ms.addAll(beforeMiddlewares ?? []);
+    ms.addAll([
+      debounceMiddleware,
+      psHistoryMiddleware,
+      asyncMiddleware,
+      streamMiddleware
+    ]);
+    ms.addAll(middlewares ?? []);
+    _dispatchers = _createDispatchers(ms);
     _setNetworkOptions(networkOptions);
     if (storageOptions != null) {
       _prepareStoreFromStorage(stateCreator);
@@ -253,6 +261,12 @@ class Store<S extends AppStateI<S>> {
           newS = currentS.copyWithMap(mock.toMap()) as PStateModel;
         } else {
           newS = psm.reducer!(currentS, action) as PStateModel;
+        }
+      }
+      if (action.beforeStateUpdate != null) {
+        final proceed = action.beforeStateUpdate!(newS);
+        if (!proceed) {
+          return;
         }
       }
       if (action.silent) {

@@ -26,38 +26,38 @@ void _processStreamAction<S extends AppStateI<S>>(
   } else {
     final stream = action.stream!.stream;
     final cancelOnError = action.stream!.cancelOnError;
-    final sub = stream.listen(
-        (dynamic event) {
-          final field = store.getFieldFromAction(action) as StreamField;
-          store.dispatch(action.copyWith(
-              internal: ActionInternal(
-            processed: true,
-            data: field.copyWith(
-                data: event, firstEventArrived: true, error: null),
-            type: ActionInternalType.FIELD,
-          )));
-        },
-        cancelOnError: cancelOnError,
+    final sub = stream.listen((dynamic event) {
+      print("got stream data $event");
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(data: event, firstEventArrived: true, error: null),
+        type: ActionInternalType.FIELD,
+      )));
+    },
+        // cancelOnError: cancelOnError,
         onError: (dynamic e) {
-          final field = store.getFieldFromAction(action) as StreamField;
-          store.dispatch(action.copyWith(
-              internal: ActionInternal(
-            processed: true,
-            data: field.copyWith(
-                error: Optional<dynamic>(e),
-                completed: cancelOnError ? true : false),
-            type: ActionInternalType.FIELD,
-          )));
-        },
-        onDone: () {
-          final field = store.getFieldFromAction(action) as StreamField;
-          store.dispatch(action.copyWith(
-              internal: ActionInternal(
-            processed: true,
-            data: field.copyWith(listening: false, completed: true),
-            type: ActionInternalType.FIELD,
-          )));
-        });
+      print("stream errored ${e} cancelOnError $cancelOnError");
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(
+            error: Optional<dynamic>(e),
+            completed: cancelOnError ? true : false),
+        type: ActionInternalType.FIELD,
+      )));
+    }, onDone: () {
+      print("stream done");
+      final field = store.getFieldFromAction(action) as StreamField;
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+        processed: true,
+        data: field.copyWith(listening: false, completed: true),
+        type: ActionInternalType.FIELD,
+      )));
+    });
     store.dispatch(action.copyWith(
         internal: ActionInternal(
             processed: true,

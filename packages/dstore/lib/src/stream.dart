@@ -5,8 +5,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part "stream.dstore.dart";
 
-class StreamPayload {
-  final Stream<dynamic> stream;
+class StreamPayload<D> {
+  final Stream<D> stream;
   final bool cancelOnError;
 
   StreamPayload({required this.stream, this.cancelOnError = false});
@@ -21,21 +21,3 @@ void $_StreamField<D, E>({
   bool firstEventArrived = false,
   bool completed = false,
 }) {}
-
-// extension StreamFieldExtension<D, E> on StreamField<D, E> {
-//   T when<T>(
-//       {required T Function() listening,
-//       required T Function(D data) data,
-//       required T Function(E error) error,
-//       required T Function() completed}) {
-//     if (this.data != null) {
-//       return data(this.data!);
-//     } else if (this.error != null) {
-//       return error(this.error!);
-//     } else if (this.completed) {
-//       return completed();
-//     } else {
-//       return listening();
-//     }
-//   }
-// }

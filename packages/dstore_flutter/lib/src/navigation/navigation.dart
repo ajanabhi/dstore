@@ -110,6 +110,11 @@ abstract class NestedNavStateI<M> extends PStateModel<M> with NavCommonI {
   void initialSetup();
 
   bool mounted = false;
+
+  @override
+  Map<String, dynamic> toMap() => throw UnimplementedError();
+  @override
+  M copyWithMap(Map<String, dynamic> map) => throw UnimplementedError();
 }
 
 void configureNav() {
