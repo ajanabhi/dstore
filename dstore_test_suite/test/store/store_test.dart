@@ -7,6 +7,7 @@ import "./pstates/sync_methods.dart" as syncmethods;
 import "./pstates/history_pstate.dart" as historypstate;
 import "./pstates/perssit_pstate.dart" as persistpstate;
 import "./pstates/http_pstate.dart" as httppstate;
+import "./pstates/http_pstate_http.dart" as httppstate_http;
 import "./pstates/websocket_pstate.dart" as websocketpstate;
 import "./pstates/stream_pstate.dart" as streampstate;
 import "./selectors/app_selectors.dart" as simpleselctor;
@@ -43,6 +44,7 @@ void main() {
   // streampstate.main();
   graphqlschema.main();
   firebaseschema.main();
+  httppstate_http.main();
   group('Store tests', () {
     test("should get appVersion from pubspec", () {
       expect(store.appVersion, "1.0.0");

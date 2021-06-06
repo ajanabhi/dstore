@@ -1,5 +1,6 @@
 import 'package:dstore/dstore.dart';
 import 'package:dstore_middleware_dio/middleware_dio.dart';
+import 'package:dstore_middleware_http/middleware_http.dart';
 import 'package:dstore_middleware_websocket/middleware_websocket.dart';
 import 'package:dstore_test/dstore_test.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
@@ -43,7 +44,7 @@ final store = createStore(
     middlewares: [
       tempOfflineMiddleware,
       formMiddleware,
-      createDioMiddleware<AppState>(),
+      createHttpMiddleware<AppState>(),
       createWebsocketMiddleware()
     ],
     networkOptions: NetworkOptions(statusListener: networkListener),

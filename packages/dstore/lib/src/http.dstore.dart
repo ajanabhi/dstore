@@ -12,7 +12,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
 
   final E? error;
 
-  final dynamic genericError;
+  final dynamic? genericError;
 
   final Map<String, String>? responseHeaders;
 
@@ -38,7 +38,7 @@ class HttpField<I, R, E> implements ToMap<HttpField> {
   const HttpField(
       {this.data,
       this.error,
-      required this.genericError,
+      this.genericError,
       this.responseHeaders,
       this.status,
       this.progress,
@@ -112,7 +112,7 @@ abstract class $HttpFieldCopyWith<I, R, E, O> {
   O call(
       {R? data,
       E? error,
-      dynamic genericError,
+      dynamic? genericError,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
@@ -149,7 +149,7 @@ class _$HttpFieldCopyWithImpl<I, R, E, O>
         error: error == dimmutable ? _value.error : error as E?,
         genericError: genericError == dimmutable
             ? _value.genericError
-            : genericError as dynamic,
+            : genericError as dynamic?,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,
@@ -180,7 +180,7 @@ abstract class _$HttpFieldCopyWith<I, R, E, O>
   O call(
       {R? data,
       E? error,
-      dynamic genericError,
+      dynamic? genericError,
       Map<String, String>? responseHeaders,
       int? status,
       HttpProgress? progress,
@@ -221,7 +221,7 @@ class __$HttpFieldCopyWithImpl<I, R, E, O>
         error: error == dimmutable ? _value.error : error as E?,
         genericError: genericError == dimmutable
             ? _value.genericError
-            : genericError as dynamic,
+            : genericError as dynamic?,
         responseHeaders: responseHeaders == dimmutable
             ? _value.responseHeaders
             : responseHeaders as Map<String, String>?,

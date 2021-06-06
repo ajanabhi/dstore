@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import "package:http/http.dart";
 import 'package:dstore/dstore.dart';
@@ -251,49 +253,67 @@ void _processHttpAction<S extends AppStateI<S>>(
         }
       }
     }
-    dynamic onReceiveProgress;
-    if (payload.listenReceiveProgress) {
-      onReceiveProgress = (int got, int total) {
-        store.dispatch(action.copyWith(
-            internal: ActionInternal(
-                processed: true,
-                type: ActionInternalType.FIELD,
-                data: field.copyWith(
-                    loading: true,
-                    progress: HttpProgress(current: got, total: total)))));
-      };
-    }
-    dynamic onSendProgress;
-    if (payload.listenSendProgress) {
-      onSendProgress = (int sent, int total) {
-        store.dispatch(action.copyWith(
-            internal: ActionInternal(
-                processed: true,
-                type: ActionInternalType.FIELD,
-                data: field.copyWith(
-                    loading: true,
-                    progress: HttpProgress(current: sent, total: total)))));
-      };
-    }
-    print("Sending request to server $url ");
+    print(
+        "Sending request to server $url  lp ${payload.listenReceiveProgress}");
     print("data $data");
     try {
-      response = await _unstreamedRequest(
-          url: url,
-          options: options,
-          body: data,
-          client: client); //TODO upload download progress
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw _HttpResponseError(response: response);
+      if (payload.listenReceiveProgress) {
+        print("sending request with listenSendProgres");
+        final completer = Completer<Uint8List>();
+        final result = <int>[];
+        final responseStream = await _streamRequest(
+            url: url, options: options, body: data, client: client);
+
+        responseStream.stream.listen((value) {
+          result.addAll(value);
+          store.dispatch(action.copyWith(
+              internal: ActionInternal(
+                  processed: true,
+                  type: ActionInternalType.FIELD,
+                  data: field.copyWith(
+                      loading: true,
+                      progress: HttpProgress(
+                          current: result.length,
+                          total: responseStream.contentLength ?? 0)))));
+          print("got value from r $value ");
+        }, onError: (dynamic error) {
+          //TODO test download error wit hactual down load error and connection errors
+          completer.completeError(_HttpResponseError(
+              response: Response.bytes(result, responseStream.statusCode,
+                  request: responseStream.request,
+                  headers: responseStream.headers,
+                  isRedirect: responseStream.isRedirect,
+                  persistentConnection: responseStream.persistentConnection,
+                  reasonPhrase: responseStream.reasonPhrase)));
+        }, onDone: () {
+          print("http stream done");
+          completer.complete(Uint8List.fromList(result));
+        });
+        final body = await completer.future;
+        response = Response.bytes(body, responseStream.statusCode,
+            request: responseStream.request,
+            headers: responseStream.headers,
+            isRedirect: responseStream.isRedirect,
+            persistentConnection: responseStream.persistentConnection,
+            reasonPhrase: responseStream.reasonPhrase);
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          throw _HttpResponseError(response: response);
+        }
+        ;
+      } else {
+        if (payload.listenSendProgress) {
+          print(
+              "sendProgress updates are not supported by http package , but there is PR in waiting https://github.com/dart-lang/http/pull/579");
+        }
+        response = await _unstreamedRequest(
+            url: url,
+            options: options,
+            body: data,
+            client: client); //TODO upload download progress
+        if (response.statusCode < 200 || response.statusCode >= 300) {
+          throw _HttpResponseError(response: response);
+        }
       }
-      // await dio.request(url,
-      //     data: data,
-      //     cancelToken: cancelToken,
-      //     onReceiveProgress: onReceiveProgress,
-      //     onSendProgress: onSendProgress,
-      //     options: options);
-      print(
-          "Response from server ${response.body} status : ${response.statusCode}");
     } catch (e) {
       _handleHttpError(e: e, store: store, action: action);
       return;
@@ -398,6 +418,7 @@ Future<Response> _unstreamedRequest(
   if (options.encoding != null) {
     req.encoding = options.encoding!;
   }
+
   if (body != null) {
     if (body is String) {
       req.body = body;
@@ -410,7 +431,37 @@ Future<Response> _unstreamedRequest(
   }
   req.body = "";
   final resp = await client.send(req);
+
   return Response.fromStream(resp);
+}
+
+Future<StreamedResponse> _streamRequest(
+    {required String url,
+    required _CoreHttpOptions options,
+    required Object? body,
+    required Client client}) async {
+  final req = Request(options.method, Uri.parse(url));
+  if (options.headers != null) {
+    req.headers.addAll(options.headers!);
+  }
+  if (options.encoding != null) {
+    req.encoding = options.encoding!;
+  }
+
+  if (body != null) {
+    if (body is String) {
+      req.body = body;
+    } else if (body is List) {
+      req.bodyBytes = body as List<int>;
+    } else if (body is Map) {
+      // TODO handle form fields case
+      req.body = jsonEncode(body);
+    }
+  }
+  req.body = "";
+  final resp = await client.send(req);
+
+  return resp;
 }
 
 bool isPersistQueryNotFoundError(Response response) {
@@ -426,7 +477,7 @@ bool isPersistQueryNotFoundError(Response response) {
   return result;
 }
 
-Middleware<S> createDioMiddleware<S extends AppStateI<S>>(
+Middleware<S> createHttpMiddleware<S extends AppStateI<S>>(
     [HttpMiddlewareOptions? options]) {
   final client = Client();
 

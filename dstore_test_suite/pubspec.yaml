@@ -21,6 +21,8 @@ dependencies:
    path: ../packages/dstore_test/ 
  time:
  cloud_firestore: 
+ dstore_middleware_http:
+   path: ../packages/middleware_http  
      
 
 dev_dependencies:
