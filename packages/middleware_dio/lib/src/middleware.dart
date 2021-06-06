@@ -42,7 +42,7 @@ Options _getOptions(
   if (go?.headers != null) {
     headers.addAll(go!.headers);
   }
-  headers.addAll(payload.headers ?? {});
+  headers.addAll(payload.headers ?? <String, String>{});
   var method = payload.method;
   if (payload.data is GraphqlRequestInput) {
     final greq = payload.data as GraphqlRequestInput;
@@ -66,9 +66,7 @@ void _handleDioError(
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
-  var field = store.getFieldFromAction(action);
-  print("is HttpField ${field is HttpField}");
-  field = field as HttpField;
+  var field = store.getFieldFromAction(action) as HttpField;
   final persistDataBetweenFetches = meta?.persitDataBetweenFetches ?? false;
   dynamic error;
   late HttpErrorType errorType;
@@ -85,10 +83,10 @@ void _handleDioError(
       break;
     case DioErrorType.response:
       if (e.response != null) {
-        var re = e.response!.data;
+        dynamic re = e.response!.data;
         print("Response Error $re");
         if (meta?.errorDeserializer != null) {
-          re = meta?.errorDeserializer!(re.statusCode ?? 500, re);
+          re = meta?.errorDeserializer!(e.response!.statusCode ?? 500, re);
         }
         error = re;
       } else {
@@ -144,8 +142,8 @@ void _handleDioError(
 String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
   final payload = action.http!;
   var result = payload.url;
-  final queryParams = payload.queryParams;
-  final pathParams = payload.pathParams;
+  final dynamic queryParams = payload.queryParams;
+  final dynamic pathParams = payload.pathParams;
   if (queryParams != null || pathParams != null) {
     if (pathParams != null) {
       if (meta?.pathParamsSerializer == null) {
@@ -153,7 +151,7 @@ String _getUrlFromPayload({required Action action, required HttpMeta? meta}) {
             "pathParamsSerializer is missing in HttpMeta for action :  ${action.id}");
       }
       final pp = meta!.pathParamsSerializer!(pathParams);
-      pp.forEach((key, value) {
+      pp.forEach((key, dynamic value) {
         result = result.replaceFirst('{${key}}', value.toString());
       });
     }
@@ -184,9 +182,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   final psm = store.getPStateMetaFromAction(action);
   final payload = action.http!;
   final meta = psm.httpMetaMap?[action.name];
-  var field = store.getFieldFromAction(action);
-  print("is HttpField ${field is HttpField}");
-  field = field as HttpField;
+  final field = store.getFieldFromAction(action) as HttpField;
 
   final canProcess = await _canProcessHtpAction(meta: meta, action: action);
   if (!canProcess) {
@@ -232,7 +228,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
   late final Response? response;
   try {
     var url = _getUrlFromPayload(action: action, meta: meta);
-    var data = payload.data;
+    dynamic data = payload.data;
     if (data != null && meta?.inputSerializer != null) {
       data = meta?.inputSerializer!(data);
     }
@@ -249,7 +245,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         }
       }
     }
-    dynamic onReceiveProgress;
+    void Function(int, int)? onReceiveProgress;
     if (payload.listenReceiveProgress) {
       onReceiveProgress = (int got, int total) {
         store.dispatch(action.copyWith(
@@ -261,7 +257,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
                     progress: HttpProgress(current: got, total: total)))));
       };
     }
-    dynamic onSendProgress;
+    void Function(int, int)? onSendProgress;
     if (payload.listenSendProgress) {
       onSendProgress = (int sent, int total) {
         store.dispatch(action.copyWith(
@@ -275,7 +271,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     }
     print("Sending request to server $url ");
     print("data $data");
-    response = await dio.request(url,
+    response = await dio.request<dynamic>(url,
         data: data,
         cancelToken: cancelToken,
         onReceiveProgress: onReceiveProgress,
@@ -298,7 +294,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
       // in graphql response we will get errors from successfull response also
       errorType = HttpErrorType.Response;
       error = (response.data["errors"] as List<dynamic>)
-          .map((e) => GraphqlError.fromJson(e))
+          .map((dynamic e) => GraphqlError.fromJson(e as Map<String, dynamic>))
           .toList();
     }
     dynamic rdata;
@@ -308,7 +304,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
     var hf = field.copyWith(
         error: error, errorType: errorType, data: rdata, completed: true);
     if (meta?.transformer != null) {
-      hf = meta!.transformer!(field.copyWith(completed: true), hf);
+      hf = meta!.transformer!(field.copyWith(completed: true), hf) as HttpField;
     }
     store.dispatch(action.copyWith(
         internal: ActionInternal(
@@ -332,7 +328,7 @@ void _processHttpAction(DioMiddlewareOptions? middlewareOptions, Store store,
         handleGraphqlResponse(response);
       }
     } else {
-      var data =
+      dynamic data =
           meta!.responseDeserializer(response.statusCode ?? 200, response.data);
 
       dynamic hf;
@@ -355,7 +351,7 @@ Future<Response> createPersistedGraphqlQuery(
     required HttpMeta? meta}) async {
   final req = payload.data as GraphqlRequestInput;
   var url = payload.url;
-  var data;
+  dynamic data;
   if (req.useGetForPersitent && req.variables == null) {
     url =
         '${payload.url}?query=${req.query}&extensions=${jsonEncode(req.extensions)}';
@@ -367,7 +363,7 @@ Future<Response> createPersistedGraphqlQuery(
   print("sending persit query $url");
   print("data $data");
   print("optioans $options");
-  final resp = await dio.request(url, options: options, data: data);
+  final resp = await dio.request<dynamic>(url, options: options, data: data);
   return resp;
 }
 
@@ -375,12 +371,12 @@ bool isPersistQueryNotFoundError(Response response) {
   var result = false;
   final data = response.data as Map<String, dynamic>?;
   if (data != null && data["errors"] != null) {
-    var errors = data["errors"];
+    dynamic errors = data["errors"];
     print("Errors $errors ${errors.runtimeType} ");
     errors = errors as List<dynamic>;
 
     result = errors
-        .map((e) => GraphqlError.fromJson(e))
+        .map((dynamic e) => GraphqlError.fromJson(e as Map<String, dynamic>))
         .where((e) => e.message == "PersistedQueryNotFound")
         .isNotEmpty;
   }

@@ -327,8 +327,6 @@ extension PStateExtension on ClassElement {
     final historyLimit = reader.peek("historyLimit")?.intValue;
     final nav = reader.peek("nav")?.boolValue;
     final navBlockSameUrl = reader.peek("navBlockSameUrl")?.boolValue;
-    final nonConstClassesWithDefaultValues =
-        reader.getStringList("nonConstClassesWithDefaultValues");
     final persitMigrator = reader.functionNameForField("persitMigrator");
     final collectionEquality =
         reader.getEnumField("collectionEquality", CollectionEquality.values);
@@ -337,7 +335,6 @@ extension PStateExtension on ClassElement {
         enableHistory: enableHistory ?? false,
         nav: nav,
         historyLimit: historyLimit,
-        nonConstClassesWithDefaultValues: nonConstClassesWithDefaultValues,
         interMigratorName: persitMigrator,
         collectionEquality: collectionEquality,
         navBlockSameUrl: navBlockSameUrl);
@@ -376,19 +373,31 @@ String _generateActionsCreators({
     mockModels.add(_createMockModel(name: mockName, fields: m.keysModified));
     paramsList.add("bool silent = false");
     final params = paramsList.join(", ");
+    final specialParams = <String>[];
+    final keysModified = jsonEncode(m.keysModified.map((e) => e.name).toList());
 
-    var payload = m.params.isNotEmpty
-        ? "<String,dynamic>{ " +
-            m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
-            "}"
+    if (psHistoryEnabled) {
+      specialParams.add("'$PSHISTORY_KEYS_MODIFIED_KEY' : $keysModified");
+    }
+
+    final payloadParams = <String>[];
+
+    m.params.forEach((p) => payloadParams.add('"${p.name}":${p.name} '));
+    payloadParams.addAll(specialParams);
+    var payload = m.params.isNotEmpty || specialParams.isNotEmpty
+        ? """<String,dynamic>{ 
+             ${specialParams.join(", ")},
+             
+            }
+            """
         : "";
-    if (payload.isNotEmpty) {
-      payload = ", payload: ${payload}";
+    if (payloadParams.isNotEmpty) {
+      payload = ", payload: <String,dynamic>{ ${payloadParams.join(", ")},}";
     }
     var psHistoryPayload = "";
     if (psHistoryEnabled) {
       psHistoryPayload =
-          ",psHistoryPayload : PSHistoryPayload(keysModified:${jsonEncode(m.keysModified.map((e) => e.name).toList())})";
+          ",psHistoryPayload : PSHistoryPayload(keysModified:$keysModified)";
     }
 
     return """

@@ -24,6 +24,9 @@ class Simple extends PStateModel<Simple> {
 
   final bool general;
 
+  @PSNonConstClassField()
+  final Hello h;
+
   @RegularMethod()
   String processName(String name) => "AkandaBharath";
 
@@ -38,7 +41,8 @@ class Simple extends PStateModel<Simple> {
       this.areYouSafeOnThisPlant = false,
       this.riversToVisit = const [],
       this.listeningonLoop = false,
-      this.general = false});
+      this.general = false,
+      this.h = const Hello()});
 
   @override
   Simple copyWithMap(Map<String, dynamic> map) => Simple(
@@ -59,7 +63,8 @@ class Simple extends PStateModel<Simple> {
           ? map["listeningonLoop"] as bool
           : this.listeningonLoop,
       general:
-          map.containsKey("general") ? map["general"] as bool : this.general);
+          map.containsKey("general") ? map["general"] as bool : this.general,
+      h: map.containsKey("h") ? map["h"] as Hello : this.h);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         "count": this.count,
@@ -69,7 +74,8 @@ class Simple extends PStateModel<Simple> {
         "areYouSafeOnThisPlant": this.areYouSafeOnThisPlant,
         "riversToVisit": this.riversToVisit,
         "listeningonLoop": this.listeningonLoop,
-        "general": this.general
+        "general": this.general,
+        "h": this.h
       };
 
   @override
@@ -83,7 +89,8 @@ class Simple extends PStateModel<Simple> {
         o.areYouSafeOnThisPlant == areYouSafeOnThisPlant &&
         o.riversToVisit == riversToVisit &&
         o.listeningonLoop == listeningonLoop &&
-        o.general == general;
+        o.general == general &&
+        o.h == h;
   }
 
   @override
@@ -95,11 +102,12 @@ class Simple extends PStateModel<Simple> {
       areYouSafeOnThisPlant.hashCode ^
       riversToVisit.hashCode ^
       listeningonLoop.hashCode ^
-      general.hashCode;
+      general.hashCode ^
+      h.hashCode;
 
   @override
   String toString() =>
-      "Simple(count: ${this.count}, name: ${this.name}, personType: ${this.personType}, coolGeek: ${this.coolGeek}, areYouSafeOnThisPlant: ${this.areYouSafeOnThisPlant}, riversToVisit: ${this.riversToVisit}, listeningonLoop: ${this.listeningonLoop}, general: ${this.general})";
+      "Simple(count: ${this.count}, name: ${this.name}, personType: ${this.personType}, coolGeek: ${this.coolGeek}, areYouSafeOnThisPlant: ${this.areYouSafeOnThisPlant}, riversToVisit: ${this.riversToVisit}, listeningonLoop: ${this.listeningonLoop}, general: ${this.general}, h: ${this.h})";
 }
 
 abstract class $SimpleCopyWith<O> {
@@ -113,7 +121,8 @@ abstract class $SimpleCopyWith<O> {
       bool areYouSafeOnThisPlant,
       List<String> riversToVisit,
       bool listeningonLoop,
-      bool general});
+      bool general,
+      Hello h});
 }
 
 class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
@@ -130,7 +139,8 @@ class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
       Object? areYouSafeOnThisPlant = dimmutable,
       Object? riversToVisit = dimmutable,
       Object? listeningonLoop = dimmutable,
-      Object? general = dimmutable}) {
+      Object? general = dimmutable,
+      Object? h = dimmutable}) {
     return _then(_value.copyWith(
         count: count == dimmutable ? _value.count : count as int,
         name: name == dimmutable ? _value.name : name as String,
@@ -146,7 +156,8 @@ class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
         listeningonLoop: listeningonLoop == dimmutable
             ? _value.listeningonLoop
             : listeningonLoop as bool,
-        general: general == dimmutable ? _value.general : general as bool));
+        general: general == dimmutable ? _value.general : general as bool,
+        h: h == dimmutable ? _value.h : h as Hello));
   }
 }
 
@@ -161,7 +172,8 @@ abstract class _$SimpleCopyWith<O> implements $SimpleCopyWith<O> {
       bool areYouSafeOnThisPlant,
       List<String> riversToVisit,
       bool listeningonLoop,
-      bool general});
+      bool general,
+      Hello h});
 }
 
 class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
@@ -181,7 +193,8 @@ class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
       Object? areYouSafeOnThisPlant = dimmutable,
       Object? riversToVisit = dimmutable,
       Object? listeningonLoop = dimmutable,
-      Object? general = dimmutable}) {
+      Object? general = dimmutable,
+      Object? h = dimmutable}) {
     return _then(Simple(
         count: count == dimmutable ? _value.count : count as int,
         name: name == dimmutable ? _value.name : name as String,
@@ -197,7 +210,8 @@ class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
         listeningonLoop: listeningonLoop == dimmutable
             ? _value.listeningonLoop
             : listeningonLoop as bool,
-        general: general == dimmutable ? _value.general : general as bool));
+        general: general == dimmutable ? _value.general : general as bool,
+        h: h == dimmutable ? _value.h : h as Hello));
   }
 }
 
@@ -382,7 +396,9 @@ abstract class SimpleActions {
         name: "setName",
         silent: silent,
         type: _Simple_FullPath,
-        payload: <String, dynamic>{"newName": newName},
+        payload: <String, dynamic>{
+          "newName": newName,
+        },
         isAsync: false);
   }
 
@@ -397,7 +413,9 @@ abstract class SimpleActions {
         name: "setPersonType",
         silent: silent,
         type: _Simple_FullPath,
-        payload: <String, dynamic>{"wentToSriSailam": wentToSriSailam},
+        payload: <String, dynamic>{
+          "wentToSriSailam": wentToSriSailam,
+        },
         isAsync: false);
   }
 
@@ -414,7 +432,7 @@ abstract class SimpleActions {
         silent: silent,
         type: _Simple_FullPath,
         payload: <String, dynamic>{
-          "didYouWatchedHBOSiliconValley": didYouWatchedHBOSiliconValley
+          "didYouWatchedHBOSiliconValley": didYouWatchedHBOSiliconValley,
         },
         isAsync: false);
   }
@@ -432,7 +450,9 @@ abstract class SimpleActions {
         name: "areYouWantToVisitTheseRivers",
         silent: silent,
         type: _Simple_FullPath,
-        payload: <String, dynamic>{"newRivers": newRivers},
+        payload: <String, dynamic>{
+          "newRivers": newRivers,
+        },
         isAsync: false);
   }
 
@@ -451,7 +471,9 @@ abstract class SimpleActions {
         name: "didYouVisitedAkandaBharath",
         silent: silent,
         type: _Simple_FullPath,
-        payload: <String, dynamic>{"answer": answer},
+        payload: <String, dynamic>{
+          "answer": answer,
+        },
         isAsync: false);
   }
 
@@ -468,7 +490,9 @@ abstract class SimpleActions {
         name: "isHeListeningOnLoop",
         silent: silent,
         type: _Simple_FullPath,
-        payload: <String, dynamic>{"songCategory": songCategory},
+        payload: <String, dynamic>{
+          "songCategory": songCategory,
+        },
         isAsync: false);
   }
 
@@ -503,6 +527,7 @@ dynamic Simple_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
   switch (name) {
     case "incrment":
       {
+        final _DstoreActionPayload = _DstoreAction.payload!;
         var _DStore_count = _DStoreState.count;
         _DStore_count += 1;
         return _DStoreState.copyWith(count: _DStore_count);
@@ -527,7 +552,7 @@ dynamic Simple_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
         if (wentToSriSailam) {
           _DStore_personType = "Good";
         } else {
-          _DStore_personType = "Hmm";
+          _DStore_personType = "Hmmm";
         }
 
         return _DStoreState.copyWith(personType: _DStore_personType);
@@ -598,6 +623,7 @@ dynamic Simple_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
     case "shouldHandleGeneralStatement":
       {
+        final _DstoreActionPayload = _DstoreAction.payload!;
         var _DStore_general = _DStoreState.general;
         print("sleeping ");
         print("eating");
@@ -622,7 +648,8 @@ Simple Simple_DS() => Simple(
     areYouSafeOnThisPlant: false,
     riversToVisit: [],
     listeningonLoop: false,
-    general: false);
+    general: false,
+    h: Hello());
 
 final SimpleMeta = PStateMeta<Simple>(
     type: _Simple_FullPath, reducer: Simple_SyncReducer, ds: Simple_DS);

@@ -15,6 +15,7 @@ class Field {
   bool isOptional;
   FormalParameter? param;
   bool isNamed;
+  bool nonConstValue;
   Field(
       {required this.name,
       required this.type,
@@ -22,6 +23,7 @@ class Field {
       this.annotations = const [],
       this.isNamed = false,
       this.param,
+      this.nonConstValue = false,
       this.isOptional = false});
 
   @override

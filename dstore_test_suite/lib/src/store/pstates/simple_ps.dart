@@ -19,6 +19,8 @@ class $_Simple {
   bool listeningonLoop = false;
 
   bool general = false;
+  @PSNonConstClassField()
+  Hello h = Hello();
 
   void incrment() {
     this.count += 1;
@@ -32,7 +34,7 @@ class $_Simple {
     if (wentToSriSailam) {
       this.personType = "Good";
     } else {
-      this.personType = "Hmm";
+      this.personType = "Hmmm";
     }
   }
 
@@ -81,3 +83,5 @@ class $_Simple {
   @RegularMethod()
   String processName(String name) => "AkandaBharath";
 }
+
+class Hello {}

@@ -135,6 +135,4 @@ mixin PStateHistoryMixin<S extends PStateModel<S>> {
     _psHistory = value;
   }
 
-  bool get canRedo => dontTouchMePSHistory.canRedo;
-  bool get canUndo => dontTouchMePSHistory.canUndo;
 }

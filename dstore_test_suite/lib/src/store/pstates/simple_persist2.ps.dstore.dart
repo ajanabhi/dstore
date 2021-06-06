@@ -110,7 +110,9 @@ abstract class SimplePersist2Actions {
         name: "setP2",
         silent: silent,
         type: _SimplePersist2_FullPath,
-        payload: <String, dynamic>{"v": v},
+        payload: <String, dynamic>{
+          "v": v,
+        },
         isAsync: false);
   }
 

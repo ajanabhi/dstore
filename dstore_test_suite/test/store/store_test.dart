@@ -36,15 +36,15 @@ void main() {
 
   // asyncmethods.main();
   // syncmethods.main();
-  // historypstate.main();
+  historypstate.main();
   // persistpstate.main();
   // httppstate.main();
   // simpleselctor.main();
   // websocketpstate.main();
   // streampstate.main();
-  graphqlschema.main();
-  firebaseschema.main();
-  httppstate_http.main();
+  // graphqlschema.main();
+  // firebaseschema.main();
+  // httppstate_http.main();
   group('Store tests', () {
     test("should get appVersion from pubspec", () {
       expect(store.appVersion, "1.0.0");

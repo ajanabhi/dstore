@@ -6,15 +6,23 @@ import 'package:dstore/src/utils/utils.dart';
 
 dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
     Store<S> store, Dispatch next, Action<dynamic> action) {
+  Map<String, dynamic> getUndoRedoMap(PStateHistory psHistory) {
+    return <String, dynamic>{
+      "canUndo": psHistory.canUndo,
+      "canRedo": psHistory.canRedo
+    };
+  }
+
   final payload = action.psHistoryPayload!;
   final currentState =
       store.getPStateModelFromAction(action) as PStateHistoryMixin;
   print("_handlePsHistoryAction $currentState");
   if (action.name == "undo") {
-    if (currentState.canUndo) {
+    if (currentState.dontTouchMePSHistory.canUndo) {
       final initialState = store.getDefaultStateForAcion(action);
-      final state =
-          currentState.dontTouchMePSHistory.internalUndo(initialState)!;
+      var state = currentState.dontTouchMePSHistory.internalUndo(initialState)!;
+      final map = getUndoRedoMap(currentState.dontTouchMePSHistory);
+      state = state.copyWithMap(map) as PStateModel;
       (state as PStateHistoryMixin).dontTouchMePSHistory =
           currentState.dontTouchMePSHistory;
       store.dispatch(action.copyWith(
@@ -29,9 +37,11 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
 
   if (action.name == "redo") {
     print("executing ");
-    if (currentState.canRedo) {
-      final state = currentState.dontTouchMePSHistory
-          .internalRedo(currentState as PStateModel);
+    if (currentState.dontTouchMePSHistory.canRedo) {
+      var state = currentState.dontTouchMePSHistory
+          .internalRedo(currentState as PStateModel)!;
+      final map = getUndoRedoMap(currentState.dontTouchMePSHistory);
+      state = state.copyWithMap(map) as PStateModel;
       store.dispatch(action.copyWith(
           internal: ActionInternal(
               processed: true, type: ActionInternalType.PSTATE, data: state)));
@@ -42,8 +52,17 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
     }
   }
   if (action.name == "clearHistory") {
-    if (currentState.canRedo || currentState.canUndo) {
+    if (currentState.dontTouchMePSHistory.canUndo ||
+        currentState.dontTouchMePSHistory.canRedo) {
       currentState.dontTouchMePSHistory.internalClear();
+      final currentPS = currentState as PStateModel;
+      final map = <String, dynamic>{};
+      map["canUndo"] = false;
+      map["canRedo"] = false;
+      final dynamic news = currentPS.copyWithMap(map);
+      store.dispatch(action.copyWith(
+          internal: ActionInternal(
+              processed: true, type: ActionInternalType.PSTATE, data: news)));
       print("cleared history");
       return;
     } else {
@@ -51,13 +70,7 @@ dynamic _handlePsHistoryAction<S extends AppStateI<S>>(
       return;
     }
   }
-  next(action.copyWith(afterComplete: (newState) {
-    final hState = newState as PStateHistoryMixin;
-    final keys = payload.keysModified;
-    final map = newState.toMap();
-    map.removeWhere((key, dynamic value) => !keys.contains(key));
-    hState.dontTouchMePSHistory.internalAdd(map);
-  }));
+  next(action);
 }
 
 dynamic psHistoryMiddleware<S extends AppStateI<S>>(

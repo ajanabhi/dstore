@@ -9,7 +9,7 @@ class PState {
   final int? historyLimit;
   final bool? nav;
   final bool? navBlockSameUrl;
-  final List<String>? nonConstClassesWithDefaultValues;
+  // final List<String>? nonConstClassesWithDefaultValues;
   final PStatePersitMigratorFn? persitMigrator;
   final String? interMigratorName;
   final CollectionEquality? collectionEquality;
@@ -20,18 +20,22 @@ class PState {
       this.historyLimit,
       this.persitMigrator,
       this.interMigratorName,
-      this.nonConstClassesWithDefaultValues,
+      // this.nonConstClassesWithDefaultValues,
       this.collectionEquality,
       this.nav});
 
   @override
   String toString() {
-    return 'PState(persist: $persist, enableHistory: $enableHistory, historyLimit: $historyLimit, nav: $nav, navBlockSameUrl: $navBlockSameUrl, nonConstClassesWithDefaultValues: $nonConstClassesWithDefaultValues, persitMigrator: $persitMigrator, interMigratorName: $interMigratorName)';
+    return 'PState(persist: $persist, enableHistory: $enableHistory, historyLimit: $historyLimit, nav: $nav, navBlockSameUrl: $navBlockSameUrl, persitMigrator: $persitMigrator, interMigratorName: $interMigratorName)';
   }
 }
 
 class RegularMethod {
   const RegularMethod();
+}
+
+class PSNonConstClassField {
+  const PSNonConstClassField();
 }
 
 class ExcludeThisKeyWhilePersit {

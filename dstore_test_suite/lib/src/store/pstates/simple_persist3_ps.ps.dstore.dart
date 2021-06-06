@@ -110,7 +110,9 @@ abstract class SimplePersist3Actions {
         name: "setP3",
         silent: silent,
         type: _SimplePersist3_FullPath,
-        payload: <String, dynamic>{"v": v},
+        payload: <String, dynamic>{
+          "v": v,
+        },
         isAsync: false);
   }
 

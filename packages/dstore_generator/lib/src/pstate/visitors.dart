@@ -48,6 +48,10 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
           isOptional: false,
           value: "false"));
     }
+    if (historyEnabled) {
+      fields.add(Field(name: "canUndo", type: "bool", value: "false"));
+      fields.add(Field(name: "canRedo", type: "bool", value: "false"));
+    }
   }
 
   @override
@@ -197,10 +201,11 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     node.fields.variables.forEach((v) {
       final name = v.name.toString();
       final valueE = v.initializer;
+      final fe =
+          element.fields.singleWhere((element) => element.name == v.name.name);
       if (v.isLate) {
         // check for psdeps
-        final fe = element.fields
-            .singleWhere((element) => element.name == v.name.name);
+
         print("fe $fe");
         if (!type.startsWith("\$_") ||
             fe.type.element?.annotationFromType(PState) == null) {
@@ -237,8 +242,20 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
             annotations.add("@JsonKey(ignore: true)");
           }
         }
+        if (name == "h") {
+          print(
+              "nonconst annot ${fe.annotationFromType(PSNonConstClassField)}");
+        }
+        final nonConstValue =
+            fe.annotationFromType(PSNonConstClassField) != null &&
+                value != "null";
+        print("nonConstValue $name $nonConstValue");
         fields.add(Field(
-            name: name, annotations: annotations, type: type, value: value));
+            name: name,
+            annotations: annotations,
+            type: type,
+            value: value,
+            nonConstValue: nonConstValue));
       }
     });
     print(
@@ -255,7 +272,9 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
 }
 
 String _convertMethodParamsToString(List<Field> params) {
-  if (params.isEmpty) return "";
+  if (params.isEmpty) {
+    return "final ${PAYLOAD_VARIBALE} = ${ACTION_VARIABLE}.payload!;";
+  }
   final p = params
       .map((p) =>
           "final ${p.name} = ${PAYLOAD_VARIBALE}[\"${p.name}\"] as ${p.type};")
@@ -648,13 +667,24 @@ Tuple2<String, Set<String>> processMethodStatements(
       specialKeys.add("meta: NavConfigMeta()");
     }
   }
+  // if (historyEnabled) {
+  //   specialKeys.add("canUndo: ${STATE_VARIABLE}.dontTouchMePSHistory.canUndo");
+  //   specialKeys.add("canRedo: ${STATE_VARIABLE}.dontTouchMePSHistory.canRedo");
+  // }
   final spl = specialKeys.isEmpty ? "" : ",${specialKeys.join(",")}";
   final stataments = """
     ${keys.map((k) => "var ${DSTORE_PREFIX}${k} = ${STATE_VARIABLE}.${k};").join("\n")}
     ${statementsStr}
     ${(historyEnabled || url != null || isNav) ? """
-    final newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")}$spl);
-    ${historyEnabled ? " newState.dontTouchMePSHistory = ${STATE_VARIABLE}.dontTouchMePSHistory;" : ""}
+    var newState = ${STATE_VARIABLE}.copyWith(${keys.map((k) => "${k} : ${DSTORE_PREFIX}${k}").join(",")}$spl);
+    ${historyEnabled ? """ 
+     newState.dontTouchMePSHistory = ${STATE_VARIABLE}.dontTouchMePSHistory;
+     final keys = ${PAYLOAD_VARIBALE}["${PSHISTORY_KEYS_MODIFIED_KEY}"] as List<String>;
+     final map = newState.toMap();
+     map.removeWhere((key, dynamic value) => !keys.contains(key));
+     newState.dontTouchMePSHistory.internalAdd(map);
+     newState = newState.copyWith(canUndo: newState.dontTouchMePSHistory.canUndo,canRedo: newState.dontTouchMePSHistory.canRedo);
+    """ : ""}
     ${isNav ? """ 
     newState.dontTouchMe = ${STATE_VARIABLE}.dontTouchMe;
     ${url != null ? " newState.dontTouchMe.url = '$url';" : "newState.dontTouchMe.url = null;"}

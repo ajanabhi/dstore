@@ -20,12 +20,10 @@ abstract class ModelUtils {
     }).join("\n ");
   }
 
-  static bool canhaveConsConstructor(
-      String type, List<String>? nonConstClassesWithDefaultValues) {
+  static bool canhaveConsConstructor(String type) {
     var result = true;
     final list =
         DBuilderOptions.psBuilderOptions.nonConstClassesWithDefaultValues;
-    list.addAll(nonConstClassesWithDefaultValues ?? []);
     if (!type.endsWith("?") &&
         list.where((t) => t == type || type.startsWith(t)).isNotEmpty) {
       result = false;
@@ -39,24 +37,18 @@ abstract class ModelUtils {
     var type = f.isOptional && !f.type.endsWith("?") && f.value == null
         ? "${f.type}?"
         : "${f.type}";
-    // final value = f.value;
-    // if (value != null && value != "null") {
-    //   if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
-    //     type = "$type?";
-    //   }
-    // }
     return type;
   }
 
   static Tuple2<String, Tuple2<String, String>?> getDefaultValueForField(
-      Field f, List<String>? nonConstClassesWithDefaultValues) {
+      Field f) {
     final value = f.value;
     final name = f.name;
     if (value != null && value != "null") {
       var type = f.isOptional && !f.type.endsWith("?") && f.value == null
           ? "${f.type}?"
           : "${f.type}";
-      if (!canhaveConsConstructor(type, nonConstClassesWithDefaultValues)) {
+      if (f.nonConstValue || !canhaveConsConstructor(type)) {
         type = "$type?";
         return Tuple2("", Tuple2("$type $name", "$name = $name ?? $value"));
       } else {
@@ -116,13 +108,10 @@ abstract class ModelUtils {
   }
 
   static String createConstructorFromFieldsList(String name, List<Field> fields,
-      {bool assignDefaults = true,
-      bool addConst = true,
-      List<String>? nonConstClassesWithDefaultValues}) {
+      {bool assignDefaults = true, bool addConst = true}) {
     final nonConstantDefaults = <String>[];
     var cf = fields.map((f) {
-      final tuple =
-          getDefaultValueForField(f, nonConstClassesWithDefaultValues);
+      final tuple = getDefaultValueForField(f);
       final defaultValue = tuple.item1;
       final nonConstTuple = tuple.item2;
       var param =
