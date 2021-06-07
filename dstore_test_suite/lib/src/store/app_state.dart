@@ -1,9 +1,12 @@
 import 'package:dstore/dstore.dart';
-import 'package:dstore_middleware_dio/middleware_dio.dart';
 import 'package:dstore_middleware_http/middleware_http.dart';
 import 'package:dstore_middleware_websocket/middleware_websocket.dart';
 import 'package:dstore_test/dstore_test.dart';
 import 'package:dstore_test_suite/src/store/pstates/http/simple_http_ps.dart';
+import 'package:dstore_test_suite/src/store/pstates/nav/books_nav.dart';
+import 'package:dstore_test_suite/src/store/pstates/nav/nav.dart';
+import 'package:dstore_test_suite/src/store/pstates/nav/setings_nav.dart';
+import 'package:dstore_test_suite/src/store/pstates/nav/tabs_nav.dart';
 import 'package:dstore_test_suite/src/store/pstates/selectors/simple_flutter_selectors.dart';
 import 'package:dstore_test_suite/src/store/pstates/selectors/simple_selector_ps.dart';
 import 'package:dstore_test_suite/src/store/pstates/simple_async_ps.dart';
@@ -33,7 +36,12 @@ void $_AppState(
     SimpleStreamPS streamPS,
     SimpleFlutterSelectors simpleFlutterSelector,
     SimpleSelectorPS simpleSelectorPS,
-    SimpleFormPS simpleFormPS) {}
+    SimpleFormPS simpleFormPS,
+    SimpleNavPS simpleNavPS,
+    BooksNav booksNav,
+    SettingsNav settingsNav,
+    TabsNestedStack tabsNested,
+    TabsNestedStack_Nested tabsNested_Nested) {}
 
 final networkListener = TempNetworkStatusListener();
 

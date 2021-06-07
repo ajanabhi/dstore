@@ -23,4 +23,14 @@ class AppSelectors {
           deps: {"simpleFlutterSelector": []});
   static final simpleForm = Selector<AppState, SimpleFormPS>(
       fn: $_AppSelectors.simpleForm, deps: {"simpleFormPS": []});
+  static final simpleNavPS = Selector<AppState, SimpleNavPS>(
+      fn: $_AppSelectors.simpleNavPS, deps: {"simpleNavPS": []});
+  static final booksNav = Selector<AppState, BooksNav>(
+      fn: $_AppSelectors.booksNav, deps: {"booksNav": []});
+  static final settingNav = Selector<AppState, SettingsNav>(
+      fn: $_AppSelectors.settingNav, deps: {"settingsNav": []});
+  static final tabsNested = Selector<AppState, TabsNestedStack>(
+      fn: $_AppSelectors.tabsNested, deps: {"tabsNested": []});
+  static final tabsNested_nested = Selector<AppState, TabsNestedStack_Nested>(
+      fn: $_AppSelectors.tabsNested_nested, deps: {"tabsNested_Nested": []});
 }

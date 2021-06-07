@@ -66,6 +66,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
   Widget build(BuildContext context) {
     _dispatch = context.dispatch;
     _store = context.store;
+    context.store.navHistory = history;
     print("Rebuilding main navigator");
     if (skipBuild) {
       print("Skipping build");

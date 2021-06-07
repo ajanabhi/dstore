@@ -130,3 +130,7 @@ class NavOptions<E> {
 
   NavOptions({this.historyUpdate, this.blockSameUrl = true, this.extraOptions});
 }
+
+extension StoreExt on Store {
+  History get flutterNavHistory => this.navHistory! as History;
+}

@@ -21,6 +21,11 @@ class AppState implements AppStateI<AppState> {
   late final SimpleFlutterSelectors simpleFlutterSelector;
   late final SimpleSelectorPS simpleSelectorPS;
   late final SimpleFormPS simpleFormPS;
+  late final SimpleNavPS simpleNavPS;
+  late final BooksNav booksNav;
+  late final SettingsNav settingsNav;
+  late final TabsNestedStack tabsNested;
+  late final TabsNestedStack_Nested tabsNested_Nested;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..simple = map.containsKey('simple') ? map['simple'] as Simple : this.simple
@@ -59,7 +64,22 @@ class AppState implements AppStateI<AppState> {
         : this.simpleSelectorPS
     ..simpleFormPS = map.containsKey('simpleFormPS')
         ? map['simpleFormPS'] as SimpleFormPS
-        : this.simpleFormPS;
+        : this.simpleFormPS
+    ..simpleNavPS = map.containsKey('simpleNavPS')
+        ? map['simpleNavPS'] as SimpleNavPS
+        : this.simpleNavPS
+    ..booksNav = map.containsKey('booksNav')
+        ? map['booksNav'] as BooksNav
+        : this.booksNav
+    ..settingsNav = map.containsKey('settingsNav')
+        ? map['settingsNav'] as SettingsNav
+        : this.settingsNav
+    ..tabsNested = map.containsKey('tabsNested')
+        ? map['tabsNested'] as TabsNestedStack
+        : this.tabsNested
+    ..tabsNested_Nested = map.containsKey('tabsNested_Nested')
+        ? map['tabsNested_Nested'] as TabsNestedStack_Nested
+        : this.tabsNested_Nested;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
         "simple": this.simple,
@@ -74,7 +94,12 @@ class AppState implements AppStateI<AppState> {
         "streamPS": this.streamPS,
         "simpleFlutterSelector": this.simpleFlutterSelector,
         "simpleSelectorPS": this.simpleSelectorPS,
-        "simpleFormPS": this.simpleFormPS
+        "simpleFormPS": this.simpleFormPS,
+        "simpleNavPS": this.simpleNavPS,
+        "booksNav": this.booksNav,
+        "settingsNav": this.settingsNav,
+        "tabsNested": this.tabsNested,
+        "tabsNested_Nested": this.tabsNested_Nested
       };
 }
 
@@ -98,7 +123,12 @@ Store<AppState> createStore(
         "streamPS": SimpleStreamPSMeta,
         "simpleFlutterSelector": SimpleFlutterSelectorsMeta,
         "simpleSelectorPS": SimpleSelectorPSMeta,
-        "simpleFormPS": SimpleFormPSMeta
+        "simpleFormPS": SimpleFormPSMeta,
+        "simpleNavPS": SimpleNavPSMeta,
+        "booksNav": BooksNavMeta,
+        "settingsNav": SettingsNavMeta,
+        "tabsNested": TabsNestedStackMeta,
+        "tabsNested_Nested": TabsNestedStack_NestedMeta
       },
       stateCreator: () => AppState(),
       appVersion: '1.0.0',

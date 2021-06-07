@@ -10,6 +10,8 @@ abstract class GraphqlAstUtils {
     }
   }
 
+  static final alreadyGotObjectQueries = <String, String>{};
+  //TODO handle recursive queries
   static String getObjectQuery(
       {required String objectName, required String apiUrl}) {
     final existingValue = graphqlObjectsQueryExpansionMap[apiUrl]?[objectName];
@@ -18,14 +20,21 @@ abstract class GraphqlAstUtils {
     }
     final schema = graphqlSchemaMap[apiUrl]!;
     final td = schema.typeMap[objectName];
-    final query =
-        convertObjectDefnitionToQueryString(td as ObjectTypeDefinition);
+    // alreadyGotObjectQueries[objectName] = "TODO";
+    var query = convertObjectDefnitionToQueryString(td as ObjectTypeDefinition);
+    print("done query $query");
+    alreadyGotObjectQueries[objectName] = query;
+    print("finalMap $alreadyGotObjectQueries");
+    // alreadyGotObjectQueries.forEach((key, value) {
+    //   query = query.replaceAll("$key.TODO", value);
+    // });
     final existingMap = graphqlObjectsQueryExpansionMap[apiUrl];
     if (existingMap != null) {
       existingMap[objectName] = query;
     } else {
       graphqlObjectsQueryExpansionMap[apiUrl] = {objectName: query};
     }
+    print("final query $query");
     return query;
   }
 
@@ -41,19 +50,53 @@ abstract class GraphqlAstUtils {
     if (td is ScalarTypeDefinition) {
       return name!;
     } else if (td is ObjectTypeDefinition) {
+      print(
+          "convertFieldDefinitionToQueryString $name ${fd.type?.baseTypeName}");
+      final objName = fd.type?.baseTypeName ?? "";
+      if (alreadyGotObjectQueries.containsKey(objName)) {
+        print("its already maps");
+        return """$name {
+              $objName.TODO
+          } """;
+      }
+      // alreadyGotObjectQueries[objName] = "TODO";
+      print("geting from gql");
+      final result = convertObjectDefnitionToQueryString(td);
+      // alreadyGotObjectQueries[objName] = result;
       return """$name {
-             ${convertObjectDefnitionToQueryString(td)}
+             ${result}
           } """;
     } else if (td is UnionTypeDefinition) {
-      return """
+      final uName = "";
+      if (alreadyGotObjectQueries.containsKey(uName)) {
+        return """
           $name {
-            ${convertUnionTypeDefnitionToQueryString(td)}
+            ${uName}.TODO
           }
         """;
-    } else if (td is InterfaceTypeDefinition) {
+      }
+      // alreadyGotObjectQueries[uName] = "TODO";
+      final result = convertUnionTypeDefnitionToQueryString(td);
+      // alreadyGotObjectQueries[uName] = result;
       return """
           $name {
-            ${convertInterfaceTypeDefinitionToQueryString(td)}
+            ${result}
+          }
+        """;
+      ;
+    } else if (td is InterfaceTypeDefinition) {
+      final iName = td.name ?? "";
+      if (alreadyGotObjectQueries.containsKey(iName)) {
+        return """$name {
+              ${iName}.TODO
+          } """;
+      }
+      // alreadyGotObjectQueries[iName] = "TODO";
+      final result = convertInterfaceTypeDefinitionToQueryString(td);
+      // alreadyGotObjectQueries[iName] = result;
+      return """
+          $name {
+            ${result}
           }
         """;
     } else {

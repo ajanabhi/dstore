@@ -37,6 +37,7 @@ class Store<S extends AppStateI<S>> {
   late final VoidCallback? _unsubscribeNetworkStatusListener;
   final _offlineActions = <Action<dynamic>>[];
   bool? networkStatus;
+  dynamic? navHistory;
 
   PersitantStorage? get storage => storageOptions?.storage;
   Store(

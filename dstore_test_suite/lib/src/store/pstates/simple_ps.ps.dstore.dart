@@ -24,9 +24,6 @@ class Simple extends PStateModel<Simple> {
 
   final bool general;
 
-  @PSNonConstClassField()
-  final Hello h;
-
   @RegularMethod()
   String processName(String name) => "AkandaBharath";
 
@@ -41,8 +38,7 @@ class Simple extends PStateModel<Simple> {
       this.areYouSafeOnThisPlant = false,
       this.riversToVisit = const [],
       this.listeningonLoop = false,
-      this.general = false,
-      this.h = const Hello()});
+      this.general = false});
 
   @override
   Simple copyWithMap(Map<String, dynamic> map) => Simple(
@@ -63,8 +59,7 @@ class Simple extends PStateModel<Simple> {
           ? map["listeningonLoop"] as bool
           : this.listeningonLoop,
       general:
-          map.containsKey("general") ? map["general"] as bool : this.general,
-      h: map.containsKey("h") ? map["h"] as Hello : this.h);
+          map.containsKey("general") ? map["general"] as bool : this.general);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         "count": this.count,
@@ -74,8 +69,7 @@ class Simple extends PStateModel<Simple> {
         "areYouSafeOnThisPlant": this.areYouSafeOnThisPlant,
         "riversToVisit": this.riversToVisit,
         "listeningonLoop": this.listeningonLoop,
-        "general": this.general,
-        "h": this.h
+        "general": this.general
       };
 
   @override
@@ -89,8 +83,7 @@ class Simple extends PStateModel<Simple> {
         o.areYouSafeOnThisPlant == areYouSafeOnThisPlant &&
         o.riversToVisit == riversToVisit &&
         o.listeningonLoop == listeningonLoop &&
-        o.general == general &&
-        o.h == h;
+        o.general == general;
   }
 
   @override
@@ -102,12 +95,11 @@ class Simple extends PStateModel<Simple> {
       areYouSafeOnThisPlant.hashCode ^
       riversToVisit.hashCode ^
       listeningonLoop.hashCode ^
-      general.hashCode ^
-      h.hashCode;
+      general.hashCode;
 
   @override
   String toString() =>
-      "Simple(count: ${this.count}, name: ${this.name}, personType: ${this.personType}, coolGeek: ${this.coolGeek}, areYouSafeOnThisPlant: ${this.areYouSafeOnThisPlant}, riversToVisit: ${this.riversToVisit}, listeningonLoop: ${this.listeningonLoop}, general: ${this.general}, h: ${this.h})";
+      "Simple(count: ${this.count}, name: ${this.name}, personType: ${this.personType}, coolGeek: ${this.coolGeek}, areYouSafeOnThisPlant: ${this.areYouSafeOnThisPlant}, riversToVisit: ${this.riversToVisit}, listeningonLoop: ${this.listeningonLoop}, general: ${this.general})";
 }
 
 abstract class $SimpleCopyWith<O> {
@@ -121,8 +113,7 @@ abstract class $SimpleCopyWith<O> {
       bool areYouSafeOnThisPlant,
       List<String> riversToVisit,
       bool listeningonLoop,
-      bool general,
-      Hello h});
+      bool general});
 }
 
 class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
@@ -139,8 +130,7 @@ class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
       Object? areYouSafeOnThisPlant = dimmutable,
       Object? riversToVisit = dimmutable,
       Object? listeningonLoop = dimmutable,
-      Object? general = dimmutable,
-      Object? h = dimmutable}) {
+      Object? general = dimmutable}) {
     return _then(_value.copyWith(
         count: count == dimmutable ? _value.count : count as int,
         name: name == dimmutable ? _value.name : name as String,
@@ -156,8 +146,7 @@ class _$SimpleCopyWithImpl<O> implements $SimpleCopyWith<O> {
         listeningonLoop: listeningonLoop == dimmutable
             ? _value.listeningonLoop
             : listeningonLoop as bool,
-        general: general == dimmutable ? _value.general : general as bool,
-        h: h == dimmutable ? _value.h : h as Hello));
+        general: general == dimmutable ? _value.general : general as bool));
   }
 }
 
@@ -172,8 +161,7 @@ abstract class _$SimpleCopyWith<O> implements $SimpleCopyWith<O> {
       bool areYouSafeOnThisPlant,
       List<String> riversToVisit,
       bool listeningonLoop,
-      bool general,
-      Hello h});
+      bool general});
 }
 
 class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
@@ -193,8 +181,7 @@ class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
       Object? areYouSafeOnThisPlant = dimmutable,
       Object? riversToVisit = dimmutable,
       Object? listeningonLoop = dimmutable,
-      Object? general = dimmutable,
-      Object? h = dimmutable}) {
+      Object? general = dimmutable}) {
     return _then(Simple(
         count: count == dimmutable ? _value.count : count as int,
         name: name == dimmutable ? _value.name : name as String,
@@ -210,8 +197,7 @@ class __$SimpleCopyWithImpl<O> extends _$SimpleCopyWithImpl<O>
         listeningonLoop: listeningonLoop == dimmutable
             ? _value.listeningonLoop
             : listeningonLoop as bool,
-        general: general == dimmutable ? _value.general : general as bool,
-        h: h == dimmutable ? _value.h : h as Hello));
+        general: general == dimmutable ? _value.general : general as bool));
   }
 }
 
@@ -648,8 +634,7 @@ Simple Simple_DS() => Simple(
     areYouSafeOnThisPlant: false,
     riversToVisit: [],
     listeningonLoop: false,
-    general: false,
-    h: Hello());
+    general: false);
 
 final SimpleMeta = PStateMeta<Simple>(
     type: _Simple_FullPath, reducer: Simple_SyncReducer, ds: Simple_DS);

@@ -142,8 +142,13 @@ class DSLVisitor extends RecursiveAstVisitor<Object> {
         if (argsList.first is MethodInvocation) {
           // object invoked with no specific fields selected so lets query all fields
           final objectName = argsList.first.toString().replaceAll("()", "");
-          objSpread = GraphqlAstUtils.getObjectQuery(
-              objectName: objectName, apiUrl: apiUrl);
+          try {
+            objSpread = GraphqlAstUtils.getObjectQuery(
+                objectName: objectName, apiUrl: apiUrl);
+          } catch (e) {
+            throw ArgumentError.value(
+                "Error in getting full object query of $objectName specify fields you need");
+          }
         }
         if (argsList.length > 1) {
           tuple = _getAliasArgsAndDirective(argsList.sublist(1));

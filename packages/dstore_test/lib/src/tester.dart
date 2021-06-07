@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:async/async.dart';
 import 'package:dstore/dstore.dart';
+import 'package:flutter_test/flutter_test.dart' hide expect;
 import 'package:test/test.dart';
 
 extension on Map<dynamic, dynamic> {
@@ -300,3 +301,10 @@ class DeepEqualsMatcher extends Matcher {
     return DeepCollectionEquality.unordered().equals(input, item);
   }
 }
+
+extension WidgetTesterExt on WidgetTester {
+  Future<void> tapText(String text) => this.tap(find.text(text));
+}
+
+void expectOneTextWidget(String text) =>
+    expect(find.text(text), findsOneWidget);

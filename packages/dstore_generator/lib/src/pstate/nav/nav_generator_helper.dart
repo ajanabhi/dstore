@@ -338,11 +338,10 @@ String _createActions(
     final mockName = getMockModelName(modelName: modelName, name: m.name);
     final params = paramsList.join(", ");
 
-    var payload = m.params.isNotEmpty
-        ? "<String,dynamic>{ " +
-            m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
-            "}"
-        : "";
+    var payload = "<String,dynamic>{ " +
+        m.params.map((p) => """ "${p.name}":${p.name} """).join(",") +
+        "}";
+
     if (payload.isNotEmpty) {
       payload = ", payload: ${payload}";
     }
@@ -354,8 +353,8 @@ String _createActions(
       navPayloadParams.add("nestedNavTypeName : '${m.nestedNavTypeName}'");
     }
     return """
-      static Action ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
-         return Action(name:"${m.name}",silent:silent,nav: NavPayload(${navPayloadParams.join(", ")}),type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
+      static Action<dynamic> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
+         return Action<dynamic>(name:"${m.name}",silent:silent,nav: NavPayload(${navPayloadParams.join(", ")}),type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});
       }
     """;
   }).join("\n");

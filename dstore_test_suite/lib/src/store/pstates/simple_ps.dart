@@ -19,8 +19,9 @@ class $_Simple {
   bool listeningonLoop = false;
 
   bool general = false;
-  @PSNonConstClassField()
-  Hello h = Hello();
+  //TODO
+  // @PSNonConstClassField()
+  // Hello h = Hello();
 
   void incrment() {
     this.count += 1;
