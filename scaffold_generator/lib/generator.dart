@@ -3,20 +3,48 @@ import 'dart:html';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:github_actions_yaml/dstore_cicd.dart';
 import 'package:scaffold_generator/js_libs/js_core.dart';
 import 'package:scaffold_generator/main.dart';
 import 'package:scaffold_generator/platforms_source.dart';
 import 'package:scaffold_generator/template_sources.dart';
 
 abstract class Generator {
-  static Future<dynamic> generateTemplate(FileSystemDirectoryHandle dirHandle,
-      TemplatesEnum template, CICDEnum cicd) async {
+  static Future<dynamic> generateTemplate(
+      {required FileSystemDirectoryHandle dirHandle,
+      required TemplatesEnum template,
+      required CICDEnum cicd,
+      required String name,
+      required List<String> platformsSelected,
+      required List<String> githubWorkFlows}) async {
     final t = describeEnum(template);
     final rootDir =
-        await dirHandle.getDirectoryHandle(t, HandleOptions(create: true));
-    final cicdValue = describeEnum(cicd);
-    await writeProjectSources(rootDir);
+        await dirHandle.getDirectoryHandle(name, HandleOptions(create: true));
+    await writeProjectSources(rootDir, platformsSelected);
     await writeTemplateSources(dirHandle, t);
+    if (cicd == CICDEnum.github) {
+      final files = <String, String>{};
+      githubWorkFlows.forEach((element) {
+        final name = element;
+        var content = "";
+        if (name == "test") {
+          content = DStoreCICD.testYaml(
+            name,
+          );
+        } else if (name == "ghpages") {
+          content = DStoreCICD.deployToGithubPagesWebYaml(name);
+        }
+        files["$name.yaml"] = content;
+      });
+      final folder = {
+        "name": ".github",
+        "files": {},
+        "subfolders": [
+          {"name": "workflows", "files": files, "subfolders": []}
+        ]
+      };
+      await saveFolder(folder, rootDir);
+    }
   }
 
   static Future<void> writeTemplateSources(
@@ -25,9 +53,11 @@ abstract class Generator {
     await saveFolder(t, dirHandle);
   }
 
-  static Future<void> writeProjectSources(
-      FileSystemDirectoryHandle dirHandle) async {
-    await Future.wait(platformsSourceCode.entries.map((me) async {
+  static Future<void> writeProjectSources(FileSystemDirectoryHandle dirHandle,
+      List<String> platformSelected) async {
+    await Future.wait(platformsSourceCode.entries
+        .where((element) => platformSelected.contains(element.key))
+        .map((me) async {
       await saveFolder(me.value, dirHandle);
     }));
   }

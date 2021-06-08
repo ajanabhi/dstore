@@ -24,7 +24,11 @@ dependencies:
   flutter:
     sdk: flutter
   js:
-  grinder:   
+  grinder:
+  github_actions_yaml:
+   git:
+     url: https://github.com/chandu0101/github_actions_yaml
+       
 
 
   # The following adds the Cupertino Icons font to your application.

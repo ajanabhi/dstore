@@ -24,10 +24,14 @@ dependencies:
   flutter:
     sdk: flutter
   dstore:
-    path: ../../packages/dstore
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore
       
   dstore_flutter:
-    path: ../../packages/dstore_flutter
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore_flutter
   
 
 
@@ -41,9 +45,19 @@ dev_dependencies:
     sdk: flutter
   grinder:   
   pedantic: 
+  github_actions_yaml:
+    git:
+      url: https://github.com/chandu0101/github_actions_yaml
+      
   dstore_generator:
-    path: ../../packages/dstore_generator  
-  build_runner:   
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore_generator 
+  build_runner:
+  dstore_test:
+     git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore_test    
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

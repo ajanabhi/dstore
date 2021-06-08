@@ -36,6 +36,16 @@ class _HomePageState extends State<HomePage> {
   CICDEnum? cicd = CICDEnum.github;
   String error = "";
   String succes = "";
+  String projectName = "";
+  bool isIos = true;
+  bool isAndroid = true;
+  bool isWeb = true;
+  bool isLinux = false;
+  bool isWindows = false;
+  bool isMacOs = false;
+
+  bool githubTestWorkFlow = true;
+  bool githubDeployToGithubPagesWorkflow = false;
 
   @override
   Widget build(BuildContext context) {
@@ -45,6 +55,18 @@ class _HomePageState extends State<HomePage> {
       ),
       body: ListView(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(30),
+            child: TextField(
+              onChanged: (value) {
+                setState(() {
+                  projectName = value;
+                  error = "";
+                });
+              },
+              decoration: InputDecoration(labelText: "Project Name"),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(20),
             child: Text(
@@ -79,6 +101,71 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           Padding(
+              padding: const EdgeInsets.all(20),
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Row(children: [
+                  Checkbox(
+                      value: isIos,
+                      onChanged: (value) {
+                        setState(() {
+                          isIos = value ?? false;
+                        });
+                      }),
+                  Text("iOS")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: isAndroid,
+                      onChanged: (value) {
+                        setState(() {
+                          isAndroid = value ?? false;
+                        });
+                      }),
+                  Text("Android")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: isWeb,
+                      onChanged: (value) {
+                        setState(() {
+                          isWeb = value ?? false;
+                        });
+                      }),
+                  Text("Web")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: isLinux,
+                      onChanged: (value) {
+                        setState(() {
+                          isLinux = value ?? false;
+                        });
+                      }),
+                  Text("Linux")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: isMacOs,
+                      onChanged: (value) {
+                        setState(() {
+                          isMacOs = value ?? false;
+                        });
+                      }),
+                  Text("MacOS")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: isWindows,
+                      onChanged: (value) {
+                        setState(() {
+                          isWindows = value ?? false;
+                        });
+                      }),
+                  Text("Windows")
+                ])
+              ])),
+          Padding(
             padding: const EdgeInsets.all(20),
             child: Text(
               "Choose CI CD Type",
@@ -109,6 +196,32 @@ class _HomePageState extends State<HomePage> {
                   .toList()
             ],
           ),
+          if (cicd == CICDEnum.github)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Row(children: [
+                  Checkbox(
+                      value: githubTestWorkFlow,
+                      onChanged: (value) {
+                        setState(() {
+                          githubTestWorkFlow = value ?? false;
+                        });
+                      }),
+                  Text("Test Workflow")
+                ]),
+                Row(children: [
+                  Checkbox(
+                      value: githubDeployToGithubPagesWorkflow,
+                      onChanged: (value) {
+                        setState(() {
+                          githubDeployToGithubPagesWorkflow = value ?? false;
+                        });
+                      }),
+                  Text("Deploy Web To GithubPages Workflow")
+                ]),
+              ],
+            ),
           Padding(
             padding: const EdgeInsets.all(30),
             child: Row(
@@ -118,19 +231,31 @@ class _HomePageState extends State<HomePage> {
                     style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.all(25)),
                     onPressed: () async {
-                      try {
-                        final dirHandle = await window.showDirectoryPicker();
-                        await Generator.generateTemplate(
-                            dirHandle, template!, cicd!);
+                      if (projectName.trim().isEmpty) {
                         setState(() {
-                          succes =
-                              "Successfully saved template to your choosen directory:  ${dirHandle.name}";
+                          error = "Project Name should not be empty";
                         });
-                      } catch (e, st) {
-                        print(st);
-                        setState(() {
-                          error = e.toString();
-                        });
+                      } else {
+                        try {
+                          final dirHandle = await window.showDirectoryPicker();
+
+                          await Generator.generateTemplate(
+                              dirHandle: dirHandle,
+                              template: template!,
+                              cicd: cicd!,
+                              name: projectName,
+                              platformsSelected: getPlatforms(),
+                              githubWorkFlows: getGithubWorkFlows());
+                          setState(() {
+                            succes =
+                                "Successfully saved template to your choosen directory:  ${dirHandle.name}";
+                          });
+                        } catch (e, st) {
+                          print(st);
+                          setState(() {
+                            error = e.toString();
+                          });
+                        }
                       }
                     },
                     child: Text("Generate Template"))
@@ -150,6 +275,40 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
     );
+  }
+
+  List<String> getPlatforms() {
+    final result = <String>[];
+    if (isIos) {
+      result.add("ios");
+    }
+    if (isAndroid) {
+      result.add("android");
+    }
+    if (isWeb) {
+      result.add("web");
+    }
+    if (isMacOs) {
+      result.add("macos");
+    }
+    if (isLinux) {
+      result.add("linux");
+    }
+    if (isAndroid) {
+      result.add("windows");
+    }
+    return result;
+  }
+
+  List<String> getGithubWorkFlows() {
+    final result = <String>[];
+    if (githubTestWorkFlow) {
+      result.add("test");
+    }
+    if (githubDeployToGithubPagesWorkflow) {
+      result.add("ghpages");
+    }
+    return result;
   }
 }
 

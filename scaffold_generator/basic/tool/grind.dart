@@ -9,6 +9,9 @@ void gen() {
 }
 
 @Task()
+void githubFlow() {}
+
+@Task()
 void test() => new TestRunner().testAsync();
 
 @DefaultTask()
