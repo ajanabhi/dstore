@@ -9,7 +9,9 @@ dependencies:
   meta: ^1.4.0
   collection: ^1.15.0
   dstore_annotation:
-    path: ../dstore_annotation
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore_annotation
   
 
 dev_dependencies:
@@ -21,5 +23,7 @@ dev_dependencies:
   json_serializable: 
   async: 
   dstore_generator:
-   path: ../dstore_generator
+   git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore_generator
   fast_immutable_collections:  

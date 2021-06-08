@@ -7,7 +7,9 @@ environment:
   sdk: ">=2.13.0 <3.0.0"
 dependencies:
   dstore:
-    path: ../dstore
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore
   hive: ^2.0.4
 
 dev_dependencies:

@@ -12,7 +12,9 @@ dependencies:
   flutter_test:
     sdk: flutter  
   dstore:
-    path: ../dstore
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore
   async:
   test: 
       

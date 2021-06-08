@@ -14,7 +14,9 @@ dependencies:
   collection:   
   path_to_regexp: 
   dstore:
-    path: ../dstore
+    git:
+      url: https://github.com/chandu0101/dstore
+      path: packages/dstore
     
   
 
