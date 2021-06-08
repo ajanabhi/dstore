@@ -93,7 +93,16 @@ abstract class DFirebaseAuthActions {
         name: "user",
         type: _DFirebaseAuth_FullPath,
         mock: mock,
-        stream: StreamPayload(stream: stream, cancelOnError: cancelOnError));
+        stream:
+            StreamPayload<User>(stream: stream, cancelOnError: cancelOnError));
+  }
+
+  static Action<Iterable<User>> userResult(Iterable<User> mock) {
+    return Action<Iterable<User>>(
+      name: "user",
+      type: _DFirebaseAuth_FullPath,
+      mock: mock,
+    );
   }
 }
 
