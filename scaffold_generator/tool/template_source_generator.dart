@@ -12,7 +12,7 @@ abstract class TemplateSourceGenerator {
       map[e] = (await getTempateSource(e)).toJson();
     }));
     final result = """
-        
+  
           final Map<String, Map<String, dynamic>> templateSourcesMap = ${jsonEncode(map)};
         
     """;
@@ -20,6 +20,7 @@ abstract class TemplateSourceGenerator {
   }
 
   static Future<DirectoryAndFiels> getTempateSource(String name) async {
+    name = "../../dstore_templates/$name";
     final result = <String, String>{};
     await Future.wait(_commonFiles.map((e) async {
       final file = File("./$name/$e");
@@ -28,11 +29,14 @@ abstract class TemplateSourceGenerator {
         result[e] = base64Encode(c);
       }
     }));
-    final dir = Directory("./$name/lib");
-    final libDirList = await PlatFormFilesGenerator.getDirectoryFiles(dir);
+    final foldersToInclude = ["lib", "tool", "test"];
+    final subfolders =
+        await Future.wait<DirectoryAndFiels>(foldersToInclude.map((e) async {
+      final dir = Directory("./$name/$e");
+      return await PlatFormFilesGenerator.getDirectoryFiles(dir);
+    }));
 
-    return DirectoryAndFiels(
-        name: name, files: result, subfolders: [libDirList]);
+    return DirectoryAndFiels(name: name, files: result, subfolders: subfolders);
   }
 
   static final _commonFiles = [

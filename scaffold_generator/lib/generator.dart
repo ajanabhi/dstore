@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:github_actions_yaml/dstore_cicd.dart';
 import 'package:scaffold_generator/js_libs/js_core.dart';
 import 'package:scaffold_generator/main.dart';
+import 'package:scaffold_generator/my_app.dart';
 import 'package:scaffold_generator/platforms_source.dart';
 import 'package:scaffold_generator/template_sources.dart';
 
