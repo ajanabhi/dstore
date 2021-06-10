@@ -4,16 +4,30 @@ import 'package:dstore_flutter/dstore_flutter.dart';
 void _handleNavAction<S extends AppStateI<S>>(
     Action action, Dispatch next, Store<S> store) async {
   print("field ${store.getFieldFromAction(action)}");
+  final navState = store.getPStateModelFromAction(action) as NavCommonI;
+  final history = navState.dontTouchMe.hisotry;
   final navPayload = action.nav!;
+  if (navPayload.isProtected) {
+    final authMeta = history.authMeta;
+    if (authMeta == null) {
+      throw ArgumentError.value(
+          "Action ${action.id} is protected but authmeta is null make sure you implemented ");
+    }
+    final isAuthenticated = authMeta.isAuthenticated(store.state);
+    if (!isAuthenticated) {
+      store.dispatch(authMeta.action);
+      return;
+    }
+  }
   final navOptions = navPayload.navOptions as NavOptions?;
 
   print("navPayload $navPayload");
-  final navState = store.getPStateModelFromAction(action) as NavCommonI;
+
   String? typeName;
   if (navState is NestedNavStateI) {
     typeName = navState.dontTouchMe.typeName;
   }
-  final history = navState.dontTouchMe.hisotry;
+
   history.urlUpdateMode = navOptions?.historyUpdate;
   print(
       "nav middleware typeName $typeName navHistory  ${history.nestedNavsHistory} before leave ${history.beforeLeave}");

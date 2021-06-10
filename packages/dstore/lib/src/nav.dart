@@ -4,4 +4,4 @@ part "nav.dstore.dart";
 
 @dimmutable
 void $_NavPayload(String? rawUrl, String? nestedNavTypeName, dynamic navOptions,
-    {bool processedNested = false}) {}
+    {bool processedNested = false, bool isProtected = false}) {}

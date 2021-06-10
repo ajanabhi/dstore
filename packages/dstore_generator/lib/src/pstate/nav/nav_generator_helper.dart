@@ -128,7 +128,6 @@ class NavDontTouchMe {
   final String? url;
   final String staticMeta;
   final String dynamicMeta;
-  // final String hisotry;
   final String typeName; // empty in main navigation
   final String? initialSetup; // not null for all nested navs
   final String historyMode;
@@ -137,7 +136,6 @@ class NavDontTouchMe {
       {this.url,
       required this.staticMeta,
       required this.dynamicMeta,
-      // required this.hisotry,
       required this.typeName,
       required this.initialSetup,
       required this.historyMode});
@@ -332,7 +330,6 @@ String _createActions(
     paramsList.add("NavOptions? navOptions");
     navPayloadParams.add("navOptions: navOptions");
 
-    final mockName = getMockModelName(modelName: modelName, name: m.name);
     final params = paramsList.join(", ");
 
     var payload = "<String,dynamic>{ " +
@@ -349,6 +346,9 @@ String _createActions(
     if (m.nestedNavTypeName != null) {
       navPayloadParams.add("nestedNavTypeName : '${m.nestedNavTypeName}'");
     }
+
+    navPayloadParams.add("isProtected: ${m.isNavProtected}");
+
     return """
       static Action<dynamic> ${m.name}(${params.isEmpty ? "" : "{$params}"})  {
          return Action<dynamic>(name:"${m.name}",silent:silent,nav: NavPayload(${navPayloadParams.join(", ")}),type:${type} ${payload},isAsync: ${m.isAsync}${m.isAsync ? ", debounce: debounce" : ""});

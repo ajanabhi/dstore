@@ -34,7 +34,7 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
     UrlToAction? fn;
     final path = uri.path;
 
-    fn = _navState!.dontTouchMe.staticMeta[path];
+    fn = _navState!.dontTouchMe.staticMeta[path]?.urlToAction;
     print("Url to Action2 $fn");
     if (fn != null) {
       history.urlChangedInSystem = true;
@@ -44,14 +44,16 @@ class DRouterDelegate<S extends AppStateI<S>> extends RouterDelegate<String>
       print("Looking  in dynamic paths ${navState.dontTouchMe.dynamicMeta}");
       final r = 'r"$path"';
       // final regExp = pathToRegExp(r);
-      final dfn =
-          navState.dontTouchMe.dynamicMeta.entries.singleWhereOrNull((de) {
-        print("Key ${de.key} path $path");
-        final regExp = pathToRegExp(de.key);
-        final result = regExp.hasMatch(path);
-        print("Result $result");
-        return result;
-      })?.value;
+      final dfn = navState.dontTouchMe.dynamicMeta.entries
+          .singleWhereOrNull((de) {
+            print("Key ${de.key} path $path");
+            final regExp = pathToRegExp(de.key);
+            final result = regExp.hasMatch(path);
+            print("Result $result");
+            return result;
+          })
+          ?.value
+          .urlToAction;
       print("dyn function $dfn");
       if (dfn == null) {
         _dispatch(navState.notFoundAction(uri));

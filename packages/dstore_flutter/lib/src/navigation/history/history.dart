@@ -32,6 +32,7 @@ abstract class History {
 
   late Action Function(NavStateI navState)
       fallBackNestedStackNonInitializationAction;
+  late AuthMeta? authMeta;
 
   final nestedNavsHistory = <String, NestedNavHistory>{};
 

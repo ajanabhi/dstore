@@ -84,14 +84,20 @@ abstract class NavCommonI {
   List<NestedNavStateMeta> getNestedNavs() => [];
 }
 
+class AuthMeta {
+  final Action action;
+  final bool Function(dynamic appState) isAuthenticated;
+
+  AuthMeta({required this.action, required this.isAuthenticated});
+}
+
 abstract class NavStateI<M> extends PStateModel<M> with NavCommonI {
   @override
   Map<String, dynamic> toMap() => throw UnimplementedError();
   @override
   M copyWithMap(Map<String, dynamic> map) => throw UnimplementedError();
-  Action authAction(NavCommonI navState) {
-    throw UnimplementedError();
-  }
+  // If you dont have any protected routes/urls just put unimplemented error block;
+  AuthMeta authMeta(NavCommonI navState);
 }
 
 class NestedNavStateMeta {
