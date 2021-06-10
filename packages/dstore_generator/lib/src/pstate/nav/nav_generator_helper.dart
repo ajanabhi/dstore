@@ -1,4 +1,3 @@
-import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:dstore_annotation/dstore_annotation.dart';
@@ -162,7 +161,7 @@ String _getNavStaticMeta(
         ?.name;
 
     final params = name != null ? "$name : uri.queryParameters" : "";
-    return "'${e.url}' : (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}";
+    return "'${e.url}' : NavUrlMeta(urlToAction: (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}, url: ${e.url} ,isProtected: ${e.isNavProtected})";
   }).join(", ");
   return "{$m}";
 }
@@ -212,15 +211,15 @@ String _getNavDynamicMeta(
       }
     });
 
-    return """'${e.url}' : 
-    (Uri uri,Dispatch dispatch) { 
+    return """'${e.url}' : NavUrlMeta(url: ${e.url},urlToAction : (Uri uri,Dispatch dispatch) { 
       final path = uri.path;
       final parameters = <String>[];
       final regExp = pathToRegExp('${e.url}', parameters: parameters);
       final match = regExp.matchAsPrefix(path);
       final params = extract(parameters, match!);
       return dispatch(${modelName}Actions.${e.name}(${params.join(", ")}));
-    }""";
+    }, isProtected: ${e.isNavProtected})
+    """;
   }).join(", ");
   return "{$m}";
 }
@@ -237,8 +236,6 @@ String _createPStateNavModel(
     required String exinf,
     required bool enableHistory,
     required String typaParamsWithBounds}) {
-  //     final String url;
-  // final String defaultAction;
   var fb = "";
   if (!exinf.startsWith("Nested")) {
     fb = """
@@ -369,12 +366,8 @@ String _createActions(
 }
 
 UrlInfo? getUrlFromMethod(
-    {required MethodDeclaration md,
-    required List<Field> mparams,
-    required ClassElement element}) {
-  final urlAnnot = element.methods
-      .singleWhere((me) => me.name == md.name.name)
-      .getUrlFromAnnotation();
+    {required List<Field> mparams, required MethodElement methodElement}) {
+  final urlAnnot = methodElement.getUrlFromAnnotation();
 
   final urlInput = urlAnnot?.item1.path;
 
@@ -389,7 +382,7 @@ UrlInfo? getUrlFromMethod(
       final mp = mparams.map((e) => e.name).toSet();
       if (!mp.containsAll(parameters)) {
         throw InvalidSignatureError(
-            "you defined dynamic url $urlInput with params $parameters but they are not defined in method ${md.name} params");
+            "you defined dynamic url $urlInput with params $parameters but they are not defined in method ${methodElement.name} params");
       }
       finalUrl = parse(urlInput)
           .map((e) =>
@@ -397,20 +390,21 @@ UrlInfo? getUrlFromMethod(
           .join("");
       if (mparams.length != parameters.length) {
         errorMessage =
-            "apart from path params  $parameters action method ${md.name} can have only two extra params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions? ";
+            "apart from path params  $parameters action method ${methodElement.name} can have only two extra params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions? ";
         finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
             params: mparams, message: errorMessage, url: finalUrl);
       }
     } else {
       // static url
       errorMessage =
-          "static url action method ${md.name} should have only two params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions?";
+          "static url action method ${methodElement.name} should have only two params at most, param1 of type Map<String,String> that is to specify query params, param2 of type NavOptions?";
       finalUrl = _validateQueryParamsAndNavOptionsAndUpdateUrlWithQueryParams(
           params: mparams, message: errorMessage, url: urlInput);
     }
     return UrlInfo(
       rawUrl: urlInput,
       finalUrl: finalUrl,
+      isProtected: urlAnnot?.item1.isProtected ?? false,
       nestedEleemnt: urlAnnot?.item2,
     );
   }
@@ -419,6 +413,7 @@ UrlInfo? getUrlFromMethod(
 class UrlInfo {
   final String rawUrl;
   final String finalUrl;
+  final bool isProtected;
   final Element? nestedEleemnt;
   final bool blockSameUrl;
 
@@ -426,6 +421,7 @@ class UrlInfo {
       {required this.rawUrl,
       required this.finalUrl,
       this.nestedEleemnt,
+      required this.isProtected,
       this.blockSameUrl = false});
 
   @override

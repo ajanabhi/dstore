@@ -100,11 +100,19 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     String? rawUrl;
     String? finalUrl;
     String? nestedNavTypeName;
+    var isNavProtected = false;
+
     if (isNav) {
       final urlTuple =
-          getUrlFromMethod(md: node, mparams: params, element: element);
+          getUrlFromMethod(mparams: params, methodElement: methodElement);
       rawUrl = urlTuple?.rawUrl;
       finalUrl = urlTuple?.finalUrl;
+      final protectedAnnot = methodElement.annotationFromType(Protected);
+      if (protectedAnnot != null) {
+        isNavProtected = true;
+      } else {
+        isNavProtected = urlTuple?.isProtected ?? false;
+      }
       final nestedNavElement = urlTuple?.nestedEleemnt;
       if (nestedNavElement != null &&
           nestedNavElement is ClassElement &&
@@ -179,6 +187,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         isAsync: node.body.isAsynchronous,
         name: name,
         url: rawUrl,
+        isNavProtected: isNavProtected,
         params: params,
         nestedNavTypeName: nestedNavTypeName,
         keysModified: keys

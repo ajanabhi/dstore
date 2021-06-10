@@ -408,8 +408,12 @@ extension MethodElementExt on MethodElement {
     if (a != null) {
       final ao = ConstantReader(a.computeConstantValue());
       final url = ao.peek("path")?.stringValue;
+      final isProtected = ao.peek("isProtected")?.boolValue ?? false;
       final nt = ao.peek("nestedType")?.objectValue.toTypeValue()?.element;
-      return Tuple2(Url(url!), nt);
+      return Tuple2(
+        Url(url!, isProtected: isProtected),
+        nt,
+      );
     }
   }
 }

@@ -41,10 +41,21 @@ class NavConfigMeta {
   }
 }
 
+class NavUrlMeta {
+  final String url;
+  final UrlToAction urlToAction;
+  final bool isProtected;
+
+  NavUrlMeta(
+      {required this.url,
+      required this.urlToAction,
+      required this.isProtected});
+}
+
 class NavStateDontTouchMe {
   String? url;
-  late final Map<String, UrlToAction> staticMeta;
-  late final Map<String, UrlToAction> dynamicMeta;
+  late final Map<String, NavUrlMeta> staticMeta;
+  late final Map<String, NavUrlMeta> dynamicMeta;
   late History hisotry;
   String typeName = ""; // empty in main navigation
   Action? initialSetup; // not null for all nested navs
@@ -78,6 +89,9 @@ abstract class NavStateI<M> extends PStateModel<M> with NavCommonI {
   Map<String, dynamic> toMap() => throw UnimplementedError();
   @override
   M copyWithMap(Map<String, dynamic> map) => throw UnimplementedError();
+  Action authAction(NavCommonI navState) {
+    throw UnimplementedError();
+  }
 }
 
 class NestedNavStateMeta {

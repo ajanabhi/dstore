@@ -103,6 +103,7 @@ class PStateMethod {
   final String body;
   final bool isAsync;
   final String? url;
+  final bool isNavProtected;
   final String? nestedNavTypeName;
   final List<Field> keysModified;
   final bool isRegular;
@@ -114,6 +115,7 @@ class PStateMethod {
       this.url,
       this.nestedNavTypeName,
       this.isRegular = false,
+      this.isNavProtected = false,
       required this.keysModified,
       required this.body});
 
