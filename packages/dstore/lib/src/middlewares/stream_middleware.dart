@@ -24,15 +24,25 @@ void _processStreamAction<S extends AppStateI<S>>(
         internal: ActionInternal(
             processed: true, type: ActionInternalType.FIELD, data: field)));
   } else {
-    final stream = action.stream!.stream;
-    final cancelOnError = action.stream!.cancelOnError;
+    final payload = action.stream!;
+    final stream = payload.stream;
+    final cancelOnError = payload.cancelOnError;
     final sub = stream.listen((dynamic event) {
       print("got stream data $event");
-      final field = store.getFieldFromAction(action) as StreamField;
+      var field = store.getFieldFromAction(action) as StreamField;
+      var list = field.dataList;
+      if (payload.appendDataToList) {
+        if (list.isEmpty) {
+          // convert const list to mutable list
+          list = list.toList();
+        }
+        list.add(event);
+      }
       store.dispatch(action.copyWith(
           internal: ActionInternal(
         processed: true,
-        data: field.copyWith(data: event, firstEventArrived: true, error: null),
+        data: field.copyWith(
+            data: event, firstEventArrived: true, dataList: list, error: null),
         type: ActionInternalType.FIELD,
       )));
     },

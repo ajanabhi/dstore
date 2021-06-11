@@ -30,7 +30,19 @@ class FireStoreOpsVisitor extends SimpleAstVisitor<void> {
       });
       print("Child Entities done");
       value.visitChildren(queryVisitor);
-      ops.add("static  final ${name} = ${queryVisitor.results.join(".\n")} ;");
+      final dynamicVariables = queryVisitor.dynamicVariables;
+      if (dynamicVariables.isNotEmpty) {
+        final args = dynamicVariables
+            .map((e) => "${e.type.replaceQuotes} ${e.name.replaceQuotes}")
+            .join(", ");
+        ops.add("""static   ${name}($args) {
+                 return  ${queryVisitor.results.join(".\n")};
+               }
+               """);
+      } else {
+        ops.add(
+            "static  final ${name} = ${queryVisitor.results.join(".\n")} ;");
+      }
     }
   }
 }
@@ -70,8 +82,8 @@ class FireStoreQueryOpVisitor extends RecursiveAstVisitor<Object> {
           var v = a.expression.toSource();
           if (v.startsWith("FireStoreDynamicVariable(")) {
             final va = v.split(",");
-            final name = va.first.split(":").last;
-            final type = va.last.split(":").last;
+            final name = va.first.split(":").last.trim();
+            final type = va.last.split(":").last.trim().replaceFirst(")", "");
             dynamicVariables
                 .add(FireStoreDynamicVariable(name: name, type: type));
             v = name.replaceQuotes;

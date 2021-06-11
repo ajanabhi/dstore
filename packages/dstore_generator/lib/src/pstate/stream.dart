@@ -43,8 +43,8 @@ String convertStreamFieldInfoToAction(
         ",psHistoryPayload : PSHistoryPayload(keysModified:['${name}'])";
   }
   return """
-   static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,$mockType? mock}) {
-     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload<${sfi.outputType}>(stream: stream,cancelOnError:cancelOnError)$psHistoryPayload);
+   static Action<$mockType> $name({required Stream<${sfi.outputType}> stream,bool cancelOnError = false,bool appendDataToList = false,$mockType? mock}) {
+     return Action<$mockType>(name:"$name",type:$type,mock: mock,stream:StreamPayload<${sfi.outputType}>(stream: stream,cancelOnError:cancelOnError,appendDataToList : appendDataToList)$psHistoryPayload);
    }
 
    static Action<$mockType> ${name}Result($mockType mock) {

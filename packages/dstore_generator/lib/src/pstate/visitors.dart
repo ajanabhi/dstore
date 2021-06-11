@@ -79,7 +79,9 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
     }
     final rt = node.returnType?.toString();
     logger.shout("RT : $rt");
+    var isAsync = false;
     if (node.body.isAsynchronous && (rt != "Future<void>" && rt != "void")) {
+      isAsync = true;
       throw InvalidSignatureError(
           "You should annotate method  '${node.name.name}' return type with Future<void>  ");
     } else if (!node.body.isAsynchronous && rt != "void") {
@@ -143,10 +145,12 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
             "Singleline body should assigment expression of class variable with this.prefix");
       }
     } else if (body is BlockFunctionBody) {
+      print("processMethodStatements ${name} isAsync $isAsync ");
       final msr = processMethodStatements(
           statements: body.block.statements,
           historyEnabled: historyEnabled,
           url: finalUrl,
+          isAsyncMethod: isAsync,
           isNav: isNav,
           limit: historyLimit);
       final statements = msr.item1;
@@ -604,6 +608,7 @@ List<String> convertStatementResultsToString(
 Tuple2<String, Set<String>> processMethodStatements(
     {required List<Statement> statements,
     required bool historyEnabled,
+    required bool isAsyncMethod,
     String? url,
     bool isNav = false,
     int? limit}) {
@@ -655,7 +660,8 @@ Tuple2<String, Set<String>> processMethodStatements(
   }
 
   final mutationStatements = getMutationOnlyStatementResults(statementResults);
-  if (mutationStatements.isEmpty) {
+  print("isAsyncMethod $isAsyncMethod");
+  if (!isAsyncMethod && mutationStatements.isEmpty) {
     throw Exception(
         "There should be atleast one assignemtn operation for class fields");
   }

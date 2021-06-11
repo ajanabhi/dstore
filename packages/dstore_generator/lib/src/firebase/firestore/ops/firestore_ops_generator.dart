@@ -14,7 +14,7 @@ class FireStoreOpsGenerator extends GeneratorForAnnotation<FireStoreOps> {
         throw UnsupportedError(
             "FireStoreSchema should only be applied on class");
       }
-      if (element.name.startsWith("\$_")) {
+      if (!element.name.startsWith("\$_")) {
         throw UnsupportedError(
             "FireStore ops source class name should start with \$_ ");
       }

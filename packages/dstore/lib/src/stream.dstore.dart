@@ -10,6 +10,8 @@ part of 'stream.dart';
 class StreamField<D, E> {
   final D? data;
 
+  final List<D> dataList;
+
   final StreamSubscription<dynamic>? internalSubscription;
 
   final E? error;
@@ -25,6 +27,7 @@ class StreamField<D, E> {
 
   const StreamField(
       {this.data,
+      this.dataList = const [],
       this.internalSubscription,
       this.error,
       this.listening = false,
@@ -36,6 +39,7 @@ class StreamField<D, E> {
     if (identical(this, o)) return true;
     return o is StreamField &&
         o.data == data &&
+        o.dataList == dataList &&
         o.internalSubscription == internalSubscription &&
         o.error == error &&
         o.listening == listening &&
@@ -46,6 +50,7 @@ class StreamField<D, E> {
   @override
   int get hashCode =>
       data.hashCode ^
+      dataList.hashCode ^
       internalSubscription.hashCode ^
       error.hashCode ^
       listening.hashCode ^
@@ -54,7 +59,7 @@ class StreamField<D, E> {
 
   @override
   String toString() =>
-      "StreamField(data: ${this.data}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, firstEventArrived: ${this.firstEventArrived}, completed: ${this.completed})";
+      "StreamField(data: ${this.data}, dataList: ${this.dataList}, internalSubscription: ${this.internalSubscription}, error: ${this.error}, listening: ${this.listening}, firstEventArrived: ${this.firstEventArrived}, completed: ${this.completed})";
 }
 
 abstract class $StreamFieldCopyWith<D, E, O> {
@@ -63,6 +68,7 @@ abstract class $StreamFieldCopyWith<D, E, O> {
       _$StreamFieldCopyWithImpl<D, E, O>;
   O call(
       {D? data,
+      List<D> dataList,
       StreamSubscription<dynamic>? internalSubscription,
       E? error,
       bool listening,
@@ -79,6 +85,7 @@ class _$StreamFieldCopyWithImpl<D, E, O>
   @override
   O call(
       {Object? data = dimmutable,
+      Object? dataList = dimmutable,
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
@@ -86,6 +93,8 @@ class _$StreamFieldCopyWithImpl<D, E, O>
       Object? completed = dimmutable}) {
     return _then(_value.copyWith(
         data: data == dimmutable ? _value.data : data as D?,
+        dataList:
+            dataList == dimmutable ? _value.dataList : dataList as List<D>,
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,
@@ -107,6 +116,7 @@ abstract class _$StreamFieldCopyWith<D, E, O>
       __$StreamFieldCopyWithImpl<D, E, O>;
   O call(
       {D? data,
+      List<D> dataList,
       StreamSubscription<dynamic>? internalSubscription,
       E? error,
       bool listening,
@@ -127,6 +137,7 @@ class __$StreamFieldCopyWithImpl<D, E, O>
   @override
   O call(
       {Object? data = dimmutable,
+      Object? dataList = dimmutable,
       Object? internalSubscription = dimmutable,
       Object? error = dimmutable,
       Object? listening = dimmutable,
@@ -134,6 +145,8 @@ class __$StreamFieldCopyWithImpl<D, E, O>
       Object? completed = dimmutable}) {
     return _then(StreamField(
         data: data == dimmutable ? _value.data : data as D?,
+        dataList:
+            dataList == dimmutable ? _value.dataList : dataList as List<D>,
         internalSubscription: internalSubscription == dimmutable
             ? _value.internalSubscription
             : internalSubscription as StreamSubscription<dynamic>?,
