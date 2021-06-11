@@ -9,6 +9,13 @@ class FireStoreSchema {
   });
 }
 
+
+class FireStoreDynamicVariable {
+  final String name;
+  final String type;
+  const FireStoreDynamicVariable({required this.name, required this.type});
+}
+
 class FireStoreOps {
   const FireStoreOps();
 }
