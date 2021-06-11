@@ -22,7 +22,7 @@ dependencies:
 dev_dependencies:
   test: ^1.14.4
   grinder:
-  build_runner:    
+  build_runner: 1.12.2
   dstore_generator:
     path: ../dstore_generator/
 

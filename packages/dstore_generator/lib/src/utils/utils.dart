@@ -136,6 +136,23 @@ extension StringExt on String {
     final value = this;
     return value.endsWith("?") ? value : "$value?";
   }
+
+  String get replaceQuotes {
+    var value = this;
+    if (value.startsWith("\"")) {
+      value = value.substring(1);
+    }
+    if (value.endsWith("\"")) {
+      value = value.substring(0, value.length - 1);
+    }
+    if (value.startsWith("'")) {
+      value = value.substring(1);
+    }
+    if (value.endsWith("'")) {
+      value = value.substring(0, value.length - 1);
+    }
+    return value;
+  }
 }
 
 extension IterableMapIndex<T> on Iterable<T> {

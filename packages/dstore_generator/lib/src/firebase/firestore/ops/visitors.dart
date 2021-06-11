@@ -1,6 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:dstore_annotation/dstore_annotation.dart';
+import "package:dstore_generator/src/utils/utils.dart";
 
 class FireStoreOpsVisitor extends SimpleAstVisitor<void> {
   final ops = <String>[];
@@ -35,19 +37,8 @@ class FireStoreOpsVisitor extends SimpleAstVisitor<void> {
 
 class FireStoreQueryOpVisitor extends RecursiveAstVisitor<Object> {
   final results = <String>[];
-  // @override
-  // dynamic visitMethodInvocation(MethodInvocation node) {
-  //   print("method invocation enter $node");
-  //   final nodeStr = node.toString();
-  //   final methodName = node.methodName.name;
-  //   final arguments = node.argumentList.arguments;
-  //   if (nodeStr.startsWith("FireStoreQuery().")) {
-  //     final nameA = nodeStr.split(".").last.split("_");
-  //     typeName = nameA.last.replaceAll("()", "");
-  //   } else if (nodeStr.startsWith("..")) {}
-  //   super.visitMethodInvocation(node);
-  //   print("method invocation leave $node");
-  // }
+  final dynamicVariables = <FireStoreDynamicVariable>[];
+  final s = FireStoreDynamicVariable(name: "", type: "");
 
   String _getOrderByResult(
       {required String methodName, required NodeList<Expression> arguments}) {
@@ -76,7 +67,16 @@ class FireStoreQueryOpVisitor extends RecursiveAstVisitor<Object> {
     if (arguments.isNotEmpty) {
       arguments.forEach((a) {
         if (a is NamedExpression) {
-          args.add("${a.name.label.name}: ${a.expression}");
+          var v = a.expression.toSource();
+          if (v.startsWith("FireStoreDynamicVariable(")) {
+            final va = v.split(",");
+            final name = va.first.split(":").last;
+            final type = va.last.split(":").last;
+            dynamicVariables
+                .add(FireStoreDynamicVariable(name: name, type: type));
+            v = name.replaceQuotes;
+          }
+          args.add("${a.name.label.name}: ${v}");
         } else {
           args.add("${a}");
         }

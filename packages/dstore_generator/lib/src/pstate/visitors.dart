@@ -42,11 +42,6 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         type: "NavOptions?",
         isOptional: false,
       ));
-      fields.add(Field(
-          name: "blockSameUrl",
-          type: "bool",
-          isOptional: false,
-          value: "false"));
     }
     if (historyEnabled) {
       fields.add(Field(name: "canUndo", type: "bool", value: "false"));
@@ -193,7 +188,7 @@ class PStateAstVisitor extends SimpleAstVisitor<dynamic> {
         keysModified: keys
             .map((e) => fields.singleWhere((element) => element.name == e,
                 orElse: () => throw ArgumentError.value(
-                    "key $e not found in fields $fields")))
+                    "key $e not found in fields $fields , this can occur if you're using pstate as nav but didnt specified isNav param")))
             .toList(),
         body: mbody));
     return super.visitMethodDeclaration(node);

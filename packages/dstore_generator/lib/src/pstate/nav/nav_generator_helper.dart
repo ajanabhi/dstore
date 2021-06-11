@@ -16,7 +16,8 @@ const navStateFeilds = [
 const navStateRegularMethods = [
   "buildPages",
   "notFoundAction",
-  "fallBackNestedStackNonInitializationAction"
+  "fallBackNestedStackNonInitializationAction",
+  "authMeta"
 ];
 
 Future<String> generatePStateNavForClassElement(
@@ -159,7 +160,7 @@ String _getNavStaticMeta(
         ?.name;
 
     final params = name != null ? "$name : uri.queryParameters" : "";
-    return "'${e.url}' : NavUrlMeta(urlToAction: (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}, url: ${e.url} ,isProtected: ${e.isNavProtected})";
+    return "'${e.url}' : NavUrlMeta(urlToAction: (Uri uri,Dispatch dispatch) { return dispatch(${modelName}Actions.${e.name}($params));}, url: '${e.url}' ,isProtected: ${e.isNavProtected})";
   }).join(", ");
   return "{$m}";
 }

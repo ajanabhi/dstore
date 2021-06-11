@@ -24,8 +24,10 @@ abstract class History {
   String url = "";
   VoidCallback listenUrl(UriListener uriListener);
   Action? originAction;
+  Action? authOriginAction;
   String? currentActiveNestedNav;
   late HistoryMode historyMode;
+  
   GlobalKey<NavigatorState>? currentNavKey;
   BeforeLeaveFn? beforeLeave;
   late final GlobalKey<NavigatorState> globalNavKey;

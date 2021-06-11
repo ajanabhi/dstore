@@ -15,10 +15,17 @@ void _handleNavAction<S extends AppStateI<S>>(
     }
     final isAuthenticated = authMeta.isAuthenticated(store.state);
     if (!isAuthenticated) {
+      history.authOriginAction = action;
       store.dispatch(authMeta.action);
       return;
     }
   }
+  if(history.authOriginAction != null) {
+    final a = history.authOriginAction!;
+    history.authOriginAction = null;
+    store.dispatch(a);
+    return;
+  } 
   final navOptions = navPayload.navOptions as NavOptions?;
 
   print("navPayload $navPayload");

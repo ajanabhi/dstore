@@ -211,8 +211,8 @@ String convertCollectionModelToDartModel({required ClassElement element}) {
     final name = f.name;
     final type = f.type;
     var typeStr = type.toString();
-    final annotations = <String>[];
-    final updateAnnotations = <String>[];
+    final annotations = f.metadata.map((e) => e.toSource()).toList();
+    final updateAnnotations = f.metadata.map((e) => e.toSource()).toList();
     if (typeStr.startsWith("FireStoreRef")) {
       if (!typeStr.startsWith("FireStoreRef<")) {
         throw ArgumentError.value(
@@ -478,10 +478,6 @@ $CompileTimeError
       }
       """;
     } else {}
-    final annotations = <String>[];
-    if (typeStr.startsWith("DocumentReference")) {
-      annotations.add("@DocumentReferenceConverter()");
-    }
     return "";
   }).toList();
   var docClass = "";
