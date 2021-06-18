@@ -6,23 +6,38 @@ version: 1.0.0
 environment:
   sdk: '>=2.13.0 <3.0.0'
 
+publish_to: none
+
 dependencies:
  flutter:
    sdk: flutter 
  dstore_flutter:
-   path: ../packages/dstore_flutter/
+   git:
+     url: https://github.com/chandu0101/dstore
+     path: packages/dstore_flutter 
  dstore_middleware_dio:
-   path: ../packages/middleware_dio/
+   git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/middleware_dio
+
  dstore_middleware_websocket:
-   path: ../packages/middleware_websocket/  
+   git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/middleware_websocket
  dstore:
-   path: ../packages/dstore/ 
+   git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/dstore
  dstore_test:
-   path: ../packages/dstore_test/ 
+   git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/dstore_test
  time:
  cloud_firestore: 
  dstore_middleware_http:
-   path: ../packages/middleware_http  
+   git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/middleware_http
      
 
 dev_dependencies:
@@ -31,13 +46,18 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   json_serializable: 
-    path: ../../json_serializable.dart/json_serializable  
+    path: ../../json_serializable.dart/json_serializable
   dstore_generator:
-    path: ../packages/dstore_generator/  
+    git: 
+     url: https://github.com/chandu0101/dstore
+     path: packages/dstore_generator
   grinder:
   
 
-dependency_overrides:
+dependency_overrides: 
   json_annotation:
-    path: ../../json_serializable.dart/json_annotation/  
-  meta: ^1.4.0  
+    path: ../../json_serializable.dart/json_annotation/    
+  meta: ^1.4.0 
+  dstore_generator:
+    path: ../packages//dstore_generator 
+     

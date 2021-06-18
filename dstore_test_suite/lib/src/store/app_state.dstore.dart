@@ -22,10 +22,10 @@ class AppState implements AppStateI<AppState> {
   late final SimpleSelectorPS simpleSelectorPS;
   late final SimpleFormPS simpleFormPS;
   late final SimpleNavPS simpleNavPS;
-  late final BooksNav booksNav;
-  late final SettingsNav settingsNav;
-  late final TabsNestedStack tabsNested;
-  late final TabsNestedStack_Nested tabsNested_Nested;
+  late final dynamic booksNav;
+  late final dynamic settingsNav;
+  late final dynamic tabsNested;
+  late final dynamic tabsNested_Nested;
   @override
   AppState copyWithMap(Map<String, dynamic> map) => AppState()
     ..simple = map.containsKey('simple') ? map['simple'] as Simple : this.simple
@@ -68,17 +68,16 @@ class AppState implements AppStateI<AppState> {
     ..simpleNavPS = map.containsKey('simpleNavPS')
         ? map['simpleNavPS'] as SimpleNavPS
         : this.simpleNavPS
-    ..booksNav = map.containsKey('booksNav')
-        ? map['booksNav'] as BooksNav
-        : this.booksNav
+    ..booksNav =
+        map.containsKey('booksNav') ? map['booksNav'] as dynamic : this.booksNav
     ..settingsNav = map.containsKey('settingsNav')
-        ? map['settingsNav'] as SettingsNav
+        ? map['settingsNav'] as dynamic
         : this.settingsNav
     ..tabsNested = map.containsKey('tabsNested')
-        ? map['tabsNested'] as TabsNestedStack
+        ? map['tabsNested'] as dynamic
         : this.tabsNested
     ..tabsNested_Nested = map.containsKey('tabsNested_Nested')
-        ? map['tabsNested_Nested'] as TabsNestedStack_Nested
+        ? map['tabsNested_Nested'] as dynamic
         : this.tabsNested_Nested;
   @override
   Map<String, PStateModel<dynamic>> toMap() => <String, PStateModel<dynamic>>{
@@ -125,10 +124,10 @@ Store<AppState> createStore(
         "simpleSelectorPS": SimpleSelectorPSMeta,
         "simpleFormPS": SimpleFormPSMeta,
         "simpleNavPS": SimpleNavPSMeta,
-        "booksNav": BooksNavMeta,
-        "settingsNav": SettingsNavMeta,
-        "tabsNested": TabsNestedStackMeta,
-        "tabsNested_Nested": TabsNestedStack_NestedMeta
+        "booksNav": dynamicMeta,
+        "settingsNav": dynamicMeta,
+        "tabsNested": dynamicMeta,
+        "tabsNested_Nested": dynamicMeta
       },
       stateCreator: () => AppState(),
       appVersion: '1.0.0',

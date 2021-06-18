@@ -16,8 +16,6 @@ class SimpleNavPS extends NavStateI<SimpleNavPS>
 
   final NavOptions? navOptions;
 
-  final bool blockSameUrl;
-
   @override
   Action notFoundAction(Uri uri) {
     return SimpleNavPSActions.unknown();
@@ -52,11 +50,7 @@ class SimpleNavPS extends NavStateI<SimpleNavPS>
       __$SimpleNavPSCopyWithImpl<SimpleNavPS>(this, IdentityFn);
 
   SimpleNavPS(
-      {this.page,
-      this.beforeLeave,
-      NavConfigMeta? meta,
-      this.navOptions,
-      this.blockSameUrl = false})
+      {this.page, this.beforeLeave, NavConfigMeta? meta, this.navOptions})
       : meta = meta ?? NavConfigMeta();
 
   @override
@@ -68,17 +62,13 @@ class SimpleNavPS extends NavStateI<SimpleNavPS>
       meta: map.containsKey("meta") ? map["meta"] as NavConfigMeta : this.meta,
       navOptions: map.containsKey("navOptions")
           ? map["navOptions"] as NavOptions?
-          : this.navOptions,
-      blockSameUrl: map.containsKey("blockSameUrl")
-          ? map["blockSameUrl"] as bool
-          : this.blockSameUrl);
+          : this.navOptions);
 
   Map<String, dynamic> toMap() => <String, dynamic>{
         "page": this.page,
         "beforeLeave": this.beforeLeave,
         "meta": this.meta,
-        "navOptions": this.navOptions,
-        "blockSameUrl": this.blockSameUrl
+        "navOptions": this.navOptions
       };
 
   @override
@@ -88,8 +78,7 @@ class SimpleNavPS extends NavStateI<SimpleNavPS>
         o.page == page &&
         o.beforeLeave == beforeLeave &&
         o.meta == meta &&
-        o.navOptions == navOptions &&
-        o.blockSameUrl == blockSameUrl;
+        o.navOptions == navOptions;
   }
 
   @override
@@ -97,12 +86,11 @@ class SimpleNavPS extends NavStateI<SimpleNavPS>
       page.hashCode ^
       beforeLeave.hashCode ^
       meta.hashCode ^
-      navOptions.hashCode ^
-      blockSameUrl.hashCode;
+      navOptions.hashCode;
 
   @override
   String toString() =>
-      "SimpleNavPS(page: ${this.page}, beforeLeave: ${this.beforeLeave}, meta: ${this.meta}, navOptions: ${this.navOptions}, blockSameUrl: ${this.blockSameUrl})";
+      "SimpleNavPS(page: ${this.page}, beforeLeave: ${this.beforeLeave}, meta: ${this.meta}, navOptions: ${this.navOptions})";
 }
 
 abstract class $SimpleNavPSCopyWith<O> {
@@ -113,8 +101,7 @@ abstract class $SimpleNavPSCopyWith<O> {
       {Page? page,
       BeforeLeaveFn? beforeLeave,
       NavConfigMeta meta,
-      NavOptions? navOptions,
-      bool blockSameUrl});
+      NavOptions? navOptions});
 }
 
 class _$SimpleNavPSCopyWithImpl<O> implements $SimpleNavPSCopyWith<O> {
@@ -127,8 +114,7 @@ class _$SimpleNavPSCopyWithImpl<O> implements $SimpleNavPSCopyWith<O> {
       {Object? page = dimmutable,
       Object? beforeLeave = dimmutable,
       Object? meta = dimmutable,
-      Object? navOptions = dimmutable,
-      Object? blockSameUrl = dimmutable}) {
+      Object? navOptions = dimmutable}) {
     return _then(_value.copyWith(
         page: page == dimmutable ? _value.page : page as Page?,
         beforeLeave: beforeLeave == dimmutable
@@ -137,10 +123,7 @@ class _$SimpleNavPSCopyWithImpl<O> implements $SimpleNavPSCopyWith<O> {
         meta: meta == dimmutable ? _value.meta : meta as NavConfigMeta,
         navOptions: navOptions == dimmutable
             ? _value.navOptions
-            : navOptions as NavOptions?,
-        blockSameUrl: blockSameUrl == dimmutable
-            ? _value.blockSameUrl
-            : blockSameUrl as bool));
+            : navOptions as NavOptions?));
   }
 }
 
@@ -152,8 +135,7 @@ abstract class _$SimpleNavPSCopyWith<O> implements $SimpleNavPSCopyWith<O> {
       {Page? page,
       BeforeLeaveFn? beforeLeave,
       NavConfigMeta meta,
-      NavOptions? navOptions,
-      bool blockSameUrl});
+      NavOptions? navOptions});
 }
 
 class __$SimpleNavPSCopyWithImpl<O> extends _$SimpleNavPSCopyWithImpl<O>
@@ -169,8 +151,7 @@ class __$SimpleNavPSCopyWithImpl<O> extends _$SimpleNavPSCopyWithImpl<O>
       {Object? page = dimmutable,
       Object? beforeLeave = dimmutable,
       Object? meta = dimmutable,
-      Object? navOptions = dimmutable,
-      Object? blockSameUrl = dimmutable}) {
+      Object? navOptions = dimmutable}) {
     return _then(SimpleNavPS(
         page: page == dimmutable ? _value.page : page as Page?,
         beforeLeave: beforeLeave == dimmutable
@@ -179,10 +160,7 @@ class __$SimpleNavPSCopyWithImpl<O> extends _$SimpleNavPSCopyWithImpl<O>
         meta: meta == dimmutable ? _value.meta : meta as NavConfigMeta,
         navOptions: navOptions == dimmutable
             ? _value.navOptions
-            : navOptions as NavOptions?,
-        blockSameUrl: blockSameUrl == dimmutable
-            ? _value.blockSameUrl
-            : blockSameUrl as bool));
+            : navOptions as NavOptions?));
   }
 }
 
@@ -293,28 +271,39 @@ dynamic SimpleNavPS_SyncReducer(dynamic _DStoreState, Action _DstoreAction) {
 
 SimpleNavPS SimpleNavPS_DS() {
   final state = SimpleNavPS(
-      page: null,
-      beforeLeave: null,
-      meta: NavConfigMeta(),
-      navOptions: null,
-      blockSameUrl: false);
+      page: null, beforeLeave: null, meta: NavConfigMeta(), navOptions: null);
 
   state.dontTouchMe.staticMeta = {
-    '/': (Uri uri, Dispatch dispatch) {
-      return dispatch(SimpleNavPSActions.home());
-    },
-    '/books': (Uri uri, Dispatch dispatch) {
-      return dispatch(SimpleNavPSActions.books());
-    },
-    '/settings': (Uri uri, Dispatch dispatch) {
-      return dispatch(SimpleNavPSActions.settings());
-    },
-    '/tab1': (Uri uri, Dispatch dispatch) {
-      return dispatch(SimpleNavPSActions.tabs());
-    },
-    '/unknown': (Uri uri, Dispatch dispatch) {
-      return dispatch(SimpleNavPSActions.unknown());
-    }
+    '/': NavUrlMeta(
+        urlToAction: (Uri uri, Dispatch dispatch) {
+          return dispatch(SimpleNavPSActions.home());
+        },
+        url: '/',
+        isProtected: false),
+    '/books': NavUrlMeta(
+        urlToAction: (Uri uri, Dispatch dispatch) {
+          return dispatch(SimpleNavPSActions.books());
+        },
+        url: '/books',
+        isProtected: false),
+    '/settings': NavUrlMeta(
+        urlToAction: (Uri uri, Dispatch dispatch) {
+          return dispatch(SimpleNavPSActions.settings());
+        },
+        url: '/settings',
+        isProtected: false),
+    '/tab1': NavUrlMeta(
+        urlToAction: (Uri uri, Dispatch dispatch) {
+          return dispatch(SimpleNavPSActions.tabs());
+        },
+        url: '/tab1',
+        isProtected: false),
+    '/unknown': NavUrlMeta(
+        urlToAction: (Uri uri, Dispatch dispatch) {
+          return dispatch(SimpleNavPSActions.unknown());
+        },
+        url: '/unknown',
+        isProtected: false)
   };
   state.dontTouchMe.dynamicMeta = {};
   state.dontTouchMe.typeName = '';
@@ -334,7 +323,8 @@ abstract class SimpleNavPSActions {
     return Action<dynamic>(
         name: "home",
         silent: silent,
-        nav: NavPayload(navOptions: navOptions, rawUrl: '/'),
+        nav:
+            NavPayload(navOptions: navOptions, rawUrl: '/', isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{},
         isAsync: false);
@@ -347,7 +337,8 @@ abstract class SimpleNavPSActions {
         nav: NavPayload(
             navOptions: navOptions,
             rawUrl: '/books',
-            nestedNavTypeName: '/store/pstates/nav/books_nav/BooksNav'),
+            nestedNavTypeName: '/store/pstates/nav/books_nav/BooksNav',
+            isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{},
         isAsync: false);
@@ -361,7 +352,8 @@ abstract class SimpleNavPSActions {
         nav: NavPayload(
             navOptions: navOptions,
             rawUrl: '/settings',
-            nestedNavTypeName: '/store/pstates/nav/setings_nav/SettingsNav'),
+            nestedNavTypeName: '/store/pstates/nav/setings_nav/SettingsNav',
+            isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{},
         isAsync: false);
@@ -374,7 +366,8 @@ abstract class SimpleNavPSActions {
         nav: NavPayload(
             navOptions: navOptions,
             rawUrl: '/tab1',
-            nestedNavTypeName: '/store/pstates/nav/tabs_nav/TabsNestedStack'),
+            nestedNavTypeName: '/store/pstates/nav/tabs_nav/TabsNestedStack',
+            isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{},
         isAsync: false);
@@ -385,7 +378,8 @@ abstract class SimpleNavPSActions {
     return Action<dynamic>(
         name: "unknown",
         silent: silent,
-        nav: NavPayload(navOptions: navOptions, rawUrl: '/unknown'),
+        nav: NavPayload(
+            navOptions: navOptions, rawUrl: '/unknown', isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{},
         isAsync: false);
@@ -398,7 +392,7 @@ abstract class SimpleNavPSActions {
     return Action<dynamic>(
         name: "fallBackNestedStackNonInitializationAction2",
         silent: silent,
-        nav: NavPayload(navOptions: navOptions),
+        nav: NavPayload(navOptions: navOptions, isProtected: false),
         type: _SimpleNavPS_FullPath,
         payload: <String, dynamic>{"navState": navState},
         isAsync: false);

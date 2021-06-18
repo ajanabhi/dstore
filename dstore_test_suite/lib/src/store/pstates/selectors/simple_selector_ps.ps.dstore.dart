@@ -202,13 +202,16 @@ abstract class SimpleSelectorPSActions {
   static Action<Iterable<String>> streamField(
       {required Stream<String> stream,
       bool cancelOnError = false,
+      bool appendDataToList = false,
       Iterable<String>? mock}) {
     return Action<Iterable<String>>(
         name: "streamField",
         type: _SimpleSelectorPS_FullPath,
         mock: mock,
         stream: StreamPayload<String>(
-            stream: stream, cancelOnError: cancelOnError));
+            stream: stream,
+            cancelOnError: cancelOnError,
+            appendDataToList: appendDataToList));
   }
 
   static Action<Iterable<String>> streamFieldResult(Iterable<String> mock) {

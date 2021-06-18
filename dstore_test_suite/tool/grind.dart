@@ -10,3 +10,8 @@ void gen() {
     "--enable-experiment=nonfunction-type-aliases"
   ]);
 }
+
+@Task()
+void clean() {
+  Pub.run("build_runner", arguments: ["clean"]);
+}

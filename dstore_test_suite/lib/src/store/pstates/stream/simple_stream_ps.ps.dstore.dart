@@ -90,13 +90,16 @@ abstract class SimpleStreamPSActions {
   static Action<Iterable<String>> stream1(
       {required Stream<String> stream,
       bool cancelOnError = false,
+      bool appendDataToList = false,
       Iterable<String>? mock}) {
     return Action<Iterable<String>>(
         name: "stream1",
         type: _SimpleStreamPS_FullPath,
         mock: mock,
         stream: StreamPayload<String>(
-            stream: stream, cancelOnError: cancelOnError));
+            stream: stream,
+            cancelOnError: cancelOnError,
+            appendDataToList: appendDataToList));
   }
 
   static Action<Iterable<String>> stream1Result(Iterable<String> mock) {
